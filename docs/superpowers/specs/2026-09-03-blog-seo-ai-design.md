@@ -153,3 +153,74 @@ Slug boş bırakılırsa başlıktan üretilir (`Str::slug($title, '-', 'tr')`),
 - Toplu (liste ile) AI üretimi — kuyruk altyapısı hazır bırakılır
 - Streaming (canlı yazım) — sürücü arayüzü sonradan eklemeye açık
 - AI ile görsel üretimi
+
+---
+
+## Uygulama Sonucu (2026-09-03)
+
+Tasarımdan sapmalar ve yol boyunca çıkanlar.
+
+### Tasarımdan sapmalar
+
+| Tasarım | Uygulanan | Neden |
+|---|---|---|
+| `SeoService::sync()` | Servis yok; `HasSeo::syncSeo()` işi kendisi yapıyor | `updateOrCreate` beş satır. Ayrı bir servis sınıfı `HasMedia::syncMedia()` ile tutarsız olurdu. |
+| Etiket yönetim ekranı | Yok; yalnızca `/admin/tags/search` öneri uç noktası | Etiketler modül formundan doğuyor, ayrı bir CRUD ekranı talep edilmedi. `tag.*` izinleri de eklenmedi. |
+| `AiProviderRequest` (tek) | `Create` + `Update` (extends) | CLAUDE.md'deki Create/Update/Filter konvansiyonu. |
+
+### Ek olarak çıkan parçalar
+
+- `App\Support\Field` — bileşenlere alan adı nokta notasyonuyla verilir, HTML
+  `name` köşeli paranteze çevrilir, `data-error` noktalı kalır. Bu olmadan
+  `seo[meta_title]` alanının doğrulama hatası hiçbir yere basılmıyordu.
+- `App\Support\Slug` — Türkçe karakter duyarlı, tabloda benzersiz slug.
+- `App\Http\Requests\Concerns\ValidatesSharedFields` — `seoRules()`, `tagRules()`.
+- `config/media.php` → `seo.og` preset'i (1200×630).
+
+### Yol boyunca düzeltilen dört hata
+
+1. **`HasSeo::syncSeo()` tanımsız anahtarda patlıyordu.** `$data['og_media_id'] ?: null`
+   yazılmıştı; `?:` anahtar yokluğunu susturmaz. `($data[...] ?? null) ?: null` oldu.
+2. **Aynı hata servislerde de vardı** — `slug`, `blog_category_id`, `published_at`,
+   `ai_provider_id`. `FormRequest::validated()` gönderilmemiş nullable alanları
+   diziye koymadığı için slug'sız her kategori/yazı kaydı 500 dönüyordu. Beş yerde
+   düzeltildi ve `laravel-architecture` skill'ine kural olarak yazıldı.
+3. **Blade bileşen özniteliğinde karmaşık ifade.** `:options="collect($drivers)->map(fn ($d) => $d['label'])->all()"`
+   ve `{{ '{{keywords}}' }}` yazımları Blade'in öznitelik/echo ayrıştırıcısını
+   bozup sayfayı 500'e düşürüyordu. İfadeler `@php` bloğuna alındı, literal
+   süslü parantez için `@{{...}}` kullanıldı.
+4. **Türkçeleşmemiş alan adları.** Doğrulama hataları "ai prompt id" gibi ham
+   alan adlarıyla dönüyordu. `lang/tr/validation.php` içindeki `attributes`
+   dizisine SEO, etiket ve yapay zeka alanları eklendi.
+
+### Doğrulanan davranışlar
+
+- Etiket tekilleştirme slug üzerinden: "Web Tasarım" / "web tasarım" tek kayıt.
+- Yeniden `syncTags` mevcut etiketleri çoğaltmıyor; bağı kopan etiket kaydı
+  silinmiyor (başka modüller kullanıyor olabilir).
+- `syncSeo` tekrar çağrıldığında ikinci satır açmıyor.
+- Türkçe slug: `Şeker Fabrikasında SEO` → `seker-fabrikasinda-seo`;
+  çakışmada `web-tasarim-2`. JS ve PHP slug üreticileri aynı sonucu veriyor
+  (önizlemedeki URL ile kaydedilen slug tutuyor).
+- Sağlayıcı API anahtarı veritabanında şifreli duruyor; form boş gönderildiğinde
+  kayıtlı anahtar korunuyor.
+- Varsayılan sağlayıcı ve varsayılan şablon tekilliği korunuyor.
+- Sürücü hataları okunabilir Türkçe mesaja dönüyor: geçersiz anahtar (401),
+  bağlantı reddi, JSON dönmeyen model, sağlayıcı tanımsız.
+- Kuyruk yolu uçtan uca: `dispatch` → `jobs` tablosu → `queue:work` → `completed`,
+  çıktı JSON'u form alanlarına eşlenebilir şekilde.
+- Yazısı olan kategori silinmiyor; boş kategori siliniyor.
+- Yazı silindiğinde medya kütüphaneden silinmiyor, yalnızca bağ kopuyor.
+- Derlenmiş Tailwind çıktısından hiçbir seçici kaybolmadı (yeni build'de
+  kaybolan 0, eklenen 47).
+
+### Bilinen sınırlar
+
+- Kuyruk işçisi çalışmıyorsa üretim `queued` kalır. Arayüz 20 saniye sonra
+  uyarıyor ama işi kendiliğinden çalıştırmıyor — bilinçli.
+- Model çıktısı HTML olarak editöre giriyor; sunucuda HTML temizleme yapılmıyor.
+  Üretimi yalnızca güvenilen kullanıcılar tetikleyebildiği için (izin `ai.generate`)
+  şimdilik kabul edildi.
+- Yazıyı taslağa çekerken form yayın tarihini göndermezse tarih siliniyor.
+  Gerçek formda alan her zaman dolu gittiği için görünmüyor.
+- Toplu üretim, streaming ve etiket yönetim ekranı yapılmadı.

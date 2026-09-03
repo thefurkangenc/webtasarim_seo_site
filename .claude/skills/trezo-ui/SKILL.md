@@ -188,6 +188,58 @@ bulunur; sayfa Blade'lerinde ham input yazma.
 
 Component'te olmayan bir alan tipi gerektiğinde önce component'i ekle.
 
+### Paylaşılan bileşenler
+
+Üç bileşen modüle özel değildir; tek satırla çağrılır ve modele bağlanır.
+Bunları modül Blade'ine kopyalayarak çoğaltma.
+
+```blade
+{{-- SEO: meta alanları + robots + paylaşım görseli + canlı Google önizlemesi --}}
+<x-admin::form.seo :model="$blog" path="blog" />
+
+{{-- Etiket: yazarken önerir, olmayanı Enter ile oluşturur --}}
+<x-admin::form.tags :model="$blog" />
+
+{{-- Zengin metin: TinyMCE 7, görsel butonu medya seçicisini açar --}}
+<x-admin::form.editor name="content" :value="$blog?->content" :height="560" />
+```
+
+`form.seo` bileşeni önizlemeyi formdaki kaynak alanlardan besler; alan adları
+farklıysa `titleSource` / `descriptionSource` / `slugSource` verilir:
+
+```blade
+<x-admin::form.seo :model="$category" titleSource="name" descriptionSource="description"
+                   path="blog/kategori" />
+```
+
+Modelde `use HasSeo;` / `use HasTags;` olmadan bu bileşenler çalışmaz.
+
+### Nokta notasyonlu alan adı
+
+İç içe alanlarda ada nokta konur; bileşen HTML `name`'ini köşeli paranteze
+çevirir, hata yuvası noktalı kalır (Laravel hataları o anahtarla döndürüyor):
+
+```blade
+<x-admin::form.input name="seo.meta_title" label="Meta Başlık" />
+{{-- name="seo[meta_title]"  id="seo-meta_title"  data-error="seo.meta_title" --}}
+```
+
+Dönüşümü `App\Support\Field` yapar.
+
+### Bileşen özniteliğinde karmaşık ifade yazma
+
+Blade'in öznitelik ayrıştırıcısı `:options="collect($x)->map(fn ($d) => $d['label'])->all()"`
+gibi içinde dizi erişimi olan ifadelerde bozulur ve sayfa 500 döner. İfadeyi
+`@php` bloğunda hazırla, özniteliğe değişken ver:
+
+```blade
+@php($driverOptions = collect($drivers)->map(fn ($driver) => $driver['label'])->all())
+<x-admin::form.select name="driver" :options="$driverOptions" />
+```
+
+Blade içinde literal `{{degisken}}` yazmak için `@{{degisken}}` kullan;
+`{{ '{{degisken}}' }}` yazımı derleyiciyi bozar.
+
 ## Butonlar
 
 ```blade

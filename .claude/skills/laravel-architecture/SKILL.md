@@ -362,6 +362,39 @@ Route::prefix('blog')->name('blog.')->controller(BlogController::class)->group(f
 Grup zaten `admin` prefix + `admin.` name altındadır (`bootstrap/app.php`),
 tam route adı `admin.blog.index` olur.
 
+## validated() eksik anahtar döndürür
+
+`FormRequest::validated()` **gönderilmemiş** `nullable` alanları diziye hiç
+koymaz. Serviste `$data['slug']` yazmak "Undefined array key" ile 500 üretir —
+`?:` bunu susturmaz, çünkü anahtar okunurken hata oluşur.
+
+```php
+// yanlış
+'slug' => Slug::unique($data['slug'] ?: $data['title'], 'blogs'),
+
+// doğru
+'slug' => Slug::unique(($data['slug'] ?? null) ?: $data['title'], 'blogs'),
+```
+
+Kural: serviste `validated()` çıktısındaki her **nullable** alanı `?? null` ile oku.
+
+## Paylaşılan yardımcılar
+
+| Sınıf | İşi |
+|---|---|
+| `App\Support\Field` | `seo.meta_title` → `name="seo[meta_title]"`, `id="seo-meta_title"` |
+| `App\Support\Slug` | `Slug::unique($deger, $tablo, $ignoreId)` — Türkçe slug, çakışmada `-2` |
+| `App\Http\Requests\Concerns\ValidatesSharedFields` | `seoRules()` ve `tagRules()` |
+| `App\Models\Concerns\HasSeo` / `HasTags` / `HasMedia` | polymorphic bağlar |
+
+Create/Update Request'leri: kurallar aynıysa Update, Create'i **extend eder**;
+benzersizlik kuralı `->ignore($this->route('blog'))` ile ekleme sırasında da
+doğru çalışır (route parametresi yokken `ignore(null)` olur).
+
+```php
+class BlogUpdateRequest extends BlogCreateRequest {}
+```
+
 ## Kontrol listesi
 
 Kod yazmayı bitirince:

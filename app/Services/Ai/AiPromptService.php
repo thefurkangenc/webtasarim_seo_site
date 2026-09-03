@@ -65,7 +65,7 @@ class AiPromptService
             'key' => $data['key'],
             'system_prompt' => $data['system_prompt'],
             'user_prompt' => $data['user_prompt'],
-            'ai_provider_id' => $data['ai_provider_id'] ?: null,
+            'ai_provider_id' => ($data['ai_provider_id'] ?? null) ?: null,
             'is_active' => (bool) ($data['is_active'] ?? true),
             'is_default' => (bool) ($data['is_default'] ?? false),
         ];

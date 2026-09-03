@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Admin\AiProvider;
 
 use App\Http\Controllers\Concerns\RespondsWithJson;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\AiProvider\AiProviderCreateRequest;
 use App\Http\Requests\Admin\AiProvider\AiProviderFilterRequest;
-use App\Http\Requests\Admin\AiProvider\AiProviderRequest;
+use App\Http\Requests\Admin\AiProvider\AiProviderUpdateRequest;
 use App\Models\Ai\AiProvider;
 use App\Services\Ai\AiProviderService;
 use App\Services\Ai\AiService;
@@ -39,12 +40,12 @@ class AiProviderController extends Controller
         return $this->success(data: $this->service->list($request->validated()));
     }
 
-    public function store(AiProviderRequest $request): JsonResponse
+    public function store(AiProviderCreateRequest $request): JsonResponse
     {
         return $this->success('Sağlayıcı eklendi.', $this->service->create($request->validated())->toPayload());
     }
 
-    public function update(AiProviderRequest $request, AiProvider $provider): JsonResponse
+    public function update(AiProviderUpdateRequest $request, AiProvider $provider): JsonResponse
     {
         return $this->success(
             'Sağlayıcı güncellendi.',

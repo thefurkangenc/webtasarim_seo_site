@@ -1,18 +1,27 @@
 {{-- AJAX modal gövdesi. Gönderim pages/ai-provider/index.js tarafından devralınır. --}}
+@php
+    // Bileşen özniteliği içinde dizi erişimi Blade'in öznitelik ayrıştırıcısını
+    // bozuyor; ifadeler burada hazırlanıyor.
+    $driverOptions = collect($drivers)->map(fn ($driver) => $driver['label'])->all();
+    $keyPlaceholder = $provider?->api_key
+        ? 'Kayıtlı anahtar korunuyor — değiştirmek için yeni anahtar yazın'
+        : 'sk-...';
+    $driverDefaults = collect($drivers)->map(fn ($driver) => [
+        'base_url' => $driver['base_url'],
+        'model' => $driver['model'],
+        'requires_key' => $driver['requires_key'],
+    ]);
+@endphp
 <form id="provider-form" data-id="{{ $provider?->id }}">
     <x-admin::form.select name="driver" label="Servis" required
         :value="$provider?->driver"
-        :options="collect($drivers)->map(fn ($d) => $d['label'])->all()"
+        :options="$driverOptions"
         data-provider-driver
         placeholder="Servis seçin" />
 
     {{-- Sürücü seçilince base_url/model alanlarını dolduracak varsayılanlar. --}}
     <script type="application/json" id="provider-driver-defaults">
-        @json(collect($drivers)->map(fn ($d) => [
-            'base_url' => $d['base_url'],
-            'model' => $d['model'],
-            'requires_key' => $d['requires_key'],
-        ]))
+        @json($driverDefaults)
     </script>
 
     <x-admin::form.input name="name" label="Ad" required :value="$provider?->name"
@@ -28,7 +37,7 @@
 
     <x-admin::form.input name="api_key" type="password" label="API Anahtarı"
         autocomplete="new-password"
-        :placeholder="$provider?->api_key ? 'Kayıtlı anahtar korunuyor — değiştirmek için yeni anahtar yazın' : 'sk-...'"
+        :placeholder="$keyPlaceholder"
         data-provider-key />
 
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-[15px]">

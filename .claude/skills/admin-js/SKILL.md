@@ -251,6 +251,44 @@ modal.onSubmit(async (form) => {
 
 Bu dosya 40-60 satırda bitmelidir. Uzuyorsa ağır iş `core/`'a taşınmalıdır.
 
+## Paylaşılan core modülleri
+
+| Dosya | Ne verir |
+|---|---|
+| `core/editor.js` | `initEditors(root)` — `[data-editor]` alanlarını TinyMCE'ye çevirir. Sayfa JS'i gerektirmez; modal içinde açılan bir editör için `initEditors(modal.body)` çağır. |
+| `core/seo-field.js` | `initSeoFields(root)` — sayaçlar ve Google önizlemesi. Modal gövdesinde SEO varsa modal açıldıktan sonra çağrılmalı. |
+| `core/tag-input.js` | `initTagInputs(root)` — etiket alanı. Gizli `name="tags[]"` input'ları üretir, ayrı serileştirme gerekmez. |
+| `core/ai-generator.js` | `aiGenerator.open(key, { defaults })` → `Promise<object\|null>`. Üretimi kuyruğa atar, durumu sorar, JSON çıktıyı döndürür. |
+
+```js
+const output = await aiGenerator.open('blog.content', { defaults: { title } });
+
+if (output) {
+    form.querySelector('[name="title"]').value = output.title;
+    window.tinymce.get('content')?.setContent(output.content);
+}
+```
+
+Üretilen değerleri alanlara yazdıktan sonra SEO sayacı ve önizlemesinin
+güncellenmesi için ilgili input'lara `input` olayı gönder:
+
+```js
+form.querySelectorAll('[data-seo-input]')
+    .forEach((input) => input.dispatchEvent(new Event('input', { bubbles: true })));
+```
+
+## Tailwind class'ını şablon değişkeniyle kurma
+
+Derleyici kaynak dosyaları metin olarak tarar; `bg-${variant}-100` gibi
+parçalanmış bir ad bulunamaz ve o class hiç derlenmez. Tam metin yaz:
+
+```js
+const BADGES = {
+    success: 'bg-success-100 dark:bg-[#15203c] text-success-600 dark:text-success-500',
+    danger: 'bg-danger-100 dark:bg-[#15203c] text-danger-600 dark:text-danger-500',
+};
+```
+
 ## Kurallar
 
 1. **jQuery yok.** `$`, `$.ajax`, `.on()` görürsen kaldır.
@@ -258,7 +296,7 @@ Bu dosya 40-60 satırda bitmelidir. Uzuyorsa ağır iş `core/`'a taşınmalıd�
    satır başına listener bağlamak bozulur; kapsayıcıya tek listener bağla.
 3. **`innerHTML`'e ham kullanıcı verisi basma.** Metin alanlarını
    `core/http.js`'in sağladığı `escapeHtml()` ile geçir; HTML gerektiren
-   alanlarda (Quill içeriği) sunucuda temizlenmiş olduğundan emin ol.
+   alanlarda (TinyMCE içeriği) sunucuda temizlenmiş olduğundan emin ol.
 4. **Hataları yutma.** `http.*` çağrılarında `ValidationError` modal formunda
    `showErrors` ile gösterilir; diğerleri `toast.error` ile.
 5. **`custom.js` ve `charts-custom.js`'i düzenleme.** Bunlar template'e aittir;

@@ -22,6 +22,7 @@ return [
         'role' => 'Roller ve İzinler',
         'media' => 'Medya',
         'ai' => 'Yapay Zeka',
+        'blog' => 'Blog',
     ],
 
     'permissions' => [
@@ -53,6 +54,16 @@ return [
 
         ['name' => 'ai.generate', 'label' => 'Yapay Zeka - İçerik Üret', 'category' => 'ai', 'guard_name' => 'web'],
 
+        ['name' => 'blog-category.view', 'label' => 'Blog Kategori - Listele', 'category' => 'blog', 'guard_name' => 'web'],
+        ['name' => 'blog-category.create', 'label' => 'Blog Kategori - Ekle', 'category' => 'blog', 'guard_name' => 'web'],
+        ['name' => 'blog-category.update', 'label' => 'Blog Kategori - Düzenle', 'category' => 'blog', 'guard_name' => 'web'],
+        ['name' => 'blog-category.delete', 'label' => 'Blog Kategori - Sil', 'category' => 'blog', 'guard_name' => 'web'],
+
+        ['name' => 'blog.view', 'label' => 'Blog - Listele', 'category' => 'blog', 'guard_name' => 'web'],
+        ['name' => 'blog.create', 'label' => 'Blog - Ekle', 'category' => 'blog', 'guard_name' => 'web'],
+        ['name' => 'blog.update', 'label' => 'Blog - Düzenle', 'category' => 'blog', 'guard_name' => 'web'],
+        ['name' => 'blog.delete', 'label' => 'Blog - Sil', 'category' => 'blog', 'guard_name' => 'web'],
+
     ],
 
     /*
@@ -65,7 +76,7 @@ return [
     'roles' => [
         'super-admin' => '*',
         'admin' => '*',
-        'editor' => ['media.*', 'ai.generate'],
+        'editor' => ['media.*', 'ai.generate', 'blog.*', 'blog-category.view'],
     ],
 
 ];

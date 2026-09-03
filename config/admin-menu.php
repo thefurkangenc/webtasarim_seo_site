@@ -37,6 +37,30 @@ return [
     ],
 
     [
+        'title' => 'İçerik',
+        'items' => [
+            [
+                'title' => 'Blog',
+                'icon' => 'article',
+                'children' => [
+                    [
+                        'title' => 'Yazılar',
+                        'route' => 'admin.blog.index',
+                        'active' => 'admin.blog.*',
+                        'permission' => 'blog.view',
+                    ],
+                    [
+                        'title' => 'Kategoriler',
+                        'route' => 'admin.blog-category.index',
+                        'active' => 'admin.blog-category.*',
+                        'permission' => 'blog-category.view',
+                    ],
+                ],
+            ],
+        ],
+    ],
+
+    [
         'title' => 'Yapay Zeka',
         'items' => [
             [

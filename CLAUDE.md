@@ -13,6 +13,9 @@ Mimari kararların gerekçesi: `docs/superpowers/specs/2026-09-03-admin-panel-de
 | Admin UI | Trezo — Tailwind CSS v4 admin template |
 | Yetki | spatie/laravel-permission (`users` tablosu üzerinde) |
 | Admin JS | Native ES modules, **jQuery yok** |
+| Editör | TinyMCE 7 (GPL self-host, `js/vendor/tinymce/`) |
+| Yapay zeka | ChatGPT / DeepSeek / Ollama — panelden yönetilir, kuyrukta çalışır |
+| Kuyruk | `database` sürücüsü — `php artisan queue:work` çalışıyor olmalı |
 | Ön yüz | Bootstrap 5 (ayrı dünya, admin ile karışmaz) |
 
 ## İki Ayrı Dünya
@@ -99,8 +102,14 @@ Modüller bunların üzerine kurulur — yeniden yazma, kullan.
 | Doğrulama metinleri | `lang/tr/validation.php` (tam çeviri, `APP_LOCALE=tr`) |
 | Sidebar menü | `config/admin-menu.php` + `App\Services\Admin\MenuService` |
 | Form alanları | `<x-admin::form.input|textarea|select|switch|image|actions>` |
+| SEO alanları | `App\Models\Concerns\HasSeo` + `<x-admin::form.seo>` (polymorphic `seo` tablosu) |
+| Etiketler | `App\Models\Concerns\HasTags` + `<x-admin::form.tags>` (`tags` + `taggables`) |
+| Zengin metin | `<x-admin::form.editor>` — TinyMCE 7, `core/editor.js` |
+| Yapay zeka | `App\Services\Ai\AiService` + `core/ai-generator.js`, `/admin/ai-provider`, `/admin/ai-prompt` |
+| Alan adı dönüşümü | `App\Support\Field` — `seo.meta_title` → `name="seo[meta_title]"` |
+| Benzersiz slug | `App\Support\Slug::unique($deger, 'blogs', $id)` — Türkçe karakter duyarlı |
 | Modal iskeleti | `resources/views/admin/layout/modals/ajax-modal.blade.php` (layout'ta include edili) |
-| JS çekirdeği | `public/admin/assets/js/core/` — http, form, modal, table, toast, confirm |
+| JS çekirdeği | `public/admin/assets/js/core/` — http, form, modal, table, toast, confirm, editor, seo-field, tag-input, ai-generator |
 | Giriş | `admin.login` / `admin.logout`, `auth` middleware `routes/admin.php`'de |
 | Roller | `super-admin` (Gate::before ile her izne sahip), `admin`, `editor` |
 
@@ -142,6 +151,89 @@ Preset tanımlıysa kırpma modalı açılır ve orana kilitlenir; tanımlı de�
 dosya doğrudan yüklenir. **Modelde `image` kolonu açma** — bağlantı
 `mediables` pivotu üzerinden kurulur.
 
+## Paylaşılan Bileşenler
+
+Bu üçü modüle özel değildir; yeni modülde yeniden yazma, çağır.
+
+### SEO
+
+```php
+class Blog extends Model { use HasSeo; }
+```
+
+```blade
+<x-admin::form.seo :model="$blog" path="blog" />
+```
+
+```php
+$blog->syncSeo($data['seo'] ?? []);   // serviste
+$blog->seoMeta();                     // ön yüzde <meta> için çözümlenmiş dizi
+```
+
+FormRequest'te `use ValidatesSharedFields;` ve kurallara `...$this->seoRules()`.
+Meta başlık/açıklama boşsa modelin `title`/`excerpt` alanına düşer; alan adları
+farklıysa modelde `seoFallbacks()` ezilir. **Modül tablosuna meta kolonu açma.**
+
+### Etiketler
+
+```php
+class Blog extends Model { use HasTags; }
+```
+
+```blade
+<x-admin::form.tags :model="$blog" />
+```
+
+```php
+$blog->syncTags($data['tags'] ?? []);   // olmayan etiket oluşturulur
+$blog->tagNames();
+```
+
+Kurallara `...$this->tagRules()` eklenir. Eşleşme slug üzerinden yapılır:
+"Web Tasarım" ile "web tasarım" aynı etikettir.
+
+### Editör
+
+```blade
+<x-admin::form.editor name="content" :value="$blog?->content" :height="560" />
+```
+
+TinyMCE 7 self-host (`public/admin/assets/js/vendor/tinymce/`). Görsel butonu
+medya seçicisini açar — editöre giren görsel de kütüphaneye kaydolur. Karanlık
+mod değişince editör, içerik korunarak yeniden kurulur.
+
+Alan adı nokta notasyonuyla verilir (`seo.meta_title`); bileşen HTML `name`
+özniteliğini `seo[meta_title]` yapar, `data-error` yuvası nokta notasyonunda
+kalır — Laravel hataları o anahtarla döndürüyor.
+
+## Yapay Zeka Modülü
+
+Sağlayıcılar ve prompt şablonları panelden yönetilir; üretim **kuyrukta** çalışır.
+
+```
+/admin/ai-provider   ChatGPT / DeepSeek / Ollama kayıtları (anahtar şifreli saklanır)
+/admin/ai-prompt     şablonlar; `key` alanı hangi modülde görüneceğini belirler
+```
+
+Bir modüle üretim eklemek:
+
+```js
+const output = await aiGenerator.open('blog.content', { defaults: { title } });
+if (output) { /* alanları doldur */ }
+```
+
+Sunucuda yeni kod gerekmez — panelden o `key` ile bir şablon tanımlamak yeter.
+Şablon `{{keywords}}`, `{{title}}`, `{{category}}`, `{{length}}`, `{{notes}}`
+yer tutucularını kullanır ve modelden JSON ister; `AiService` kod çitlerini
+temizleyip ilk `{` ile son `}` arasını ayrıştırır, başarısızsa üretimi `failed`
+işaretler ve ham yanıtı hataya yazar.
+
+Sürücü eklemek: `ChatDriver` arayüzünü uygulayan bir sınıf + `config/ai.php`'ye
+bir satır + `AiService::DRIVERS` eşlemesine bir giriş.
+
+> **Kuyruk işçisi çalışmıyorsa hiçbir üretim tamamlanmaz.** Geliştirirken
+> `php artisan queue:work` açık olmalı; arayüz 20 saniye sonra bunu uyarır.
+
 ## Komutlar
 
 ```sh
@@ -149,6 +241,7 @@ npm run admin:css            # admin Tailwind derlemesi — yeni class yazdıysa
 npm run admin:css:watch      # geliştirme sırasında
 php artisan db:seed --class=RolePermissionSeeder   # izin güncellemesi
 php artisan db:seed          # rol/izin + yönetici kullanıcı
+php artisan queue:work       # yapay zeka üretimi için ŞART
 vendor/bin/pint              # kod formatı
 ```
 

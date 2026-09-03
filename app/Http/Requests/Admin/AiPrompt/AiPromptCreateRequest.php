@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin\AiPrompt;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AiPromptRequest extends FormRequest
+class AiPromptCreateRequest extends FormRequest
 {
     /** @return array<string, array<int, mixed>> */
     public function rules(): array

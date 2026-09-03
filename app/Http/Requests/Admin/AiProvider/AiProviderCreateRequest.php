@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
  * Ekleme ve düzenleme aynı kuralları kullanır; tek fark API anahtarının
  * düzenlemede boş bırakılabilmesidir (boşsa kayıtlı anahtar korunur).
  */
-class AiProviderRequest extends FormRequest
+class AiProviderCreateRequest extends FormRequest
 {
     /** @return array<string, array<int, mixed>> */
     public function rules(): array

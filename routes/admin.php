@@ -4,6 +4,8 @@ use App\Http\Controllers\Admin\Ai\AiGenerationController;
 use App\Http\Controllers\Admin\AiPrompt\AiPromptController;
 use App\Http\Controllers\Admin\AiProvider\AiProviderController;
 use App\Http\Controllers\Admin\Auth\LoginController;
+use App\Http\Controllers\Admin\Blog\BlogController;
+use App\Http\Controllers\Admin\BlogCategory\BlogCategoryController;
 use App\Http\Controllers\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\Admin\Media\MediaController;
 use App\Http\Controllers\Admin\Media\MediaFolderController;
@@ -75,6 +77,25 @@ Route::middleware('auth')->group(function () {
             Route::post('generate', 'store')->name('generate.store');
             Route::get('generate/{generation}', 'show')->name('generate.show');
         });
+
+    Route::prefix('blog-category')->name('blog-category.')->controller(BlogCategoryController::class)->group(function () {
+        Route::get('/', 'index')->name('index')->middleware('permission:blog-category.view');
+        Route::get('datatable', 'datatable')->name('datatable')->middleware('permission:blog-category.view');
+        Route::get('form/{category?}', 'form')->name('form')->middleware('permission:blog-category.view');
+        Route::post('/', 'store')->name('store')->middleware('permission:blog-category.create');
+        Route::put('{category}', 'update')->name('update')->middleware('permission:blog-category.update');
+        Route::delete('{category}', 'destroy')->name('destroy')->middleware('permission:blog-category.delete');
+    });
+
+    Route::prefix('blog')->name('blog.')->controller(BlogController::class)->group(function () {
+        Route::get('/', 'index')->name('index')->middleware('permission:blog.view');
+        Route::get('datatable', 'datatable')->name('datatable')->middleware('permission:blog.view');
+        Route::get('create', 'create')->name('create')->middleware('permission:blog.create');
+        Route::post('/', 'store')->name('store')->middleware('permission:blog.create');
+        Route::get('{blog}/edit', 'edit')->name('edit')->middleware('permission:blog.update');
+        Route::put('{blog}', 'update')->name('update')->middleware('permission:blog.update');
+        Route::delete('{blog}', 'destroy')->name('destroy')->middleware('permission:blog.delete');
+    });
 
     /*
     | Modül route'ları buraya eklenir. Kalıp:

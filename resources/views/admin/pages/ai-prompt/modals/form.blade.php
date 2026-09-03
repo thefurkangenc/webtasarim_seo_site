@@ -18,16 +18,16 @@
 
     <x-admin::form.textarea name="user_prompt" label="Kullanıcı Prompt" required rows="8"
         :value="$prompt?->user_prompt"
-        placeholder="Üretim isteğini yazın; {{ '{{keywords}}' }} gibi değişkenler kullanabilirsiniz." class="h-[200px]" />
+        placeholder="Üretim isteğini yazın; @{{keywords}} gibi değişkenler kullanabilirsiniz." class="h-[200px]" />
 
     <div class="rounded-md border border-gray-100 dark:border-[#172036] bg-gray-50 dark:bg-[#15203c] p-[15px] mb-[20px] md:mb-[25px]">
         <p class="!mb-[8px] font-medium text-black dark:text-white text-sm">Kullanılabilir değişkenler</p>
         <p class="!mb-0 text-xs text-gray-500 dark:text-gray-400 leading-[1.8]">
-            <code>{{ '{{keywords}}' }}</code> anahtar kelimeler ·
-            <code>{{ '{{title}}' }}</code> başlık (boş olabilir) ·
-            <code>{{ '{{category}}' }}</code> kategori ·
-            <code>{{ '{{length}}' }}</code> uzunluk ·
-            <code>{{ '{{notes}}' }}</code> ek notlar
+            <code>@{{keywords}}</code> anahtar kelimeler ·
+            <code>@{{title}}</code> başlık (boş olabilir) ·
+            <code>@{{category}}</code> kategori ·
+            <code>@{{length}}</code> uzunluk ·
+            <code>@{{notes}}</code> ek notlar
             <br>
             Doldurulmayan değişkenler prompt'tan silinir. Blog için beklenen JSON anahtarları:
             <code>title</code>, <code>excerpt</code>, <code>content</code>, <code>tags</code>,

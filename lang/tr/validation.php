@@ -209,6 +209,25 @@ return [
         'seo.og_media_id' => 'paylaşım görseli',
         'tags' => 'etiketler',
         'tags.*' => 'etiket',
+
+        // Yapay zeka
+        'ai_prompt_id' => 'şablon',
+        'ai_provider_id' => 'sağlayıcı',
+        'api_key' => 'API anahtarı',
+        'base_url' => 'API adresi',
+        'model' => 'model',
+        'driver' => 'servis',
+        'temperature' => 'sıcaklık',
+        'max_tokens' => 'maksimum token',
+        'timeout' => 'zaman aşımı',
+        'system_prompt' => 'sistem prompt',
+        'user_prompt' => 'kullanıcı prompt',
+        'key' => 'anahtar',
+        'input.keywords' => 'anahtar kelimeler',
+        'input.title' => 'başlık',
+        'input.category' => 'kategori',
+        'input.length' => 'uzunluk',
+        'input.notes' => 'ek notlar',
     ],
 
 ];

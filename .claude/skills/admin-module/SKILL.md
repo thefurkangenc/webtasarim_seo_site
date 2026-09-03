@@ -48,6 +48,10 @@ Konvansiyonlar:
 - Slug: `slug` (string, unique)
 - Yumuşak silme yalnızca gerçekten geri alınabilir olması gereken içerikte
 
+> Slug kolonu varsa `->unique()` ver ve serviste
+> `App\Support\Slug::unique($data['slug'] ?? null ?: $data['name'], '<tablo>', $id)`
+> kullan — Türkçe karakterleri çevirir, çakışmada sona sayı ekler.
+
 ## 3. Model
 
 `app/Models/BlogCategory/BlogCategory.php` — `Admin/` segmenti **yok**.
@@ -200,6 +204,34 @@ modülün özel CSS'i olmaz. Boş dosya açma; açtıysan `@push('admin.css')` i
 5. Serviste kaydettikten sonra `$record->syncMedia($data['cover_media_id'] ?? null, 'cover');`
    — `media_id` alanı `$fillable`'a **girmez**, pivot üzerinden bağlanır.
 6. Listede/sitede `$record->mediaUrl('cover', 'thumb')`.
+
+## 12c. SEO alanları varsa
+
+1. Modele `use App\Models\Concerns\HasSeo;` ekle — modül tablosuna meta kolonu **açma**.
+2. Request'e `use App\Http\Requests\Concerns\ValidatesSharedFields;` ve kurallara
+   `...$this->seoRules()`.
+3. Formda `<x-admin::form.seo :model="$record" path="blog" />`.
+   Kaynak alan adları `title`/`excerpt` değilse `titleSource` / `descriptionSource` ver.
+4. Serviste `$record->syncSeo($data['seo'] ?? []);`.
+5. Modal içindeki bir formdaysa, modal açıldıktan sonra `initSeoFields(modal.body)` çağır.
+
+## 12d. Etiket alanı varsa
+
+1. Modele `use App\Models\Concerns\HasTags;`.
+2. Kurallara `...$this->tagRules()`.
+3. Formda `<x-admin::form.tags :model="$record" />`.
+4. Serviste `$record->syncTags($data['tags'] ?? []);`.
+
+## 12e. Yapay zeka üretimi varsa
+
+Sunucuda kod yazılmaz. Panelden `/admin/ai-prompt` ekranında modülün anahtarıyla
+(`hizmet.content` gibi) bir şablon tanımlanır, sayfa JS'inde:
+
+```js
+const output = await aiGenerator.open('hizmet.content', { defaults: { title } });
+```
+
+Butonu `@can('ai.generate')` ile sar.
 
 ## 13. Doğrula
 

@@ -26,7 +26,6 @@ class MediaFolder extends Model
         return $this->hasMany(Media::class, 'folder_id');
     }
 
-
     public function breadcrumb(): Collection
     {
         $chain = new Collection([$this]);
