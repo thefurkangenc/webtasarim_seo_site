@@ -124,15 +124,23 @@ route middleware'i tekrar etmez.
 
 ## 8. İzinler
 
-Seeder'a dört izni ekle ve `super-admin` rolüne bağla:
+`config/permissions.php` içine kategori ve izinleri ekle:
 
 ```php
-foreach (['view', 'create', 'update', 'delete'] as $action) {
-    Permission::firstOrCreate(['name' => "blog-category.{$action}"]);
-}
+'categories' => [
+    'blog-category' => 'Blog Kategorileri',
+],
+
+'permissions' => [
+    ['name' => 'blog-category.view',   'label' => 'Blog Kategori - Listele', 'category' => 'blog-category', 'guard_name' => 'web'],
+    ['name' => 'blog-category.create', 'label' => 'Blog Kategori - Ekle',    'category' => 'blog-category', 'guard_name' => 'web'],
+    ['name' => 'blog-category.update', 'label' => 'Blog Kategori - Düzenle', 'category' => 'blog-category', 'guard_name' => 'web'],
+    ['name' => 'blog-category.delete', 'label' => 'Blog Kategori - Sil',     'category' => 'blog-category', 'guard_name' => 'web'],
+],
 ```
 
-Seeder'ı çalıştırmayı unutma.
+Sonra `php artisan db:seed --class=RolePermissionSeeder` çalıştır.
+Editörün erişmesi gerekiyorsa `roles.editor` desenine `blog-category.*` ekle.
 
 ## 9. View'lar
 
@@ -180,6 +188,18 @@ modülün özel CSS'i olmaz. Boş dosya açma; açtıysan `@push('admin.css')` i
 ```php
 ['title' => 'Kategoriler', 'route' => 'admin.blog-category.index', 'permission' => 'blog-category.view'],
 ```
+
+## 12b. Görsel alanı varsa
+
+1. Modele `use App\Models\Concerns\HasMedia;` ekle — `image` kolonu **açma**.
+2. `config/media.php` → `presets` dizisine kırpma boyutunu ekle
+   (`'blog.cover' => ['width' => 1200, 'height' => 630, 'label' => '...']`).
+3. Formda `<x-admin::form.image name="cover_media_id" preset="blog.cover"
+   :media="$record?->getFirstMedia('cover')" />`.
+4. Request'e `'cover_media_id' => ['nullable', 'integer', 'exists:media,id']`.
+5. Serviste kaydettikten sonra `$record->syncMedia($data['cover_media_id'] ?? null, 'cover');`
+   — `media_id` alanı `$fillable`'a **girmez**, pivot üzerinden bağlanır.
+6. Listede/sitede `$record->mediaUrl('cover', 'thumb')`.
 
 ## 13. Doğrula
 

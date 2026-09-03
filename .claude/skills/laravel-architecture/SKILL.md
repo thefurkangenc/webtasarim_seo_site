@@ -249,18 +249,18 @@ Hata mesajları Türkçe yazılır — arayüzde doğrudan input altına basıl�
 
 namespace App\Models\Blog;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+#[Fillable(['category_id', 'title', 'slug', 'excerpt', 'content', 'image', 'status', 'published_at'])]
 class Blog extends Model
 {
-    protected $fillable = ['category_id', 'title', 'slug', 'excerpt', 'content', 'image', 'status', 'published_at'];
-
     /** @return array<string, string> */
     protected function casts(): array
     {
         return [
-            'status'       => 'boolean',
+            'status' => 'boolean',
             'published_at' => 'datetime',
         ];
     }
@@ -272,8 +272,13 @@ class Blog extends Model
 }
 ```
 
-`$fillable` kullanılır, `$guarded = []` kullanılmaz.
-Cast'ler Laravel 11+ `casts()` metodu ile tanımlanır, `$casts` property ile değil.
+Görsel alanı olan modeller `App\Models\Concerns\HasMedia` trait'ini kullanır;
+modelde `image` kolonu açılmaz, bağlantı `mediables` pivotu üzerinden kurulur.
+
+Bu proje Laravel 13'ün **attribute** stilini kullanır: `#[Fillable([...])]`,
+gerektiğinde `#[Hidden([...])]` — `protected $fillable` property'si değil.
+Mevcut `app/Models/User.php` bu stildedir, ondan sapma.
+`$guarded = []` kullanılmaz. Cast'ler `casts()` metodu ile tanımlanır.
 
 ## JSON sözleşmesi
 
@@ -282,6 +287,15 @@ Cast'ler Laravel 11+ `casts()` metodu ile tanımlanır, `$casts` property ile de
 ```php
 protected function success(?string $message = null, mixed $data = null, int $status = 200): JsonResponse
 protected function error(string $message, int $status = 422): JsonResponse
+```
+
+`success()` bir `LengthAwarePaginator` aldığında kayıtları `data`, sayfalama
+bilgisini `meta` altına ayırır — `core/table.js` tam olarak bu yapıyı bekler:
+
+```
+{ "success": true, "message": null,
+  "data": [...],
+  "meta": { "current_page": 1, "last_page": 4, "per_page": 15, "total": 52, "from": 1, "to": 15 } }
 ```
 
 ```
@@ -307,12 +321,28 @@ Controller'da `try/catch` yazma.
 
 ## Yetki
 
-İzin adları `<modul>.<eylem>` kalıbındadır: `blog.view`, `blog.create`,
-`blog.update`, `blog.delete`.
+İzinler **`config/permissions.php`** içinde tanımlanır; seeder oradan okur.
+
+```php
+['name' => 'blog.view', 'label' => 'Blog - Listele', 'category' => 'blog', 'guard_name' => 'web'],
+```
+
+Kategori etiketleri aynı dosyadaki `categories` dizisinde, rollerin izinleri
+`roles` dizisinde desen olarak (`'editor' => ['blog.*']`) tutulur.
+İzin adı serbesttir; önerilen kalıp `<modül>.<eylem>` ya da
+`<üst>.<modül>.<eylem>` (`company.employee.index`).
 
 - Yazma işlemleri: ilgili FormRequest'in `authorize()` metodunda.
 - Okuma işlemleri: route üzerinde `->middleware('permission:blog.view')`.
 - Blade: `@can('blog.create')`.
+- `super-admin` rolü `AppServiceProvider`'daki `Gate::before` ile her izne sahiptir.
+
+## Doğrulama metinleri
+
+`lang/tr/validation.php` tam çeviridir; genel kurallar için ayrıca mesaj
+yazmana gerek yok. `attributes` dizisi alan adlarını Türkçeleştirir.
+FormRequest'in `messages()` metodunu yalnızca **alana özel** bir ifade
+gerektiğinde kullan ("Yüklenecek dosyayı seçin." gibi).
 
 ## Route
 

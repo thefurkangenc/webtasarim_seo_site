@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="{{ asset('admin/assets/css/jsvectormap.min.css') }}">
 <link rel="stylesheet" href="{{ asset('admin/assets/css/swiper-bundle.min.css') }}">
 <link rel="stylesheet" href="{{ asset('admin/assets/css/quill.snow.css') }}">
+<link rel="stylesheet" href="{{ asset('admin/assets/css/vendor/cropper.min.css') }}">
 <link rel="stylesheet" href="{{ asset('admin/assets/css/style.css') }}">
 
 @stack('admin.css')

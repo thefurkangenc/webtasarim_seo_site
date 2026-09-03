@@ -3,68 +3,80 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 
+/**
+ * İzinleri ve rolleri config/permissions.php'den senkronlar.
+ *
+ * Tekrar çalıştırılabilir: mevcut izinlerin etiketi güncellenir, rol
+ * atamaları korunur. Config'ten kaldırılan izinler SİLİNMEZ — rol
+ * atamalarını sessizce düşürmemek için sadece uyarı basılır.
+ */
 class RolePermissionSeeder extends Seeder
 {
-    /**
-     * Modül izinleri. Yeni modül eklerken buraya bir satır ekle ve seeder'ı
-     * tekrar çalıştır — mevcut kayıtlar korunur.
-     *
-     * @var array<int, string>
-     */
-    private const MODULES = [
-        'user',
-        'role',
-    ];
-
-    /** @var array<int, string> */
-    private const ACTIONS = ['view', 'create', 'update', 'delete'];
-
-    /**
-     * İçerik editörünün erişebileceği modüller.
-     *
-     * @var array<int, string>
-     */
-    private const EDITOR_MODULES = [];
-
     public function run(): void
     {
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
-        foreach (self::MODULES as $module) {
-            foreach (self::ACTIONS as $action) {
-                Permission::firstOrCreate([
-                    'name' => "{$module}.{$action}",
-                    'guard_name' => 'web',
-                ]);
-            }
+        $defined = collect(config('permissions.permissions', []));
+
+        foreach ($defined as $permission) {
+            Permission::updateOrCreate(
+                [
+                    'name' => $permission['name'],
+                    'guard_name' => $permission['guard_name'] ?? 'web',
+                ],
+                [
+                    'label' => $permission['label'] ?? $permission['name'],
+                    'category' => $permission['category'] ?? null,
+                ],
+            );
         }
 
-        // super-admin izinleri AppServiceProvider'daki Gate::before ile gelir,
-        // bu yüzden ayrıca senkronlanmaz.
-        Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'web']);
+        foreach (config('permissions.roles', []) as $role => $patterns) {
+            Role::firstOrCreate(['name' => $role, 'guard_name' => 'web'])
+                ->syncPermissions($this->match($patterns));
+        }
 
-        Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web'])
-            ->syncPermissions(Permission::where('guard_name', 'web')->get());
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
 
-        Role::firstOrCreate(['name' => 'editor', 'guard_name' => 'web'])
-            ->syncPermissions($this->editorPermissions());
+        $this->warnAboutOrphans($defined->pluck('name'));
     }
 
-    /** @return array<int, string> */
-    private function editorPermissions(): array
+    /**
+     * Desenlere uyan izinleri döndürür. '*' tümü demektir.
+     *
+     * @param  string|array<int, string>  $patterns
+     * @return Collection<int, Permission>
+     */
+    private function match(string|array $patterns): Collection
     {
-        $permissions = [];
+        $permissions = Permission::where('guard_name', 'web')->get();
 
-        foreach (self::EDITOR_MODULES as $module) {
-            foreach (self::ACTIONS as $action) {
-                $permissions[] = "{$module}.{$action}";
-            }
+        if ($patterns === '*') {
+            return $permissions;
         }
 
-        return $permissions;
+        return $permissions->filter(
+            fn (Permission $permission) => Str::is((array) $patterns, $permission->name),
+        );
+    }
+
+    /** @param  Collection<int, string>  $definedNames */
+    private function warnAboutOrphans(Collection $definedNames): void
+    {
+        $orphans = Permission::whereNotIn('name', $definedNames)->pluck('name');
+
+        if ($orphans->isEmpty()) {
+            return;
+        }
+
+        $this->command?->warn(
+            'config/permissions.php içinde bulunmayan izinler var (silinmedi): '.$orphans->implode(', '),
+        );
     }
 }

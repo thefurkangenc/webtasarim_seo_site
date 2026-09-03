@@ -31,6 +31,9 @@
     </div>
     <!-- End Main Content -->
 
+    <!-- Ajax Modal -->
+    @include('admin.layout.modals.ajax-modal')
+
     <!-- Links Of JS File -->
     @include('admin.layout.partials.scripts')
 </body>

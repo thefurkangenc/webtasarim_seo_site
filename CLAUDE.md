@@ -84,11 +84,71 @@ Admin tarafında iş yapıyorsan bu skill'leri **kod yazmadan önce** aç.
 | `admin-module-builder` | Bir modülü uçtan uca kurar |
 | `convention-reviewer` | Yazılan kodu bu kurallara karşı denetler |
 
+## Kurulu Altyapı (Faz 0)
+
+Modüller bunların üzerine kurulur — yeniden yazma, kullan.
+
+| Ne | Nerede |
+|---|---|
+| Tailwind kaynağı | `resources/css/admin/style.css` → `npm run admin:css` |
+| JSON yanıtları | `App\Http\Controllers\Concerns\RespondsWithJson` (`success()`/`error()`) |
+| Medya kütüphanesi | `App\Services\Media\MediaService` + `MediaFolderService`, `/admin/media` |
+| Modele medya bağlama | `App\Models\Concerns\HasMedia` trait'i (polymorphic, koleksiyonlu) |
+| Kırpma | `<x-admin::form.image preset="blog.cover">` + `core/cropper.js` |
+| İzinler | `config/permissions.php` (tek kaynak) → `RolePermissionSeeder` |
+| Doğrulama metinleri | `lang/tr/validation.php` (tam çeviri, `APP_LOCALE=tr`) |
+| Sidebar menü | `config/admin-menu.php` + `App\Services\Admin\MenuService` |
+| Form alanları | `<x-admin::form.input|textarea|select|switch|image|actions>` |
+| Modal iskeleti | `resources/views/admin/layout/modals/ajax-modal.blade.php` (layout'ta include edili) |
+| JS çekirdeği | `public/admin/assets/js/core/` — http, form, modal, table, toast, confirm |
+| Giriş | `admin.login` / `admin.logout`, `auth` middleware `routes/admin.php`'de |
+| Roller | `super-admin` (Gate::before ile her izne sahip), `admin`, `editor` |
+
+Yeni modülün izinlerini `config/permissions.php` içindeki `permissions` dizisine
+ekle, kategorisini `categories`'e yaz ve seeder'ı tekrar çalıştır. Seeder
+tekrar çalıştırılabilir: mevcut kayıtlar ve rol atamaları korunur, config'ten
+kaldırılan izinler silinmez (yalnızca uyarı basılır).
+
+## Medya Kullanımı
+
+Modelde:
+
+```php
+use App\Models\Concerns\HasMedia;
+
+class Blog extends Model
+{
+    use HasMedia;
+}
+```
+
+Formda — alan görseli **hemen** yükler ve gizli input'a `media_id` yazar:
+
+```blade
+<x-admin::form.image name="cover_media_id" label="Kapak Görseli"
+                     preset="blog.cover" :media="$blog?->getFirstMedia('cover')" />
+```
+
+Serviste:
+
+```php
+$blog->syncMedia($data['cover_media_id'] ?? null, 'cover');
+```
+
+Okurken: `$blog->getFirstMedia('cover')`, `$blog->mediaUrl('cover', 'thumb')`.
+
+Kırpma boyutları `config/media.php` içindeki `presets` dizisinden gelir.
+Preset tanımlıysa kırpma modalı açılır ve orana kilitlenir; tanımlı değilse
+dosya doğrudan yüklenir. **Modelde `image` kolonu açma** — bağlantı
+`mediables` pivotu üzerinden kurulur.
+
 ## Komutlar
 
 ```sh
-php artisan serve            # Herd kullanılıyorsa gerekmez
-npm run admin:css:watch      # admin Tailwind derlemesi (Faz 0 sonrası)
+npm run admin:css            # admin Tailwind derlemesi — yeni class yazdıysan ŞART
+npm run admin:css:watch      # geliştirme sırasında
+php artisan db:seed --class=RolePermissionSeeder   # izin güncellemesi
+php artisan db:seed          # rol/izin + yönetici kullanıcı
 vendor/bin/pint              # kod formatı
 ```
 

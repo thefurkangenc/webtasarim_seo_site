@@ -169,9 +169,18 @@ Yukarıdaki class dizileri uzun ve her formda tekrar eder. Bunun yerine
 <x-admin::form.input  name="title" label="Başlık" placeholder="Örn. ..." :value="$blog?->title" />
 <x-admin::form.select name="category_id" label="Kategori" :options="$categories" :value="$blog?->category_id" />
 <x-admin::form.textarea name="excerpt" label="Özet" />
-<x-admin::form.image  name="image" label="Kapak Görseli" :value="$blog?->image" />
 <x-admin::form.switch name="status" label="Yayında" :checked="$blog?->status ?? true" />
+<x-admin::form.actions submit="Kaydet" />
+
+{{-- Görsel: preset kırpma oranını ve çıktı boyutunu belirler --}}
+<x-admin::form.image name="cover_media_id" label="Kapak Görseli"
+                     preset="blog.cover" :media="$blog?->getFirstMedia('cover')" />
 ```
+
+`form.image` alanı diğerlerinden farklı çalışır: seçilen görseli **hemen**
+yükler ve gizli input'a `media_id` yazar. Boyutlar `config/media.php`
+içindeki `presets`'ten gelir; yeni bir alan için önce oraya boyut ekle.
+Modelde `image` kolonu açma — bağlantı `HasMedia` trait'i ile kurulur.
 
 Component'ler `AppServiceProvider` içinde `Blade::anonymousComponentPath()` ile
 `admin` namespace'ine bağlanır. Class dizileri **sadece** component dosyalarında
@@ -237,6 +246,22 @@ ile belirlenir.
 Dosya doluysa **onun** yapısına uy; `core/modal.js`'i ona göre yaz.
 Modal gövdesi (`modals/form.blade.php`) sadece `<form>` ve alanlarını içerir,
 kart kabuğunu tekrar etmez.
+
+## Medya tarayıcısı
+
+`/admin/media` sayfası ve form içinden açılan seçici modal aynı markup'ı
+paylaşır: `resources/views/admin/pages/media/partials/browser.blade.php`.
+Yeni bir yerde medya listesi gerekiyorsa bu partial'ı include et, ayrı bir
+ızgara yazma:
+
+```blade
+@include('admin.pages.media.partials.browser', [
+    'folders' => $folders, 'selectable' => true, 'manageable' => false,
+])
+```
+
+Kartların markup'ı `core/media-browser.js` içinde üretilir. Oradaki
+class'lar da Tailwind build'i tarafından taranır (`@source` JS'i kapsar).
 
 ## İkonlar
 

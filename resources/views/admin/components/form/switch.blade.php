@@ -6,13 +6,18 @@
     'wrapper' => 'mb-[20px] md:mb-[25px] last:mb-0',
 ])
 
+@php
+    $field = \App\Support\Field::name($name);
+    $id = \App\Support\Field::id($name);
+@endphp
+
 <div class="{{ $wrapper }}">
     {{-- Kapalıyken de bir değer gitsin diye gizli 0; checkbox işaretliyse 1 onu ezer. --}}
-    <input type="hidden" name="{{ $name }}" value="0">
+    <input type="hidden" name="{{ $field }}" value="0">
 
     <label class="flex items-center gap-[10px] cursor-pointer select-none w-fit">
         <span class="relative inline-block">
-            <input type="checkbox" name="{{ $name }}" id="{{ $name }}" value="1"
+            <input type="checkbox" name="{{ $field }}" id="{{ $id }}" value="1"
                 @checked((bool) old($name, $checked))
                 {{ $attributes->merge(['class' => 'peer sr-only']) }}>
             <span

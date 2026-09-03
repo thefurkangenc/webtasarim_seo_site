@@ -10,4 +10,7 @@
 <script src="{{ asset('admin/assets/js/quill.min.js') }}"></script>
 <script src="{{ asset('admin/assets/js/custom.js') }}"></script>
 
+{{-- Görsel alanı davranışı: olay delegasyonu ile çalışır, sayfa JS'i gerektirmez. --}}
+<script type="module" src="{{ asset('admin/assets/js/core/media-field.js') }}"></script>
+
 @stack('admin.scripts')

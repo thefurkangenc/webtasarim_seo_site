@@ -17,6 +17,7 @@ takip et.
 public/admin/assets/js/
     custom.js                 <- template'in kendi dosyası, DOKUNMA
     charts-custom.js          <- template'in kendi dosyası, DOKUNMA
+    vendor/cropper/           <- Cropper.js v1 yerel kopyası, DOKUNMA
     core/
         http.js               fetch sarmalayıcı
         form.js               form serileştirme + hata boyama
@@ -24,6 +25,10 @@ public/admin/assets/js/
         table.js              DataTable
         toast.js              bildirim
         confirm.js            silme onayı
+        cropper.js            kırpma modalı
+        media-browser.js      klasör + ızgara tarayıcı
+        media-picker.js       kütüphaneden seçme modalı
+        media-field.js        <x-admin::form.image> davranışı (layout'ta yüklü)
     pages/
         blog/
             index.js          liste sayfası
@@ -54,19 +59,30 @@ Bu imzalar sözleşmedir. Değiştirmen gerekirse tüm çağıranları da günce
 ### http.js
 
 ```js
-http.get(url, params = {})       // -> Promise<data>
+http.get(url, params = {})       // params query string'e çevrilir, boş değerler atılır
 http.post(url, body)             // FormData veya düz nesne
-http.put(url, body)              // FormData ise _method=PUT enjekte eder
-http.delete(url)                 // -> Promise<data>
+http.put(url, body)              // FormData ise _method=PUT enjekte edip POST atar
+http.patch(url, body)
+http.delete(url)
+http.html(url)                   // -> Promise<string>, Blade parçası (modal gövdesi)
+
+escapeHtml(value)                // innerHTML'e basılan her kullanıcı verisi için
+```
+
+**Dönen değer sunucunun JSON gövdesinin tamamıdır**, `data` alanı tek başına değil:
+
+```js
+const { message } = await http.delete(url);              // mesaj
+const { data, meta } = await http.get(endpoint, params); // liste + sayfalama
 ```
 
 - `X-CSRF-TOKEN` header'ını `<meta name="csrf-token">`'dan otomatik ekler.
-- `X-Requested-With: XMLHttpRequest` gönderir.
-- 2xx'te `data` alanını (yoksa gövdenin tamamını) çözümler.
-- 422'de `ValidationError` fırlatır (`.errors` taşır).
-- 403/500'de `HttpError` fırlatır (`.message`, `.status` taşır).
+- `X-Requested-With: XMLHttpRequest` gönderir, çerezleri taşır.
+- 422 + `errors` → `ValidationError` (`.errors` taşır).
+- 419 → "Oturumunuz sona erdi", 401 → "Oturumunuz kapandı".
+- Diğer hatalarda `HttpError` (`.message`, `.status`, `.payload`).
 
-`meta` etiketi `admin/layout/partials/meta.blade.php` içinde bulunmalıdır.
+`meta` etiketi `admin/layout/partials/meta.blade.php` içinde tanımlıdır.
 
 ### form.js
 
@@ -97,8 +113,14 @@ modal.onSubmit(async (formEl) => { ... });               // form submit'ini yaka
 ```
 
 - Modal kökü `#ajax-modal`; açılış `.active` class'ı eklenerek yapılır (template mekanizması).
+  İskelet `resources/views/admin/layout/modals/ajax-modal.blade.php` içinde ve
+  admin layout'unda include edilir. Sayfada yoksa `modal.js` aynı markup'ı
+  çalışma anında oluşturur.
 - `[data-modal-close]` elemanları ve backdrop tıklaması kapatır; `Escape` de kapatır.
 - Modal gövdesi her açılışta baştan yazılır — eski event listener kalmaz.
+- `onSubmit`'e verdiğin fonksiyon **sadece isteği atar**. Yükleniyor durumu,
+  `clearErrors`, `ValidationError` → `showErrors` ve diğer hatalar → `toast.error`
+  akışı `modal.js` içinde halledilir; sayfa JS'inde `try/catch` yazma.
 
 ### table.js
 
@@ -113,7 +135,16 @@ const table = new DataTable({
 });
 
 table.load();      // ilk yükleme
-table.reload();    // mevcut sayfayı tazeler (kaydetme sonrası)
+table.reload();    // mevcut görünümü tazeler (kaydetme sonrası)
+```
+
+`table.js` ayrıca `cell(content, extra)` yardımcısını dışa verir; satır
+render'ında hücre class dizisini tekrar yazmamak için kullan:
+
+```js
+import { DataTable, cell } from '../../core/table.js';
+
+row: (blog) => `<tr>${cell(escapeHtml(blog.title))}${cell(actions(blog), '!text-right')}</tr>`
 ```
 
 - Arama 300 ms debounce'lu.
@@ -121,6 +152,36 @@ table.reload();    // mevcut sayfayı tazeler (kaydetme sonrası)
 - Sayfalama `pagination.html` kalıbıyla render edilir.
 - İstek parametreleri: `search`, `sort`, `direction`, `page`, `per_page` + filtreler.
   Bunlar `<Modul>FilterRequest` ile birebir eşleşmelidir.
+
+### cropper.js
+
+```js
+import { cropModal } from '../../core/cropper.js';
+
+const crop = await cropModal.open(file, { preset: 'blog.cover', width: 1200, height: 630, label: 'Blog Kapak' });
+// crop === null  -> vazgeçildi
+// crop === { x, y, width, height, rotate, scaleX, scaleY }
+```
+
+Cropper.js ilk kullanımda tembel yüklenir. Sunucu bu koordinatları
+`rotate → flip → crop` sırasıyla uygular; sıra değiştirilirse çıktı bozulur.
+
+### media-picker.js / media-browser.js
+
+```js
+const media = await mediaPicker.open();      // seçilen medya payload'ı ya da null
+
+new MediaBrowser(root, { onSelect, onOpen }); // browser.blade.php markup'ını sürer
+```
+
+### media-field.js
+
+`<x-admin::form.image>` alanının davranışı. **Sayfa JS'inden çağrılmaz** —
+layout'ta yüklüdür ve `document` seviyesinde olay delegasyonu ile çalışır,
+ajax modal içinde açılan formlarda da kendiliğinden devreye girer.
+
+Alan seçilen görseli hemen yükler ve gizli input'a `media_id` yazar; form
+gönderildiğinde sunucuya sadece bu id gider.
 
 ### toast.js / confirm.js
 

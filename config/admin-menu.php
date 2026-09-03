@@ -26,6 +26,37 @@ return [
                 'icon' => 'dashboard',
                 'route' => 'admin.dashboard',
             ],
+            [
+                'title' => 'Medya Kütüphanesi',
+                'icon' => 'perm_media',
+                'route' => 'admin.media.index',
+                'active' => 'admin.media.*',
+                'permission' => 'media.view',
+            ],
+        ],
+    ],
+
+    [
+        'title' => 'Yapay Zeka',
+        'items' => [
+            [
+                'title' => 'Yapay Zeka',
+                'icon' => 'smart_toy',
+                'children' => [
+                    [
+                        'title' => 'Sağlayıcılar',
+                        'route' => 'admin.ai-provider.index',
+                        'active' => 'admin.ai-provider.*',
+                        'permission' => 'ai-provider.view',
+                    ],
+                    [
+                        'title' => 'Prompt Şablonları',
+                        'route' => 'admin.ai-prompt.index',
+                        'active' => 'admin.ai-prompt.*',
+                        'permission' => 'ai-prompt.view',
+                    ],
+                ],
+            ],
         ],
     ],
 ];

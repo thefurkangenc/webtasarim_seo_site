@@ -8,16 +8,20 @@
     'wrapper' => 'mb-[20px] md:mb-[25px] last:mb-0',
 ])
 
-@php($selected = old($name, $value))
+@php
+    $field = \App\Support\Field::name($name);
+    $id = \App\Support\Field::id($name);
+    $selected = old($name, $value);
+@endphp
 
 <div class="{{ $wrapper }}">
     @if ($label)
-        <x-admin::form.label :for="$name" :required="$required">{{ $label }}</x-admin::form.label>
+        <x-admin::form.label :for="$id" :required="$required">{{ $label }}</x-admin::form.label>
     @endif
 
     <select
-        name="{{ $name }}"
-        id="{{ $name }}"
+        name="{{ $field }}"
+        id="{{ $id }}"
         @if ($required) required @endif
         {{ $attributes->merge(['class' => 'h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[13px] block w-full outline-0 cursor-pointer transition-all focus:border-primary-500']) }}>
 
