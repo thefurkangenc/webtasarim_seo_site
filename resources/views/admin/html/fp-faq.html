@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html dir="ltr">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- Links Of CSS File -->
+        <link rel="stylesheet" href="assets/css/remixicon.css">
+        <link rel="stylesheet" href="assets/css/apexcharts.css">
+        <link rel="stylesheet" href="assets/css/simplebar.css">
+        <link rel="stylesheet" href="assets/css/prism.css">
+        <link rel="stylesheet" href="assets/css/jsvectormap.min.css">
+        <link rel="stylesheet" href="assets/css/swiper-bundle.min.css">
+        <link rel="stylesheet" href="assets/css/quill.snow.css">
+        <link rel="stylesheet" href="assets/css/style.css">
+
+        <!-- Favicon -->
+		<link rel="icon" type="image/png" href="assets/images/favicon.ico">
+
+        <!-- Title -->
+        <title>Trezo - Tailwind CSS Admin Dashboard Template</title>
+
+        <!-- Font Family -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
+        <!-- Material Icons -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    </head>
+    <body>
+
+        <!-- Home -->
+        <div class="overflow-hidden">
+
+            <!-- Light/Dark Mode Button -->
+            <button type="button" class="light-dark-toggle leading-none inline-block transition-all text-[#fe7a36] fixed top-1/2 -translate-y-1/2 ltr:left-[20px] rtl:right-[20px] ltr:md:left-[25px] rtl:md:right-[25px] z-[9999]" id="light-dark-toggle">
+                <i class="material-symbols-outlined !text-[20px] md:!text-[22px]">
+                    light_mode
+                </i>
+            </button>
+            <!-- End Light/Dark Mode Button -->
+
+            <!-- Navbar -->
+            <div class="fixed top-0 right-0 left-0 transition-all h-auto z-[5] py-[20px]" id="navbar">
+                <div class="container 2xl:max-w-[1320px] mx-auto px-[12px]">
+                    <div class="flex items-center relative flex-wrap lg:flex-nowrap justify-between lg:justify-start">
+                        <a href="fp-index.html" class="inline-block max-w-[130px] ltr:mr-[15px] rtl:ml-[15px]">
+                            <img src="assets/images/logo-big.svg" alt="logo" class="inline-block dark:hidden">
+                            <img src="assets/images/white-logo-big.svg" alt="logo" class="hidden dark:inline-block">
+                        </a>
+                        <button type="button" class="inline-block relative leading-none lg:hidden" id="navbar-burger-menu">
+                            <span class="h-[3px] w-[30px] my-[5px] block bg-black dark:bg-white"></span>
+                            <span class="h-[3px] w-[30px] my-[5px] block bg-black dark:bg-white"></span>
+                            <span class="h-[3px] w-[30px] my-[5px] block bg-black dark:bg-white"></span>
+                        </button>
+                        <div class="hidden lg:flex items-center grow basis-full basis-auto"><!-- For Big Devices -->
+                            <ul class="flex ltr:ml-[30px] rtl:mr-[30px] ltr:xl:ml-[55px] rtl:xl:mr-[55px] flex-row gap-[30px] xl:gap-[50px]">
+                                <li>
+                                    <a href="fp-index.html" class="font-medium text-gray-500 dark:text-gray-400 transition-all hover:text-primary-600 text-[15px] xl:text-md">
+                                        Home
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="fp-features.html" class="font-medium text-gray-500 dark:text-gray-400 transition-all hover:text-primary-600 text-[15px] xl:text-md">
+                                        Features
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="fp-team.html" class="font-medium text-gray-500 dark:text-gray-400 transition-all hover:text-primary-600 text-[15px] xl:text-md">
+                                        Our Team
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="fp-faq.html" class="font-medium text-primary-600 dark:text-primary-600 transition-all hover:text-primary-600 text-[15px] xl:text-md">
+                                        FAQ's
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="fp-contact.html" class="font-medium text-gray-500 dark:text-gray-400 transition-all hover:text-primary-600 text-[15px] xl:text-md">
+                                        Contact
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="index.html" class="font-medium text-gray-500 dark:text-gray-400 transition-all hover:text-primary-600 text-[15px] xl:text-md">
+                                        Admin
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="flex items-center ltr:ml-auto rtl:mr-auto gap-[15px]">
+                                <a href="sign-in.html" class="inline-block text-purple-600 lg:text-[15px] xl:text-md py-[11px] px-[17px] rounded-md transition-all font-medium border border-purple-600 hover:text-white hover:bg-purple-500 hover:border-purple-500">
+                                    <span class="inline-block relative ltr:pl-[25px] rtl:pr-[25px] ltr:md:pl-[29px] rtl:md:pr-[29px]">
+                                        <i class="material-symbols-outlined absolute ltr:left-0 rtl:right-0 top-1/2 -translate-y-1/2 !text-[20px] md:!text-xl">
+                                            login
+                                        </i>
+                                        Login
+                                    </span>
+                                </a>
+                                <a href="sign-up.html" class="inline-block lg:text-[15px] xl:text-md py-[11px] px-[17px] bg-purple-600 text-white rounded-md transition-all font-medium border border-purple-600 hover:bg-purple-500 hover:border-purple-500">
+                                    <span class="inline-block relative ltr:pl-[25px] rtl:pr-[25px] ltr:md:pl-[29px] rtl:md:pr-[29px]">
+                                        <i class="material-symbols-outlined absolute ltr:left-0 rtl:right-0 top-1/2 -translate-y-1/2 !text-[20px] md:!text-xl">
+                                            person
+                                        </i>
+                                        Register
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="bg-white dark:bg-black mt-[20px] p-[20px] md:p-[30px] w-full hidden lg:!hidden" id="navbar-collapse"><!-- For Responsive -->
+                            <ul>
+                                <li class="my-[14px] md:my-[16px] first:mt-0 last:mb-0">
+                                    <a href="fp-index.html" class="font-medium text-gray-500 dark:text-gray-400 transition-all hover:text-primary-600">
+                                        Home
+                                    </a>
+                                </li>
+                                <li class="my-[14px] md:my-[16px] first:mt-0 last:mb-0">
+                                    <a href="fp-features.html" class="font-medium text-gray-500 dark:text-gray-400 transition-all hover:text-primary-600">
+                                        Features
+                                    </a>
+                                </li>
+                                <li class="my-[14px] md:my-[16px] first:mt-0 last:mb-0">
+                                    <a href="fp-team.html" class="font-medium text-gray-500 dark:text-gray-400 transition-all hover:text-primary-600">
+                                        Our Team
+                                    </a>
+                                </li>
+                                <li class="my-[14px] md:my-[16px] first:mt-0 last:mb-0">
+                                    <a href="fp-faq.html" class="font-medium text-primary-600 dark:text-primary-600 transition-all hover:text-primary-600">
+                                        FAQ's
+                                    </a>
+                                </li>
+                                <li class="my-[14px] md:my-[16px] first:mt-0 last:mb-0">
+                                    <a href="fp-contact.html" class="font-medium text-gray-500 dark:text-gray-400 transition-all hover:text-primary-600">
+                                        Contact
+                                    </a>
+                                </li>
+                                <li class="my-[14px] md:my-[16px] first:mt-0 last:mb-0">
+                                    <a href="index.html" class="font-medium text-gray-500 dark:text-gray-400 transition-all hover:text-primary-600">
+                                        Admin
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="flex items-center gap-[15px] mt-[14px] md:mt-[16px]">
+                                <a href="sign-in.html" class="inline-block text-purple-600 lg:text-[15px] xl:text-md py-[11px] px-[17px] rounded-md transition-all font-medium border border-purple-600 hover:text-white hover:bg-purple-500 hover:border-purple-500">
+                                    <span class="inline-block relative ltr:pl-[25px] rtl:pr-[25px] ltr:md:pl-[29px] rtl:md:pr-[29px]">
+                                        <i class="material-symbols-outlined absolute ltr:left-0 rtl:right-0 top-1/2 -translate-y-1/2 !text-[20px] md:!text-xl">
+                                            login
+                                        </i>
+                                        Login
+                                    </span>
+                                </a>
+                                <a href="sign-up.html" class="inline-block lg:text-[15px] xl:text-md py-[11px] px-[17px] bg-purple-600 text-white rounded-md transition-all font-medium border border-purple-600 hover:bg-purple-500 hover:border-purple-500">
+                                    <span class="inline-block relative ltr:pl-[25px] rtl:pr-[25px] ltr:md:pl-[29px] rtl:md:pr-[29px]">
+                                        <i class="material-symbols-outlined absolute ltr:left-0 rtl:right-0 top-1/2 -translate-y-1/2 !text-[20px] md:!text-xl">
+                                            person
+                                        </i>
+                                        Register
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Navbar -->
+            
+            <!-- Page Banner -->
+            <div class="pt-[125px] md:pt-[145px] lg:pt-[185px] xl:pt-[195px] text-center">
+                <div class="container 2xl:max-w-[1320px] mx-auto px-[12px] relative z-[1]">
+                    <h1 class="!mb-0 !leading-[1.2] !text-3xl md:!text-5xl lg:!text-[50px] xl:!text-[60px] -tracking-[.5px] md:-tracking-[1px] xl:-tracking-[1.5px]">
+                        Frequently Asked Questions
+                    </h1>
+                    <div class="absolute bottom-0 -z-[1] ltr:-right-[30px] rtl:-left-[30px] blur-[250px]">
+                        <img src="assets/images/front-pages/shape3.png" alt="shape3">
+                    </div>
+                    <div class="absolute -top-[220px] -z-[1] ltr:-left-[50px] rtl:-right-[50px] blur-[150px]">
+                        <img src="assets/images/front-pages/shape5.png" alt="shape3">
+                    </div>
+                </div>
+            </div>
+            <!-- End Page Banner -->
+            
+            <!-- FAQ -->
+            <div class="relative z-[2] pt-[60px] md:pt-[80px] lg:pt-[100px] xl:pt-[150px]">
+                <div class="container 2xl:max-w-[1320px] mx-auto px-[12px]">
+                    <div class="mx-auto text-center lg:max-w-[650px] lg:max-w-[810px] xl:max-w-[850px] mb-[35px] md:mb-[50px] lg:mb-[65px] xl:mb-[90px]">
+                        <div class="inline-block relative mt-[10px] mb-[20px]">
+                            <span class="absolute top-[4.5px] w-[5px] h-[5px] ltr:-left-[3.6px] rtl:-right-[3.6px] bg-purple-600 -rotate-[6.536deg]"></span>
+                            <span class="absolute -top-[9.5px] w-[5px] h-[5px] ltr:right-0 rtl:left-0 bg-purple-600 -rotate-[6.536deg]"></span>
+                            <span class="inline-block relative text-purple-600 border border-purple-600 py-[5.5px] px-[17.2px] -rotate-[6.536deg]">
+                                FAQ's
+                                <span class="absolute -bottom-[2.5px] w-[5px] h-[5px] ltr:-left-[3.5px] rtl:-right-[3.5px] bg-purple-600 -rotate-[6.536deg]"></span>
+                                <span class="absolute -bottom-[2.5px] w-[5px] h-[5px] ltr:-right-[3.5px] rtl:-left-[3.5px] bg-purple-600 -rotate-[6.536deg]"></span>
+                            </span>
+                        </div>
+                        <h2 class="!mb-0 !text-xl md:!text-2xl lg:!text-[34px] xl:!text-4xl -tracking-[.5px] md:-tracking-[.6px] lg:-tracking-[.8px] xl:-tracking-[1px] !leading-[1.2]">
+                            Do You Have Questions? We Have Answers (Well, Most of the Time!)
+                        </h2>
+                    </div>
+                    <div class="toc-accordion mx-auto md:max-w-[738px]" id="tablesOfContentAccordion">
+                        <div class="toc-accordion-item bg-white dark:bg-[#0c1427] rounded-md text-black dark:text-white mb-[15px] last:mb-0">
+                            <button class="toc-accordion-button open text-base md:text-[15px] lg:text-md py-[13px] px-[20px] md:px-[25px] block w-full ltr:text-left rtl:text-right font-medium relative" type="button">
+                                What is Trezo?
+                                <i class="ri-arrow-down-s-line absolute top-1/2 -translate-y-1/2 ltr:right-[20px] rtl:left-[20px] md:ltr:right-[25px] md:rtl:left-[25px] text-[20px]"></i>
+                            </button>
+                            <div class="toc-accordion-collapse px-[20px] md:px-[25px] pb-[20px]" style="display: block;">
+                                <p class="text-gray-500 dark:text-gray-400 !leading-[1.7]">
+                                    Trezo is a comprehensive project management software designed to help teams streamline their workflow, collaborate effectively, and achieve project success.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="toc-accordion-item bg-white dark:bg-[#0c1427] rounded-md text-black dark:text-white mb-[15px] last:mb-0">
+                            <button class="toc-accordion-button text-base md:text-[15px] lg:text-md py-[13px] px-[20px] md:px-[25px] block w-full ltr:text-left rtl:text-right font-medium relative" type="button">
+                                What features does Trezo offer?
+                                <i class="ri-arrow-down-s-line absolute top-1/2 -translate-y-1/2 ltr:right-[20px] rtl:left-[20px] md:ltr:right-[25px] md:rtl:left-[25px] text-[20px]"></i>
+                            </button>
+                            <div class="toc-accordion-collapse px-[20px] md:px-[25px] pb-[20px] hidden">
+                                <p class="text-gray-500 dark:text-gray-400 !leading-[1.7]">
+                                    Trezo is a comprehensive project management software designed to help teams streamline their workflow, collaborate effectively, and achieve project success.
+                                </p>
+                                <ul class="list-disc ltr:pl-[17px] rtl:pr-[17px]">
+                                    <li class="text-gray-500 dark:text-gray-400 leading-[1.6] mb-[7px] last:mb-0">
+                                        Pellentesque viverra lorem malesuada nunc tristique sapien.
+                                    </li>
+                                    <li class="text-gray-500 dark:text-gray-400 leading-[1.6] mb-[7px] last:mb-0">
+                                        Imperdiet sit hendrerit tincidunt bibendum donec adipiscing.
+                                    </li>
+                                    <li class="text-gray-500 dark:text-gray-400 leading-[1.6] mb-[7px] last:mb-0">
+                                        Tellus non morbi nascetur cursus etiam facilisis mi.
+                                    </li>
+                                    <li class="text-gray-500 dark:text-gray-400 leading-[1.6] mb-[7px] last:mb-0">
+                                        Imperdiet sit hendrerit tincidunt bibendum donec adipiscing.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="toc-accordion-item bg-white dark:bg-[#0c1427] rounded-md text-black dark:text-white mb-[15px] last:mb-0">
+                            <button class="toc-accordion-button text-base md:text-[15px] lg:text-md py-[13px] px-[20px] md:px-[25px] block w-full ltr:text-left rtl:text-right font-medium relative" type="button">
+                                How can Trezo benefit my team?
+                                <i class="ri-arrow-down-s-line absolute top-1/2 -translate-y-1/2 ltr:right-[20px] rtl:left-[20px] md:ltr:right-[25px] md:rtl:left-[25px] text-[20px]"></i>
+                            </button>
+                            <div class="toc-accordion-collapse px-[20px] md:px-[25px] pb-[20px] hidden">
+                                <p class="text-gray-500 dark:text-gray-400 !leading-[1.7]">
+                                    Trezo is a comprehensive project management software designed to help teams streamline their workflow, collaborate effectively, and achieve project success.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="toc-accordion-item bg-white dark:bg-[#0c1427] rounded-md text-black dark:text-white mb-[15px] last:mb-0">
+                            <button class="toc-accordion-button text-base md:text-[15px] lg:text-md py-[13px] px-[20px] md:px-[25px] block w-full ltr:text-left rtl:text-right font-medium relative" type="button">
+                                Is Trezo suitable for small businesses?
+                                <i class="ri-arrow-down-s-line absolute top-1/2 -translate-y-1/2 ltr:right-[20px] rtl:left-[20px] md:ltr:right-[25px] md:rtl:left-[25px] text-[20px]"></i>
+                            </button>
+                            <div class="toc-accordion-collapse px-[20px] md:px-[25px] pb-[20px] hidden">
+                                <p class="text-gray-500 dark:text-gray-400 !leading-[1.7]">
+                                    Trezo is a comprehensive project management software designed to help teams streamline their workflow, collaborate effectively, and achieve project success.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="toc-accordion-item bg-white dark:bg-[#0c1427] rounded-md text-black dark:text-white mb-[15px] last:mb-0">
+                            <button class="toc-accordion-button text-base md:text-[15px] lg:text-md py-[13px] px-[20px] md:px-[25px] block w-full ltr:text-left rtl:text-right font-medium relative" type="button">
+                                Can I customize Trezo to fit my team's specific needs?
+                                <i class="ri-arrow-down-s-line absolute top-1/2 -translate-y-1/2 ltr:right-[20px] rtl:left-[20px] md:ltr:right-[25px] md:rtl:left-[25px] text-[20px]"></i>
+                            </button>
+                            <div class="toc-accordion-collapse px-[20px] md:px-[25px] pb-[20px] hidden">
+                                <p class="text-gray-500 dark:text-gray-400 !leading-[1.7]">
+                                    Trezo is a comprehensive project management software designed to help teams streamline their workflow, collaborate effectively, and achieve project success.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="toc-accordion-item bg-white dark:bg-[#0c1427] rounded-md text-black dark:text-white mb-[15px] last:mb-0">
+                            <button class="toc-accordion-button text-base md:text-[15px] lg:text-md py-[13px] px-[20px] md:px-[25px] block w-full ltr:text-left rtl:text-right font-medium relative" type="button">
+                                Is Trezo cloud-based or on-premises?
+                                <i class="ri-arrow-down-s-line absolute top-1/2 -translate-y-1/2 ltr:right-[20px] rtl:left-[20px] md:ltr:right-[25px] md:rtl:left-[25px] text-[20px]"></i>
+                            </button>
+                            <div class="toc-accordion-collapse px-[20px] md:px-[25px] pb-[20px] hidden">
+                                <p class="text-gray-500 dark:text-gray-400 !leading-[1.7]">
+                                    Trezo is a comprehensive project management software designed to help teams streamline their workflow, collaborate effectively, and achieve project success.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="toc-accordion-item bg-white dark:bg-[#0c1427] rounded-md text-black dark:text-white mb-[15px] last:mb-0">
+                            <button class="toc-accordion-button text-base md:text-[15px] lg:text-md py-[13px] px-[20px] md:px-[25px] block w-full ltr:text-left rtl:text-right font-medium relative" type="button">
+                                Does Trezo integrate with other tools?
+                                <i class="ri-arrow-down-s-line absolute top-1/2 -translate-y-1/2 ltr:right-[20px] rtl:left-[20px] md:ltr:right-[25px] md:rtl:left-[25px] text-[20px]"></i>
+                            </button>
+                            <div class="toc-accordion-collapse px-[20px] md:px-[25px] pb-[20px] hidden">
+                                <p class="text-gray-500 dark:text-gray-400 !leading-[1.7]">
+                                    Trezo is a comprehensive project management software designed to help teams streamline their workflow, collaborate effectively, and achieve project success.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End FAQ -->
+            
+            <!-- CTA -->
+            <div class="py-[60px] md:py-[80px] lg:py-[100px] xl:py-[150px]">
+                <div class="container md:max-w-[960px] 2xl:max-w-[1320px] mx-auto px-[12px] relative z-[1]">
+                    <div class="text-center mx-auto md:max-w-[680px] lg:max-w-[830px]">
+                        <h2 class="!text-2xl md:!text-4xl lg:!text-[45px] xl:!text-[48px] !mb-[13px] md:!mb-[20px] lg:!mb-[25px] xl:!mb-[35px] -tracking-[.5px] md:-tracking-[.8px] lg:-tracking-[1.2px] xl:-tracking-[1.5px] !leading-[1.2]">
+                            Unlock a world of possibilities with Trezo Dashboard.
+                        </h2>
+                        <p class="mx-auto !leading-[1.6] md:max-w-[650px] lg:max-w-[680px] xl:max-w-[740px] md:text-[15px] lg:text-md xl:text-lg xl:tracking-[.2px]">
+                            Experience the difference with Trezo Dashboard. Sign up for a free trial today and see how our intuitive platform can revolutionize your data analysis process.
+                        </p>
+                        <a href="index.html" class="inline-block lg:text-[15px] xl:text-md mt-[5px] md:mt-[10px] lg:mt-[20px] xl:mt-[30px] py-[12px] px-[17px] bg-purple-600 text-white rounded-md transition-all font-medium hover:bg-purple-500">
+                            <span class="inline-block relative ltr:pl-[25px] rtl:pr-[25px] ltr:md:pl-[29px] rtl:md:pr-[29px]">
+                                <i class="material-symbols-outlined absolute ltr:left-0 rtl:right-0 top-1/2 -translate-y-1/2 !text-[20px] md:!text-xl">
+                                    person
+                                </i>
+                                Get started - It is free
+                            </span>
+                        </a>
+                    </div>
+                    <div class="absolute ltr:left-[10px] rtl:right-[10px] -top-[200px] -z-[1] blur-[150px]">
+                        <img src="assets/images/front-pages/shape1.png" alt="shape1">
+                    </div>
+                    <div class="absolute ltr:right-[25px] rtl:left-[25px] top-[150px] -z-[1] blur-[125px] hidden md:block">
+                        <img src="assets/images/front-pages/shape2.png" alt="shape1">
+                    </div>
+                </div>
+            </div>
+            <!-- End CTA -->
+            
+            <!-- Footer -->
+            <div class="pt-[60px] md:pt-[80px] lg:pt-[100px] xl:pt-[150px] border-t border-gray-100 dark:border-[#172036]">
+                <div class="container 2xl:max-w-[1320px] mx-auto px-[12px]">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[25px]">
+                        <div class="ltr:xl:-mr-[35px] rtl:xl:-ml-[35px]">
+                            <a href="fp-index.html" class="inline-block max-w-[132px] mb-[20px] md:mb-[23px]">
+                                <img src="assets/images/logo-big.svg" alt="logo" class="inline-block dark:hidden">
+                                <img src="assets/images/white-logo-big.svg" alt="logo" class="hidden dark:inline-block">
+                            </a>
+                            <p class="!leading-[1.6]">
+                                With customizable dashboards tailored to your needs, collaborate effortlessly with your team and stay ahead with real-time updates.
+                            </p>
+                            <div class="mt-[20px] md:mt-[35px]">
+                                <a href="#" target="_blank" class="inline-block leading-none text-[20px] text-primary-600 transition-all hover:text-primary-500 ltr:mr-[5px] rtl:ml-[5px] ltr:last:mr-0 rtl:last:ml-0">
+                                    <i class="ri-facebook-fill"></i>
+                                </a>
+                                <a href="#" target="_blank" class="inline-block leading-none text-[20px] text-primary-600 transition-all hover:text-primary-500 ltr:mr-[5px] rtl:ml-[5px] ltr:last:mr-0 rtl:last:ml-0">
+                                    <i class="ri-twitter-x-fill"></i>
+                                </a>
+                                <a href="#" target="_blank" class="inline-block leading-none text-[20px] text-primary-600 transition-all hover:text-primary-500 ltr:mr-[5px] rtl:ml-[5px] ltr:last:mr-0 rtl:last:ml-0">
+                                    <i class="ri-linkedin-fill"></i>
+                                </a>
+                                <a href="#" target="_blank" class="inline-block leading-none text-[20px] text-primary-600 transition-all hover:text-primary-500 ltr:mr-[5px] rtl:ml-[5px] ltr:last:mr-0 rtl:last:ml-0">
+                                    <i class="ri-dribbble-fill"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ltr:xl:pl-[142px] rtl:xl:pr-[142px]">
+                            <h3 class="!leading-[1.2] !text-md md:!text-lg !mb-[18px] !font-semibold">
+                                Our Products
+                            </h3>
+                            <ul>
+                                <li class="mb-[10px] last:mb-0">
+                                    <a href="index.html" class="lg:text-md inline-block text-gray-500 dark:text-gray-400 transition-all hover:text-primary-600">
+                                        Trezo Dashboard
+                                    </a>
+                                </li>
+                                <li class="mb-[10px] last:mb-0">
+                                    <a href="javascript:void(0);" class="lg:text-md inline-block text-gray-500 dark:text-gray-400 transition-all hover:text-primary-600">
+                                        Tagus Admin
+                                    </a>
+                                </li>
+                                <li class="mb-[10px] last:mb-0">
+                                    <a href="javascript:void(0);" class="lg:text-md inline-block text-gray-500 dark:text-gray-400 transition-all hover:text-primary-600">
+                                        eCademy LMS
+                                    </a>
+                                </li>
+                                <li class="mb-[10px] last:mb-0">
+                                    <a href="javascript:void(0);" class="lg:text-md inline-block text-gray-500 dark:text-gray-400 transition-all hover:text-primary-600">
+                                        Admash Template
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="ltr:xl:pl-[130px] rtl:xl:pr-[130px]">
+                            <h3 class="!leading-[1.2] !text-md md:!text-lg !mb-[18px] !font-semibold">
+                                Quick Links
+                            </h3>
+                            <ul>
+                                <li class="mb-[10px] last:mb-0">
+                                    <a href="fp-index.html" class="lg:text-md inline-block text-gray-500 dark:text-gray-400 transition-all hover:text-primary-600">
+                                        Home
+                                    </a>
+                                </li>
+                                <li class="mb-[10px] last:mb-0">
+                                    <a href="fp-features.html" class="lg:text-md inline-block text-gray-500 dark:text-gray-400 transition-all hover:text-primary-600">
+                                        Features
+                                    </a>
+                                </li>
+                                <li class="mb-[10px] last:mb-0">
+                                    <a href="fp-team.html" class="lg:text-md inline-block text-gray-500 dark:text-gray-400 transition-all hover:text-primary-600">
+                                        Our Team
+                                    </a>
+                                </li>
+                                <li class="mb-[10px] last:mb-0">
+                                    <a href="fp-contact.html" class="lg:text-md inline-block text-gray-500 dark:text-gray-400 transition-all hover:text-primary-600">
+                                        Contact
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="ltr:xl:pl-[80px] rtl:xl:pr-[80px]">
+                            <h3 class="!leading-[1.2] !text-md md:!text-lg !mb-[18px] !font-semibold">
+                                Privacy Policy
+                            </h3>
+                            <ul>
+                                <li class="mb-[10px] last:mb-0">
+                                    <a href="terms-conditions.html" class="lg:text-md inline-block text-gray-500 dark:text-gray-400 transition-all hover:text-primary-600">
+                                        Terms & Conditions
+                                    </a>
+                                </li>
+                                <li class="mb-[10px] last:mb-0">
+                                    <a href="javascript:void(0);" class="lg:text-md inline-block text-gray-500 dark:text-gray-400 transition-all hover:text-primary-600">
+                                        Cookie Policy
+                                    </a>
+                                </li>
+                                <li class="mb-[10px] last:mb-0">
+                                    <a href="javascript:void(0);" class="lg:text-md inline-block text-gray-500 dark:text-gray-400 transition-all hover:text-primary-600">
+                                        Notice at Collection
+                                    </a>
+                                </li>
+                                <li class="mb-[10px] last:mb-0">
+                                    <a href="privacy-policy.html" class="lg:text-md inline-block text-gray-500 dark:text-gray-400 transition-all hover:text-primary-600">
+                                        Privacy Policy
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="py-[15px] md:py-[20px] mt-[60px] md:mt-[80px] lg:mt-[100px] bg-white dark:bg-[#0c1427] text-center">
+                    <div class="container 2xl:max-w-[1320px] mx-auto px-[12px]">
+                        <p class="!leading-[1.6]">
+                            © <span class="text-purple-500">Trezo</span> is Proudly Owned by <a href="https://envytheme.com/" target="_blank" class="text-primary-500 transition-all hover:underline">EnvyTheme</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- End Footer -->
+
+        </div>
+        <!-- End Home -->
+        
+        <!-- Links Of JS File -->
+        <script src="assets/js/apexcharts.min.js"></script>
+        <script src="assets/js/fslightbox.js"></script>
+        <script src="assets/js/simplebar.min.js"></script>
+        <script src="assets/js/prism.js"></script>
+        <script src="assets/js/clipboard.min.js"></script>
+        <script src="assets/js/swiper-bundle.min.js"></script>
+        <script src="assets/js/fullcalendar.min.js"></script>
+        <script src="assets/js/jsvectormap.min.js"></script>
+        <script src="assets/js/world-merc.js"></script>
+        <script src="assets/js/quill.min.js"></script>
+        <script src="assets/js/custom.js"></script>
+    </body>
+</html>

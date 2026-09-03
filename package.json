@@ -4,9 +4,12 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "admin:css": "tailwindcss -i ./resources/css/admin/style.css -o ./public/admin/assets/css/style.css",
+        "admin:css:watch": "tailwindcss -i ./resources/css/admin/style.css -o ./public/admin/assets/css/style.css --watch"
     },
     "devDependencies": {
+        "@tailwindcss/cli": "^4.3.3",
         "@tailwindcss/vite": "^4.0.0",
         "concurrently": "^10.0.3",
         "laravel-vite-plugin": "^3.1",

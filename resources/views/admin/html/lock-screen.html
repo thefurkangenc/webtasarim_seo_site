@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html dir="ltr">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- Links Of CSS File -->
+        <link rel="stylesheet" href="assets/css/remixicon.css">
+        <link rel="stylesheet" href="assets/css/apexcharts.css">
+        <link rel="stylesheet" href="assets/css/simplebar.css">
+        <link rel="stylesheet" href="assets/css/prism.css">
+        <link rel="stylesheet" href="assets/css/jsvectormap.min.css">
+        <link rel="stylesheet" href="assets/css/swiper-bundle.min.css">
+        <link rel="stylesheet" href="assets/css/quill.snow.css">
+        <link rel="stylesheet" href="assets/css/style.css">
+
+        <!-- Favicon -->
+		<link rel="icon" type="image/png" href="assets/images/favicon.ico">
+
+        <!-- Title -->
+        <title>Trezo - Tailwind CSS Admin Dashboard Template</title>
+
+        <!-- Font Family -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
+        <!-- Material Icons -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    </head>
+    <body>
+
+        <!-- Light/Dark Mode Button -->
+        <button type="button" class="light-dark-toggle leading-none inline-block transition-all text-[#fe7a36] absolute top-[20px] md:top-[25px] ltr:right-[20px] rtl:left-[20px] ltr:md:right-[25px] rtl:md:left-[25px]" id="light-dark-toggle">
+            <i class="material-symbols-outlined !text-[20px] md:!text-[22px]">
+                light_mode
+            </i>
+        </button>
+        <!-- End Light/Dark Mode Button -->
+
+        <!-- Lock Screen -->
+        <div class="bg-white dark:bg-[#0a0e19] py-[60px] md:py-[80px] lg:py-[135px]">
+            <div class="mx-auto px-[12.5px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1255px]">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-[25px] items-center">
+                    <div class="xl:ltr:-mr-[25px] xl:rtl:-ml-[25px] 2xl:ltr:-mr-[45px] 2xl:rtl:-ml-[45px] rounded-[25px] order-2 lg:order-1">
+                        <img src="assets/images/lock-screen.jpg" alt="lock-screen-image" class="rounded-[25px]">
+                    </div>
+                    <div class="xl:ltr:pl-[90px] xl:rtl:pr-[90px] 2xl:ltr:pl-[120px] 2xl:rtl:pr-[120px] order-1 lg:order-2">
+                        <img src="assets/images/logo-big.svg" alt="logo" class="inline-block dark:hidden">
+                        <img src="assets/images/white-logo-big.svg" alt="logo" class="hidden dark:inline-block">
+                        <div class="my-[17px] md:my-[25px]">
+                            <h1 class="!font-semibold !text-[22px] md:!text-xl lg:!text-2xl !mb-[5px] md:!mb-[10px]">
+                                Welcome back to Trezo!
+                            </h1>
+                            <p class="font-medium !leading-[1.5] lg:text-md text-[#445164] dark:text-gray-400">
+                                Enter your password to access the admin.
+                            </p>
+                        </div>
+                        <div class="flex items-center mb-[20px]">
+                            <img src="assets/images/admin.png" alt="admin-image" class="rounded-full w-[50px] border-[2px] ltr:mr-[13px] rtl:ml-[13px] border-primary-200">
+                            <span class="font-semibold text-black dark:text-white block">
+                                Olivia John
+                            </span>
+                        </div>
+                        <div class="mb-[15px] relative" id="passwordHideShow">
+                            <label class="mb-[10px] md:mb-[12px] text-black dark:text-white font-medium block">
+                                Password
+                            </label>
+                            <input type="password" class="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500" id="password" placeholder="Type password">
+                            <button class="absolute text-lg ltr:right-[20px] rtl:left-[20px] bottom-[12px] transition-all hover:text-primary-500" id="toggleButton" type="button">
+                                <i class="ri-eye-off-line"></i>
+                            </button>
+                        </div>
+                        <button type="submit" class="md:text-md block w-full text-center transition-all rounded-md font-medium mt-[20px] py-[12px] px-[25px] text-white bg-primary-500 hover:bg-primary-400">
+                            <span class="flex items-center justify-center gap-[5px]">
+                                <i class="material-symbols-outlined">
+                                    autorenew
+                                </i>
+                                Sign In
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Lock Screen -->
+        
+        <!-- Links Of JS File -->
+        <script src="assets/js/apexcharts.min.js"></script>
+        <script src="assets/js/fslightbox.js"></script>
+        <script src="assets/js/simplebar.min.js"></script>
+        <script src="assets/js/prism.js"></script>
+        <script src="assets/js/clipboard.min.js"></script>
+        <script src="assets/js/swiper-bundle.min.js"></script>
+        <script src="assets/js/fullcalendar.min.js"></script>
+        <script src="assets/js/jsvectormap.min.js"></script>
+        <script src="assets/js/world-merc.js"></script>
+        <script src="assets/js/quill.min.js"></script>
+        <script src="assets/js/custom.js"></script>
+    </body>
+</html>

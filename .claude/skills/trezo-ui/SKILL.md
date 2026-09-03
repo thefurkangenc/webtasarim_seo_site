@@ -1,0 +1,300 @@
+---
+name: trezo-ui
+description: Use when writing any admin Blade view or markup under resources/views/admin/ - page shell, cards, tables, forms, inputs, buttons, badges, modals, breadcrumb, pagination, sidebar. Maps each UI component to its reference file in the Trezo template and gives the exact class strings, so markup is copied from the template instead of invented.
+---
+
+# Trezo Admin UI
+
+Admin arayüzü **Trezo** Tailwind CSS v4 template'i üzerine kuruludur.
+Template kaynağı: `resources/views/admin/html/` — 219 sayfa, her biri 2000-3000 satır.
+
+## Temel kural
+
+**Class uydurma.** Bir bileşen yazmadan önce template'teki karşılığını bul ve
+markup'ı oradan al. Template'te olmayan bir görsel ihtiyaç doğduğunda mevcut
+kalıpları birleştir; yepyeni bir tasarım dili üretme.
+
+Şüphelendiğin bir class'ı doğrula:
+
+```sh
+grep -c 'first\\:rounded-tl-md' public/admin/assets/css/style.css   # derlenmiş mi
+grep -rl 'text-danger-500' resources/views/admin/html/               # template kullanıyor mu
+```
+
+Örnek: `text-danger-500` derlenmiştir ve 204 template sayfasında geçer;
+`!border-danger-500` ise **derlenmemiştir** — Tailwind build kurulmadan
+yazarsan sessizce hiçbir şey yapmaz.
+
+Doğru referans dosyayı bulmak için aşağıdaki haritayı kullan. Dosyalar çok
+büyük olduğundan **`trezo-ui-extractor` agent'ına** sor — ana bağlamı şişirme.
+
+## Bileşen -> referans dosya haritası
+
+| İhtiyaç | Dosya |
+|---|---|
+| Sayfa iskeleti, breadcrumb | `tables.html`, `pagination.html` (ilk 30 satır `main-content`'ten sonra) |
+| Veri tablosu, sıralanabilir başlık | `tables.html` |
+| Sayfalama | `pagination.html` |
+| Form alanları (input/select/textarea) | `create-product.html`, `create-project.html`, `add-user.html` |
+| Gelişmiş input, checkbox, radio, switch | `input-select.html` |
+| Buton varyantları | `buttons.html` |
+| Badge / durum etiketi | `badges.html` |
+| Uyarı kutuları | `alerts.html` |
+| Modal | `modal.html` |
+| Sekme | `tabs.html` |
+| Dropdown | `dropdowns.html` |
+| Bildirim | `notifications.html` |
+| Zengin metin editörü (Quill) | `rich-text-editor.html` |
+| Dosya yükleme alanı | `create-product.html` |
+| Giriş ekranı | `sign-in.html` |
+| Boş / hata durumu | `error.html` |
+| İkon listesi | `remixicon.html` |
+
+## Sayfa iskeleti
+
+```blade
+@extends('admin.layout.app')
+@section('admin.title', 'Blog Yazıları')
+
+@section('content')
+    {{-- Breadcrumb --}}
+    <div class="mb-[25px] md:flex items-center justify-between">
+        <h5 class="!mb-0">Blog Yazıları</h5>
+        <ol class="breadcrumb mt-[12px] md:mt-0">
+            <li class="breadcrumb-item inline-block relative text-sm mx-[11px] ltr:first:ml-0 rtl:first:mr-0 ltr:last:mr-0 rtl:last:ml-0">
+                <a href="{{ route('admin.dashboard') }}" class="inline-block relative ltr:pl-[22px] rtl:pr-[22px] transition-all hover:text-primary-500">
+                    <i class="material-symbols-outlined absolute ltr:left-0 rtl:right-0 !text-lg -mt-px text-primary-500 top-1/2 -translate-y-1/2">home</i>
+                    Dashboard
+                </a>
+            </li>
+            <li class="breadcrumb-item inline-block relative text-sm mx-[11px] ltr:first:ml-0 rtl:first:mr-0 ltr:last:mr-0 rtl:last:ml-0">
+                Blog Yazıları
+            </li>
+        </ol>
+    </div>
+
+    {{-- İçerik kartı --}}
+    <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
+        <div class="trezo-card-header mb-[20px] md:mb-[25px] sm:flex sm:items-center sm:justify-between">
+            <div class="trezo-card-title">
+                <h5 class="!mb-0">Liste</h5>
+            </div>
+            <div class="trezo-card-subtitle mt-[15px] sm:mt-0">
+                {{-- arama, filtre, "Yeni Ekle" butonu --}}
+            </div>
+        </div>
+        <div class="trezo-card-content">
+            {{-- tablo --}}
+        </div>
+    </div>
+@endsection
+
+@push('admin.scripts')
+    <script type="module" src="{{ asset('admin/assets/js/pages/blog/index.js') }}"></script>
+@endpush
+```
+
+Layout `resources/views/admin/layout/app.blade.php`; stack'ler `admin.css` ve `admin.scripts`.
+
+## Kart yapısı
+
+Her içerik bloğu `trezo-card` içine girer:
+
+```
+trezo-card            > kartın kendisi
+  trezo-card-header   > başlık satırı
+    trezo-card-title  > sol taraf (h5)
+    trezo-card-subtitle > sağ taraf (aksiyonlar)
+  trezo-card-content  > gövde
+  trezo-card-footer   > alt aksiyon çubuğu (opsiyonel)
+```
+
+Kart kabuğu class'ı sabittir:
+`trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md`
+
+## Tablo
+
+```blade
+<div class="table-responsive overflow-x-auto">
+    <table class="w-full">
+        <thead class="text-black dark:text-white">
+            <tr>
+                <th class="font-medium ltr:text-left rtl:text-right px-[20px] py-[11px] bg-gray-50 dark:bg-[#15203c] whitespace-nowrap first:rounded-tl-md last:rounded-tr-md cursor-pointer relative" data-column="title">
+                    Başlık
+                    <i class="ri-expand-up-down-fill text-gray-500 dark:text-gray-400"></i>
+                </th>
+            </tr>
+        </thead>
+        <tbody class="text-black dark:text-white" id="blog-table-body"></tbody>
+    </table>
+</div>
+```
+
+- Sıralanabilir başlıklara `data-column="<kolon>"` konur; `core/table.js` bunu dinler.
+- `<tbody>` boş bırakılır, satırlar JS ile basılır.
+- İlk `<th>`'ye `first:rounded-tl-md`, son `<th>`'ye `last:rounded-tr-md`.
+
+## Form alanları
+
+Tek alanlık kalıp:
+
+```blade
+<div class="mb-[20px] md:mb-[25px] last:mb-0">
+    <label class="mb-[10px] text-black dark:text-white font-medium block">
+        Başlık
+    </label>
+    <input type="text" name="title"
+        class="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+        placeholder="Örn. Yeni web sitemiz yayında">
+    <span class="text-danger-500 text-xs mt-[6px] block" data-error="title"></span>
+</div>
+```
+
+Uzunluk farkları:
+
+| Eleman | Farklı olan |
+|---|---|
+| `<textarea>` | `h-[140px]` ve `px-[17px]` yerine `p-[17px]` |
+| `<select>` | `px-[13px]` ve `cursor-pointer`, `placeholder:*` yok |
+
+`data-error="<alan_adı>"` içeren `<span>` her alanın altına konur —
+`core/form.js` 422 yanıtındaki mesajı buraya basar.
+
+### Blade component'leri
+
+Yukarıdaki class dizileri uzun ve her formda tekrar eder. Bunun yerine
+`resources/views/admin/components/` altındaki anonim component'leri kullan:
+
+```blade
+<x-admin::form.input  name="title" label="Başlık" placeholder="Örn. ..." :value="$blog?->title" />
+<x-admin::form.select name="category_id" label="Kategori" :options="$categories" :value="$blog?->category_id" />
+<x-admin::form.textarea name="excerpt" label="Özet" />
+<x-admin::form.image  name="image" label="Kapak Görseli" :value="$blog?->image" />
+<x-admin::form.switch name="status" label="Yayında" :checked="$blog?->status ?? true" />
+```
+
+Component'ler `AppServiceProvider` içinde `Blade::anonymousComponentPath()` ile
+`admin` namespace'ine bağlanır. Class dizileri **sadece** component dosyalarında
+bulunur; sayfa Blade'lerinde ham input yazma.
+
+Component'te olmayan bir alan tipi gerektiğinde önce component'i ekle.
+
+## Butonlar
+
+```blade
+{{-- birincil --}}
+<button type="button" class="inline-block py-[10px] px-[30px] bg-primary-500 text-white transition-all hover:bg-primary-400 rounded-md border border-primary-500 hover:border-primary-400">
+    Kaydet
+</button>
+
+{{-- tehlike --}}
+<button type="button" class="inline-block py-[10px] px-[30px] bg-danger-500 text-white transition-all hover:bg-danger-400 rounded-md border border-danger-500 hover:border-danger-400">
+    Sil
+</button>
+```
+
+Renk ailesini değiştirmek yeterli: `primary`, `secondary`, `success`, `danger`,
+`warning`, `info`, `purple`, `orange`.
+
+## Badge / durum etiketi
+
+```blade
+<span class="text-[10px] font-medium py-[1px] px-[8px] text-success-600 bg-success-100 dark:bg-[#ffffff14] inline-block rounded-sm">
+    Yayında
+</span>
+```
+
+Pasif için `text-danger-500 bg-danger-100`, taslak için `text-orange-500 bg-orange-100`.
+
+## Modal
+
+Template'in modal mekanizması: `.add-new-popup` elemanına `.active` class'ı
+eklenince açılır — geçiş `style.scss` içinde tanımlıdır (`opacity` + `visibility`
++ `.popup-dialog` translate). Genişlik `.popup-dialog` üzerindeki `max-w-[...]`
+ile belirlenir.
+
+```blade
+<div class="add-new-popup z-[999] fixed transition-all inset-0 overflow-x-hidden overflow-y-auto lg:py-[20px]" id="ajax-modal">
+    <div class="popup-dialog flex transition-all max-w-[550px] min-h-full items-center mx-auto">
+        <div class="trezo-card w-full bg-white dark:bg-[#0c1427] p-[20px] md:p-[25px] rounded-md">
+            <div class="trezo-card-header bg-gray-50 dark:bg-[#15203c] mb-[20px] md:mb-[25px] flex items-center justify-between -mx-[20px] md:-mx-[25px] -mt-[20px] md:-mt-[25px] p-[20px] md:p-[25px] rounded-t-md">
+                <div class="trezo-card-title">
+                    <h5 class="!mb-0" id="ajax-modal-title">Başlık</h5>
+                </div>
+                <div class="trezo-card-subtitle">
+                    <button type="button" class="text-[23px] transition-all leading-none text-black dark:text-white hover:text-primary-500" data-modal-close>
+                        <i class="ri-close-fill"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="trezo-card-content pb-[20px] md:pb-[25px]" id="ajax-modal-body"></div>
+        </div>
+    </div>
+</div>
+```
+
+`ajax-modal.blade.php` iskeleti proje sahibi tarafından kurulmaktadır.
+Dosya doluysa **onun** yapısına uy; `core/modal.js`'i ona göre yaz.
+Modal gövdesi (`modals/form.blade.php`) sadece `<form>` ve alanlarını içerir,
+kart kabuğunu tekrar etmez.
+
+## İkonlar
+
+İki set birlikte kullanılır:
+
+- **Material Symbols** — `<i class="material-symbols-outlined">edit</i>` (menü, aksiyonlar)
+- **Remixicon** — `<i class="ri-close-fill"></i>` (kapatma, sıralama okları)
+
+Template'te bir bileşen hangi seti kullanıyorsa aynısını kullan.
+Remixicon isimleri için `remixicon.html`.
+
+## Dark mode
+
+Her renk verilen elemana dark karşılığı yazılır. Yerleşik eşlemeler:
+
+| Açık | Koyu |
+|---|---|
+| `bg-white` | `dark:bg-[#0c1427]` |
+| `bg-gray-50` | `dark:bg-[#15203c]` |
+| `border-gray-100` / `border-gray-200` | `dark:border-[#172036]` |
+| `text-black` | `dark:text-white` |
+| `hover:bg-gray-50` | `dark:hover:bg-[#15203c]` |
+
+Dark varyantı olmayan bir renkli eleman bırakma.
+
+## Sidebar
+
+Sidebar `config/admin-menu.php`'den üretilir; `sidebar.blade.php` elle
+düzenlenmez. Yeni modül eklerken config'e giriş yaz:
+
+```php
+[
+    'title' => 'Blog',
+    'icon'  => 'article',              // material symbols adı
+    'permission' => 'blog.view',
+    'children' => [
+        ['title' => 'Yazılar',     'route' => 'admin.blog.index',          'permission' => 'blog.view'],
+        ['title' => 'Kategoriler', 'route' => 'admin.blog-category.index', 'permission' => 'blog-category.view'],
+    ],
+],
+```
+
+Tek sayfalık modülde `children` yerine doğrudan `route` verilir.
+Aktiflik `request()->routeIs()` ile hesaplanır.
+
+## RTL
+
+Template baştan sona `ltr:` / `rtl:` çiftleriyle yazılmıştır. Proje tek yönlü
+(LTR) çalışsa da kopyalanan markup'taki `rtl:` class'larını **silme** —
+template ile tutarlılık bozulur ve ileride yön desteği gerekirse iş çıkar.
+
+## Kontrol listesi
+
+- [ ] Markup template'ten alındı, class uydurulmadı
+- [ ] Renkli her elemanın `dark:` karşılığı var
+- [ ] Kart yapısı `trezo-card` > `header`/`content`/`footer` hiyerarşisine uyuyor
+- [ ] Form alanları component ile yazıldı, ham class dizisi kopyalanmadı
+- [ ] Her input'un altında `data-error="<alan>"` span'ı var
+- [ ] Sayfa JS'i `@push('admin.scripts')` ile `type="module"` olarak eklendi
+- [ ] Sidebar girişi `config/admin-menu.php`'ye eklendi
+- [ ] Arayüz metinleri Türkçe
