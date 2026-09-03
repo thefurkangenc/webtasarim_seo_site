@@ -33,7 +33,7 @@
                     <i class="material-symbols-outlined !text-[19px] absolute text-gray-500 ltr:right-[12px] rtl:left-[12px] top-1/2 -translate-y-1/2">search</i>
                 </div>
 
-                <select id="provider-driver"
+                <select id="provider-driver" data-choices
                     class="h-[40px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[13px] outline-0 cursor-pointer transition-all focus:border-primary-500">
                     <option value="">Tüm servisler</option>
                     @foreach ($drivers as $key => $driver)

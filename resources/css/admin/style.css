@@ -1618,3 +1618,217 @@ html[dir="rtl"] {
         @apply left-0 right-0 bg-[#dee1e7];
     }
 }
+/** ==========================================================================
+ * Choices.js — native select yerine geçen tema uyumlu dropdown
+ * ========================================================================== */
+.choices {
+    @apply m-0 text-sm;
+
+    &:focus {
+        @apply outline-0;
+    }
+}
+
+/* Tek/çoklu seçim kutusunun görünümü — form.select bileşenindeki h-[42px]
+   input ile aynı boy ve renk paleti. */
+.choices__inner {
+    @apply min-h-[42px] !py-0 !pl-[12px] !pr-[30px] rounded-md text-black bg-white border border-gray-200 transition-all
+        dark:text-white dark:bg-[#0c1427] dark:border-[#172036];
+}
+
+.choices.is-focused .choices__inner,
+.choices.is-open .choices__inner {
+    @apply border-primary-500;
+}
+
+.choices[data-type*='select-one'] .choices__inner {
+    @apply flex items-center;
+}
+
+.choices[data-type*='select-one'] .choices__input {
+    @apply m-0 mt-[8px] mb-[4px] text-sm text-black bg-gray-50 border-0 border-b border-gray-100
+        dark:text-white dark:bg-[#15203c] dark:border-[#172036];
+}
+
+/* Tekli seçimde seçili öğe metni; boyu inner ile aynı hizada dursun diye
+   satır yüksekliği sabitlenir. */
+.choices__list--single {
+    @apply p-0 leading-[40px];
+}
+
+.choices__list--single .choices__item {
+    @apply text-black dark:text-white;
+}
+
+.choices[data-type*='select-one'] .choices__item[data-placeholder] {
+    @apply text-gray-500 dark:text-gray-400;
+}
+
+/* Ok ikonu — panelin diğer select'leriyle aynı stil. */
+.choices[data-type*='select-one']::after {
+    @apply border-t-gray-500 dark:border-t-gray-400 right-[14px];
+}
+
+.choices[data-type*='select-one'].is-open::after {
+    @apply border-t-0 border-b-gray-500 dark:border-b-gray-400;
+}
+
+.choices[data-type*='select-one'] .choices__button {
+    @apply opacity-60 hover:opacity-100;
+}
+
+/* Çoklu seçim etiketleri (chip) — panelin primary tonuna uyar. */
+.choices__list--multiple .choices__item {
+    @apply text-xs font-medium rounded-md border-0 bg-primary-500 text-white my-[2px] mr-[4px] py-[3px] px-[8px];
+}
+
+.choices__list--multiple .choices__item.is-highlighted {
+    @apply bg-primary-400;
+}
+
+/* Açılır liste — trezo-card'daki dropdown'larla aynı görünüm dili. */
+.choices__list--dropdown,
+.choices__list[aria-expanded] {
+    @apply mt-[4px] rounded-md border border-gray-100 bg-white shadow-3xl z-[20]
+        dark:bg-[#172036] dark:border-[#172036] dark:shadow-none;
+}
+
+.choices__list--dropdown .choices__item,
+.choices__list[aria-expanded] .choices__item {
+    @apply text-sm text-black py-[8px] px-[12px] dark:text-white;
+}
+
+.choices__list--dropdown .choices__item--selectable.is-highlighted,
+.choices__list[aria-expanded] .choices__item--selectable.is-highlighted {
+    @apply bg-gray-50 dark:bg-[#15203c];
+}
+
+.choices__list--dropdown .choices__item--selectable.is-selected,
+.choices__list[aria-expanded] .choices__item--selectable.is-selected {
+    @apply text-primary-500 font-medium;
+}
+
+.choices__list--dropdown .choices__list,
+.choices__list[aria-expanded] .choices__list {
+    @apply max-h-[220px];
+}
+
+/* Açılır listenin üstündeki arama kutusu. */
+.choices__list--dropdown .choices__input,
+.choices__list[aria-expanded] .choices__input {
+    @apply text-sm text-black bg-white border-0 border-b border-gray-100 m-0 py-[10px] px-[12px]
+        dark:text-white dark:bg-[#172036] dark:border-[#172036] dark:placeholder:text-gray-400;
+}
+
+.choices__heading {
+    @apply text-gray-500 dark:text-gray-400 border-gray-100 dark:border-[#172036];
+}
+
+.choices.is-disabled .choices__inner {
+    @apply opacity-60 cursor-not-allowed;
+}
+
+/** ==========================================================================
+ * Flatpickr — tarih/saat seçici, panel temasına ve karanlık moda uyumlu
+ * ========================================================================== */
+.flatpickr-calendar {
+    @apply font-body rounded-md border border-gray-100 bg-white shadow-3xl
+        dark:bg-[#172036] dark:border-[#172036] dark:shadow-none;
+}
+
+.flatpickr-calendar.arrowTop:before,
+.flatpickr-calendar.arrowTop:after {
+    display: none;
+}
+
+.flatpickr-months {
+    @apply p-[10px] pb-0;
+}
+
+.flatpickr-current-month {
+    @apply text-black dark:text-white;
+}
+
+.flatpickr-current-month input.cur-year {
+    @apply text-black dark:text-white;
+}
+
+.flatpickr-monthDropdown-months {
+    @apply text-black dark:text-white dark:bg-[#172036];
+}
+
+.flatpickr-prev-month,
+.flatpickr-next-month {
+    @apply text-gray-500 dark:fill-gray-400;
+
+    svg {
+        @apply fill-gray-500 dark:fill-gray-400;
+    }
+
+    &:hover svg {
+        @apply fill-primary-500;
+    }
+}
+
+.flatpickr-weekdays {
+    @apply mt-[6px];
+}
+
+span.flatpickr-weekday {
+    @apply text-gray-500 dark:text-gray-400 bg-transparent font-medium;
+}
+
+.flatpickr-day {
+    @apply text-black rounded-md dark:text-white;
+
+    &.today {
+        @apply border-primary-500;
+    }
+
+    &:hover,
+    &:focus {
+        @apply bg-gray-50 border-gray-50 dark:bg-[#15203c] dark:border-[#15203c];
+    }
+
+    &.selected,
+    &.selected:hover {
+        @apply bg-primary-500 border-primary-500 text-white;
+    }
+
+    &.inRange {
+        @apply bg-primary-100 border-primary-100 shadow-none dark:bg-[#15203c] dark:border-[#15203c];
+    }
+
+    &.flatpickr-disabled,
+    &.prevMonthDay,
+    &.nextMonthDay {
+        @apply text-gray-300 dark:text-gray-600;
+    }
+}
+
+.flatpickr-time {
+    @apply border-gray-100 dark:border-[#172036];
+
+    input,
+    .flatpickr-time-separator,
+    .flatpickr-am-pm {
+        @apply text-black dark:text-white dark:bg-[#172036];
+    }
+
+    .numInputWrapper span.arrowUp:after {
+        border-bottom-color: var(--color-gray-400, #9ca3af);
+    }
+
+    .numInputWrapper span.arrowDown:after {
+        border-top-color: var(--color-gray-400, #9ca3af);
+    }
+
+    &:hover {
+        @apply bg-transparent;
+    }
+}
+
+/* Görünen (altInput) alan — asıl input gizlenir, kullanıcı bunu görür. */
+input.flatpickr-alt-input {
+    @apply w-full;
+}

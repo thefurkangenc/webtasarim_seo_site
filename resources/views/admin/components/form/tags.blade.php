@@ -24,7 +24,7 @@
     @endif
 
     <div data-tag-input data-tag-name="{{ $field }}" data-tag-endpoint="{{ route('admin.tags.search') }}"
-        class="relative rounded-md border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[10px] min-h-[55px] flex flex-wrap items-center gap-[6px] cursor-text transition-all focus-within:border-primary-500">
+        class="relative rounded-md border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[8px] min-h-[42px] flex flex-wrap items-center gap-[6px] cursor-text transition-all focus-within:border-primary-500 text-sm">
 
         <div data-tag-chips class="contents">
             @foreach ($tags as $tag)

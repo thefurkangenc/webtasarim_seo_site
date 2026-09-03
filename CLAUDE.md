@@ -16,6 +16,8 @@ Mimari kararların gerekçesi: `docs/superpowers/specs/2026-09-03-admin-panel-de
 | Editör | TinyMCE 7 (GPL self-host, `js/vendor/tinymce/`) |
 | Yapay zeka | ChatGPT / DeepSeek / Ollama — panelden yönetilir, kuyrukta çalışır |
 | Kuyruk | `database` sürücüsü — `php artisan queue:work` çalışıyor olmalı |
+| Select | Choices.js — `<x-admin::form.select>` varsayılan, `plain` ile kapatılır |
+| Tarih | Flatpickr — `<x-admin::form.date>`, Türkçe/24 saat |
 | Ön yüz | Bootstrap 5 (ayrı dünya, admin ile karışmaz) |
 
 ## İki Ayrı Dünya

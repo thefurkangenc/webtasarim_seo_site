@@ -136,6 +136,10 @@ Kart kabuğu class'ı sabittir:
 
 ## Form alanları
 
+**Standart boy `h-[42px]`, `text-sm`, `px-[14px]`** — Trezo template'inin kendi
+`h-[55px]` boyutu bilinçli olarak küçültüldü (panel çok kalabalık görünüyordu).
+Yeni bir alan tipi eklerken bu boyutu kullan, `h-[55px]`'e dönme.
+
 Tek alanlık kalıp:
 
 ```blade
@@ -144,7 +148,7 @@ Tek alanlık kalıp:
         Başlık
     </label>
     <input type="text" name="title"
-        class="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+        class="h-[42px] rounded-md text-sm text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[14px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
         placeholder="Örn. Yeni web sitemiz yayında">
     <span class="text-danger-500 text-xs mt-[6px] block" data-error="title"></span>
 </div>
@@ -154,8 +158,8 @@ Uzunluk farkları:
 
 | Eleman | Farklı olan |
 |---|---|
-| `<textarea>` | `h-[140px]` ve `px-[17px]` yerine `p-[17px]` |
-| `<select>` | `px-[13px]` ve `cursor-pointer`, `placeholder:*` yok |
+| `<textarea>` | `h-[120px]` ve `px-[14px]` yerine `p-[12px]` |
+| `<select>` | `px-[12px]` ve `cursor-pointer`, `placeholder:*` yok, `data-choices` |
 
 `data-error="<alan_adı>"` içeren `<span>` her alanın altına konur —
 `core/form.js` 422 yanıtındaki mesajı buraya basar.
@@ -187,6 +191,48 @@ Component'ler `AppServiceProvider` içinde `Blade::anonymousComponentPath()` ile
 bulunur; sayfa Blade'lerinde ham input yazma.
 
 Component'te olmayan bir alan tipi gerektiğinde önce component'i ekle.
+
+### Select — Choices.js
+
+`<x-admin::form.select>` varsayılan olarak `data-choices` özniteliği taşır;
+`core/select.js` bunu Choices.js'e çevirir (arama, tema uyumlu açılır liste).
+Native `<select>` DOM'da kalır — `.value`, `change` olayı, FormData hiç
+değişmez. Native tarayıcı select'i istiyorsan `plain` ver:
+
+```blade
+<x-admin::form.select name="status" label="Durum" :options="..." plain />
+```
+
+Sayfa Blade'inde raw `<select>` kullanıyorsan (tablo üstü filtre gibi) aynı
+özniteliği elle ekle:
+
+```blade
+<select id="blog-status" data-choices class="...">
+```
+
+Boş `<option value="">Tüm durumlar</option>` gibi bir "hepsi" seçeneği normal
+bir seçenek olarak kalır — Choices'in özel `placeholder` mekanizması
+**kullanılmıyor**, çünkü bu seçenek gerçekten seçilebilir bir değer (tekrar
+seçilebilmesi gerekiyor).
+
+### Tarih — Flatpickr
+
+```blade
+<x-admin::form.date name="published_at" label="Yayın Tarihi" :value="$blog?->published_at" />
+{{-- yalnızca tarih, saat olmadan: --}}
+<x-admin::form.date name="event_date" label="Etkinlik Tarihi" :time="false" />
+```
+
+Türkçe, 24 saat, `altInput` ile kullanıcıya `d.m.Y H:i` gösterilir; forma giden
+gerçek değer `Y-m-d H:i` — Laravel'in `date` kuralı bunu doğrudan anlar,
+Request'te ekstra format dönüşümü gerekmez.
+
+### Modal içeriğinde otomatik kurulum
+
+`AjaxModal.open()` içerik geldikten sonra `admin:content-loaded` olayını
+yayar. `core/select.js`, `core/datepicker.js`, `core/seo-field.js`,
+`core/tag-input.js` bunu dinler — modal içindeki select/tarih/SEO/etiket
+alanları **sayfa JS'i hiçbir şey çağırmadan** kendiliğinden kurulur.
 
 ### Paylaşılan bileşenler
 

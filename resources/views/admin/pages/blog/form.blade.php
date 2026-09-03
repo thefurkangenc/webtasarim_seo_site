@@ -81,8 +81,8 @@
                             :value="$blog?->status ?? \App\Models\Blog\Blog::STATUS_DRAFT"
                             :placeholder="null" />
 
-                        <x-admin::form.input name="published_at" type="datetime-local" label="Yayın Tarihi"
-                            :value="$blog?->published_at?->format('Y-m-d\TH:i')" />
+                        <x-admin::form.date name="published_at" label="Yayın Tarihi"
+                            :value="$blog?->published_at" />
 
                         <x-admin::form.switch name="is_featured" label="Öne çıkar"
                             :checked="$blog?->is_featured ?? false" />

@@ -100,6 +100,10 @@ export class AjaxModal {
         try {
             this.body.innerHTML = await http.html(url);
             this.body.querySelector('input:not([type=hidden]), select, textarea')?.focus();
+
+            // core/select.js, core/datepicker.js, core/seo-field.js gibi
+            // modüller bunu dinleyip kendi alanlarını sayfa JS'i beklemeden kurar.
+            this.body.dispatchEvent(new CustomEvent('admin:content-loaded', { bubbles: true }));
         } catch (error) {
             this.close();
             toast.error(error instanceof HttpError ? error.message : 'İçerik yüklenemedi.');

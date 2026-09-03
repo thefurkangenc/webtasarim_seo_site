@@ -259,6 +259,8 @@ Bu dosya 40-60 satırda bitmelidir. Uzuyorsa ağır iş `core/`'a taşınmalıd�
 | `core/seo-field.js` | `initSeoFields(root)` — sayaçlar ve Google önizlemesi. Modal gövdesinde SEO varsa modal açıldıktan sonra çağrılmalı. |
 | `core/tag-input.js` | `initTagInputs(root)` — etiket alanı. Gizli `name="tags[]"` input'ları üretir, ayrı serileştirme gerekmez. |
 | `core/ai-generator.js` | `aiGenerator.open(key, { defaults })` → `Promise<object\|null>`. Üretimi kuyruğa atar, durumu sorar, JSON çıktıyı döndürür. |
+| `core/select.js` | `[data-choices]` select'lerini Choices.js'e çevirir — form component'i bunu otomatik ekler. |
+| `core/datepicker.js` | `[data-datepicker]` alanlarını Flatpickr'a çevirir (Türkçe, `altInput`). |
 
 ```js
 const output = await aiGenerator.open('blog.content', { defaults: { title } });

@@ -10,7 +10,16 @@
 <script src="{{ asset('admin/assets/js/quill.min.js') }}"></script>
 <script src="{{ asset('admin/assets/js/custom.js') }}"></script>
 
-{{-- Görsel alanı davranışı: olay delegasyonu ile çalışır, sayfa JS'i gerektirmez. --}}
+{{-- Flatpickr UMD dosyaları: ESM export'u yok, klasik <script> ile window.flatpickr
+     global'ini kurar. core/datepicker.js bu global'i kullanır. tr.js, flatpickr.js'ten
+     sonra yüklenmeli — window.flatpickr.l10ns içine ekleme yapıyor. --}}
+<script src="{{ asset('admin/assets/js/vendor/flatpickr/flatpickr.js') }}"></script>
+<script src="{{ asset('admin/assets/js/vendor/flatpickr/tr.js') }}"></script>
+
+{{-- Görsel alanı, select ve tarih alanı davranışı: olay delegasyonu ile çalışır,
+     sayfa JS'i gerektirmez. --}}
 <script type="module" src="{{ asset('admin/assets/js/core/media-field.js') }}"></script>
+<script type="module" src="{{ asset('admin/assets/js/core/select.js') }}"></script>
+<script type="module" src="{{ asset('admin/assets/js/core/datepicker.js') }}"></script>
 
 @stack('admin.scripts')
