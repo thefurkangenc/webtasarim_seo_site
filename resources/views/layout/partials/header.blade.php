@@ -5,8 +5,8 @@
             <div class="row align-items-center">
                 <div class="col-lg-2 col-md-6 col-6">
                     <div class="vl-logo">
-                        <a href="{{ route('anasayfa') }}" class="header1-logo-block"><img src="{{ asset('assets/img/logo/white-logo.png') }}"
-                                alt=""></a>
+                        <a href="{{ route('anasayfa') }}" class="header1-logo-block"><img
+                                src="{{ asset('assets/img/logo/white-logo.png') }}" alt=""></a>
                     </div>
                 </div>
                 <div class="col-lg-7 d-none d-lg-block text-end">
@@ -53,8 +53,8 @@
     <div class="vl-offcanvas-wrapper">
         <div class="vl-offcanvas-header d-flex justify-content-between align-items-center mb-90">
             <div class="vl-offcanvas-logo">
-                <a href="{{ route('anasayfa') }}" class="header1-logo-block"><img src="{{ asset('assets/img/logo/black-logo.png') }}"
-                        alt=""></a>
+                <a href="{{ route('anasayfa') }}" class="header1-logo-block"><img
+                        src="{{ asset('assets/img/logo/black-logo.png') }}" alt=""></a>
             </div>
             <div class="vl-offcanvas-close">
                 <button class="vl-offcanvas-close-toggle"><i class="fa-solid fa-xmark"></i></button>
