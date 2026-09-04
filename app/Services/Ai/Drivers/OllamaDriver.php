@@ -22,6 +22,11 @@ class OllamaDriver implements ChatDriver
             'model' => $provider->model,
             'messages' => $messages,
             'stream' => false,
+            // Qwen3 gibi "thinking" modelleri, kapatılmazsa token bütçesinin
+            // tamamını görünmeyen bir muhakeme adımına harcayıp asıl cevabı
+            // hiç üretmeyebilir (content boş kalır) ya da zaman aşımına kadar
+            // sürer. Bu panelde her zaman doğrudan cevap isteniyor.
+            'think' => false,
             'options' => [
                 'temperature' => $provider->temperature,
                 'num_predict' => $options['max_tokens'] ?? $provider->max_tokens,

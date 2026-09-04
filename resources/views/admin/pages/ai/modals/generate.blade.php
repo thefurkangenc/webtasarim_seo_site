@@ -86,7 +86,7 @@
                 </p>
             </div>
 
-            <button type="button" data-ai-close
+            <button type="button" data-ai-background
                 class="mt-[20px] inline-block py-[9px] px-[24px] text-black dark:text-white transition-all rounded-md border border-gray-200 dark:border-[#172036] hover:bg-gray-50 dark:hover:bg-[#15203c]">
                 Arka planda bırak
             </button>

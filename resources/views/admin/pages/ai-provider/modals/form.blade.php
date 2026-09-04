@@ -2,7 +2,12 @@
 @php
     // Bileşen özniteliği içinde dizi erişimi Blade'in öznitelik ayrıştırıcısını
     // bozuyor; ifadeler burada hazırlanıyor.
-    $driverOptions = collect($drivers)->map(fn ($driver) => $driver['label'])->all();
+    // Sürücü anahtarı ile ikon dosya adı bire bir eşleşmiyor (openai -> chatgpt.svg).
+    $driverIcons = ['openai' => 'chatgpt', 'deepseek' => 'deepseek', 'ollama' => 'ollama'];
+    $driverOptions = collect($drivers)->map(fn ($driver, $key) => [
+        'label' => $driver['label'],
+        'icon' => isset($driverIcons[$key]) ? asset("admin/assets/images/icons/ai/{$driverIcons[$key]}.svg") : null,
+    ])->all();
     $keyPlaceholder = $provider?->api_key
         ? 'Kayıtlı anahtar korunuyor — değiştirmek için yeni anahtar yazın'
         : 'sk-...';

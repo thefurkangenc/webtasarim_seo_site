@@ -12,7 +12,7 @@ class AiPromptService
     public function list(array $filters): LengthAwarePaginator
     {
         return AiPrompt::query()
-            ->with('provider:id,name')
+            ->with('provider:id,name,driver')
             ->when($filters['search'] ?? null, fn ($query, $term) => $query->where('name', 'like', "%{$term}%"))
             ->when($filters['key'] ?? null, fn ($query, $key) => $query->where('key', $key))
             ->orderBy($filters['sort'] ?? 'created_at', $filters['direction'] ?? 'desc')

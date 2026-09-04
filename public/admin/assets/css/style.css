@@ -70,6 +70,7 @@
     --drop-shadow-xl: 0 9px 7px rgb(0 0 0 / 0.1);
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
     --animate-spin: spin 1s linear infinite;
+    --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     --aspect-video: 16 / 9;
     --default-transition-duration: 150ms;
     --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -1403,6 +1404,9 @@
   .h-\[15px\] {
     height: 15px;
   }
+  .h-\[16px\] {
+    height: 16px;
+  }
   .h-\[17px\] {
     height: 17px;
   }
@@ -1847,6 +1851,9 @@
   .w-\[54px\] {
     width: 54px;
   }
+  .w-\[55\%\] {
+    width: 55%;
+  }
   .w-\[55px\] {
     width: 55px;
   }
@@ -2045,6 +2052,9 @@
   .max-w-\[275px\] {
     max-width: 275px;
   }
+  .max-w-\[280px\] {
+    max-width: 280px;
+  }
   .max-w-\[300px\] {
     max-width: 300px;
   }
@@ -2178,6 +2188,9 @@
   }
   .transform {
     transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
+  }
+  .animate-pulse {
+    animation: var(--animate-pulse);
   }
   .animate-spin {
     animation: var(--animate-spin);
@@ -3052,6 +3065,9 @@
   .px-\[5px\] {
     padding-inline: 5px;
   }
+  .px-\[6px\] {
+    padding-inline: 6px;
+  }
   .px-\[7px\] {
     padding-inline: 7px;
   }
@@ -3493,6 +3509,9 @@
   .text-left {
     text-align: left;
   }
+  .align-\[-3px\] {
+    vertical-align: -3px;
+  }
   .align-middle {
     vertical-align: middle;
   }
@@ -3587,14 +3606,17 @@
   .\!text-\[22px\] {
     font-size: 22px !important;
   }
+  .\!text-\[24px\] {
+    font-size: 24px !important;
+  }
   .\!text-\[26px\] {
     font-size: 26px !important;
   }
   .\!text-\[30px\] {
     font-size: 30px !important;
   }
-  .\!text-\[34px\] {
-    font-size: 34px !important;
+  .\!text-\[32px\] {
+    font-size: 32px !important;
   }
   .\!text-\[35px\] {
     font-size: 35px !important;
@@ -3607,9 +3629,6 @@
   }
   .\!text-\[45px\] {
     font-size: 45px !important;
-  }
-  .\!text-\[46px\] {
-    font-size: 46px !important;
   }
   .\!text-\[48px\] {
     font-size: 48px !important;
@@ -5233,6 +5252,9 @@
     .md\:grid-cols-4 {
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }
+    .md\:grid-cols-6 {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
     .md\:items-center {
       align-items: center;
     }
@@ -5848,6 +5870,9 @@
     .lg\:grid-cols-5 {
       grid-template-columns: repeat(5, minmax(0, 1fr));
     }
+    .lg\:grid-cols-8 {
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+    }
     .lg\:grid-cols-\[1fr_300px\] {
       grid-template-columns: 1fr 300px;
     }
@@ -6160,6 +6185,9 @@
     }
     .xl\:grid-cols-5 {
       grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+    .xl\:grid-cols-10 {
+      grid-template-columns: repeat(10, minmax(0, 1fr));
     }
     .xl\:gap-\[50px\] {
       gap: 50px;
@@ -11763,6 +11791,11 @@ tr.sortable-drag {
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
   }
 }
 @layer properties {

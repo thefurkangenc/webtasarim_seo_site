@@ -35,8 +35,15 @@
         @endif
 
         @foreach ($options as $optionValue => $optionLabel)
-            <option value="{{ $optionValue }}" @selected((string) $selected === (string) $optionValue)>
-                {{ $optionLabel }}
+            {{-- Seçenek ['label' => ..., 'icon' => '/path/icon.svg'] dizisi de olabilir —
+                 Choices.js'in soldaki ikonlu render'ı için (core/select.js `withIcons`). --}}
+            @php
+                $optionIcon = is_array($optionLabel) ? ($optionLabel['icon'] ?? null) : null;
+                $optionText = is_array($optionLabel) ? $optionLabel['label'] : $optionLabel;
+            @endphp
+            <option value="{{ $optionValue }}" @selected((string) $selected === (string) $optionValue)
+                @if ($optionIcon) data-custom-properties="{{ json_encode(['icon' => $optionIcon]) }}" @endif>
+                {{ $optionText }}
             </option>
         @endforeach
     </select>

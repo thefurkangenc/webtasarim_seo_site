@@ -5,6 +5,7 @@ namespace App\Services\Media;
 use App\Models\Media\MediaFolder;
 use DomainException;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as BaseCollection;
 
 class MediaFolderService
 {
@@ -25,14 +26,15 @@ class MediaFolderService
     }
 
     /** Verilen klasörün doğrudan alt klasörleri — grid'deki klasör kartları bunu kullanır. */
-    public function children(?int $parentId): Collection
+    public function children(?int $parentId): BaseCollection
     {
         return MediaFolder::query()
             ->where('parent_id', $parentId)
             ->withCount('media')
             ->orderBy('sort_order')
             ->orderBy('name')
-            ->get();
+            ->get()
+            ->map(fn (MediaFolder $folder) => $folder->toPayload());
     }
 
     public function create(array $data): MediaFolder

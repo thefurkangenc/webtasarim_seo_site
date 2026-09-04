@@ -33,6 +33,8 @@ export class MediaBrowser {
 
         this.state = { search: '', type: '', page: 1, per_page: 30 };
         this.path = []; // [{id, name}, ...] — kök hariç, kökten bu yana gezilen klasörler
+        this.mode = 'folder'; // 'folder' | 'recent' | 'unattached' — bkz. showRecent()/showUnattached()
+        this.view = localStorage.getItem('media-browser-view') === 'list' ? 'list' : 'grid';
         this.folders = new Map(); // bu klasördeki alt klasörler: id -> folder
         this.items = new Map(); // bu klasördeki dosyalar: id -> media
         this.selection = new Set(); // 'folder:5' | 'media:12'
@@ -41,12 +43,16 @@ export class MediaBrowser {
         this.dragDepth = 0;
 
         this.grid = root.querySelector('[data-media-grid]');
+        this.list = root.querySelector('[data-media-list]');
+        this.listBody = root.querySelector('[data-media-list-body]');
+        this.viewToggle = root.querySelector('[data-media-view-toggle]');
         this.status = root.querySelector('[data-media-status]');
         this.pagination = root.querySelector('[data-media-pagination]');
         this.breadcrumb = root.querySelector('[data-media-breadcrumb]');
         this.bulkbar = root.querySelector('[data-media-bulkbar]');
 
         this.bind();
+        this.applyView();
         this.load();
     }
 
@@ -89,10 +95,21 @@ export class MediaBrowser {
             const crumb = event.target.closest('[data-crumb-index]');
 
             if (crumb) {
+                this.mode = 'folder';
                 this.path = this.path.slice(0, Number(crumb.dataset.crumbIndex));
                 this.state.page = 1;
                 this.clearSelection();
                 this.load();
+            }
+        });
+
+        this.viewToggle?.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-media-view]');
+
+            if (button) {
+                this.view = button.dataset.mediaView;
+                localStorage.setItem('media-browser-view', this.view);
+                this.applyView();
             }
         });
 
@@ -227,8 +244,26 @@ export class MediaBrowser {
         this.renderSelection();
     }
 
+    /** Izgara/liste anahtarı — grid ve list her `load()`'da birlikte doldurulur, sadece görünürlük değişir. */
+    applyView() {
+        if (! this.viewToggle) {
+            return;
+        }
+
+        this.grid.classList.toggle('hidden', this.view === 'list');
+        this.list?.classList.toggle('hidden', this.view !== 'list');
+
+        this.viewToggle.querySelectorAll('[data-media-view]').forEach((button) => {
+            const active = button.dataset.mediaView === this.view;
+            button.classList.toggle('bg-primary-500', active);
+            button.classList.toggle('text-white', active);
+            button.classList.toggle('text-gray-500', ! active);
+            button.classList.toggle('dark:text-gray-400', ! active);
+        });
+    }
+
     renderSelection() {
-        this.grid.querySelectorAll('[data-item-key]').forEach((card) => {
+        this.root.querySelectorAll('[data-item-key]').forEach((card) => {
             const selected = this.selection.has(card.dataset.itemKey);
             card.classList.toggle('border-primary-500', selected);
             card.classList.toggle('bg-primary-50/60', selected);
@@ -277,13 +312,59 @@ export class MediaBrowser {
     openFolder(id) {
         const folder = this.folders.get(id);
 
+        this.mode = 'folder';
         this.path.push({ id, name: folder?.name ?? '' });
         this.state.page = 1;
         this.clearSelection();
         this.load();
     }
 
+    /** Sidebar'ın (varsa) çağırdığı gezinme API'si — bkz. pages/media/index.js. */
+    goToRoot() {
+        this.mode = 'folder';
+        this.path = [];
+        this.state.page = 1;
+        this.clearSelection();
+        this.load();
+    }
+
+    goToFolder(id, name) {
+        this.mode = 'folder';
+        this.path = [{ id, name }];
+        this.state.page = 1;
+        this.clearSelection();
+        this.load();
+    }
+
+    showRecent() {
+        this.mode = 'recent';
+        this.path = [];
+        this.state.page = 1;
+        this.clearSelection();
+        this.load();
+    }
+
+    showUnattached() {
+        this.mode = 'unattached';
+        this.path = [];
+        this.state.page = 1;
+        this.clearSelection();
+        this.load();
+    }
+
     renderBreadcrumb() {
+        if (this.mode !== 'folder') {
+            const label = this.mode === 'recent' ? 'Son Eklenenler' : 'Bağlantısız Dosyalar';
+
+            this.breadcrumb.innerHTML = `<span class="flex items-center gap-[4px]">
+                <button type="button" data-crumb-index="0" class="text-gray-500 dark:text-gray-400 hover:text-primary-500 transition-all">Medya</button>
+                <i class="material-symbols-outlined !text-[16px] text-gray-400">chevron_right</i>
+                <span class="text-black dark:text-white">${label}</span>
+            </span>`;
+
+            return;
+        }
+
         const crumbs = [{ id: null, name: 'Medya' }, ...this.path];
 
         this.breadcrumb.innerHTML = crumbs.map((crumb, index) => {
@@ -304,12 +385,17 @@ export class MediaBrowser {
         this.status.classList.remove('hidden');
         this.renderBreadcrumb();
 
+        const flat = this.mode !== 'folder';
+
         try {
             const [folders, filesResponse] = await Promise.all([
-                this.state.search ? Promise.resolve([]) : this.loadFolders(),
+                flat || this.state.search ? Promise.resolve([]) : this.loadFolders(),
                 http.get('/admin/media/datatable', {
                     ...this.state,
-                    folder_id: this.currentFolderId ?? '',
+                    folder_id: flat ? '' : (this.currentFolderId ?? ''),
+                    unattached: this.mode === 'unattached' ? 1 : '',
+                    sort: this.mode === 'recent' ? 'created_at' : undefined,
+                    direction: this.mode === 'recent' ? 'desc' : undefined,
                 }),
             ]);
 
@@ -321,6 +407,8 @@ export class MediaBrowser {
 
             this.grid.innerHTML = folders.map((folder) => this.folderCard(folder)).join('')
                 + filesResponse.data.map((media) => this.fileCard(media)).join('');
+            this.listBody.innerHTML = folders.map((folder) => this.folderRow(folder)).join('')
+                + filesResponse.data.map((media) => this.fileRow(media)).join('');
 
             const empty = folders.length === 0 && filesResponse.data.length === 0;
             this.status.classList.toggle('hidden', ! empty);
@@ -329,6 +417,7 @@ export class MediaBrowser {
             this.renderSelection();
         } catch (error) {
             this.grid.innerHTML = '';
+            this.listBody.innerHTML = '';
             this.status.classList.remove('hidden');
             this.status.textContent = error instanceof HttpError ? error.message : 'Yüklenemedi.';
         }
@@ -343,14 +432,9 @@ export class MediaBrowser {
     folderCard(folder) {
         return `
             <div data-item-key="folder:${folder.id}" data-item-type="folder" data-item-id="${folder.id}" draggable="true"
-                class="group relative rounded-md border border-gray-100 dark:border-[#172036] overflow-hidden cursor-pointer select-none transition-all hover:border-primary-300">
-                <div class="aspect-square flex items-center justify-center bg-gray-50 dark:bg-[#15203c]">
-                    <i class="material-symbols-outlined !text-[46px] text-[#ffb264]">folder</i>
-                </div>
-                <div class="p-[8px]">
-                    <p class="!mb-0 text-xs text-black dark:text-white truncate font-medium" title="${escapeHtml(folder.name)}">${escapeHtml(folder.name)}</p>
-                    <p class="!mb-0 text-[11px] text-gray-500 dark:text-gray-400">${folder.media_count ?? 0} dosya</p>
-                </div>
+                class="group relative flex flex-col items-center justify-center gap-[4px] py-[12px] px-[6px] rounded-md border border-gray-100 dark:border-[#172036] cursor-pointer select-none transition-all hover:border-primary-300">
+                <i class="material-symbols-outlined !text-[32px] text-[#ffb264]">folder</i>
+                <p class="!mb-0 text-[11px] text-black dark:text-white truncate max-w-full text-center" title="${escapeHtml(folder.name)}">${escapeHtml(folder.name)}</p>
             </div>`;
     }
 
@@ -358,20 +442,51 @@ export class MediaBrowser {
         const thumb = media.is_image
             ? `<img src="${escapeHtml(media.thumb)}" alt="${escapeHtml(media.alt ?? '')}" loading="lazy" class="w-full h-full object-cover">`
             : `<div class="w-full h-full flex items-center justify-center text-gray-400">
-                   <i class="material-symbols-outlined !text-[34px]">draft</i>
+                   <i class="material-symbols-outlined !text-[26px]">draft</i>
                </div>`;
 
         return `
             <div data-item-key="media:${media.id}" data-item-type="media" data-item-id="${media.id}" draggable="true"
                 class="group relative rounded-md border border-gray-100 dark:border-[#172036] overflow-hidden cursor-pointer select-none transition-all hover:border-primary-300">
                 <div class="aspect-square bg-gray-50 dark:bg-[#15203c]">${thumb}</div>
-                <div class="p-[8px]">
-                    <p class="!mb-0 text-xs text-black dark:text-white truncate" title="${escapeHtml(media.name)}">${escapeHtml(media.name)}</p>
-                    <p class="!mb-0 text-[11px] text-gray-500 dark:text-gray-400">
-                        ${media.width ? `${media.width}×${media.height} · ` : ''}${escapeHtml(media.human_size)}
-                    </p>
+                <div class="px-[6px] py-[5px]">
+                    <p class="!mb-0 text-[10px] text-black dark:text-white truncate" title="${escapeHtml(media.name)}">${escapeHtml(media.name)}</p>
                 </div>
             </div>`;
+    }
+
+    folderRow(folder) {
+        return `
+            <tr data-item-key="folder:${folder.id}" data-item-type="folder" data-item-id="${folder.id}" draggable="true"
+                class="cursor-pointer select-none transition-all border-b border-gray-100 dark:border-[#172036] hover:bg-gray-50 dark:hover:bg-[#15203c]">
+                <td class="px-[15px] py-[10px]">
+                    <span class="flex items-center gap-[8px]">
+                        <i class="material-symbols-outlined !text-xl text-[#ffb264]">folder</i>
+                        ${escapeHtml(folder.name)}
+                    </span>
+                </td>
+                <td class="px-[15px] py-[10px] text-gray-500 dark:text-gray-400 text-sm">${folder.created_at ?? '—'}</td>
+                <td class="px-[15px] py-[10px] text-gray-500 dark:text-gray-400 text-sm">${folder.media_count ?? 0} dosya</td>
+            </tr>`;
+    }
+
+    fileRow(media) {
+        const icon = media.is_image
+            ? `<img src="${escapeHtml(media.thumb)}" alt="" class="w-[28px] h-[28px] rounded-sm object-cover">`
+            : '<i class="material-symbols-outlined !text-xl text-gray-400">draft</i>';
+
+        return `
+            <tr data-item-key="media:${media.id}" data-item-type="media" data-item-id="${media.id}" draggable="true"
+                class="cursor-pointer select-none transition-all border-b border-gray-100 dark:border-[#172036] hover:bg-gray-50 dark:hover:bg-[#15203c]">
+                <td class="px-[15px] py-[8px]">
+                    <span class="flex items-center gap-[8px]">
+                        ${icon}
+                        <span class="truncate max-w-[280px]" title="${escapeHtml(media.name)}">${escapeHtml(media.name)}</span>
+                    </span>
+                </td>
+                <td class="px-[15px] py-[8px] text-gray-500 dark:text-gray-400 text-sm">${media.created_at ?? '—'}</td>
+                <td class="px-[15px] py-[8px] text-gray-500 dark:text-gray-400 text-sm">${escapeHtml(media.human_size)}</td>
+            </tr>`;
     }
 
     renderPagination(meta) {

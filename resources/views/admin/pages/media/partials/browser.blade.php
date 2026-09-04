@@ -4,7 +4,6 @@
     core/media-browser.js verir. Klasörler de dosyalarla aynı ızgarada kart
     olarak durur; gezinme sidebar ağacı değil breadcrumb + çift tıklamayladır.
 
-    $rootFolders : kök klasörler (ilk boyama için; sonraki gezinme AJAX'la olur)
     $selectable  : true ise çift tık / "Seç" bir dosyayı seçip modalı kapatır
     $manageable  : true ise context menu, sürükle-taşı, çoklu seçim aktif
 --}}
@@ -26,12 +25,24 @@
             <i class="material-symbols-outlined !text-[19px] absolute text-gray-500 ltr:right-[12px] rtl:left-[12px] top-1/2 -translate-y-1/2">search</i>
         </div>
 
-        <select data-media-type
+        <select data-media-type data-choices
             class="h-[40px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[13px] outline-0 cursor-pointer transition-all focus:border-primary-500">
             <option value="">Tüm türler</option>
             <option value="image">Görseller</option>
             <option value="other">Diğer</option>
         </select>
+
+        {{-- Izgara / liste görünüm anahtarı --}}
+        <div data-media-view-toggle class="inline-flex items-center rounded-md border border-gray-200 dark:border-[#172036] overflow-hidden">
+            <button type="button" data-media-view="list" title="Liste görünümü"
+                class="w-[38px] h-[38px] inline-flex items-center justify-center text-gray-500 dark:text-gray-400 transition-all hover:text-primary-500">
+                <i class="material-symbols-outlined !text-[19px]">view_list</i>
+            </button>
+            <button type="button" data-media-view="grid" title="Izgara görünümü"
+                class="w-[38px] h-[38px] inline-flex items-center justify-center bg-primary-500 text-white transition-all">
+                <i class="material-symbols-outlined !text-[19px]">grid_view</i>
+            </button>
+        </div>
 
         @if ($manageable)
             <button type="button" data-media-action="folder-create"
@@ -80,7 +91,21 @@
             </span>
         </div>
 
-        <div data-media-grid class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-[12px]"></div>
+        <div data-media-grid class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-[10px]"></div>
+
+        <div data-media-list class="hidden table-responsive overflow-x-auto">
+            <table class="w-full">
+                <thead class="text-black dark:text-white">
+                    <tr>
+                        <th class="font-medium ltr:text-left rtl:text-right px-[15px] py-[10px] bg-gray-50 dark:bg-[#15203c] whitespace-nowrap first:rounded-tl-md">Ad</th>
+                        <th class="font-medium ltr:text-left rtl:text-right px-[15px] py-[10px] bg-gray-50 dark:bg-[#15203c] whitespace-nowrap">Değiştirilme Tarihi</th>
+                        <th class="font-medium ltr:text-left rtl:text-right px-[15px] py-[10px] bg-gray-50 dark:bg-[#15203c] whitespace-nowrap last:rounded-tr-md">Boyut</th>
+                    </tr>
+                </thead>
+                <tbody data-media-list-body class="text-black dark:text-white"></tbody>
+            </table>
+        </div>
+
         <div data-media-status class="py-[60px] text-center text-gray-500 dark:text-gray-400"></div>
     </div>
 

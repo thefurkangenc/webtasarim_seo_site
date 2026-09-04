@@ -20,6 +20,13 @@ const BADGES = {
 const badge = (label, variant) =>
     `<span class="inline-block py-[3px] px-[10px] rounded-sm text-xs ${BADGES[variant]}">${label}</span>`;
 
+// Sürücü adı ile dosya adı bire bir eşleşmiyor (openai -> chatgpt.svg).
+const DRIVER_ICONS = { openai: 'chatgpt', deepseek: 'deepseek', ollama: 'ollama' };
+
+const driverIcon = (driver) => DRIVER_ICONS[driver]
+    ? `<img src="/admin/assets/images/icons/ai/${DRIVER_ICONS[driver]}.svg" alt="" class="w-[18px] h-[18px] shrink-0">`
+    : '';
+
 const table = new DataTable({
     endpoint: '/admin/ai-provider/datatable',
     body: document.getElementById('provider-table-body'),
@@ -28,9 +35,14 @@ const table = new DataTable({
     sort: 'created_at',
     empty: 'Henüz sağlayıcı eklenmedi.',
     row: (item) => `<tr>
-        ${cell(`<span class="font-medium">${escapeHtml(item.name)}</span>
-            ${item.is_default ? ` ${badge('varsayılan', 'primary')}` : ''}
-            ${item.has_key ? '' : ' <span class="text-xs text-gray-500 dark:text-gray-400">(anahtarsız)</span>'}`)}
+        ${cell(`<span class="flex items-center gap-[8px]">
+            ${driverIcon(item.driver)}
+            <span>
+                <span class="font-medium">${escapeHtml(item.name)}</span>
+                ${item.is_default ? ` ${badge('varsayılan', 'primary')}` : ''}
+                ${item.has_key ? '' : ' <span class="text-xs text-gray-500 dark:text-gray-400">(anahtarsız)</span>'}
+            </span>
+        </span>`)}
         ${cell(escapeHtml(item.driver_label))}
         ${cell(`<code class="text-xs">${escapeHtml(item.model)}</code>`)}
         ${cell(item.is_active ? badge('aktif', 'success') : badge('pasif', 'danger'))}

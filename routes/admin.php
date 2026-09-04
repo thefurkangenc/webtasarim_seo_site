@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function () {
         Route::controller(MediaController::class)->group(function () {
             Route::get('/', 'index')->name('index')->middleware('permission:media.view');
             Route::get('datatable', 'datatable')->name('datatable');
+            Route::get('stats', 'stats')->name('stats')->middleware('permission:media.view');
             Route::get('picker', 'picker')->name('picker')->middleware('permission:media.view');
             Route::post('upload', 'upload')->name('upload');
             Route::post('bulk-move', 'bulkMove')->name('bulk-move')->middleware('permission:media.update');

@@ -40,7 +40,13 @@ return [
             'connection' => env('DB_QUEUE_CONNECTION'),
             'table' => env('DB_QUEUE_TABLE', 'jobs'),
             'queue' => env('DB_QUEUE', 'default'),
-            'retry_after' => (int) env('DB_QUEUE_RETRY_AFTER', 90),
+            // Varsayılan (90sn) yapay zeka üretim işinden (sağlayıcı zaman
+            // aşımı + 30sn, 600sn'ye kadar çıkabilir) kısaydı — iş hâlâ
+            // çalışırken "kaybolmuş" sayılıp ikinci bir işçi tarafından
+            // tekrar alınabiliyordu (tries=1 olduğu için bu da sahte bir
+            // "başarısız" sonucuna yol açardı). En uzun iş süresinin
+            // üzerinde tutulmalı.
+            'retry_after' => (int) env('DB_QUEUE_RETRY_AFTER', 900),
             'after_commit' => false,
         ],
 

@@ -36,4 +36,16 @@ class MediaFolder extends Model
 
         return $chain;
     }
+
+    /** Dosya yöneticisi ızgarasının klasör kartı/satırı için tek tip gövde. */
+    public function toPayload(): array
+    {
+        return [
+            'id' => $this->id,
+            'parent_id' => $this->parent_id,
+            'name' => $this->name,
+            'media_count' => $this->media_count ?? 0,
+            'created_at' => $this->created_at?->format('d.m.Y H:i'),
+        ];
+    }
 }

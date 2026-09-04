@@ -34,6 +34,7 @@ class AiPrompt extends Model
             'name' => $this->name,
             'key' => $this->key,
             'provider' => $this->provider?->name ?? 'Varsayılan sağlayıcı',
+            'driver' => $this->provider?->driver,
             'is_active' => $this->is_active,
             'is_default' => $this->is_default,
             'created_at' => $this->created_at?->format('d.m.Y H:i'),

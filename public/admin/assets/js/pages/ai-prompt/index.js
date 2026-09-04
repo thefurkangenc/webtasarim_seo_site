@@ -17,6 +17,13 @@ const BADGES = {
 const badge = (label, variant) =>
     `<span class="inline-block py-[3px] px-[10px] rounded-sm text-xs ${BADGES[variant]}">${label}</span>`;
 
+// Sürücü adı ile dosya adı bire bir eşleşmiyor (openai -> chatgpt.svg).
+const DRIVER_ICONS = { openai: 'chatgpt', deepseek: 'deepseek', ollama: 'ollama' };
+
+const driverIcon = (driver) => DRIVER_ICONS[driver]
+    ? `<img src="/admin/assets/images/icons/ai/${DRIVER_ICONS[driver]}.svg" alt="" class="w-[16px] h-[16px] shrink-0">`
+    : '';
+
 const table = new DataTable({
     endpoint: '/admin/ai-prompt/datatable',
     body: document.getElementById('prompt-table-body'),
@@ -26,7 +33,7 @@ const table = new DataTable({
     row: (item) => `<tr>
         ${cell(`<span class="font-medium">${escapeHtml(item.name)}</span>${item.is_default ? ` ${badge('varsayılan', 'primary')}` : ''}`)}
         ${cell(`<code class="text-xs">${escapeHtml(item.key)}</code>`)}
-        ${cell(escapeHtml(item.provider))}
+        ${cell(`<span class="flex items-center gap-[6px]">${driverIcon(item.driver)}${escapeHtml(item.provider)}</span>`)}
         ${cell(item.is_active ? badge('aktif', 'success') : badge('pasif', 'danger'))}
         ${cell(`<div class="flex items-center gap-[9px]">
             <button type="button" data-edit="${item.id}" title="Düzenle" class="text-gray-500 dark:text-gray-400 leading-none transition-all hover:text-primary-500">

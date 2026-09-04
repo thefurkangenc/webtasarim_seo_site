@@ -74,6 +74,9 @@ class MediaPicker {
 
         try {
             body.innerHTML = await http.html('/admin/media/picker');
+            // core/select.js gibi dinleyiciler (tür filtresi <select data-choices>)
+            // kendini bu olayla kurar — AjaxModal'ın yaptığı gibi.
+            body.dispatchEvent(new CustomEvent('admin:content-loaded', { bubbles: true }));
 
             new MediaBrowser(body.querySelector('[data-media-browser]'), {
                 onSelect: (media) => this.settle(media),

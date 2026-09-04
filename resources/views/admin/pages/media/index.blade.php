@@ -18,12 +18,20 @@
         </ol>
     </div>
 
-    <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
-        <div class="trezo-card-content">
-            @include('admin.pages.media.partials.browser', [
-                'selectable' => false,
-                'manageable' => true,
-            ])
+    <div data-media-page class="grid grid-cols-1 lg:grid-cols-4 gap-[25px]">
+        <div class="lg:col-span-1">
+            @include('admin.pages.media.partials.sidebar')
+        </div>
+
+        <div class="lg:col-span-3">
+            <div class="trezo-card bg-white dark:bg-[#0c1427] p-[20px] md:p-[25px] rounded-md">
+                <div class="trezo-card-content">
+                    @include('admin.pages.media.partials.browser', [
+                        'selectable' => false,
+                        'manageable' => true,
+                    ])
+                </div>
+            </div>
         </div>
     </div>
 @endsection

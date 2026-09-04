@@ -6,6 +6,7 @@
  */
 
 import { aiGenerator } from '../../core/ai-generator.js';
+import { AiProgress } from '../../core/ai-progress.js';
 import { clearErrors, setLoading, showErrors } from '../../core/form.js';
 import { http, HttpError, ValidationError } from '../../core/http.js';
 import { toast } from '../../core/toast.js';
@@ -44,20 +45,37 @@ form.addEventListener('submit', async (event) => {
     }
 });
 
-/* Yapay zeka üretimi: sonuç doğrudan form alanlarına yazılır, kullanıcı
-   kaydetmeden önce düzenleyebilir. */
+/*
+ * Yapay zeka üretimi: sonuç doğrudan form alanlarına yazılır, kullanıcı
+ * kaydetmeden önce düzenleyebilir. Kullanıcı modalı "arka planda bırak"ırsa
+ * üretim kuyrukta devam eder — sayfa başlığının altında beliren bu kart
+ * ilerlemeyi (ve varsa hatayı) gösterir, sayfa yenilense bile takip kaydı
+ * kaybolmaz (bkz. core/ai-progress.js).
+ */
+const progress = new AiProgress(form, `blog:${form.dataset.id ?? 'new'}`, applyOutput);
+
 document.getElementById('blog-ai')?.addEventListener('click', async () => {
-    const output = await aiGenerator.open('blog.content', {
+    const result = await aiGenerator.open('blog.content', {
         defaults: {
             title: form.querySelector('[name="title"]').value,
             category: form.querySelector('[name="blog_category_id"]')?.selectedOptions[0]?.text ?? '',
         },
     });
 
-    if (! output) {
+    if (! result) {
         return;
     }
 
+    if (result.background) {
+        progress.track(result.id);
+
+        return;
+    }
+
+    applyOutput(result);
+});
+
+function applyOutput(output) {
     fill('title', output.title);
     fill('excerpt', output.excerpt);
     fill('seo[meta_description]', output.meta_description);
@@ -71,7 +89,7 @@ document.getElementById('blog-ai')?.addEventListener('click', async () => {
         .forEach((input) => input.dispatchEvent(new Event('input', { bubbles: true })));
 
     toast.success('İçerik forma yazıldı. Kaydetmeden önce gözden geçirin.');
-});
+}
 
 function fill(name, value) {
     const input = form.querySelector(`[name="${name}"]`);

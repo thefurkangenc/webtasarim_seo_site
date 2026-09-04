@@ -124,8 +124,14 @@ class Media extends Model
 
     public function humanSize(): string
     {
+        return static::formatSize($this->size);
+    }
+
+    /** Sidebar depolama özeti gibi tekil bir kayda bağlı olmayan yerler için. */
+    public static function formatSize(int $bytes): string
+    {
         $units = ['B', 'KB', 'MB', 'GB'];
-        $size = max($this->size, 0);
+        $size = max($bytes, 0);
         $power = $size > 0 ? (int) floor(log($size, 1024)) : 0;
         $power = min($power, count($units) - 1);
 

@@ -53,6 +53,13 @@ class AiGenerator {
                 this.settle(null);
             }
 
+            // Form hâlâ kuyrukta/çalışırken kapatılırsa iş kuyrukta devam eder;
+            // sayfa bunu `{ background: true, id }` ile öğrenip kendi
+            // ilerleme kartını (bkz. core/ai-progress.js) başlatabilir.
+            if (event.target.closest('[data-ai-background]')) {
+                this.settle({ background: true, id: this.generationId });
+            }
+
             if (event.target.closest('[data-ai-retry]')) {
                 this.panel('form');
             }
@@ -71,11 +78,13 @@ class AiGenerator {
     /**
      * @param {string} key Prompt şablonu anahtarı (blog.content)
      * @param {{defaults?: Record<string, string>}} options
-     * @returns {Promise<object|null>} Üretilen JSON ya da null
+     * @returns {Promise<object|{background: true, id: number}|null>} Üretilen
+     *   JSON, arka planda bırakıldıysa takip kaydı, yoksa null
      */
     async open(key, options = {}) {
         this.root ??= this.build();
         this.body.innerHTML = '<div class="py-[40px] text-center text-gray-500 dark:text-gray-400">Yükleniyor...</div>';
+        this.generationId = null;
         this.show();
 
         try {
@@ -119,6 +128,7 @@ class AiGenerator {
         try {
             const { data } = await http.post('/admin/ai/generate', new FormData(form));
 
+            this.generationId = data.id;
             this.panel('progress');
             this.startElapsed();
             this.poll(data.id);

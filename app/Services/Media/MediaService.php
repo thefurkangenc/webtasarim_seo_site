@@ -162,6 +162,15 @@ class MediaService
         return $result;
     }
 
+    /** Sidebar'daki depolama özeti. */
+    public function stats(): array
+    {
+        $count = Media::query()->count();
+        $size = (int) Media::query()->sum('size');
+
+        return ['count' => $count, 'size' => $size, 'human_size' => Media::formatSize($size)];
+    }
+
     public function list(array $filters): LengthAwarePaginator
     {
         $query = Media::query()->with('folder:id,name');

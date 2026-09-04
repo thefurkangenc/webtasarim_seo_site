@@ -319,6 +319,15 @@ bir seçenek olarak kalır — Choices'in özel `placeholder` mekanizması
 **kullanılmıyor**, çünkü bu seçenek gerçekten seçilebilir bir değer (tekrar
 seçilebilmesi gerekiyor).
 
+**İkonlu seçenekler:** `options`'a `value => label` yerine
+`value => ['label' => ..., 'icon' => '/path/icon.svg']` verilebilir —
+`form.select` bunu `<option data-custom-properties>` olarak yazar,
+`core/select.js`'teki `withIcons()` şablonu Choices'in varsayılan
+item/choice render'ının (aria/erişilebilirlik öznitelikleri korunarak)
+başına `<img>` ekler. Sadece ikonu olan seçenekler etkilenir, karışık
+listelerde sorun çıkarmaz. Örnek: `ai-provider/modals/form.blade.php`'teki
+servis seçimi (ChatGPT/DeepSeek/Ollama ikonları).
+
 ### Tarih — Flatpickr
 
 ```blade
@@ -503,7 +512,7 @@ gerekiyorsa bu partial'ı include et, ayrı bir ızgara yazma:
 ])
 ```
 
-Sidebar klasör ağacı **yok** — Google Drive tarzı: klasörler dosyalarla aynı
+Klasör ağacı sidebar'ı değil — Google Drive tarzı: klasörler dosyalarla aynı
 ızgarada kart olarak durur, üstte breadcrumb (`Medya > Blog > Kapak`) gezinme
 sağlar, çift tıklama klasöre girer/dosyanın popup önizlemesini açar. Sağ tık
 context menu açar (klasör/dosyaya göre farklı seçenekler: Aç, Yeniden
@@ -513,11 +522,22 @@ sisteminden dosya sürüklemek (üstüne bırakılan yer bir klasör kartıysa
 doğrudan o klasöre) yükler. Ctrl/Cmd+tık ve Shift+tık ile çoklu seçim
 yapılır, seçim varken araç çubuğunun altında bir toplu işlem çubuğu
 (Taşı/Sil/Temizle) belirir — `selectable` açıksa ve seçim tek bir dosyaysa
-buraya "Bu Dosyayı Seç" butonu da eklenir.
+buraya "Bu Dosyayı Seç" butonu da eklenir. Araç çubuğunda ayrıca ızgara/liste
+görünüm anahtarı var (`this.view`, `localStorage`'da kalıcı) — ikisi de her
+`load()`'da birlikte doldurulur, sadece hangisinin görünür olduğu değişir.
 
 `selectable` ve `manageable` artık birbirini dışlamıyor — picker modalı da
 tam yönetime sahip (context menu, sürükle-taşı, klasör oluşturma), fark
 sadece `selectable`'ın seçim sonucu döndürüp döndürmediği.
+
+**Sidebar** (`partials/sidebar.blade.php`, sadece `/admin/media` sayfasında —
+picker modalında yok) kozmetik bir klasör ağacı DEĞİL, `MediaBrowser`'ın
+gezinme API'sini (`goToRoot()`, `goToFolder(id, name)`, `showRecent()`,
+`showUnattached()`) çağıran gerçek kısayollar: kök klasörler, "Son
+Eklenenler" (tüm klasörlerde `created_at desc`), "Bağlantısız" (hiçbir kayda
+bağlı olmayan dosyalar) ve gerçek bir depolama özeti (`GET
+/admin/media/stats`). Bağlama `pages/media/index.js` yapar, `MediaBrowser`
+sınıfının kendisi sidebar'ın var olup olmadığını bilmez.
 
 Kartların markup'ı `media-browser.js` içinde üretilir; oradaki class'lar da
 Tailwind build'i tarafından taranır (`@source` JS'i kapsar).

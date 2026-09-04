@@ -10,6 +10,38 @@
 
 import Choices from '../vendor/choices/choices.mjs';
 
+/**
+ * `<option data-custom-properties='{"icon":"/path/icon.svg"}'>` verilen
+ * seçenekler simgeyle render edilir — Choices.js bu attribute'u zaten
+ * `choice.customProperties` olarak okuyor, biz sadece varsayılan şablonun
+ * (erişilebilirlik/aria öznitelikleri korunarak) başına bir `<img>` ekliyoruz.
+ * İkonu olmayan seçenekler etkilenmez, her select için ayrı bir bayrak gerekmez.
+ */
+function withIcons(template) {
+    const withIcon = (element, choice) => {
+        const icon = choice.customProperties?.icon;
+
+        if (icon) {
+            const img = document.createElement('img');
+            img.src = icon;
+            img.alt = '';
+            img.className = 'inline-block w-[16px] h-[16px] align-[-3px] ltr:mr-[6px] rtl:ml-[6px]';
+            element.prepend(img);
+        }
+
+        return element;
+    };
+
+    return {
+        item(classNames, choice, removeItemButton) {
+            return withIcon(Choices.defaults.templates.item.call(this, classNames, choice, removeItemButton), choice);
+        },
+        choice(classNames, choice, selectText, groupName) {
+            return withIcon(Choices.defaults.templates.choice.call(this, classNames, choice, selectText, groupName), choice);
+        },
+    };
+}
+
 function init(root = document) {
     root.querySelectorAll?.('select[data-choices]:not([data-choices-ready])').forEach((select) => {
         select.dataset.choicesReady = '1';
@@ -23,6 +55,7 @@ function init(root = document) {
             shouldSort: false,
             removeItemButton: select.multiple,
             allowHTML: false,
+            callbackOnCreateTemplates: withIcons,
         });
     });
 }

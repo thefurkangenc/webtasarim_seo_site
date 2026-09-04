@@ -47,6 +47,12 @@ class MediaController extends Controller
         return $this->success(data: $this->service->list($request->validated()));
     }
 
+    /** Sidebar'daki depolama özeti. */
+    public function stats(): JsonResponse
+    {
+        return $this->success(data: $this->service->stats());
+    }
+
     public function upload(MediaUploadRequest $request): JsonResponse
     {
         $media = $this->service->store($request->file('file'), $request->safe()->except('file'));
