@@ -1,24 +1,31 @@
 @props([
-    'name',
+    'name' => null,
     'label' => null,
     'checked' => false,
     'hint' => null,
     'wrapper' => 'mb-[20px] md:mb-[25px] last:mb-0',
+    // `bare`: forma bağlı değil, isim/hidden-input/hata yuvası göndermez —
+    // AJAX ile anlık açılıp kapanan salt görsel anahtarlar için (örn.
+    // entegrasyon kartları). $attributes ile gelen data-* öznitelikler
+    // checkbox'a geçer.
+    'bare' => false,
 ])
 
 @php
-    $field = \App\Support\Field::name($name);
-    $id = \App\Support\Field::id($name);
+    $field = $name ? \App\Support\Field::name($name) : null;
+    $id = $name ? \App\Support\Field::id($name) : null;
 @endphp
 
 <div class="{{ $wrapper }}">
-    {{-- Kapalıyken de bir değer gitsin diye gizli 0; checkbox işaretliyse 1 onu ezer. --}}
-    <input type="hidden" name="{{ $field }}" value="0">
+    @unless ($bare)
+        {{-- Kapalıyken de bir değer gitsin diye gizli 0; checkbox işaretliyse 1 onu ezer. --}}
+        <input type="hidden" name="{{ $field }}" value="0">
+    @endunless
 
     <label class="flex items-center gap-[10px] cursor-pointer select-none w-fit">
         <span class="relative inline-block">
-            <input type="checkbox" name="{{ $field }}" id="{{ $id }}" value="1"
-                @checked((bool) old($name, $checked))
+            <input type="checkbox" @unless ($bare) name="{{ $field }}" id="{{ $id }}" @endunless value="1"
+                @checked((bool) ($bare ? $checked : old($name, $checked)))
                 {{ $attributes->merge(['class' => 'peer sr-only']) }}>
             <span
                 class="block w-[44px] h-[24px] rounded-full bg-gray-200 dark:bg-[#172036] transition-all peer-checked:bg-primary-500"></span>
@@ -35,5 +42,7 @@
         <span class="text-gray-500 dark:text-gray-400 text-xs mt-[6px] block">{{ $hint }}</span>
     @endif
 
-    <x-admin::form.error :name="$name" />
+    @unless ($bare)
+        <x-admin::form.error :name="$name" />
+    @endunless
 </div>

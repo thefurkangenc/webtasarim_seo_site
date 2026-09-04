@@ -1864,3 +1864,16 @@ tr.sortable-chosen {
 tr.sortable-drag {
     @apply bg-white dark:bg-[#0c1427] shadow-3xl;
 }
+
+/* Kart ızgarası (sosyal medya ayarları). */
+[data-social-card].sortable-ghost {
+    @apply opacity-60;
+}
+
+[data-social-card].sortable-chosen {
+    @apply border-primary-500;
+}
+
+[data-social-card].sortable-drag {
+    @apply bg-white dark:bg-[#0c1427] shadow-3xl;
+}

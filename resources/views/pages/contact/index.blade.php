@@ -29,98 +29,113 @@
     <div class="contact2 sp">
         <div class="container">
             <div class="row">
-                <div class="col-lg-4 col-md-6">
-                    <div class="contact-page-box">
-                        <div class="icon">
-                            <img src="assets/img/icons/contact-page-icon1.svg" alt="">
-                        </div>
-                        <div class="content">
-                            <h3>Email Adresi</h3>
-                            <a href="mailto:support@seox.com">support@seox.com</a>
-                            <a href="mailto:sales@seox.com">sales@seox.com</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="contact-page-box">
-                        <div class="icon">
-                            <img src="assets/img/icons/contact-page-icon2.svg" alt="">
-                        </div>
-                        <div class="content">
-                            <h3>Phone Number</h3>
-                            <a href="tel:+123456-7890">+1 (123) 456-7890</a>
-                            <a href="tel:+123456-7890">+1 (123) 456-7890</a>
+                @if (filled($email))
+                    <div class="col-lg-4 col-md-6">
+                        <div class="contact-page-box">
+                            <div class="icon">
+                                <img src="{{ asset('assets/img/icons/contact-page-icon1.svg') }}" alt="">
+                            </div>
+                            <div class="content">
+                                <h3>E-posta</h3>
+                                <a href="mailto:{{ $email }}">{{ $email }}</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6">
-                    <div class="contact-page-box">
-                        <div class="icon">
-                            <img src="assets/img/icons/contact-page-icon3.svg" alt="">
-                        </div>
-                        <div class="content">
-                            <h3>Office Address</h3>
-                            <a href="#">123 Innovation Lane,</a>
-                            <a href="#">Digital City, DX 98765</a>
+                @endif
+                @if (filled($phone))
+                    <div class="col-lg-4 col-md-6">
+                        <div class="contact-page-box">
+                            <div class="icon">
+                                <img src="{{ asset('assets/img/icons/contact-page-icon2.svg') }}" alt="">
+                            </div>
+                            <div class="content">
+                                <h3>Telefon</h3>
+                                <a href="{{ $tel_href }}">{{ $phone }}</a>
+                            </div>
                         </div>
                     </div>
-                </div>
+                @endif
+                @if (filled($address))
+                    <div class="col-lg-4 col-md-6">
+                        <div class="contact-page-box">
+                            <div class="icon">
+                                <img src="{{ asset('assets/img/icons/contact-page-icon3.svg') }}" alt="">
+                            </div>
+                            <div class="content">
+                                <h3>Adres</h3>
+                                <p>{{ $address }}</p>
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
             <div class="row">
                 <div class="col-lg-6 mt-60">
                     <div class="heading2">
                         <div class="contact2-form">
                             <span class="sub-title" data-aos="zoom-in-left" data-aos-duration="900"><img
-                                    src="assets/img/icons/span3.svg" alt="">CONTACT US </span>
-                            <h2 class="text-anime-style-3">Lets Work Together</h2>
-                            <p class="mt-16" data-aos="fade-right" data-aos-duration="900">eady to take your social media
-                                presence to the next level? Let’s work together to create impactful strategies drive
-                                engagement, growth, and success for your brand.</p>
-                            <form action="#" data-aos="fade-right" data-aos-duration="1000">
-                                <div class="row mt-16">
-                                    <div class="col-md-6">
-                                        <div class="single-input">
-                                            <input type="text" placeholder="First Name">
+                                    src="{{ asset('assets/img/icons/span3.svg') }}" alt="">İLETİŞİM</span>
+                            <h2 class="text-anime-style-3">{{ $heading }}</h2>
+                            @if (filled($intro))
+                                <p class="mt-16" data-aos="fade-right" data-aos-duration="900">{{ $intro }}</p>
+                            @endif
+
+                            @if ($enabled)
+                                <form action="{{ route('iletisim.store') }}" method="POST" data-contact-form
+                                    data-aos="fade-right" data-aos-duration="1000">
+                                    @csrf
+                                    <div class="contact-form-alert" data-contact-alert hidden></div>
+                                    <div class="hp-field" aria-hidden="true">
+                                        <label for="website">Website</label>
+                                        <input type="text" name="website" id="website" tabindex="-1" autocomplete="off">
+                                    </div>
+                                    <div class="row mt-16">
+                                        <div class="col-md-12">
+                                            <div class="single-input">
+                                                <input type="text" name="name" placeholder="Adınız soyadınız" required maxlength="150" autocomplete="name">
+                                                <span class="contact-field-error" data-error="name" hidden></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="single-input">
+                                                <input type="email" name="email" placeholder="E-posta adresiniz" required maxlength="150" autocomplete="email">
+                                                <span class="contact-field-error" data-error="email" hidden></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="single-input">
+                                                <input type="tel" name="phone" placeholder="Telefon (isteğe bağlı)" maxlength="50" autocomplete="tel">
+                                                <span class="contact-field-error" data-error="phone" hidden></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="single-input">
+                                                <textarea name="message" rows="5" placeholder="Mesajınız" required maxlength="5000"></textarea>
+                                                <span class="contact-field-error" data-error="message" hidden></span>
+                                            </div>
+                                        </div>
+                                        @if ($privacy_required)
+                                            <div class="col-md-12">
+                                                <label class="contact-privacy">
+                                                    <input type="checkbox" name="privacy" value="1" required>
+                                                    <span>{!! $privacy_html !!}</span>
+                                                </label>
+                                                <span class="contact-field-error" data-error="privacy" hidden></span>
+                                            </div>
+                                        @endif
+                                        <div class="col-md-12">
+                                            <div class="button mt-30">
+                                                <button class="theme-btn3" type="submit" data-contact-submit>Gönder
+                                                    <span class="arrow1"><i class="fa-solid fa-arrow-right"></i></span>
+                                                    <span class="arrow2"><i class="fa-solid fa-arrow-right"></i></span>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="single-input">
-                                            <input type="text" placeholder="Last Name">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="single-input">
-                                            <input type="email" placeholder="Email Address">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="single-input">
-                                            <input type="number" placeholder="Phone Number">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="single-input">
-                                            <select class="wide">
-                                                <option value="1">Service Type</option>
-                                                <option value="2">Option 1</option>
-                                                <option value="3">Option 2</option>
-                                                <option value="4">Option 3</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="single-input">
-                                            <textarea rows="5" placeholder="How can we help you?"></textarea>
-                                        </div>
-                                        <div class="button mt-30">
-                                            <button class="theme-btn3" type="submit">Send <span class="arrow1"><i
-                                                        class="fa-solid fa-arrow-right"></i></span><span class="arrow2"><i
-                                                        class="fa-solid fa-arrow-right"></i></span></button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
+                                </form>
+                            @else
+                                <p class="mt-16">İletişim formu şu anda kapalıdır. Bize e-posta veya telefonla ulaşabilirsiniz.</p>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -245,11 +260,21 @@
 
     <!--===== CHOOSE AREA END =====-->
 
-    <div class="contact-map-page">
-        <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d196064.65881483705!2d88.93201515862421!3d24.061083775097945!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39febca82f6a21ed%3A0x4040980d7c6874f8!2sKushtia%20District!5e0!3m2!1sen!2sbd!4v1673751720794!5m2!1sen!2sbd"
-            width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"></iframe>
-    </div>
+    @if ($map_embed)
+        <div class="contact-map-page">
+            <iframe src="{{ $map_embed }}" width="600" height="450" style="border:0;" allowfullscreen=""
+                loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Harita"></iframe>
+        </div>
+    @endif
 
 @endsection
+
+@push('css')
+    <link rel="stylesheet" href="{{ asset('assets/css/contact-form.css') }}">
+@endpush
+
+@push('scripts')
+    @if ($enabled)
+        <script src="{{ asset('assets/js/contact-form.js') }}"></script>
+    @endif
+@endpush

@@ -36,11 +36,16 @@ class SeoField {
 
         this.metaTitle = root.querySelector('[data-seo-input="meta_title"]');
         this.metaDescription = root.querySelector('[data-seo-input="meta_description"]');
+        this.siteNameInput = root.querySelector('[data-seo-input="site_name"]');
 
         this.preview = {
+            query: root.querySelector('[data-seo-preview-query]'),
             url: root.querySelector('[data-seo-preview-url]'),
             title: root.querySelector('[data-seo-preview-title]'),
             description: root.querySelector('[data-seo-preview-description]'),
+            sitename: root.querySelector('[data-seo-preview-sitename]'),
+            favicon: root.querySelector('[data-seo-preview-favicon]'),
+            faviconFallback: root.querySelector('[data-seo-preview-favicon-fallback]'),
         };
 
         this.sources = {
@@ -78,6 +83,8 @@ class SeoField {
             this.touched.description = true;
             this.render();
         });
+
+        this.siteNameInput?.addEventListener('input', () => this.render());
 
         // Kaynak değiştikçe dokunulmamış meta alana kopyalanır.
         this.sources.title?.addEventListener('input', () => {
@@ -141,17 +148,39 @@ class SeoField {
         this.count(this.metaTitle, 'meta_title');
         this.count(this.metaDescription, 'meta_description');
 
-        const title = this.value(this.metaTitle) || this.value(this.sources.title) || 'Sayfa başlığı';
+        const siteName = this.value(this.siteNameInput) || this.root.dataset.seoSitename || this.host;
+        const title = this.value(this.metaTitle) || this.value(this.sources.title) || siteName || 'Sayfa başlığı';
         const description = this.value(this.metaDescription)
             || this.value(this.sources.description)
             || 'Sayfa açıklaması arama sonuçlarında burada görünür.';
 
         const slug = this.value(this.sources.slug) || slugify(this.value(this.sources.title));
         const segments = [this.host, this.path, slug].filter(Boolean);
+        const letter = (siteName || this.host || 'S').charAt(0).toUpperCase();
 
-        this.preview.url.textContent = segments.join(' › ');
-        this.preview.title.textContent = truncate(title, 60);
-        this.preview.description.textContent = truncate(description, 160);
+        if (this.preview.url) {
+            this.preview.url.textContent = segments.join(' › ');
+        }
+
+        if (this.preview.query) {
+            this.preview.query.textContent = title;
+        }
+
+        if (this.preview.title) {
+            this.preview.title.textContent = truncate(title, 60);
+        }
+
+        if (this.preview.description) {
+            this.preview.description.textContent = truncate(description, 160);
+        }
+
+        if (this.preview.sitename) {
+            this.preview.sitename.textContent = siteName;
+        }
+
+        if (this.preview.faviconFallback) {
+            this.preview.faviconFallback.textContent = letter;
+        }
     }
 
     value(input) {

@@ -3,11 +3,13 @@
 
 <head>
     @include('layout.partials.meta')
+    @include('layout.partials.tracking', ['placement' => 'head'])
 
     @include('layout.partials.css')
 </head>
 
 <body class="body1">
+    @include('layout.partials.tracking', ['placement' => 'body'])
     <div class="paginacontainer">
 
         <div class="progress-wrap">
@@ -49,11 +51,13 @@
     </main>
 
 
+    @include('layout.partials.footer')
 
-
+    @include('layout.partials.cookie-banner')
 
     <!--=== js === -->
     @include('layout.partials.scripts')
+    @include('layout.partials.integrations')
 
 </body>
 

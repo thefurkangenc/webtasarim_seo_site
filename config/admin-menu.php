@@ -33,6 +33,13 @@ return [
                 'active' => 'admin.media.*',
                 'permission' => 'media.view',
             ],
+            [
+                'title' => 'Site Ayarları',
+                'icon' => 'settings',
+                'route' => 'admin.setting.index',
+                'active' => 'admin.setting.*',
+                'permission' => 'setting.view',
+            ],
         ],
     ],
 

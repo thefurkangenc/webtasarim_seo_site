@@ -1,0 +1,33 @@
+.legal-content {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--ztc-text-text-1, #1f2937);
+}
+
+.legal-content h2,
+.legal-content h3,
+.legal-content h4 {
+    margin: 1.6em 0 0.6em;
+    line-height: 1.35;
+}
+
+.legal-content p,
+.legal-content ul,
+.legal-content ol {
+    margin: 0 0 1em;
+}
+
+.legal-content ul,
+.legal-content ol {
+    padding-left: 1.25em;
+}
+
+.legal-content a {
+    color: var(--vtc-bg-main4, #155fff);
+    text-decoration: underline;
+}
+
+.legal-content img {
+    max-width: 100%;
+    height: auto;
+}

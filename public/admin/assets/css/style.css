@@ -1290,6 +1290,12 @@
   .ml-\[15px\] {
     margin-left: 15px;
   }
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
   .\!flex {
     display: flex !important;
   }
@@ -2127,6 +2133,9 @@
   .min-w-\[190px\] {
     min-width: 190px;
   }
+  .flex-1 {
+    flex: 1;
+  }
   .flex-auto {
     flex: auto;
   }
@@ -2548,6 +2557,9 @@
   }
   .border-\[\#adb5bd\] {
     border-color: #adb5bd;
+  }
+  .border-\[\#dfe1e5\] {
+    border-color: #dfe1e5;
   }
   .border-\[\#f5f7f8\] {
     border-color: #f5f7f8;
@@ -3767,6 +3779,14 @@
     --tw-leading: 1.55;
     line-height: 1.55;
   }
+  .leading-\[1\.58\] {
+    --tw-leading: 1.58;
+    line-height: 1.58;
+  }
+  .leading-\[18px\] {
+    --tw-leading: 18px;
+    line-height: 18px;
+  }
   .leading-\[20px\] {
     --tw-leading: 20px;
     line-height: 20px;
@@ -3890,6 +3910,9 @@
   .break-words {
     overflow-wrap: break-word;
   }
+  .break-all {
+    word-break: break-all;
+  }
   .whitespace-normal {
     white-space: normal;
   }
@@ -3935,6 +3958,9 @@
   .text-\[\#07a\] {
     color: #07a;
   }
+  .text-\[\#9aa0a6\] {
+    color: #9aa0a6;
+  }
   .text-\[\#39b2de\] {
     color: #39b2de;
   }
@@ -3943,6 +3969,15 @@
   }
   .text-\[\#905\] {
     color: #905;
+  }
+  .text-\[\#4285F4\] {
+    color: #4285F4;
+  }
+  .text-\[\#70757a\] {
+    color: #70757a;
+  }
+  .text-\[\#202124\] {
+    color: #202124;
   }
   .text-\[\#445164\] {
     color: #445164;
@@ -8658,14 +8693,26 @@
   .dark\:text-\[\#8ab4f8\]:where([class=dark], [class=dark] *) {
     color: #8ab4f8;
   }
+  .dark\:text-\[\#9aa0a6\]:where([class=dark], [class=dark] *) {
+    color: #9aa0a6;
+  }
   .dark\:text-\[\#334161\]:where([class=dark], [class=dark] *) {
     color: #334161;
+  }
+  .dark\:text-\[\#bdc1c6\]:where([class=dark], [class=dark] *) {
+    color: #bdc1c6;
+  }
+  .dark\:text-\[\#e8eaed\]:where([class=dark], [class=dark] *) {
+    color: #e8eaed;
   }
   .dark\:text-danger-500:where([class=dark], [class=dark] *) {
     color: var(--color-danger-500);
   }
   .dark\:text-gray-400:where([class=dark], [class=dark] *) {
     color: var(--color-gray-400);
+  }
+  .dark\:text-gray-500:where([class=dark], [class=dark] *) {
+    color: var(--color-gray-500);
   }
   .dark\:text-primary-500:where([class=dark], [class=dark] *) {
     color: var(--color-primary-500);
@@ -8713,6 +8760,9 @@
     }
     .dark\:hover\:bg-\[\#0a0e19\]:where([class=dark], [class=dark] *):hover {
       background-color: #0a0e19;
+    }
+    .dark\:hover\:bg-\[\#0c1427\]:where([class=dark], [class=dark] *):hover {
+      background-color: #0c1427;
     }
     .dark\:hover\:bg-\[\#1f2941\]:where([class=dark], [class=dark] *):hover {
       background-color: #1f2941;
@@ -11521,6 +11571,20 @@ tr.sortable-chosen {
   }
 }
 tr.sortable-drag {
+  background-color: var(--color-white);
+  --tw-shadow: var(--tw-shadow-color, rgba(149, 157, 165, 0.2)) 0px 8px 24px;
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  &:where([class=dark], [class=dark] *) {
+    background-color: #0c1427;
+  }
+}
+[data-social-card].sortable-ghost {
+  opacity: 60%;
+}
+[data-social-card].sortable-chosen {
+  border-color: var(--color-primary-500);
+}
+[data-social-card].sortable-drag {
   background-color: var(--color-white);
   --tw-shadow: var(--tw-shadow-color, rgba(149, 157, 165, 0.2)) 0px 8px 24px;
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);

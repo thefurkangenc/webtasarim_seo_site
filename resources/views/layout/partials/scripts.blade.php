@@ -20,5 +20,11 @@
 
 <script src="{{ asset('assets/js/main.js') }}"></script>
 
+@include('layout.partials.tracking', ['placement' => 'foot'])
+
+@if (\App\Support\Settings::bool('cookie.enabled'))
+    <script src="{{ asset('assets/js/cookie-banner.js') }}"></script>
+@endif
+
 @stack('scripts')
 

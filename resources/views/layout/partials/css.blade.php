@@ -14,6 +14,10 @@
  <link rel="stylesheet" href="{{ asset('assets/css/mobile-menu.css') }}">
  <link rel="stylesheet" href="{{ asset('assets/css/utility.css') }}">
  <link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
+ <link rel="stylesheet" href="{{ asset('assets/css/integrations.css') }}">
+ @if (\App\Support\Settings::bool('cookie.enabled'))
+     <link rel="stylesheet" href="{{ asset('assets/css/cookie-banner.css') }}">
+ @endif
 
  @stack('css')
 

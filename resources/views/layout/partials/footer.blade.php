@@ -100,8 +100,8 @@
             </div>
             <div class="col-lg-6">
                 <div class="copyright-text right-side text-end sm:text-start md:text-start">
-                    <a href="#">Terms & Conditions</a>
-                    <a href="#" class="add-before"> Privacy Policy </a>
+                    <a href="{{ route('kvkk') }}">KVKK</a>
+                    <a href="{{ route('cerez-politikasi') }}" class="add-before">Çerez politikası</a>
                 </div>
             </div>
         </div>

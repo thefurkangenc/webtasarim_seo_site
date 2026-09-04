@@ -182,10 +182,22 @@ export class MediaBrowser {
             return;
         }
 
-        this.selectCard(card, event);
+        // Seçim anında uygulanırsa toplu işlem çubuğu belirip ızgarayı aşağı
+        // kaydırıyor; çift tıklamanın ikinci tıkı o zaman kaymış bir karta
+        // düşüyor (klasöre girmek yerine yanlışlıkla seçiliyor). Seçimi kısa
+        // bir gecikmeyle uygula — asıl çift tıklama gelirse bu bekleyen
+        // seçim hiç işlenmeden iptal edilir.
+        const { shiftKey, ctrlKey, metaKey } = event;
+
+        clearTimeout(this.clickTimer);
+        this.clickTimer = setTimeout(() => {
+            this.selectCard(card, { shiftKey, ctrlKey, metaKey });
+        }, 220);
     }
 
     async onDoubleClick(event) {
+        clearTimeout(this.clickTimer);
+
         const card = event.target.closest('[data-item-key]');
 
         if (! card) {

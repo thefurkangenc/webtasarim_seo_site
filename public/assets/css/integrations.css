@@ -1,0 +1,24 @@
+.site-fab {
+    position: fixed;
+    z-index: 9990;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.site-fab:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.24);
+}
+
+.site-fab img {
+    width: 60px;
+    height: 60px;
+    display: block;
+}

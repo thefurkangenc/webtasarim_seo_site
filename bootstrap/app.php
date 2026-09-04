@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\EnsureSiteIsLive;
+use App\Support\Consent;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -27,6 +29,14 @@ return Application::configure(basePath: dirname(__DIR__))
         // auth middleware'i misafirleri admin girişine yollar.
         $middleware->redirectGuestsTo(fn () => route('admin.login'));
         $middleware->redirectUsersTo(fn () => route('admin.dashboard'));
+
+        $middleware->web(append: [
+            EnsureSiteIsLive::class,
+        ]);
+
+        $middleware->encryptCookies(except: [
+            Consent::COOKIE,
+        ]);
 
         $middleware->alias([
             'role' => RoleMiddleware::class,

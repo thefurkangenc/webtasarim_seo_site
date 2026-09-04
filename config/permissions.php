@@ -21,6 +21,7 @@ return [
         'user' => 'Kullanıcılar',
         'role' => 'Roller ve İzinler',
         'media' => 'Medya',
+        'setting' => 'Site Ayarları',
         'ai' => 'Yapay Zeka',
         'blog' => 'Blog',
     ],
@@ -41,6 +42,9 @@ return [
         ['name' => 'media.create', 'label' => 'Medya - Yükle', 'category' => 'media', 'guard_name' => 'web'],
         ['name' => 'media.update', 'label' => 'Medya - Düzenle', 'category' => 'media', 'guard_name' => 'web'],
         ['name' => 'media.delete', 'label' => 'Medya - Sil', 'category' => 'media', 'guard_name' => 'web'],
+
+        ['name' => 'setting.view', 'label' => 'Site Ayarları - Görüntüle', 'category' => 'setting', 'guard_name' => 'web'],
+        ['name' => 'setting.update', 'label' => 'Site Ayarları - Düzenle', 'category' => 'setting', 'guard_name' => 'web'],
 
         ['name' => 'ai-provider.view', 'label' => 'Yapay Zeka Sağlayıcı - Listele', 'category' => 'ai', 'guard_name' => 'web'],
         ['name' => 'ai-provider.create', 'label' => 'Yapay Zeka Sağlayıcı - Ekle', 'category' => 'ai', 'guard_name' => 'web'],

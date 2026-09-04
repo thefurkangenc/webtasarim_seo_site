@@ -7,8 +7,11 @@ use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\Blog\BlogController;
 use App\Http\Controllers\Admin\BlogCategory\BlogCategoryController;
 use App\Http\Controllers\Admin\Dashboard\DashboardController;
+use App\Http\Controllers\Admin\Integration\IntegrationController;
 use App\Http\Controllers\Admin\Media\MediaController;
 use App\Http\Controllers\Admin\Media\MediaFolderController;
+use App\Http\Controllers\Admin\Setting\SettingController;
+use App\Http\Controllers\Admin\SocialLink\SocialLinkController;
 use App\Http\Controllers\Admin\Tag\TagController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +29,39 @@ Route::middleware('auth')->group(function () {
     Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
 
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::prefix('setting')->name('setting.')->controller(SettingController::class)->group(function () {
+        Route::get('/', 'edit')->name('index')->defaults('group', 'company')->middleware('permission:setting.view');
+        Route::put('company', 'updateCompany')->name('company.update');
+        Route::put('seo', 'updateSeo')->name('seo.update');
+        Route::put('mail', 'updateMail')->name('mail.update');
+        Route::post('mail/test', 'testMail')->name('mail.test');
+        Route::put('tracking', 'updateTracking')->name('tracking.update');
+        Route::put('contents', 'updateContents')->name('contents.update');
+        Route::put('contact', 'updateContact')->name('contact.update');
+        Route::put('cookie', 'updateCookie')->name('cookie.update');
+        Route::put('maintenance', 'updateMaintenance')->name('maintenance.update');
+        Route::get('{group}', 'edit')->name('edit')
+            ->whereIn('group', array_keys(config('settings.groups', [])))
+            ->middleware('permission:setting.view');
+    });
+
+    Route::prefix('integration')->name('integration.')->controller(IntegrationController::class)->group(function () {
+        $keys = array_keys(config('integrations', []));
+
+        Route::get('{key}/form', 'form')->name('form')->whereIn('key', $keys)->middleware('permission:setting.view');
+        Route::put('{key}/toggle', 'toggle')->name('toggle')->whereIn('key', $keys);
+        Route::put('{key}', 'update')->name('update')->whereIn('key', $keys);
+    });
+
+    Route::prefix('social-link')->name('social-link.')->controller(SocialLinkController::class)->group(function () {
+        Route::get('/', 'index')->name('index')->middleware('permission:setting.view');
+        Route::get('form/{social_link?}', 'form')->name('form')->middleware('permission:setting.view');
+        Route::post('/', 'store')->name('store');
+        Route::put('reorder', 'reorder')->name('reorder')->middleware('permission:setting.update');
+        Route::put('{social_link}', 'update')->name('update');
+        Route::delete('{social_link}', 'destroy')->name('destroy')->middleware('permission:setting.update');
+    });
 
     Route::prefix('media')->name('media.')->group(function () {
         Route::controller(MediaController::class)->group(function () {
