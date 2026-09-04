@@ -110,6 +110,7 @@ Modüller bunların üzerine kurulur — yeniden yazma, kullan.
 | Yapay zeka | `App\Services\Ai\AiService` + `core/ai-generator.js`, `/admin/ai-provider`, `/admin/ai-prompt` |
 | Alan adı dönüşümü | `App\Support\Field` — `seo.meta_title` → `name="seo[meta_title]"` |
 | Benzersiz slug | `App\Support\Slug::unique($deger, 'blogs', $id)` — Türkçe karakter duyarlı |
+| Sürükle-bırak sıralama | `HasSortOrder` (model) + `ReordersRecords` (servis) + `ReorderRequest` — `sort_order` formda yok, `core/table.js`'in `reorder` seçeneği |
 | Modal iskeleti | `resources/views/admin/layout/modals/ajax-modal.blade.php` (layout'ta include edili) |
 | JS çekirdeği | `public/admin/assets/js/core/` — http, form, modal, table, toast, confirm, editor, seo-field, tag-input, ai-generator |
 | Giriş | `admin.login` / `admin.logout`, `auth` middleware `routes/admin.php`'de |

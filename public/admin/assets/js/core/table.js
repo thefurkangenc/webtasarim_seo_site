@@ -6,11 +6,20 @@
  *
  * Gönderilen parametreler: search, sort, direction, page, per_page + filtreler.
  * İlgili FilterRequest bunları kabul etmelidir, aksi halde sessizce yok sayılır.
+ *
+ * Sürükle-bırak sıralama (opsiyonel): `reorder: { button, endpoint }` verilirse
+ * satır şablonuna `<tr data-id="...">` ve gizli bir tutamaç hücresi
+ * (`data-reorder-column` + içinde `data-reorder-handle`) eklemek yeterli —
+ * bkz. trezo-ui skill'i "Sürükle-bırak sıralama" bölümü.
  */
 
 import { http, HttpError } from './http.js';
+import { toast } from './toast.js';
 
 const CELL = 'ltr:text-left rtl:text-right px-[20px] py-[13px] border-b border-gray-100 dark:border-[#172036]';
+
+const REORDER_ICON_ON = 'checklist';
+const REORDER_ICON_OFF = 'drag_indicator';
 
 export class DataTable {
     /**
@@ -25,6 +34,7 @@ export class DataTable {
      *   sort?: string,
      *   direction?: 'asc'|'desc',
      *   empty?: string,
+     *   reorder?: { button: HTMLElement, endpoint: string },
      * }} options
      */
     constructor(options) {
@@ -33,6 +43,9 @@ export class DataTable {
         this.table = this.body.closest('table');
         this.filters = options.filters ?? {};
         this.pagination = options.pagination ?? this.createPagination();
+        this.reorderConfig = options.reorder ?? null;
+        this.reordering = false;
+        this.sortable = null;
 
         this.state = {
             search: '',
@@ -43,6 +56,10 @@ export class DataTable {
         };
 
         this.bind();
+
+        if (this.reorderConfig) {
+            this.bindReorder();
+        }
     }
 
     get columnCount() {
@@ -79,6 +96,10 @@ export class DataTable {
 
         this.table?.querySelectorAll('thead [data-column]').forEach((header) => {
             header.addEventListener('click', () => {
+                if (this.reordering) {
+                    return;
+                }
+
                 const column = header.dataset.column;
 
                 this.state.direction = this.state.sort === column && this.state.direction === 'asc' ? 'desc' : 'asc';
@@ -98,6 +119,101 @@ export class DataTable {
         });
     }
 
+    /**
+     * Sürükle-bırak sıralama modu. Açıkken arama/filtre/sayfalama/sütun
+     * sıralaması devre dışı kalır, tüm kayıtlar sort_order'a göre tek
+     * sayfada gösterilir; her bırakışta sıra kaydedilir.
+     */
+    bindReorder() {
+        this.reorderConfig.button.addEventListener('click', () => this.toggleReorder());
+    }
+
+    async toggleReorder() {
+        this.reordering = ! this.reordering;
+        this.setReorderButton();
+        this.setControlsDisabled(this.reordering);
+
+        if (this.reordering) {
+            await this.loadForReorder();
+            await this.enableSortable();
+
+            return;
+        }
+
+        this.disableSortable();
+        this.state.page = 1;
+        this.load();
+    }
+
+    setReorderButton() {
+        const icon = this.reordering ? REORDER_ICON_ON : REORDER_ICON_OFF;
+        const label = this.reordering ? 'Sıralamayı Bitir' : 'Sıralama Modu';
+
+        this.reorderConfig.button.innerHTML =
+            `<i class="material-symbols-outlined !text-[19px]">${icon}</i> ${label}`;
+    }
+
+    setControlsDisabled(disabled) {
+        if (this.options.search) {
+            this.options.search.disabled = disabled;
+        }
+
+        Object.values(this.filters).forEach((element) => {
+            element.disabled = disabled;
+        });
+
+        this.pagination.classList.toggle('hidden', disabled);
+
+        this.table?.querySelectorAll('thead [data-column]').forEach((header) => {
+            header.classList.toggle('pointer-events-none', disabled);
+            header.classList.toggle('opacity-50', disabled);
+        });
+
+        this.table?.querySelectorAll('[data-reorder-column]').forEach((element) => {
+            element.classList.toggle('hidden', ! disabled);
+        });
+    }
+
+    /** Sıralama modunda tüm kayıtlar tek seferde, sort_order'a göre gelir. */
+    async loadForReorder() {
+        try {
+            const { data } = await http.get(this.options.endpoint, { per_page: 1000, sort: 'sort_order', direction: 'asc' });
+
+            this.body.innerHTML = (data ?? []).map((item, index) => this.options.row(item, index)).join('');
+        } catch (error) {
+            toast.error(error instanceof HttpError ? error.message : 'Liste yüklenemedi.');
+        }
+    }
+
+    async enableSortable() {
+        const { default: Sortable } = await import('../vendor/sortablejs/sortable.esm.js');
+
+        this.sortable = Sortable.create(this.body, {
+            handle: '[data-reorder-handle]',
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            chosenClass: 'sortable-chosen',
+            dragClass: 'sortable-drag',
+            onEnd: () => this.saveOrder(),
+        });
+    }
+
+    disableSortable() {
+        this.sortable?.destroy();
+        this.sortable = null;
+    }
+
+    async saveOrder() {
+        const ids = [...this.body.querySelectorAll('[data-id]')].map((row) => Number(row.dataset.id));
+
+        try {
+            await http.put(this.reorderConfig.endpoint, { ids });
+            toast.success('Sıralama güncellendi.');
+        } catch (error) {
+            toast.error(error instanceof HttpError ? error.message : 'Sıralama kaydedilemedi.');
+        }
+    }
+
     params() {
         const params = { ...this.state };
 
@@ -108,9 +224,13 @@ export class DataTable {
         return params;
     }
 
-    /** Filtreleri ve sayfayı sıfırlamadan mevcut görünümü tazeler. */
+    /**
+     * Filtreleri ve sayfayı sıfırlamadan mevcut görünümü tazeler. Sıralama
+     * modu açıkken de o görünümde kalır — örn. modaldan yeni kayıt eklenirse
+     * paginasyona düşmez, listenin sonunda görünür.
+     */
     reload() {
-        return this.load();
+        return this.reordering ? this.loadForReorder() : this.load();
     }
 
     async load() {
@@ -192,3 +312,13 @@ export class DataTable {
 
 /** Satır render'ında hücre yazmayı kısaltır. */
 export const cell = (content, extra = '') => `<td class="${CELL} ${extra}">${content}</td>`;
+
+/**
+ * `reorder` seçeneğini kullanan tablolarda satırın ilk hücresi bu olmalı.
+ * Sıralama modu kapalıyken gizli durur (`data-reorder-column`); `core/table.js`
+ * moda girince gösterir. Tutamaç ikonu `data-reorder-handle` — SortableJS
+ * sürüklemeyi yalnızca bu ikondan başlatır, satırın geri kalanı tıklanabilir kalır.
+ */
+export const reorderHandle = () => `<td data-reorder-column class="hidden w-[36px] ${CELL}">
+    <i data-reorder-handle class="material-symbols-outlined !text-[19px] text-gray-400 cursor-grab active:cursor-grabbing">drag_indicator</i>
+</td>`;

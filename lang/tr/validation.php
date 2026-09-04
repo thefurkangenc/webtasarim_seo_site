@@ -228,6 +228,8 @@ return [
         'input.category' => 'kategori',
         'input.length' => 'uzunluk',
         'input.notes' => 'ek notlar',
+        'ids' => 'kayıtlar',
+        'ids.*' => 'kayıt',
     ],
 
 ];

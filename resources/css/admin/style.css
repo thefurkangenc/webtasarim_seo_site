@@ -1832,3 +1832,26 @@ span.flatpickr-weekday {
 input.flatpickr-alt-input {
     @apply w-full;
 }
+
+/** ==========================================================================
+ * SortableJS — sürükle-bırak sıralama modu
+ * ========================================================================== */
+
+/* Sürüklenen satırın bıraktığı boşluk. */
+tr.sortable-ghost {
+    @apply bg-primary-50 dark:bg-[#15203c] opacity-70;
+
+    td {
+        @apply border-b-primary-100 dark:border-b-[#172036];
+    }
+}
+
+/* Tutamaçtan basılı tutulan, henüz sürüklenmeye başlamamış satır. */
+tr.sortable-chosen {
+    @apply bg-gray-50 dark:bg-[#15203c];
+}
+
+/* Fare imleciyle birlikte hareket eden kopya. */
+tr.sortable-drag {
+    @apply bg-white dark:bg-[#0c1427] shadow-3xl;
+}

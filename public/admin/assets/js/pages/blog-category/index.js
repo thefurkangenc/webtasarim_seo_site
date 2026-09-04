@@ -4,7 +4,7 @@ import { confirm } from '../../core/confirm.js';
 import { escapeHtml, http, HttpError } from '../../core/http.js';
 import { AjaxModal } from '../../core/modal.js';
 import { initSeoFields } from '../../core/seo-field.js';
-import { cell, DataTable } from '../../core/table.js';
+import { cell, DataTable, reorderHandle } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
 
 const modal = new AjaxModal();
@@ -25,11 +25,15 @@ const table = new DataTable({
     sort: 'sort_order',
     direction: 'asc',
     empty: 'Henüz kategori eklenmedi.',
-    row: (item) => `<tr>
+    reorder: {
+        button: document.getElementById('category-reorder'),
+        endpoint: '/admin/blog-category/reorder',
+    },
+    row: (item) => `<tr data-id="${item.id}">
+        ${reorderHandle()}
         ${cell(`<span class="font-medium">${escapeHtml(item.name)}</span>`)}
         ${cell(`<code class="text-xs">${escapeHtml(item.slug)}</code>`)}
         ${cell(item.blogs_count)}
-        ${cell(item.sort_order)}
         ${cell(item.is_active ? badge('aktif', 'success') : badge('pasif', 'danger'))}
         ${cell(`<div class="flex items-center gap-[9px]">
             <button type="button" data-edit="${item.id}" title="Düzenle" class="text-gray-500 dark:text-gray-400 leading-none transition-all hover:text-primary-500">
@@ -45,7 +49,7 @@ const table = new DataTable({
 async function open(id = null) {
     await modal.open(`/admin/blog-category/form/${id ?? ''}`, {
         title: id ? 'Kategoriyi Düzenle' : 'Yeni Kategori',
-        width: 'max-w-[680px]',
+        width: 'max-w-[1200px]',
     });
 
     // SEO bileşeni modal gövdesiyle birlikte geldi; sayaç ve önizlemeyi kur.

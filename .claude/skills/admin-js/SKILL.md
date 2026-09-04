@@ -261,6 +261,7 @@ Bu dosya 40-60 satırda bitmelidir. Uzuyorsa ağır iş `core/`'a taşınmalıd�
 | `core/ai-generator.js` | `aiGenerator.open(key, { defaults })` → `Promise<object\|null>`. Üretimi kuyruğa atar, durumu sorar, JSON çıktıyı döndürür. |
 | `core/select.js` | `[data-choices]` select'lerini Choices.js'e çevirir — form component'i bunu otomatik ekler. |
 | `core/datepicker.js` | `[data-datepicker]` alanlarını Flatpickr'a çevirir (Türkçe, `altInput`). |
+| `core/table.js` `reorder` seçeneği + `reorderHandle()` | `DataTable`'a sürükle-bırak sıralama ekler — bkz. trezo-ui skill'i "Sürükle-bırak sıralama". |
 
 ```js
 const output = await aiGenerator.open('blog.content', { defaults: { title } });

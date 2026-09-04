@@ -3,6 +3,7 @@
 namespace App\Services\BlogCategory;
 
 use App\Models\BlogCategory\BlogCategory;
+use App\Services\Concerns\ReordersRecords;
 use App\Support\Slug;
 use DomainException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -10,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 
 class BlogCategoryService
 {
+    use ReordersRecords;
+
     public function list(array $filters): LengthAwarePaginator
     {
         return BlogCategory::query()
@@ -68,8 +71,12 @@ class BlogCategoryService
         return [
             'name' => $data['name'],
             'description' => $data['description'] ?? null,
-            'sort_order' => $data['sort_order'] ?? 0,
             'is_active' => (bool) ($data['is_active'] ?? true),
         ];
+    }
+
+    protected function reorderModel(): string
+    {
+        return BlogCategory::class;
     }
 }

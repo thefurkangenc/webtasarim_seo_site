@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\BlogCategory\BlogCategoryCreateRequest;
 use App\Http\Requests\Admin\BlogCategory\BlogCategoryFilterRequest;
 use App\Http\Requests\Admin\BlogCategory\BlogCategoryUpdateRequest;
+use App\Http\Requests\Admin\ReorderRequest;
 use App\Models\BlogCategory\BlogCategory;
 use App\Services\BlogCategory\BlogCategoryService;
 use Illuminate\Http\JsonResponse;
@@ -51,5 +52,13 @@ class BlogCategoryController extends Controller
         $this->service->delete($category);
 
         return $this->success('Kategori silindi.');
+    }
+
+    /** Sürükle-bırak sıralama modunun kaydettiği sıra. */
+    public function reorder(ReorderRequest $request): JsonResponse
+    {
+        $this->service->reorder($request->validated('ids'));
+
+        return $this->success('Sıralama güncellendi.');
     }
 }

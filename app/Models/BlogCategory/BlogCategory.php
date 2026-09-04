@@ -4,6 +4,7 @@ namespace App\Models\BlogCategory;
 
 use App\Models\Blog\Blog;
 use App\Models\Concerns\HasSeo;
+use App\Models\Concerns\HasSortOrder;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[Fillable(['name', 'slug', 'description', 'sort_order', 'is_active'])]
 class BlogCategory extends Model
 {
-    use HasSeo;
+    use HasSeo, HasSortOrder;
 
     /** @return array<string, string> */
     protected function casts(): array

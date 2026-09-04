@@ -386,6 +386,8 @@ Kural: serviste `validated()` çıktısındaki her **nullable** alanı `?? null`
 | `App\Support\Slug` | `Slug::unique($deger, $tablo, $ignoreId)` — Türkçe slug, çakışmada `-2` |
 | `App\Http\Requests\Concerns\ValidatesSharedFields` | `seoRules()` ve `tagRules()` |
 | `App\Models\Concerns\HasSeo` / `HasTags` / `HasMedia` | polymorphic bağlar |
+| `App\Models\Concerns\HasSortOrder` + `App\Services\Concerns\ReordersRecords` | sürükle-bırak sıralama — model otomatik sıra alır, servis `reorder()` alır. `sort_order` formda **yer almaz**, `attributes()`'a eklenmez. |
+| `App\Http\Requests\Admin\ReorderRequest` | tüm modüllerin `reorder` uç noktası bunu kullanır, ayrı Request açılmaz |
 
 Create/Update Request'leri: kurallar aynıysa Update, Create'i **extend eder**;
 benzersizlik kuralı `->ignore($this->route('blog'))` ile ekleme sırasında da

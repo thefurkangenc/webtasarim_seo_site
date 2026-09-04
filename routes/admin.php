@@ -83,6 +83,9 @@ Route::middleware('auth')->group(function () {
         Route::get('datatable', 'datatable')->name('datatable')->middleware('permission:blog-category.view');
         Route::get('form/{category?}', 'form')->name('form')->middleware('permission:blog-category.view');
         Route::post('/', 'store')->name('store')->middleware('permission:blog-category.create');
+        // 'reorder' sabit segmenti, aşağıdaki {category} joker'ından ÖNCE
+        // tanımlanmalı — aksi halde 'reorder' bir kategori kimliği sanılır.
+        Route::put('reorder', 'reorder')->name('reorder')->middleware('permission:blog-category.update');
         Route::put('{category}', 'update')->name('update')->middleware('permission:blog-category.update');
         Route::delete('{category}', 'destroy')->name('destroy')->middleware('permission:blog-category.delete');
     });

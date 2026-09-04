@@ -134,6 +134,83 @@ Kart kabuğu class'ı sabittir:
 - `<tbody>` boş bırakılır, satırlar JS ile basılır.
 - İlk `<th>`'ye `first:rounded-tl-md`, son `<th>`'ye `last:rounded-tr-md`.
 
+### Sürükle-bırak sıralama
+
+Bir modülün liste sırası kullanıcı tarafından elle belirlenecekse (`sort_order`
+kolonu var, formda **girilmez**) bu kalıp kullanılır — blog kategori bunun
+referans uygulamasıdır.
+
+**Model:** `use HasSortOrder;` (`App\Models\Concerns\HasSortOrder`) — yeni
+kayıt otomatik `max(sort_order)+1` alır. Kapsamlı sıralama gerekiyorsa
+(örn. klasör içi) `sortOrderScope()` ezilir.
+
+**Servis:** `use ReordersRecords;` (`App\Services\Concerns\ReordersRecords`)
++ `protected function reorderModel(): string { return Model::class; }`.
+`attributes()` metodunda `sort_order` **hiç geçmez** — formdan gelmiyor,
+dokunulmazsa update sıfırlamaz.
+
+**Request:** modül başına ayrı Request açılmaz, hepsi
+`App\Http\Requests\Admin\ReorderRequest`'i kullanır (`ids: int[]`).
+
+**Route:** sabit `reorder` segmenti, `{model}` joker'ından **önce**
+tanımlanır — aksi halde "reorder" bir kimlik sanılır:
+
+```php
+Route::put('reorder', 'reorder')->name('reorder')->middleware('permission:blog-category.update');
+Route::put('{category}', 'update')->name('update')->middleware('permission:blog-category.update');
+```
+
+**Controller:**
+
+```php
+public function reorder(ReorderRequest $request): JsonResponse
+{
+    $this->service->reorder($request->validated('ids'));
+    return $this->success('Sıralama güncellendi.');
+}
+```
+
+**Blade — tabloya iki şey eklenir:**
+
+1. `<thead>`'de en solda gizli bir tutamaç kolonu:
+   ```blade
+   <th data-reorder-column class="hidden font-medium px-[20px] py-[11px] bg-gray-50 dark:bg-[#15203c] w-[36px] first:rounded-tl-md"></th>
+   ```
+2. Butonlar satırına bir "Sıralama Modu" butonu (`is-outline` stil, sadece
+   `update` iznine sahip kullanıcıya):
+   ```blade
+   <button type="button" id="category-reorder" class="inline-flex items-center gap-[6px] py-[9px] px-[18px] text-black dark:text-white transition-all rounded-md border border-gray-200 dark:border-[#172036] hover:bg-gray-50 dark:hover:bg-[#15203c]">
+       <i class="material-symbols-outlined !text-[19px]">drag_indicator</i> Sıralama Modu
+   </button>
+   ```
+
+**Sayfa JS — `DataTable`'a `reorder` verilir, satıra `data-id` ve
+`reorderHandle()` eklenir:**
+
+```js
+import { cell, DataTable, reorderHandle } from '../../core/table.js';
+
+const table = new DataTable({
+    endpoint: '/admin/blog-category/datatable',
+    body: document.getElementById('category-table-body'),
+    reorder: {
+        button: document.getElementById('category-reorder'),
+        endpoint: '/admin/blog-category/reorder',
+    },
+    row: (item) => `<tr data-id="${item.id}">
+        ${reorderHandle()}
+        ${cell(...)}
+    </tr>`,
+});
+```
+
+Geri kalanı `core/table.js` hallediyor: buton tıklanınca tüm kayıtları
+(sayfalamadan) `sort_order`'a göre çeker, arama/filtre/sayfalama/sütun
+sıralamasını devre dışı bırakır, tutamaç kolonunu gösterir, SortableJS'i
+tembel yükler ve her bırakışta `reorder` uç noktasına tek istek atar. Yeni
+bir modülde sürükle-bırak istendiğinde **yalnızca yukarıdaki 6 parça**
+eklenir — `core/table.js`'e dokunulmaz.
+
 ## Form alanları
 
 **Standart boy `h-[42px]`, `text-sm`, `px-[14px]`** — Trezo template'inin kendi

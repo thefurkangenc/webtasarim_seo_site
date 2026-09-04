@@ -37,6 +37,14 @@
                     <option value="0">Pasif</option>
                 </select>
 
+                @can('blog-category.update')
+                    <button type="button" id="category-reorder"
+                        class="inline-flex items-center gap-[6px] py-[9px] px-[18px] text-black dark:text-white transition-all rounded-md border border-gray-200 dark:border-[#172036] hover:bg-gray-50 dark:hover:bg-[#15203c]">
+                        <i class="material-symbols-outlined !text-[19px]">drag_indicator</i>
+                        Sıralama Modu
+                    </button>
+                @endcan
+
                 @can('blog-category.create')
                     <button type="button" id="category-create"
                         class="inline-flex items-center gap-[6px] py-[9px] px-[20px] bg-primary-500 text-white transition-all hover:bg-primary-400 rounded-md border border-primary-500 hover:border-primary-400">
@@ -52,6 +60,10 @@
                 <table class="w-full">
                     <thead class="text-black dark:text-white">
                         <tr>
+                            {{-- Sıralama modunda görünür; core/table.js açar/kapar. --}}
+                            <th data-reorder-column
+                                class="hidden font-medium px-[20px] py-[11px] bg-gray-50 dark:bg-[#15203c] whitespace-nowrap w-[36px] first:rounded-tl-md">
+                            </th>
                             <th class="font-medium ltr:text-left rtl:text-right px-[20px] py-[11px] bg-gray-50 dark:bg-[#15203c] whitespace-nowrap first:rounded-tl-md cursor-pointer relative" data-column="name">
                                 Ad <i class="ri-expand-up-down-fill text-gray-500 dark:text-gray-400"></i>
                             </th>
@@ -60,9 +72,6 @@
                             </th>
                             <th class="font-medium ltr:text-left rtl:text-right px-[20px] py-[11px] bg-gray-50 dark:bg-[#15203c] whitespace-nowrap">
                                 Yazı
-                            </th>
-                            <th class="font-medium ltr:text-left rtl:text-right px-[20px] py-[11px] bg-gray-50 dark:bg-[#15203c] whitespace-nowrap cursor-pointer relative" data-column="sort_order">
-                                Sıra <i class="ri-expand-up-down-fill text-gray-500 dark:text-gray-400"></i>
                             </th>
                             <th class="font-medium ltr:text-left rtl:text-right px-[20px] py-[11px] bg-gray-50 dark:bg-[#15203c] whitespace-nowrap">
                                 Durum

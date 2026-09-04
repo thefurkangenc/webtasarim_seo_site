@@ -2081,9 +2081,6 @@
   .max-w-\[620px\] {
     max-width: 620px;
   }
-  .max-w-\[680px\] {
-    max-width: 680px;
-  }
   .max-w-\[720px\] {
     max-width: 720px;
   }
@@ -2098,6 +2095,9 @@
   }
   .max-w-\[1100px\] {
     max-width: 1100px;
+  }
+  .max-w-\[1200px\] {
+    max-width: 1200px;
   }
   .max-w-full {
     max-width: 100%;
@@ -2172,6 +2172,9 @@
   }
   .animate-spin {
     animation: var(--animate-spin);
+  }
+  .cursor-grab {
+    cursor: grab;
   }
   .cursor-grabbing {
     cursor: grabbing;
@@ -4085,6 +4088,9 @@
   .opacity-40 {
     opacity: 40%;
   }
+  .opacity-50 {
+    opacity: 50%;
+  }
   .opacity-60 {
     opacity: 60%;
   }
@@ -4529,6 +4535,9 @@
   }
   .focus\:border-primary-500:focus {
     border-color: var(--color-primary-500);
+  }
+  .active\:cursor-grabbing:active {
+    cursor: grabbing;
   }
   .disabled\:pointer-events-none:disabled {
     pointer-events: none;
@@ -11388,6 +11397,33 @@ span.flatpickr-weekday {
 }
 input.flatpickr-alt-input {
   width: 100%;
+}
+tr.sortable-ghost {
+  background-color: var(--color-primary-50);
+  opacity: 70%;
+  &:where([class=dark], [class=dark] *) {
+    background-color: #15203c;
+  }
+  td {
+    border-bottom-color: var(--color-primary-100);
+    &:where([class=dark], [class=dark] *) {
+      border-bottom-color: #172036;
+    }
+  }
+}
+tr.sortable-chosen {
+  background-color: var(--color-gray-50);
+  &:where([class=dark], [class=dark] *) {
+    background-color: #15203c;
+  }
+}
+tr.sortable-drag {
+  background-color: var(--color-white);
+  --tw-shadow: var(--tw-shadow-color, rgba(149, 157, 165, 0.2)) 0px 8px 24px;
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  &:where([class=dark], [class=dark] *) {
+    background-color: #0c1427;
+  }
 }
 @property --tw-translate-x {
   syntax: "*";

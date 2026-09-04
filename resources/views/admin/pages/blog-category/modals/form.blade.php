@@ -8,15 +8,9 @@
     <x-admin::form.textarea name="description" label="Açıklama" rows="3"
         :value="$category?->description" class="h-[90px]" />
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-[15px]">
-        <x-admin::form.input name="sort_order" type="number" label="Sıra"
-            :value="$category?->sort_order ?? 0" min="0" wrapper="mb-[20px] md:mb-[25px]" />
-
-        <div class="flex items-end pb-[8px]">
-            <x-admin::form.switch name="is_active" label="Aktif"
-                :checked="$category?->is_active ?? true" wrapper="" />
-        </div>
-    </div>
+    {{-- Sıra artık formdan girilmez: yeni kayıt otomatik en sona eklenir,
+         sırayı değiştirmek için liste sayfasındaki "Sıralama Modu" kullanılır. --}}
+    <x-admin::form.switch name="is_active" label="Aktif" :checked="$category?->is_active ?? true" />
 
     <details class="mb-[20px] md:mb-[25px] rounded-md border border-gray-100 dark:border-[#172036]">
         <summary class="cursor-pointer select-none px-[15px] py-[12px] font-medium text-black dark:text-white flex items-center gap-[8px]">
