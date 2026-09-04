@@ -25,9 +25,12 @@ public/admin/assets/js/
         table.js              DataTable
         toast.js              bildirim
         confirm.js            silme onayı
+        prompt.js             tek satır metin girişi (confirm.js kalıbı)
+        folder-picker.js      "Taşı" diyaloğundaki klasör ağacı seçici
+        media-preview.js      dosyaya çift tıklayınca açılan popup önizleme
         cropper.js            kırpma modalı
-        media-browser.js      klasör + ızgara tarayıcı
-        media-picker.js       kütüphaneden seçme modalı
+        media-browser.js      dosya yöneticisi (breadcrumb, context menu, sürükle-taşı, çoklu seçim)
+        media-picker.js       kütüphaneden seçme modalı (media-browser.js'i modalda sürer)
         media-field.js        <x-admin::form.image> davranışı (layout'ta yüklü)
     pages/
         blog/
@@ -166,6 +169,14 @@ const crop = await cropModal.open(file, { preset: 'blog.cover', width: 1200, hei
 Cropper.js ilk kullanımda tembel yüklenir. Sunucu bu koordinatları
 `rotate → flip → crop` sırasıyla uygular; sıra değiştirilirse çıktı bozulur.
 
+Modal araç çubuğu: zoom-in/zoom-out butonları + bir zoom slider'ı
+(`data-crop-zoom-range`, fare tekerleği/pinch zoom ile de senkron kalır),
+90° sağ/sol döndürme, yatay/dikey çevirme, seçim kutusunu zoom'a dokunmadan
+ortalayan `center`, ve tam sıfırlama (`reset`). `open(file, options)`'a
+verilen `file` her zaman kırpımın **kaynağı** olmalı — kırpılmış bir sonucu
+tekrar bu fonksiyona verirsen (bkz. `media-field.js`'teki `onRecrop` notu)
+her seferinde biraz daha fazla kırpar.
+
 ### media-picker.js / media-browser.js
 
 ```js
@@ -173,6 +184,26 @@ const media = await mediaPicker.open();      // seçilen medya payload'ı ya da 
 
 new MediaBrowser(root, { onSelect, onOpen }); // browser.blade.php markup'ını sürer
 ```
+
+`MediaBrowser` bir dosya yöneticisidir — sidebar klasör ağacı yok, klasörler
+dosyalarla aynı ızgarada kart, gezinme `this.path` (breadcrumb) state'i ile
+istemci tarafında tutulur. Klasör listesi `GET /admin/media/folders?parent_id=`
+(tek seviye, `MediaFolderService::children()`), "Taşı" diyaloğu tam ağacı
+`GET /admin/media/folders/tree`'den çeker. Çoklu seçim `this.selection`
+(`Set<'folder:5'|'media:12'>`), toplu taşıma/silme sunucuda
+`POST /admin/media/bulk-move` / `bulk-delete` — ikisi de `{media: [], folders:
+[]}` alır, dolu bir klasör silinmeye çalışılırsa güvenlik kuralı gereği
+atlanır ve `skipped` dizisinde sebebiyle raporlanır (bkz.
+`MediaFolderService::delete()` — istemci bunu önceden tahmin etmeye
+çalışmaz, sunucu cevabına güvenir).
+
+Sağ tık `contextmenu` olayını dinler, `openMenu()` hedefe göre (boş alan /
+tek klasör / tek dosya / çoklu seçim) farklı bir aksiyon listesi kurar.
+Sürükle-taşı `dragstart`'ta seçili öğeleri `application/x-media-items`
+mime type'ıyla `dataTransfer`'a yazar; bir klasör kartı veya breadcrumb
+kırıntısı bunu `drop`'ta yakalayıp `bulk-move` çağırır — işletim sisteminden
+gelen gerçek dosya sürüklemesi (`Files` type) ayrı bir dropzone handler'ında
+kalır, ikisi karışmaz.
 
 ### media-field.js
 
@@ -190,6 +221,13 @@ custom event'i fırlatılır (`bubbles: true`, `detail` = medya payload'ı ya da
 doldurmak isterse `setFieldMedia(root, media)` export'unu kullanır —
 `core/seo-field.js`'in kapak görselinden paylaşım görselini eşzamanlı
 doldurması bunun üzerine kurulu.
+
+`render()` her çağrıda `[data-media-actions]`'ın `grid-cols-2`/`grid-cols-3`
+sınıfını ve `[data-media-image]`'in `data-original` attribute'unu yeniden
+hesaplar — ikisi de blade'in ilk render'ıyla aynı mantığı takip eder (bkz.
+`trezo-ui` skill'inin "Görsel alanı önizlemesi" bölümü). Yeni bir `media`
+payload alanı eklersen (ör. sunucudan) `Media::toPayload()` üzerinden geçtiği
+için ekstra bir kablolamaya gerek kalmaz.
 
 ### toast.js / confirm.js
 

@@ -15,6 +15,7 @@
     $size = $preset ? (config('media.presets', [])[$preset] ?? null) : null;
     $accepts = collect(config('media.accepts'))->map(fn ($e) => ".{$e}")->implode(',');
     $field = \App\Support\Field::name($name);
+    $showRecrop = $media && $media->original_path && $size;
 @endphp
 
 <div class="{{ $wrapper }}">
@@ -40,7 +41,7 @@
 
             <div data-media-preview class="{{ $media ? '' : 'hidden' }} absolute inset-0">
                 <img data-media-image class="w-full h-full object-cover"
-                    src="{{ $media?->url('medium') }}" data-original="{{ $media?->url() }}"
+                    src="{{ $media?->url('medium') }}" data-original="{{ $media?->originalUrl() }}"
                     alt="{{ $media?->alt }}">
                 <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all pointer-events-none"></div>
             </div>
@@ -69,6 +70,16 @@
                     <i class="material-symbols-outlined animate-spin !text-[20px]">progress_activity</i> Yükleniyor...
                 </span>
             </div>
+
+            {{-- Kaldır: çerçevenin sağ üst köşesinde, sadece ikon, kırmızı.
+                 'flex' kullanılıyor — 'inline-flex' compiled CSS'te 'hidden'den
+                 SONRA geliyor, aynı önceliğe sahip iki kuralda kaynak sırası
+                 kazanır; 'hidden inline-flex' birlikte kullanılırsa buton görünür
+                 kalırdı (yaşanan hata buydu). 'flex' ise 'hidden'den önce gelir. --}}
+            <button type="button" data-media-action="remove"
+                class="{{ $media ? '' : 'hidden' }} absolute top-[8px] right-[8px] z-[3] w-[28px] h-[28px] flex items-center justify-center rounded-md bg-danger-500 text-white transition-all hover:bg-danger-600 shadow-3xl">
+                <i class="material-symbols-outlined !text-[16px]">delete</i>
+            </button>
         </div>
 
         {{-- Boşken hedef boyut zaten dropzone içinde yazıyor; tekrar etmesin. --}}
@@ -78,27 +89,23 @@
             @endif
         </p>
 
-        {{-- Yalnızca görsel varken görünür; boşken tıklama/sürükleme zaten üstteki
-             dropzone'dan yapılır. --}}
-        <div data-media-actions class="{{ $media ? '' : 'hidden' }} flex items-center gap-[6px] flex-wrap mt-[10px]">
+        {{-- Boşken 2, yeniden kırp mümkünken 3 eşit genişlikte sütun. --}}
+        <div data-media-actions
+            class="{{ $showRecrop ? 'grid-cols-3' : 'grid-cols-2' }} grid gap-[8px] mt-[10px]">
             <button type="button" data-media-action="select"
-                class="inline-flex items-center gap-[5px] py-[7px] px-[14px] text-xs text-black dark:text-white transition-all rounded-md border border-gray-200 dark:border-[#172036] hover:bg-gray-50 dark:hover:bg-[#15203c]">
-                <i class="material-symbols-outlined !text-[16px]">upload</i> Değiştir
+                class="inline-flex items-center justify-center gap-[5px] py-[8px] px-[10px] text-xs text-black dark:text-white transition-all rounded-md border border-gray-200 dark:border-[#172036] hover:bg-gray-50 dark:hover:bg-[#15203c]">
+                <i class="material-symbols-outlined !text-[16px]">upload</i>
+                <span data-media-select-label>{{ $media ? 'Değiştir' : 'Dosya Seç' }}</span>
             </button>
 
             <button type="button" data-media-action="library"
-                class="inline-flex items-center gap-[5px] py-[7px] px-[14px] text-xs text-black dark:text-white transition-all rounded-md border border-gray-200 dark:border-[#172036] hover:bg-gray-50 dark:hover:bg-[#15203c]">
+                class="inline-flex items-center justify-center gap-[5px] py-[8px] px-[10px] text-xs text-black dark:text-white transition-all rounded-md border border-gray-200 dark:border-[#172036] hover:bg-gray-50 dark:hover:bg-[#15203c]">
                 <i class="material-symbols-outlined !text-[16px]">photo_library</i> Kütüphaneden Seç
             </button>
 
             <button type="button" data-media-action="recrop"
-                class="{{ $media?->original_path && $size ? '' : 'hidden' }} inline-flex items-center gap-[5px] py-[7px] px-[14px] text-xs text-black dark:text-white transition-all rounded-md border border-gray-200 dark:border-[#172036] hover:bg-gray-50 dark:hover:bg-[#15203c]">
+                class="{{ $showRecrop ? '' : 'hidden' }} flex items-center justify-center gap-[5px] py-[8px] px-[10px] text-xs text-black dark:text-white transition-all rounded-md border border-gray-200 dark:border-[#172036] hover:bg-gray-50 dark:hover:bg-[#15203c]">
                 <i class="material-symbols-outlined !text-[16px]">crop</i> Yeniden Kırp
-            </button>
-
-            <button type="button" data-media-action="remove"
-                class="inline-flex items-center gap-[5px] py-[7px] px-[14px] text-xs text-danger-500 transition-all rounded-md border border-gray-200 dark:border-[#172036] hover:bg-danger-100 dark:hover:bg-[#15203c] ltr:ml-auto rtl:mr-auto">
-                <i class="material-symbols-outlined !text-[16px]">close</i> Kaldır
             </button>
         </div>
     </div>

@@ -21,7 +21,6 @@
     <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
         <div class="trezo-card-content">
             @include('admin.pages.media.partials.browser', [
-                'folders' => $folders,
                 'selectable' => false,
                 'manageable' => true,
             ])

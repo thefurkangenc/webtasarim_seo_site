@@ -30,10 +30,10 @@ function ensureCropper() {
     return cropperLoader;
 }
 
-const TOOL = 'w-[36px] h-[36px] inline-flex items-center justify-center rounded-md border border-gray-200 dark:border-[#172036] text-black dark:text-white transition-all hover:bg-primary-500 hover:text-white hover:border-primary-500 disabled:opacity-40';
+const TOOL = 'w-[36px] h-[36px] inline-flex items-center justify-center rounded-md bg-white dark:bg-[#0c1427] border border-gray-200 dark:border-[#172036] text-black dark:text-white transition-all hover:bg-primary-500 hover:text-white hover:border-primary-500 disabled:opacity-40';
 
 const TEMPLATE = `
-<div class="popup-dialog flex transition-all max-w-[1100px] min-h-full items-center mx-auto">
+<div class="popup-dialog flex transition-all max-w-[1320px] min-h-full items-center mx-auto">
     <div class="trezo-card w-full bg-white dark:bg-[#0c1427] p-[20px] md:p-[25px] rounded-md">
 
         <div class="trezo-card-header bg-gray-50 dark:bg-[#15203c] mb-[20px] flex items-center justify-between -mx-[20px] md:-mx-[25px] -mt-[20px] md:-mt-[25px] p-[20px] md:p-[25px] rounded-t-md">
@@ -48,10 +48,10 @@ const TEMPLATE = `
         </div>
 
         <div class="trezo-card-content">
-            <div class="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-[20px]">
+            <div class="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-[20px]">
 
                 <div class="bg-[#0a0e19] rounded-md overflow-hidden border border-gray-100 dark:border-[#172036]">
-                    <div class="h-[460px] flex items-center justify-center">
+                    <div class="h-[540px] flex items-center justify-center">
                         <img data-crop-image alt="" class="max-w-full block">
                     </div>
                 </div>
@@ -71,10 +71,15 @@ const TEMPLATE = `
                             <span class="text-gray-500 dark:text-gray-400 text-xs">Çıktı</span>
                             <strong data-crop-output class="text-xs text-black dark:text-white">—</strong>
                         </div>
-                        <div class="flex items-center justify-between px-[12px] py-[8px]">
+                    </div>
+
+                    <div class="rounded-md border border-gray-100 dark:border-[#172036] p-[12px]">
+                        <div class="flex items-center justify-between mb-[8px]">
                             <span class="text-gray-500 dark:text-gray-400 text-xs">Yakınlaştırma</span>
                             <strong data-crop-zoom class="text-xs text-black dark:text-white">100%</strong>
                         </div>
+                        <input type="range" data-crop-zoom-range min="0" max="3" step="0.01" value="0"
+                            class="w-full h-[4px] rounded-full appearance-none cursor-pointer bg-gray-200 dark:bg-[#172036] accent-primary-500">
                     </div>
 
                     <p data-crop-warning class="hidden text-[11px] leading-[1.5] text-warning-600 bg-warning-100 dark:bg-[#ffffff14] rounded-md px-[10px] py-[8px]"></p>
@@ -82,8 +87,8 @@ const TEMPLATE = `
             </div>
 
             <div class="mt-[20px] flex items-center gap-[6px] flex-wrap bg-gray-50 dark:bg-[#15203c] rounded-md p-[10px]">
-                <button type="button" data-crop-tool="zoom-in"  title="Yakınlaştır"        class="${TOOL}"><i class="material-symbols-outlined !text-[19px]">zoom_in</i></button>
                 <button type="button" data-crop-tool="zoom-out" title="Uzaklaştır"         class="${TOOL}"><i class="material-symbols-outlined !text-[19px]">zoom_out</i></button>
+                <button type="button" data-crop-tool="zoom-in"  title="Yakınlaştır"        class="${TOOL}"><i class="material-symbols-outlined !text-[19px]">zoom_in</i></button>
                 <span class="w-px h-[24px] bg-gray-200 dark:bg-[#172036] mx-[4px]"></span>
                 <button type="button" data-crop-tool="rotate-left"  title="Sola döndür"    class="${TOOL}"><i class="material-symbols-outlined !text-[19px]">rotate_left</i></button>
                 <button type="button" data-crop-tool="rotate-right" title="Sağa döndür"    class="${TOOL}"><i class="material-symbols-outlined !text-[19px]">rotate_right</i></button>
@@ -91,7 +96,7 @@ const TEMPLATE = `
                 <button type="button" data-crop-tool="flip-x" title="Yatay çevir"          class="${TOOL}"><i class="material-symbols-outlined !text-[19px]">swap_horiz</i></button>
                 <button type="button" data-crop-tool="flip-y" title="Dikey çevir"          class="${TOOL}"><i class="material-symbols-outlined !text-[19px]">swap_vert</i></button>
                 <span class="w-px h-[24px] bg-gray-200 dark:bg-[#172036] mx-[4px]"></span>
-                <button type="button" data-crop-tool="fit"   title="Sığdır"                class="${TOOL}"><i class="material-symbols-outlined !text-[19px]">fit_screen</i></button>
+                <button type="button" data-crop-tool="center" title="Ortala"               class="${TOOL}"><i class="material-symbols-outlined !text-[19px]">filter_center_focus</i></button>
                 <button type="button" data-crop-tool="reset" title="Sıfırla"               class="${TOOL}"><i class="material-symbols-outlined !text-[19px]">restart_alt</i></button>
 
                 <span class="ltr:ml-auto rtl:mr-auto text-xs text-gray-500 dark:text-gray-400 hidden md:inline">
@@ -102,7 +107,7 @@ const TEMPLATE = `
 
         <div class="trezo-card-footer flex items-center justify-end gap-[12px] -mx-[20px] md:-mx-[25px] px-[20px] md:px-[25px] pt-[20px] mt-[20px] border-t border-gray-100 dark:border-[#172036]">
             <button type="button" data-crop-cancel
-                class="inline-block py-[10px] px-[30px] text-black dark:text-white transition-all rounded-md border border-gray-200 dark:border-[#172036] hover:bg-gray-50 dark:hover:bg-[#15203c]">
+                class="inline-block py-[10px] px-[30px] text-black dark:text-white transition-all rounded-md bg-gray-100 dark:bg-[#172036] border border-gray-200 dark:border-[#172036] hover:bg-gray-200 dark:hover:bg-[#1f2941]">
                 Vazgeç
             </button>
             <button type="button" data-crop-confirm
@@ -125,7 +130,7 @@ class CropModal {
     build() {
         const root = document.createElement('div');
         root.id = 'crop-modal';
-        root.className = 'add-new-popup z-[1002] fixed transition-all inset-0 overflow-x-hidden overflow-y-auto lg:py-[20px]';
+        root.className = 'add-new-popup z-[1005] fixed transition-all inset-0 overflow-x-hidden overflow-y-auto lg:py-[20px]';
         root.innerHTML = TEMPLATE;
         document.body.append(root);
 
@@ -146,6 +151,15 @@ class CropModal {
 
             if (event.target.closest('[data-crop-confirm]')) {
                 this.confirm();
+            }
+        });
+
+        // Slider fare ile sürüklenirken sürekli 'input' tetikler; anlık zoom.
+        root.addEventListener('input', (event) => {
+            const range = event.target.closest('[data-crop-zoom-range]');
+
+            if (range && this.cropper) {
+                this.cropper.zoomTo(Number(range.value));
             }
         });
 
@@ -190,11 +204,22 @@ class CropModal {
             'rotate-right': () => this.cropper.rotate(90),
             'flip-x': () => this.cropper.scaleX(-(this.cropper.getData().scaleX || 1)),
             'flip-y': () => this.cropper.scaleY(-(this.cropper.getData().scaleY || 1)),
-            fit: () => this.cropper.reset(),
+            center: () => this.centerCropBox(),
             reset: () => this.cropper.reset(),
         };
 
         actions[tool]?.();
+    }
+
+    /** Zoom/döndürmeye dokunmadan seçim kutusunu görünür alanın ortasına taşır. */
+    centerCropBox() {
+        const canvas = this.cropper.getCanvasData();
+        const box = this.cropper.getCropBoxData();
+
+        this.cropper.setCropBoxData({
+            left: canvas.left + (canvas.width - box.width) / 2,
+            top: canvas.top + (canvas.height - box.height) / 2,
+        });
     }
 
     /**
@@ -236,6 +261,7 @@ class CropModal {
             preview,
             crop: () => this.updateReadout(),
             ready: () => this.updateReadout(),
+            zoom: () => this.updateReadout(),
         });
 
         return new Promise((resolve) => {
@@ -250,10 +276,19 @@ class CropModal {
 
         const data = this.cropper.getData(true);
         const $ = (selector) => this.root.querySelector(selector);
+        const ratio = this.cropper.getImageData().width / this.cropper.getImageData().naturalWidth;
 
         $('[data-crop-selection]').textContent = `${data.width} × ${data.height} px`;
         $('[data-crop-output]').textContent = `${this.target.width} × ${this.target.height} px`;
-        $('[data-crop-zoom]').textContent = `${Math.round((this.cropper.getImageData().width / this.cropper.getImageData().naturalWidth) * 100)}%`;
+        $('[data-crop-zoom]').textContent = `${Math.round(ratio * 100)}%`;
+
+        // Slider'ı fare tekerleği/pinch ile yapılan zoom'a senkron tut — değer
+        // ataması 'input' olayı fırlatmaz, döngüye girmez.
+        const range = $('[data-crop-zoom-range]');
+
+        if (range && document.activeElement !== range) {
+            range.value = ratio;
+        }
 
         // Seçim hedeften küçükse sunucu büyütmek zorunda kalır — uyar.
         const warning = $('[data-crop-warning]');

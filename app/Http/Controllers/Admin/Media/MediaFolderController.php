@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Media;
 use App\Http\Controllers\Concerns\RespondsWithJson;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Media\MediaFolderCreateRequest;
+use App\Http\Requests\Admin\Media\MediaFolderFilterRequest;
 use App\Http\Requests\Admin\Media\MediaFolderUpdateRequest;
 use App\Models\Media\MediaFolder;
 use App\Services\Media\MediaFolderService;
@@ -16,7 +17,14 @@ class MediaFolderController extends Controller
 
     public function __construct(private readonly MediaFolderService $service) {}
 
-    public function index(): JsonResponse
+    /** Grid'in klasör kartları — verilen klasörün doğrudan çocukları. */
+    public function index(MediaFolderFilterRequest $request): JsonResponse
+    {
+        return $this->success(data: $this->service->children($request->validated('parent_id')));
+    }
+
+    /** "Taşı" diyalogundaki tam klasör ağacı. */
+    public function tree(): JsonResponse
     {
         return $this->success(data: $this->service->tree());
     }

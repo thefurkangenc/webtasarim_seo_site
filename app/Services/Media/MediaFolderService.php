@@ -8,12 +8,27 @@ use Illuminate\Database\Eloquent\Collection;
 
 class MediaFolderService
 {
-    /** Kök klasörler; alt klasörler `children` ile iç içe yüklenir. */
+    /**
+     * Kök klasörler; alt klasörler `children` ile iç içe yüklenir. "Taşı"
+     * diyalogundaki klasör ağacı bunu kullanır — grid'in kendisi artık
+     * `children()` ile tek seviye çeker, tüm ağacı bir kerede istemez.
+     */
     public function tree(): Collection
     {
         return MediaFolder::query()
             ->whereNull('parent_id')
-            ->with('children.children.children')
+            ->with('children.children.children.children.children')
+            ->withCount('media')
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+    }
+
+    /** Verilen klasörün doğrudan alt klasörleri — grid'deki klasör kartları bunu kullanır. */
+    public function children(?int $parentId): Collection
+    {
+        return MediaFolder::query()
+            ->where('parent_id', $parentId)
             ->withCount('media')
             ->orderBy('sort_order')
             ->orderBy('name')
@@ -51,6 +66,54 @@ class MediaFolderService
         }
 
         $folder->delete();
+    }
+
+    /**
+     * Çoklu seçimde silme — her klasör güvenlik kuralından tek tek geçer,
+     * dolu olan atlanır (toplu işlem yarıda kesilmez, atlananlar raporlanır).
+     *
+     * @param  array<int, int>  $ids
+     * @return array{deleted: int, skipped: array<int, array{name: string, reason: string}>}
+     */
+    public function deleteMany(array $ids): array
+    {
+        $deleted = 0;
+        $skipped = [];
+
+        foreach (MediaFolder::query()->whereIn('id', $ids)->get() as $folder) {
+            try {
+                $this->delete($folder);
+                $deleted++;
+            } catch (DomainException $e) {
+                $skipped[] = ['name' => $folder->name, 'reason' => $e->getMessage()];
+            }
+        }
+
+        return ['deleted' => $deleted, 'skipped' => $skipped];
+    }
+
+    /**
+     * Çoklu seçimde taşıma — döngü/kendi-içine-taşıma koruması her klasör
+     * için ayrı ayrı uygulanır, ihlal eden atlanır.
+     *
+     * @param  array<int, int>  $ids
+     * @return array{moved: int, skipped: array<int, array{name: string, reason: string}>}
+     */
+    public function moveMany(array $ids, ?int $targetFolderId): array
+    {
+        $moved = 0;
+        $skipped = [];
+
+        foreach (MediaFolder::query()->whereIn('id', $ids)->get() as $folder) {
+            try {
+                $this->update($folder, ['parent_id' => $targetFolderId]);
+                $moved++;
+            } catch (DomainException $e) {
+                $skipped[] = ['name' => $folder->name, 'reason' => $e->getMessage()];
+            }
+        }
+
+        return ['moved' => $moved, 'skipped' => $skipped];
     }
 
     /** Bir klasör kendi altına ya da kendi içine taşınamaz. */

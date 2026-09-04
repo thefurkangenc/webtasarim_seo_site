@@ -46,12 +46,20 @@ class MediaPicker {
         });
 
         document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape' && this.resolver && ! document.getElementById('crop-modal')?.classList.contains('active')) {
+            // Picker artık kendi içinde crop/prompt/taşı/önizleme/onay
+            // diyalogları açabiliyor (context menu ile yönetim) — bunlardan
+            // biri üstteyken Esc önce onu kapatmalı, alttaki picker'ı değil.
+            if (event.key === 'Escape' && this.resolver && ! this.hasOverlay()) {
                 this.settle(null);
             }
         });
 
         return root;
+    }
+
+    hasOverlay() {
+        return ['crop-modal', 'admin-prompt', 'folder-picker', 'media-preview', 'admin-confirm']
+            .some((id) => document.getElementById(id)?.classList.contains('active'));
     }
 
     /** @returns {Promise<object|null>} */

@@ -28,6 +28,8 @@ use Intervention\Image\Interfaces\ImageInterface;
  */
 class MediaService
 {
+    public function __construct(private readonly MediaFolderService $folders) {}
+
     public function store(UploadedFile $file, array $options = []): Media
     {
         $extension = strtolower($file->getClientOriginalExtension());
@@ -109,6 +111,55 @@ class MediaService
     public function move(array $ids, ?int $folderId): void
     {
         Media::whereIn('id', $ids)->update(['folder_id' => $folderId]);
+    }
+
+    /** @param  array<int, int>  $ids */
+    public function deleteMany(array $ids): int
+    {
+        $deleted = 0;
+
+        foreach (Media::query()->whereIn('id', $ids)->get() as $media) {
+            $this->delete($media);
+            $deleted++;
+        }
+
+        return $deleted;
+    }
+
+    /**
+     * Dosya yöneticisi grid'inin çoklu seçimde "Taşı" işlemi — dosyalar ve
+     * klasörler aynı anda seçilebildiği için ikisini de tek çağrıda yürütür.
+     *
+     * @param  array<int, int>  $mediaIds
+     * @param  array<int, int>  $folderIds
+     * @return array{moved: int, skipped: array<int, array{name: string, reason: string}>}
+     */
+    public function bulkMove(array $mediaIds, array $folderIds, ?int $targetFolderId): array
+    {
+        $this->move($mediaIds, $targetFolderId);
+
+        $result = $this->folders->moveMany($folderIds, $targetFolderId);
+        $result['moved'] += count($mediaIds);
+
+        return $result;
+    }
+
+    /**
+     * Çoklu seçimde "Sil" — dolu klasörler güvenlik kuralı gereği atlanır,
+     * dosyalar koşulsuz silinir (kalıcı, diskten de).
+     *
+     * @param  array<int, int>  $mediaIds
+     * @param  array<int, int>  $folderIds
+     * @return array{deleted: int, skipped: array<int, array{name: string, reason: string}>}
+     */
+    public function bulkDelete(array $mediaIds, array $folderIds): array
+    {
+        $deleted = $this->deleteMany($mediaIds);
+
+        $result = $this->folders->deleteMany($folderIds);
+        $result['deleted'] += $deleted;
+
+        return $result;
     }
 
     public function list(array $filters): LengthAwarePaginator

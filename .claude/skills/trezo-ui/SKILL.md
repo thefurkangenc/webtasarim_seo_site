@@ -263,17 +263,38 @@ yükler ve gizli input'a `media_id` yazar. Boyutlar `config/media.php`
 içindeki `presets`'ten gelir; yeni bir alan için önce oraya boyut ekle.
 Modelde `image` kolonu açma — bağlantı `HasMedia` trait'i ile kurulur.
 
-Yerleşim: önizleme üstte geniş bir sürükle-bırak alanı (`data-media-drop`,
-tıklanabilir de), butonlar (Değiştir/Kütüphaneden Seç/Yeniden Kırp/Kaldır)
-altta. Butonlar **yalnızca görsel seçiliyken** görünür — boşken sadece
-dropzone'un kendi "sürükleyip bırakın ya da tıklayın" yazısı var, ayrı bir
-buton kalabalığı olmaz.
+Yerleşim: üstte `data-media-drop` çerçevesi — hem önizleme hem sürükle-bırak
+alanı, boşken "sürükleyip bırakın ya da tıklayın" yazan tıklanabilir bir
+placeholder. Kaldır butonu bu çerçevenin **sağ üst köşesinde**, tek başına,
+sadece ikon, kırmızı arka plan (`bg-danger-500`) — buton sırasına karışmaz,
+sadece görsel varken görünür. Altında `data-media-actions` bir `grid`: görsel
+yokken 2 eşit sütun (Dosya Seç, Kütüphaneden Seç), görsel varken 3 eşit sütun
+(Değiştir, Kütüphaneden Seç, Yeniden Kırp — sonuncusu preset yoksa gizli
+kalır, o zaman yine 2 sütun). Sütun sayısı hem sunucu render'ında
+(`$showRecrop` ile `grid-cols-2`/`grid-cols-3`) hem `media-field.js`'in
+`render()`'ında aynı mantıkla belirlenir — biri değişirse öbürü de
+güncellenmeli.
 
 Component'ler `AppServiceProvider` içinde `Blade::anonymousComponentPath()` ile
 `admin` namespace'ine bağlanır. Class dizileri **sadece** component dosyalarında
 bulunur; sayfa Blade'lerinde ham input yazma.
 
 Component'te olmayan bir alan tipi gerektiğinde önce component'i ekle.
+
+### Tuzak: `hidden` + `inline-flex`/`inline`/`inline-block` birlikte kullanılmaz
+
+Derlenmiş CSS'te `display` utility'leri şu sırayla çıkıyor: `block`, `flex`,
+`grid`, `hidden`, `inline`, `inline-block`, `inline-flex`. Aynı specificity'ye
+sahip iki kuralda **kaynak sırası** kazanır — `hidden`, `flex`/`grid`/`block`
+class'ından SONRA geldiği için onları doğru şekilde ezer, ama `inline`/
+`inline-block`/`inline-flex`'ten ÖNCE geldiği için onlar tarafından ezilir.
+Yani `class="{{ $x ? '' : 'hidden' }} inline-flex ..."` şartı false olsa bile
+`hidden` etkisiz kalır, eleman **görünür durur** — bu proje `form.image`
+içindeki Kaldır/Yeniden Kırp butonlarında tam olarak bu hatayı yaşadı (buton
+her zaman görünüyordu, hatta `grid-cols-2` bir ızgarada 3. sıraya taşıp
+alt satıra düşüyordu). Kural: koşullu `hidden` ile birleşecek bir buton/eleman
+`flex` veya `grid` kullanmalı, `inline-flex`/`inline`/`inline-block`
+kullanmamalı. Kaçınılmazsa `!hidden` (important) ile zorla.
 
 ### Select — Choices.js
 
@@ -374,6 +395,16 @@ görünür. Bu proje daha önce bu hatayı yaşadı — `image.blade.php` ve
 `media-field.js`'in `render()`'ı her ikisi de `medium` kullanır, yeni bir
 görsel önizlemesi eklerken aynısını yap.
 
+**Yeniden kırpma her zaman `originalUrl()`/`original` üzerinden çalışır**,
+`url()`/`medium` üzerinden DEĞİL — `path` önceki kırpımın sonucudur, kaynak
+olarak kullanılırsa her seferinde biraz daha fazla kırpar (ya da alan hiç
+`data-original` set etmemişse `<img>`'in `data-original` attribute'u boş
+kalır, `fetch('')` sayfanın kendi HTML'ini çeker, kırpma modalı siyah/boş bir
+canvas ile açılır — bu proje tam olarak bu hatayı yaşadı). Kural: `<img
+data-media-image>`'in `data-original`'ı hem sunucu render'ında
+(`$media?->originalUrl()`) hem `media-field.js`'in her `render()`
+çağrısında (`media.original`) set edilir; ikisi de aynı kalmalı.
+
 ### Nokta notasyonlu alan adı
 
 İç içe alanlarda ada nokta konur; bileşen HTML `name`'ini köşeli paranteze
@@ -459,21 +490,50 @@ Dosya doluysa **onun** yapısına uy; `core/modal.js`'i ona göre yaz.
 Modal gövdesi (`modals/form.blade.php`) sadece `<form>` ve alanlarını içerir,
 kart kabuğunu tekrar etmez.
 
-## Medya tarayıcısı
+## Medya tarayıcısı — dosya yöneticisi
 
 `/admin/media` sayfası ve form içinden açılan seçici modal aynı markup'ı
-paylaşır: `resources/views/admin/pages/media/partials/browser.blade.php`.
-Yeni bir yerde medya listesi gerekiyorsa bu partial'ı include et, ayrı bir
-ızgara yazma:
+paylaşır: `resources/views/admin/pages/media/partials/browser.blade.php`,
+davranışı `core/media-browser.js` verir. Yeni bir yerde medya listesi
+gerekiyorsa bu partial'ı include et, ayrı bir ızgara yazma:
 
 ```blade
 @include('admin.pages.media.partials.browser', [
-    'folders' => $folders, 'selectable' => true, 'manageable' => false,
+    'selectable' => true, 'manageable' => true,
 ])
 ```
 
-Kartların markup'ı `core/media-browser.js` içinde üretilir. Oradaki
-class'lar da Tailwind build'i tarafından taranır (`@source` JS'i kapsar).
+Sidebar klasör ağacı **yok** — Google Drive tarzı: klasörler dosyalarla aynı
+ızgarada kart olarak durur, üstte breadcrumb (`Medya > Blog > Kapak`) gezinme
+sağlar, çift tıklama klasöre girer/dosyanın popup önizlemesini açar. Sağ tık
+context menu açar (klasör/dosyaya göre farklı seçenekler: Aç, Yeniden
+Adlandır, Taşı, Yeniden Kırp, İndir, Sil). Kart sürükleyip bir klasör
+kartının veya breadcrumb kırıntısının üstüne bırakmak taşır; işletim
+sisteminden dosya sürüklemek (üstüne bırakılan yer bir klasör kartıysa
+doğrudan o klasöre) yükler. Ctrl/Cmd+tık ve Shift+tık ile çoklu seçim
+yapılır, seçim varken araç çubuğunun altında bir toplu işlem çubuğu
+(Taşı/Sil/Temizle) belirir — `selectable` açıksa ve seçim tek bir dosyaysa
+buraya "Bu Dosyayı Seç" butonu da eklenir.
+
+`selectable` ve `manageable` artık birbirini dışlamıyor — picker modalı da
+tam yönetime sahip (context menu, sürükle-taşı, klasör oluşturma), fark
+sadece `selectable`'ın seçim sonucu döndürüp döndürmediği.
+
+Kartların markup'ı `media-browser.js` içinde üretilir; oradaki class'lar da
+Tailwind build'i tarafından taranır (`@source` JS'i kapsar).
+
+**Yeni yardımcı modaller** (hepsi `confirm.js` ile aynı promise dönen kalıp,
+`core/` altında): `prompt.js` (`promptText()` — tek satır metin, klasör
+oluşturma/yeniden adlandırma), `folder-picker.js` (`folderPicker.open()` —
+"Taşı" diyaloğundaki iç içe klasör ağacı, `/admin/media/folders/tree`'yi
+render eder), `media-preview.js` (`mediaPreview.open()` — çift tıkla açılan
+popup önizleme, aksiyon adını döndürür, gerçek işlemi çağıran taraf yapar).
+
+**Popup z-index katmanı** — biri diğerinin içinden açılabildiği için sıra
+önemli: `ajax-modal` 999 < `media-picker-modal` 1003 < `confirm`/`prompt`/
+`folder-picker`/`media-preview` 1004 < `crop-modal`/`ai-generator` 1005. Yeni
+bir promise-döndüren popup eklerken bu sıraya uy; en azından üstünde
+açılabileceği her şeyden yüksek bir z-index seç.
 
 ## İkonlar
 

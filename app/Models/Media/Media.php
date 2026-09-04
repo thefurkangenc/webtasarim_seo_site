@@ -52,6 +52,17 @@ class Media extends Model
         return $conversion ? ($this->conversions[$conversion] ?? $this->path) : $this->path;
     }
 
+    /**
+     * Yeniden kırpma her zaman saklanan orijinal üzerinden yapılır — `path`
+     * daha önceki kırpımın SONUCUdur, yeniden kırpma kaynağı olarak
+     * kullanılırsa her seferinde biraz daha fazla kırpar. `original_path`
+     * yoksa (SVG, ham dosya) ana dosyaya düşer.
+     */
+    public function originalUrl(): string
+    {
+        return Storage::disk($this->disk)->url($this->original_path ?: $this->path);
+    }
+
     public function isImage(): bool
     {
         return str_starts_with($this->mime_type, 'image/');
@@ -94,6 +105,8 @@ class Media extends Model
             'thumb' => $this->url('thumb'),
             // Oranı bozmadan küçültür (crop yok); form alanı önizlemesi bunu kullanır.
             'medium' => $this->url('medium'),
+            // Yeniden kırpma modalı bunu yükler — 'url' zaten kırpılmış sonuçtur.
+            'original' => $this->originalUrl(),
             'extension' => $this->extension,
             'mime_type' => $this->mime_type,
             'size' => $this->size,

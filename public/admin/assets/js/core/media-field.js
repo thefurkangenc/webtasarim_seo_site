@@ -34,6 +34,8 @@ function parts(root) {
         info: root.querySelector('[data-media-info]'),
         actions: root.querySelector('[data-media-actions]'),
         recrop: root.querySelector('[data-media-action="recrop"]'),
+        remove: root.querySelector('[data-media-action="remove"]'),
+        selectLabel: root.querySelector('[data-media-select-label]'),
         busy: root.querySelector('[data-media-busy]'),
     };
 }
@@ -52,7 +54,7 @@ function setBusy(root, busy) {
 
 /** Alanı verilen medya ile doldurur; null geçilirse temizler. */
 function render(root, media) {
-    const { input, image, preview, empty, info, actions, recrop } = parts(root);
+    const { input, image, preview, empty, info, actions, recrop, remove, selectLabel } = parts(root);
 
     input.value = media?.id ?? '';
     root.dataset.mediaCanRecrop = media?.can_recrop ? '1' : '';
@@ -60,9 +62,16 @@ function render(root, media) {
     if (! media) {
         preview.classList.add('hidden');
         empty.classList.remove('hidden');
-        actions.classList.add('hidden');
         info.classList.add('hidden');
         info.textContent = '';
+        remove?.classList.add('hidden');
+        recrop?.classList.add('hidden');
+        actions.classList.remove('grid-cols-3');
+        actions.classList.add('grid-cols-2');
+
+        if (selectLabel) {
+            selectLabel.textContent = 'Dosya Seç';
+        }
 
         // Bağlı alanlar (örn. SEO paylaşım görseli) temizlendiğini bilsin.
         root.dispatchEvent(new CustomEvent('media:change', { detail: null, bubbles: true }));
@@ -74,15 +83,28 @@ function render(root, media) {
     // oranını bozar. Alan önizlemesi kırpımın gerçek oranını göstermeli.
     image.src = media.medium ?? media.url;
     image.alt = media.alt ?? media.name ?? '';
+    // Yeniden kırpma her zaman bu URL'den başlar — 'url'/'medium' önceki
+    // kırpımın SONUCUdur, kaynak olarak kullanılırsa her seferinde biraz
+    // daha fazla kırpar (ya da hiç güncellenmemişse boş kalıp canvas'ı
+    // siyah bırakır).
+    image.dataset.original = media.original ?? media.url;
     info.textContent = media.width
         ? `${media.name} · ${media.width}×${media.height} · ${media.human_size}`
         : `${media.name} · ${media.human_size}`;
 
     preview.classList.remove('hidden');
     empty.classList.add('hidden');
-    actions.classList.remove('hidden');
     info.classList.remove('hidden');
-    recrop?.classList.toggle('hidden', ! media.can_recrop);
+    remove?.classList.remove('hidden');
+
+    if (selectLabel) {
+        selectLabel.textContent = 'Değiştir';
+    }
+
+    const showRecrop = Boolean(media.can_recrop && root.dataset.mediaWidth && root.dataset.mediaHeight);
+    recrop?.classList.toggle('hidden', ! showRecrop);
+    actions.classList.toggle('grid-cols-3', showRecrop);
+    actions.classList.toggle('grid-cols-2', ! showRecrop);
 
     root.dispatchEvent(new CustomEvent('media:change', { detail: media, bubbles: true }));
 }
@@ -141,8 +163,9 @@ async function onFileSelected(root, file) {
 async function onRecrop(root) {
     const id = parts(root).input.value;
     const target = preset(root);
+    const originalUrl = parts(root).image.dataset.original;
 
-    if (! id || ! target) {
+    if (! id || ! target || ! originalUrl) {
         return;
     }
 
@@ -150,7 +173,7 @@ async function onRecrop(root) {
     setBusy(root, true);
 
     try {
-        const response = await fetch(parts(root).image.dataset.original, { credentials: 'same-origin' });
+        const response = await fetch(originalUrl, { credentials: 'same-origin' });
         const blob = await response.blob();
         const crop = await cropModal.open(new File([blob], 'original', { type: blob.type }), target);
 

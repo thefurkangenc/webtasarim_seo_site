@@ -33,6 +33,8 @@ Route::middleware('auth')->group(function () {
             Route::get('datatable', 'datatable')->name('datatable');
             Route::get('picker', 'picker')->name('picker')->middleware('permission:media.view');
             Route::post('upload', 'upload')->name('upload');
+            Route::post('bulk-move', 'bulkMove')->name('bulk-move')->middleware('permission:media.update');
+            Route::post('bulk-delete', 'bulkDelete')->name('bulk-delete')->middleware('permission:media.delete');
             Route::get('{media}/form', 'form')->name('form')->middleware('permission:media.view');
             Route::put('{media}', 'update')->name('update');
             Route::post('{media}/recrop', 'recrop')->name('recrop');
@@ -41,6 +43,7 @@ Route::middleware('auth')->group(function () {
 
         Route::controller(MediaFolderController::class)->prefix('folders')->name('folders.')->group(function () {
             Route::get('/', 'index')->name('index')->middleware('permission:media.view');
+            Route::get('tree', 'tree')->name('tree')->middleware('permission:media.view');
             Route::post('/', 'store')->name('store');
             Route::put('{folder}', 'update')->name('update');
             Route::delete('{folder}', 'destroy')->name('destroy')->middleware('permission:media.delete');

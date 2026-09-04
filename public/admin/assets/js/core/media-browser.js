@@ -1,38 +1,57 @@
 /**
- * Medya tarayıcısının davranışı. Markup'ı
+ * Medya tarayıcısının (dosya yöneticisi) davranışı. Markup'ı
  * resources/views/admin/pages/media/partials/browser.blade.php verir.
  *
  * Hem /admin/media sayfası hem de form içinden açılan seçici modal aynı
- * sınıfı kullanır; fark yalnızca `selectable` ve `manageable` bayraklarıdır.
+ * sınıfı kullanır; fark yalnızca `selectable` ve `manageable` bayraklarıdır
+ * — ikisi de artık aynı yönetim yeteneklerine sahiptir (context menu,
+ * sürükle-taşı, çoklu seçim), `selectable` sadece bir dosyayı "seçip"
+ * sonucu döndürme davranışını ekler.
+ *
+ * Gezinme sidebar ağacı değil breadcrumb + çift tıklamayladır: klasörler
+ * dosyalarla aynı ızgarada kart olarak durur, çift tıklanınca içine girilir.
  */
 
 import { escapeHtml, http, HttpError } from './http.js';
 import { toast } from './toast.js';
 import { confirm } from './confirm.js';
+import { promptText } from './prompt.js';
+import { folderPicker } from './folder-picker.js';
+import { mediaPreview } from './media-preview.js';
 import { cropModal } from './cropper.js';
-
-const ACTIVE_FOLDER = ['bg-primary-50', 'dark:bg-[#15203c]', '!text-primary-500'];
 
 export class MediaBrowser {
     /**
      * @param {HTMLElement} root  [data-media-browser] elemanı
-     * @param {{onSelect?: (media: object) => void}} options
+     * @param {{onSelect?: (media: object) => void, onOpen?: (media: object) => void}} options
      */
     constructor(root, options = {}) {
         this.root = root;
         this.options = options;
         this.selectable = root.dataset.selectable === '1';
         this.manageable = root.dataset.manageable === '1';
-        this.items = new Map();
 
-        this.state = { search: '', folder_id: '', type: '', unattached: false, page: 1, per_page: 30 };
+        this.state = { search: '', type: '', page: 1, per_page: 30 };
+        this.path = []; // [{id, name}, ...] — kök hariç, kökten bu yana gezilen klasörler
+        this.folders = new Map(); // bu klasördeki alt klasörler: id -> folder
+        this.items = new Map(); // bu klasördeki dosyalar: id -> media
+        this.selection = new Set(); // 'folder:5' | 'media:12'
+        this.lastSelectedKey = null;
+        this.menu = null;
+        this.dragDepth = 0;
 
         this.grid = root.querySelector('[data-media-grid]');
         this.status = root.querySelector('[data-media-status]');
         this.pagination = root.querySelector('[data-media-pagination]');
+        this.breadcrumb = root.querySelector('[data-media-breadcrumb]');
+        this.bulkbar = root.querySelector('[data-media-bulkbar]');
 
         this.bind();
         this.load();
+    }
+
+    get currentFolderId() {
+        return this.path.length ? this.path.at(-1).id : null;
     }
 
     bind() {
@@ -52,8 +71,6 @@ export class MediaBrowser {
             this.load();
         });
 
-        this.root.addEventListener('click', (event) => this.onClick(event));
-
         this.root.querySelector('[data-media-upload-input]')?.addEventListener('change', (event) => {
             this.upload([...event.target.files]);
             event.target.value = '';
@@ -68,57 +85,42 @@ export class MediaBrowser {
             }
         });
 
-        this.bindDropzone();
-    }
+        this.breadcrumb.addEventListener('click', (event) => {
+            const crumb = event.target.closest('[data-crumb-index]');
 
-    bindDropzone() {
-        const zone = this.root.querySelector('[data-media-dropzone]');
-        const hint = this.root.querySelector('[data-media-drop-hint]');
-
-        if (! zone) {
-            return;
-        }
-
-        let depth = 0;
-
-        zone.addEventListener('dragenter', (event) => {
-            event.preventDefault();
-            depth++;
-            hint.classList.remove('hidden');
-        });
-
-        zone.addEventListener('dragover', (event) => event.preventDefault());
-
-        zone.addEventListener('dragleave', () => {
-            if (--depth <= 0) {
-                depth = 0;
-                hint.classList.add('hidden');
+            if (crumb) {
+                this.path = this.path.slice(0, Number(crumb.dataset.crumbIndex));
+                this.state.page = 1;
+                this.clearSelection();
+                this.load();
             }
         });
 
-        zone.addEventListener('drop', (event) => {
-            event.preventDefault();
-            depth = 0;
-            hint.classList.add('hidden');
-            this.upload([...event.dataTransfer.files]);
+        this.root.addEventListener('click', (event) => this.onClick(event));
+        this.root.addEventListener('dblclick', (event) => this.onDoubleClick(event));
+        this.root.addEventListener('contextmenu', (event) => this.onContextMenu(event));
+
+        document.addEventListener('click', (event) => {
+            if (this.menu && ! event.target.closest('[data-media-menu]')) {
+                this.closeMenu();
+            }
         });
+
+        document.addEventListener('keydown', (event) => {
+            if (! this.menu) {
+                return;
+            }
+
+            if (event.key === 'Escape') {
+                this.closeMenu();
+            }
+        });
+
+        this.bindDrag();
+        this.bindDropzone();
     }
 
     async onClick(event) {
-        const folder = event.target.closest('[data-folder-id]');
-
-        if (folder) {
-            this.selectFolder(folder);
-
-            return;
-        }
-
-        if (event.target.closest('[data-media-filter="unattached"]')) {
-            this.toggleUnattached(event.target.closest('[data-media-filter]'));
-
-            return;
-        }
-
         if (event.target.closest('[data-media-action="upload"]')) {
             this.root.querySelector('[data-media-upload-input]').click();
 
@@ -131,92 +133,238 @@ export class MediaBrowser {
             return;
         }
 
-        const card = event.target.closest('[data-media-id]');
+        if (event.target.closest('[data-media-action="bulk-move"]')) {
+            this.moveSelection();
+
+            return;
+        }
+
+        if (event.target.closest('[data-media-action="bulk-delete"]')) {
+            this.deleteSelection();
+
+            return;
+        }
+
+        if (event.target.closest('[data-media-action="bulk-clear"]')) {
+            this.clearSelection();
+
+            return;
+        }
+
+        if (event.target.closest('[data-media-action="bulk-select"]')) {
+            this.pickSelection();
+
+            return;
+        }
+
+        const card = event.target.closest('[data-item-key]');
+
+        if (! card) {
+            this.clearSelection();
+
+            return;
+        }
+
+        this.selectCard(card, event);
+    }
+
+    async onDoubleClick(event) {
+        const card = event.target.closest('[data-item-key]');
 
         if (! card) {
             return;
         }
 
-        const media = this.items.get(Number(card.dataset.mediaId));
-        const action = event.target.closest('[data-card-action]')?.dataset.cardAction;
+        if (card.dataset.itemType === 'folder') {
+            this.openFolder(Number(card.dataset.itemId));
 
-        if (action === 'delete') {
-            this.remove(media);
-        } else if (action === 'recrop') {
-            this.recrop(media);
-        } else if (this.selectable) {
-            this.options.onSelect?.(media);
-        } else {
-            this.options.onOpen?.(media);
+            return;
+        }
+
+        const media = this.items.get(Number(card.dataset.itemId));
+
+        if (media) {
+            this.openPreview(media);
         }
     }
 
-    selectFolder(button) {
-        this.root.querySelectorAll('.media-folder').forEach((element) => element.classList.remove(...ACTIVE_FOLDER));
-        button.classList.add(...ACTIVE_FOLDER);
+    selectCard(card, event) {
+        const key = card.dataset.itemKey;
 
-        this.state.folder_id = button.dataset.folderId ?? '';
-        this.state.unattached = false;
+        if (! this.manageable) {
+            // Yönetim kapalıysa (kullanılmıyor artık — her iki sayfa da
+            // manageable — ama savunma amaçlı) tek tık sadece seçer.
+            this.selection = new Set([key]);
+            this.renderSelection();
+
+            return;
+        }
+
+        if (event.shiftKey && this.lastSelectedKey) {
+            const keys = [...this.grid.querySelectorAll('[data-item-key]')].map((el) => el.dataset.itemKey);
+            const from = keys.indexOf(this.lastSelectedKey);
+            const to = keys.indexOf(key);
+
+            if (from !== -1 && to !== -1) {
+                const [start, end] = from < to ? [from, to] : [to, from];
+                this.selection = new Set(keys.slice(start, end + 1));
+            }
+        } else if (event.ctrlKey || event.metaKey) {
+            this.selection.has(key) ? this.selection.delete(key) : this.selection.add(key);
+        } else {
+            this.selection = this.selection.size === 1 && this.selection.has(key)
+                ? new Set()
+                : new Set([key]);
+        }
+
+        this.lastSelectedKey = key;
+        this.renderSelection();
+    }
+
+    clearSelection() {
+        this.selection.clear();
+        this.lastSelectedKey = null;
+        this.renderSelection();
+    }
+
+    renderSelection() {
+        this.grid.querySelectorAll('[data-item-key]').forEach((card) => {
+            const selected = this.selection.has(card.dataset.itemKey);
+            card.classList.toggle('border-primary-500', selected);
+            card.classList.toggle('bg-primary-50/60', selected);
+            card.classList.toggle('dark:bg-[#15203c]', selected);
+            card.classList.toggle('border-gray-100', ! selected);
+        });
+
+        if (! this.bulkbar) {
+            return;
+        }
+
+        const count = this.selection.size;
+        this.bulkbar.classList.toggle('hidden', count === 0);
+        this.bulkbar.classList.toggle('flex', count > 0);
+
+        if (count === 0) {
+            return;
+        }
+
+        this.bulkbar.querySelector('[data-media-bulk-count]').textContent = `${count} öğe seçili`;
+
+        const onlyOneFile = count === 1 && [...this.selection][0].startsWith('media:');
+        const selectButton = this.bulkbar.querySelector('[data-media-action="bulk-select"]');
+
+        if (this.selectable && onlyOneFile) {
+            if (! selectButton) {
+                this.bulkbar.querySelector('[data-media-bulk-count]').insertAdjacentHTML('afterend', `
+                    <button type="button" data-media-action="bulk-select"
+                        class="inline-flex items-center gap-[5px] py-[7px] px-[14px] text-xs text-white transition-all rounded-md bg-primary-500 hover:bg-primary-400">
+                        <i class="material-symbols-outlined !text-[16px]">check</i> Bu Dosyayı Seç
+                    </button>`);
+            }
+        } else {
+            selectButton?.remove();
+        }
+    }
+
+    pickSelection() {
+        const key = [...this.selection][0];
+
+        if (key?.startsWith('media:')) {
+            this.options.onSelect?.(this.items.get(Number(key.split(':')[1])));
+        }
+    }
+
+    openFolder(id) {
+        const folder = this.folders.get(id);
+
+        this.path.push({ id, name: folder?.name ?? '' });
         this.state.page = 1;
+        this.clearSelection();
         this.load();
     }
 
-    toggleUnattached(button) {
-        this.root.querySelectorAll('.media-folder').forEach((element) => element.classList.remove(...ACTIVE_FOLDER));
-        button.classList.add(...ACTIVE_FOLDER);
+    renderBreadcrumb() {
+        const crumbs = [{ id: null, name: 'Medya' }, ...this.path];
 
-        this.state.unattached = true;
-        this.state.folder_id = '';
-        this.state.page = 1;
-        this.load();
+        this.breadcrumb.innerHTML = crumbs.map((crumb, index) => {
+            const isLast = index === crumbs.length - 1;
+
+            return `<span class="flex items-center gap-[4px]">
+                ${index > 0 ? '<i class="material-symbols-outlined !text-[16px] text-gray-400">chevron_right</i>' : ''}
+                <button type="button" data-crumb-index="${index}" data-crumb-id="${crumb.id ?? ''}"
+                    class="${isLast ? 'text-black dark:text-white cursor-default' : 'text-gray-500 dark:text-gray-400 hover:text-primary-500'} transition-all">
+                    ${escapeHtml(crumb.name)}
+                </button>
+            </span>`;
+        }).join('');
     }
 
     async load() {
         this.status.textContent = 'Yükleniyor...';
         this.status.classList.remove('hidden');
+        this.renderBreadcrumb();
 
         try {
-            const { data, meta } = await http.get('/admin/media/datatable', {
-                ...this.state,
-                unattached: this.state.unattached ? 1 : '',
-            });
+            const [folders, filesResponse] = await Promise.all([
+                this.state.search ? Promise.resolve([]) : this.loadFolders(),
+                http.get('/admin/media/datatable', {
+                    ...this.state,
+                    folder_id: this.currentFolderId ?? '',
+                }),
+            ]);
+
+            this.folders.clear();
+            folders.forEach((folder) => this.folders.set(folder.id, folder));
 
             this.items.clear();
-            data.forEach((media) => this.items.set(media.id, media));
+            filesResponse.data.forEach((media) => this.items.set(media.id, media));
 
-            this.grid.innerHTML = data.map((media) => this.card(media)).join('');
-            this.status.classList.toggle('hidden', data.length > 0);
-            this.status.textContent = 'Bu klasörde dosya yok.';
-            this.renderPagination(meta);
+            this.grid.innerHTML = folders.map((folder) => this.folderCard(folder)).join('')
+                + filesResponse.data.map((media) => this.fileCard(media)).join('');
+
+            const empty = folders.length === 0 && filesResponse.data.length === 0;
+            this.status.classList.toggle('hidden', ! empty);
+            this.status.textContent = this.state.search ? 'Sonuç bulunamadı.' : 'Bu klasör boş.';
+            this.renderPagination(filesResponse.meta);
+            this.renderSelection();
         } catch (error) {
             this.grid.innerHTML = '';
             this.status.classList.remove('hidden');
-            this.status.textContent = error instanceof HttpError ? error.message : 'Dosyalar yüklenemedi.';
+            this.status.textContent = error instanceof HttpError ? error.message : 'Yüklenemedi.';
         }
     }
 
-    card(media) {
+    async loadFolders() {
+        const { data } = await http.get('/admin/media/folders', { parent_id: this.currentFolderId ?? '' });
+
+        return data;
+    }
+
+    folderCard(folder) {
+        return `
+            <div data-item-key="folder:${folder.id}" data-item-type="folder" data-item-id="${folder.id}" draggable="true"
+                class="group relative rounded-md border border-gray-100 dark:border-[#172036] overflow-hidden cursor-pointer select-none transition-all hover:border-primary-300">
+                <div class="aspect-square flex items-center justify-center bg-gray-50 dark:bg-[#15203c]">
+                    <i class="material-symbols-outlined !text-[46px] text-[#ffb264]">folder</i>
+                </div>
+                <div class="p-[8px]">
+                    <p class="!mb-0 text-xs text-black dark:text-white truncate font-medium" title="${escapeHtml(folder.name)}">${escapeHtml(folder.name)}</p>
+                    <p class="!mb-0 text-[11px] text-gray-500 dark:text-gray-400">${folder.media_count ?? 0} dosya</p>
+                </div>
+            </div>`;
+    }
+
+    fileCard(media) {
         const thumb = media.is_image
             ? `<img src="${escapeHtml(media.thumb)}" alt="${escapeHtml(media.alt ?? '')}" loading="lazy" class="w-full h-full object-cover">`
             : `<div class="w-full h-full flex items-center justify-center text-gray-400">
                    <i class="material-symbols-outlined !text-[34px]">draft</i>
                </div>`;
 
-        const tools = this.manageable ? `
-            <div class="absolute top-[6px] ltr:right-[6px] rtl:left-[6px] flex gap-[4px] opacity-0 group-hover:opacity-100 transition-all">
-                ${media.can_recrop ? `<button type="button" data-card-action="recrop" title="Yeniden kırp"
-                    class="w-[26px] h-[26px] rounded-md bg-white/90 dark:bg-[#0c1427]/90 text-black dark:text-white inline-flex items-center justify-center hover:bg-primary-500 hover:text-white">
-                    <i class="material-symbols-outlined !text-[15px]">crop</i></button>` : ''}
-                <button type="button" data-card-action="delete" title="Sil"
-                    class="w-[26px] h-[26px] rounded-md bg-white/90 dark:bg-[#0c1427]/90 text-black dark:text-white inline-flex items-center justify-center hover:bg-danger-500 hover:text-white">
-                    <i class="material-symbols-outlined !text-[15px]">delete</i></button>
-            </div>` : '';
-
         return `
-            <div data-media-id="${media.id}"
-                class="group relative rounded-md border border-gray-100 dark:border-[#172036] overflow-hidden cursor-pointer transition-all hover:border-primary-500">
+            <div data-item-key="media:${media.id}" data-item-type="media" data-item-id="${media.id}" draggable="true"
+                class="group relative rounded-md border border-gray-100 dark:border-[#172036] overflow-hidden cursor-pointer select-none transition-all hover:border-primary-300">
                 <div class="aspect-square bg-gray-50 dark:bg-[#15203c]">${thumb}</div>
-                ${tools}
                 <div class="p-[8px]">
                     <p class="!mb-0 text-xs text-black dark:text-white truncate" title="${escapeHtml(media.name)}">${escapeHtml(media.name)}</p>
                     <p class="!mb-0 text-[11px] text-gray-500 dark:text-gray-400">
@@ -261,8 +409,268 @@ export class MediaBrowser {
             </div>`;
     }
 
+    /* ---------------------------------------------------------------- *
+     * Önizleme popup'ı
+     * ---------------------------------------------------------------- */
+
+    async openPreview(media) {
+        const action = await mediaPreview.open(media, { selectable: this.selectable, manageable: this.manageable });
+
+        if (action === 'select') {
+            this.options.onSelect?.(media);
+        } else if (action === 'edit') {
+            this.options.onOpen?.(media);
+        } else if (action === 'recrop') {
+            this.recrop(media);
+        } else if (action === 'delete') {
+            this.deleteItems([media.id], []);
+        }
+    }
+
+    /* ---------------------------------------------------------------- *
+     * Context menu (sağ tık)
+     * ---------------------------------------------------------------- */
+
+    onContextMenu(event) {
+        if (! this.manageable) {
+            return;
+        }
+
+        event.preventDefault();
+
+        const card = event.target.closest('[data-item-key]');
+
+        if (card && ! this.selection.has(card.dataset.itemKey)) {
+            this.selection = new Set([card.dataset.itemKey]);
+            this.lastSelectedKey = card.dataset.itemKey;
+            this.renderSelection();
+        } else if (! card) {
+            this.clearSelection();
+        }
+
+        this.openMenu(event.clientX, event.clientY, card);
+    }
+
+    menuItems(card) {
+        if (! card) {
+            return [
+                { action: 'create-folder', icon: 'create_new_folder', label: 'Yeni Klasör' },
+                { action: 'upload', icon: 'upload', label: 'Dosya Yükle' },
+            ];
+        }
+
+        if (this.selection.size > 1) {
+            return [
+                { action: 'move', icon: 'drive_file_move', label: 'Taşı' },
+                { action: 'delete', icon: 'delete', label: 'Sil', danger: true },
+            ];
+        }
+
+        if (card.dataset.itemType === 'folder') {
+            return [
+                { action: 'open', icon: 'folder_open', label: 'Aç' },
+                { action: 'rename', icon: 'edit', label: 'Yeniden Adlandır' },
+                { action: 'move', icon: 'drive_file_move', label: 'Taşı' },
+                { action: 'delete', icon: 'delete', label: 'Sil', danger: true },
+            ];
+        }
+
+        const media = this.items.get(Number(card.dataset.itemId));
+
+        return [
+            { action: 'preview', icon: 'visibility', label: 'Önizle' },
+            { action: 'edit', icon: 'edit', label: 'Düzenle' },
+            { action: 'move', icon: 'drive_file_move', label: 'Taşı' },
+            ...(media?.can_recrop ? [{ action: 'recrop', icon: 'crop', label: 'Yeniden Kırp' }] : []),
+            { action: 'download', icon: 'download', label: 'İndir' },
+            { action: 'delete', icon: 'delete', label: 'Sil', danger: true },
+        ];
+    }
+
+    openMenu(x, y, card) {
+        this.closeMenu();
+
+        const menu = document.createElement('ul');
+        menu.dataset.mediaMenu = '';
+        menu.className = 'fixed z-[1002] min-w-[190px] py-[6px] rounded-md bg-white dark:bg-[#0c1427] border border-gray-100 dark:border-[#172036] shadow-3xl';
+        menu.innerHTML = this.menuItems(card).map((item) => `
+            <li>
+                <button type="button" data-menu-action="${item.action}"
+                    class="w-full text-left flex items-center gap-[8px] px-[14px] py-[8px] text-sm transition-all ${item.danger ? 'text-danger-500 hover:bg-danger-100 dark:hover:bg-[#15203c]' : 'text-black dark:text-white hover:bg-gray-50 dark:hover:bg-[#15203c]'}">
+                    <i class="material-symbols-outlined !text-[17px]">${item.icon}</i> ${item.label}
+                </button>
+            </li>`).join('');
+
+        document.body.append(menu);
+
+        const rect = menu.getBoundingClientRect();
+        menu.style.left = `${Math.min(x, window.innerWidth - rect.width - 10)}px`;
+        menu.style.top = `${Math.min(y, window.innerHeight - rect.height - 10)}px`;
+
+        menu.addEventListener('click', (event) => {
+            const action = event.target.closest('[data-menu-action]')?.dataset.menuAction;
+
+            this.closeMenu();
+
+            if (action) {
+                this.runMenuAction(action, card);
+            }
+        });
+
+        this.menu = menu;
+    }
+
+    closeMenu() {
+        this.menu?.remove();
+        this.menu = null;
+    }
+
+    runMenuAction(action, card) {
+        const media = card?.dataset.itemType === 'media' ? this.items.get(Number(card.dataset.itemId)) : null;
+        const folder = card?.dataset.itemType === 'folder' ? this.folders.get(Number(card.dataset.itemId)) : null;
+
+        const actions = {
+            'create-folder': () => this.createFolder(),
+            upload: () => this.root.querySelector('[data-media-upload-input]').click(),
+            open: () => this.openFolder(folder.id),
+            preview: () => this.openPreview(media),
+            edit: () => this.options.onOpen?.(media),
+            recrop: () => this.recrop(media),
+            download: () => window.open(media.url, '_blank'),
+            rename: () => this.renameFolder(folder),
+            move: () => this.moveSelection(),
+            delete: () => this.deleteSelection(),
+        };
+
+        actions[action]?.();
+    }
+
+    /* ---------------------------------------------------------------- *
+     * Sürükle-taşı (kart -> klasör kartı / breadcrumb)
+     * ---------------------------------------------------------------- */
+
+    bindDrag() {
+        this.root.addEventListener('dragstart', (event) => {
+            const card = event.target.closest('[data-item-key]');
+
+            if (! card) {
+                return;
+            }
+
+            if (! this.selection.has(card.dataset.itemKey)) {
+                this.selection = new Set([card.dataset.itemKey]);
+                this.renderSelection();
+            }
+
+            event.dataTransfer.effectAllowed = 'move';
+            event.dataTransfer.setData('application/x-media-items', JSON.stringify([...this.selection]));
+        });
+
+        const highlight = (target, on) => {
+            target?.classList.toggle('!border-primary-500', on);
+            target?.classList.toggle('!bg-primary-50', on);
+        };
+
+        this.root.addEventListener('dragover', (event) => {
+            const folderCard = event.target.closest('[data-item-type="folder"]');
+            const crumb = event.target.closest('[data-crumb-index]');
+
+            if (folderCard || crumb) {
+                event.preventDefault();
+                event.dataTransfer.dropEffect = 'move';
+            }
+        });
+
+        this.root.addEventListener('dragenter', (event) => {
+            highlight(event.target.closest('[data-item-type="folder"]'), true);
+        });
+
+        this.root.addEventListener('dragleave', (event) => {
+            highlight(event.target.closest('[data-item-type="folder"]'), false);
+        });
+
+        this.root.addEventListener('drop', (event) => {
+            const folderCard = event.target.closest('[data-item-type="folder"]');
+            const crumb = event.target.closest('[data-crumb-index]');
+            const target = folderCard ?? crumb;
+
+            if (! target) {
+                return;
+            }
+
+            highlight(folderCard, false);
+
+            const raw = event.dataTransfer.getData('application/x-media-items');
+
+            if (! raw) {
+                return; // OS dosyası — genel dropzone handler'ı yakalar.
+            }
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const targetId = folderCard ? Number(folderCard.dataset.itemId) : (crumb.dataset.crumbId ? Number(crumb.dataset.crumbId) : null);
+
+            if (folderCard && this.selection.has(`folder:${targetId}`)) {
+                return; // kendi üzerine bırakma
+            }
+
+            this.moveTo(JSON.parse(raw), targetId);
+        });
+    }
+
+    bindDropzone() {
+        const zone = this.root.querySelector('[data-media-dropzone]');
+        const hint = this.root.querySelector('[data-media-drop-hint]');
+
+        if (! zone) {
+            return;
+        }
+
+        zone.addEventListener('dragenter', (event) => {
+            if (! [...event.dataTransfer.types].includes('Files')) {
+                return;
+            }
+
+            event.preventDefault();
+            this.dragDepth++;
+            hint.classList.remove('hidden');
+        });
+
+        zone.addEventListener('dragover', (event) => {
+            if ([...event.dataTransfer.types].includes('Files')) {
+                event.preventDefault();
+            }
+        });
+
+        zone.addEventListener('dragleave', () => {
+            if (--this.dragDepth <= 0) {
+                this.dragDepth = 0;
+                hint.classList.add('hidden');
+            }
+        });
+
+        zone.addEventListener('drop', (event) => {
+            if (! [...event.dataTransfer.types].includes('Files')) {
+                return;
+            }
+
+            event.preventDefault();
+            this.dragDepth = 0;
+            hint.classList.add('hidden');
+
+            // Bir klasör kartının üstüne bırakıldıysa doğrudan o klasöre yükle.
+            const folderCard = event.target.closest('[data-item-type="folder"]');
+            this.upload([...event.dataTransfer.files], folderCard ? Number(folderCard.dataset.itemId) : undefined);
+        });
+    }
+
+    /* ---------------------------------------------------------------- *
+     * Aksiyonlar
+     * ---------------------------------------------------------------- */
+
     /** @param {File[]} files */
-    async upload(files) {
+    async upload(files, folderId = undefined) {
         const accepted = files.filter((file) => file.type.startsWith('image/') || file.name.endsWith('.svg'));
 
         if (accepted.length === 0) {
@@ -271,14 +679,16 @@ export class MediaBrowser {
 
         this.status.classList.remove('hidden');
 
+        const target = folderId !== undefined ? folderId : this.currentFolderId;
+
         for (const [index, file] of accepted.entries()) {
             this.status.textContent = `Yükleniyor... (${index + 1}/${accepted.length})`;
 
             const body = new FormData();
             body.append('file', file);
 
-            if (this.state.folder_id) {
-                body.append('folder_id', this.state.folder_id);
+            if (target) {
+                body.append('folder_id', target);
             }
 
             try {
@@ -292,26 +702,14 @@ export class MediaBrowser {
         this.load();
     }
 
-    async remove(media) {
-        if (! await confirm(`"${media.name}" kalıcı olarak silinecek.`)) {
-            return;
-        }
-
-        try {
-            const { message } = await http.delete(`/admin/media/${media.id}`);
-            toast.success(message);
-            this.load();
-        } catch (error) {
-            toast.error(error instanceof HttpError ? error.message : 'Dosya silinemedi.');
-        }
-    }
-
     async recrop(media) {
         const preset = media.preset ?? null;
         const size = { width: media.width, height: media.height, label: 'Mevcut oran' };
 
         try {
-            const response = await fetch(media.url, { credentials: 'same-origin' });
+            // 'original' saklanan orijinaldir — 'url' önceki kırpımın sonucudur,
+            // kaynak olarak kullanılırsa her seferinde biraz daha fazla kırpar.
+            const response = await fetch(media.original ?? media.url, { credentials: 'same-origin' });
             const blob = await response.blob();
             const crop = await cropModal.open(new File([blob], media.name, { type: blob.type }), { ...size, preset });
 
@@ -328,21 +726,125 @@ export class MediaBrowser {
     }
 
     async createFolder() {
-        const name = window.prompt('Klasör adı');
+        const name = await promptText('Yeni klasör adı');
 
-        if (! name?.trim()) {
+        if (! name) {
             return;
         }
 
         try {
             const { message } = await http.post('/admin/media/folders', {
-                name: name.trim(),
-                parent_id: this.state.folder_id || null,
+                name,
+                parent_id: this.currentFolderId,
             });
             toast.success(message);
-            window.location.reload();
+            this.load();
         } catch (error) {
             toast.error(error instanceof HttpError ? error.message : 'Klasör oluşturulamadı.');
         }
+    }
+
+    async renameFolder(folder) {
+        const name = await promptText('Klasörü yeniden adlandır', { value: folder.name });
+
+        if (! name || name === folder.name) {
+            return;
+        }
+
+        try {
+            const { message } = await http.put(`/admin/media/folders/${folder.id}`, { name });
+            toast.success(message);
+            this.load();
+        } catch (error) {
+            toast.error(error instanceof HttpError ? error.message : 'Klasör güncellenemedi.');
+        }
+    }
+
+    async moveSelection() {
+        const { media, folders } = this.splitSelection();
+
+        if (media.length === 0 && folders.length === 0) {
+            return;
+        }
+
+        await this.pickAndMove(media, folders);
+    }
+
+    async moveTo(keys, targetFolderId) {
+        const { media, folders } = this.splitSelection(keys);
+
+        try {
+            const { message } = await http.post('/admin/media/bulk-move', {
+                media,
+                folders,
+                target_folder_id: targetFolderId,
+            });
+            toast.success(message);
+            this.clearSelection();
+            this.load();
+        } catch (error) {
+            toast.error(error instanceof HttpError ? error.message : 'Taşınamadı.');
+        }
+    }
+
+    async pickAndMove(media, folders) {
+        try {
+            const { data: tree } = await http.get('/admin/media/folders/tree');
+            const targetId = await folderPicker.open(tree, { excludeIds: folders, currentId: this.currentFolderId });
+
+            if (targetId === undefined) {
+                return;
+            }
+
+            const { message } = await http.post('/admin/media/bulk-move', {
+                media,
+                folders,
+                target_folder_id: targetId,
+            });
+            toast.success(message);
+            this.clearSelection();
+            this.load();
+        } catch (error) {
+            toast.error(error instanceof HttpError ? error.message : 'Taşınamadı.');
+        }
+    }
+
+    async deleteSelection() {
+        const { media, folders } = this.splitSelection();
+
+        await this.deleteItems(media, folders);
+    }
+
+    async deleteItems(media, folders) {
+        if (media.length === 0 && folders.length === 0) {
+            return;
+        }
+
+        const count = media.length + folders.length;
+
+        if (! await confirm(`${count} öğe kalıcı olarak silinecek.`, { title: 'Öğeleri sil', accept: 'Evet, sil' })) {
+            return;
+        }
+
+        try {
+            const { message } = await http.post('/admin/media/bulk-delete', { media, folders });
+            toast.success(message);
+            this.clearSelection();
+            this.load();
+        } catch (error) {
+            toast.error(error instanceof HttpError ? error.message : 'Silinemedi.');
+        }
+    }
+
+    splitSelection(keys = null) {
+        const media = [];
+        const folders = [];
+
+        for (const key of keys ?? this.selection) {
+            const [type, id] = key.split(':');
+            (type === 'media' ? media : folders).push(Number(id));
+        }
+
+        return { media, folders };
     }
 }
