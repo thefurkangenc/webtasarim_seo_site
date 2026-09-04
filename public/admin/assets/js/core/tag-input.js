@@ -157,3 +157,4 @@ export function initTagInputs(root = document) {
 }
 
 document.addEventListener('DOMContentLoaded', () => initTagInputs());
+document.addEventListener('admin:content-loaded', (event) => initTagInputs(event.target));

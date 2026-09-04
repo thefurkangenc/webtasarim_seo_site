@@ -3,7 +3,8 @@
  *
  * Alan, seçilen görseli hemen yükler ve gizli input'a media id'sini yazar;
  * form gönderildiğinde sadece bu id gider. Preset tanımlıysa yüklemeden önce
- * kırpma modalı açılır ve orana kilitlenir.
+ * kırpma modalı açılır ve orana kilitlenir. Dosya seçme, kütüphaneden seçme
+ * ve sürükle-bırak aynı yükleme akışından geçer.
  *
  * Ajax modal içinde açılan formlarda da çalışır: bağlama, olay delegasyonu ile
  * document seviyesinde yapılır, sayfa JS'inin bir şey çağırmasına gerek yoktur.
@@ -25,10 +26,13 @@ function parts(root) {
     return {
         input: root.querySelector('[data-media-input]'),
         file: root.querySelector('[data-media-file]'),
+        drop: root.querySelector('[data-media-drop]'),
+        dragover: root.querySelector('[data-media-dragover]'),
         preview: root.querySelector('[data-media-preview]'),
         image: root.querySelector('[data-media-image]'),
         empty: root.querySelector('[data-media-empty]'),
         info: root.querySelector('[data-media-info]'),
+        actions: root.querySelector('[data-media-actions]'),
         recrop: root.querySelector('[data-media-action="recrop"]'),
         busy: root.querySelector('[data-media-busy]'),
     };
@@ -48,7 +52,7 @@ function setBusy(root, busy) {
 
 /** Alanı verilen medya ile doldurur; null geçilirse temizler. */
 function render(root, media) {
-    const { input, image, preview, empty, info, recrop } = parts(root);
+    const { input, image, preview, empty, info, actions, recrop } = parts(root);
 
     input.value = media?.id ?? '';
     root.dataset.mediaCanRecrop = media?.can_recrop ? '1' : '';
@@ -56,12 +60,19 @@ function render(root, media) {
     if (! media) {
         preview.classList.add('hidden');
         empty.classList.remove('hidden');
-        recrop?.classList.add('hidden');
+        actions.classList.add('hidden');
+        info.classList.add('hidden');
+        info.textContent = '';
+
+        // Bağlı alanlar (örn. SEO paylaşım görseli) temizlendiğini bilsin.
+        root.dispatchEvent(new CustomEvent('media:change', { detail: null, bubbles: true }));
 
         return;
     }
 
-    image.src = media.thumb ?? media.url;
+    // 'thumb' kütüphane ızgarası için sabit karedir (400x400 cover); preset
+    // oranını bozar. Alan önizlemesi kırpımın gerçek oranını göstermeli.
+    image.src = media.medium ?? media.url;
     image.alt = media.alt ?? media.name ?? '';
     info.textContent = media.width
         ? `${media.name} · ${media.width}×${media.height} · ${media.human_size}`
@@ -69,6 +80,8 @@ function render(root, media) {
 
     preview.classList.remove('hidden');
     empty.classList.add('hidden');
+    actions.classList.remove('hidden');
+    info.classList.remove('hidden');
     recrop?.classList.toggle('hidden', ! media.can_recrop);
 
     root.dispatchEvent(new CustomEvent('media:change', { detail: media, bubbles: true }));
@@ -146,7 +159,8 @@ async function onRecrop(root) {
         }
 
         const { data, message } = await http.post(`/admin/media/${id}/recrop`, { crop });
-        render(root, { ...data, thumb: `${data.thumb}?v=${Date.now()}` });
+        // Değişmeyen bir URL tarayıcı önbelleğinden eskisini gösterebilir.
+        render(root, { ...data, medium: `${data.medium}?v=${Date.now()}` });
         toast.success(message);
     } catch (error) {
         toast.error(error instanceof HttpError ? error.message : 'Yeniden kırpılamadı.');
@@ -195,3 +209,76 @@ document.addEventListener('click', async (event) => {
         render(root, null);
     }
 });
+
+/*
+ * Sürükle-bırak: sadece dosya sürüklenirken vurgu katmanı gösterilir; alan
+ * içindeki alt elemanlar arasında geçişte tetiklenen dragenter/dragleave
+ * çifti bir sayaçla dengelenir, aksi halde vurgu titrer.
+ */
+let dragDepth = 0;
+
+function isFileDrag(event) {
+    return [...(event.dataTransfer?.types ?? [])].includes('Files');
+}
+
+document.addEventListener('dragenter', (event) => {
+    const drop = event.target.closest('[data-media-drop]');
+
+    if (! drop || ! isFileDrag(event)) {
+        return;
+    }
+
+    dragDepth += 1;
+    drop.closest('[data-media-field]').querySelector('[data-media-dragover]')?.classList.remove('hidden');
+});
+
+document.addEventListener('dragover', (event) => {
+    if (event.target.closest('[data-media-drop]') && isFileDrag(event)) {
+        event.preventDefault();
+    }
+});
+
+document.addEventListener('dragleave', (event) => {
+    if (! event.target.closest('[data-media-drop]')) {
+        return;
+    }
+
+    dragDepth = Math.max(0, dragDepth - 1);
+
+    if (dragDepth === 0) {
+        document.querySelectorAll('[data-media-dragover]').forEach((el) => el.classList.add('hidden'));
+    }
+});
+
+document.addEventListener('drop', (event) => {
+    const drop = event.target.closest('[data-media-drop]');
+
+    dragDepth = 0;
+    document.querySelectorAll('[data-media-dragover]').forEach((el) => el.classList.add('hidden'));
+
+    if (! drop || ! isFileDrag(event)) {
+        return;
+    }
+
+    event.preventDefault();
+
+    const file = event.dataTransfer.files[0];
+
+    if (file) {
+        onFileSelected(field(drop), file);
+    }
+});
+
+/**
+ * Başka bir core modülünün bir görsel alanını programatik doldurması için
+ * (örn. core/seo-field.js, kapak görseli seçilince paylaşım görselini
+ * eşzamanlı doldurur). Kullanıcının kendi seçtiği bir görseli ezmez —
+ * çağıran taraf "dokunulmamış" kontrolünü kendisi yapar.
+ *
+ *   setFieldMedia(root.querySelector('[data-media-field]'), media);
+ */
+export function setFieldMedia(root, media) {
+    if (root) {
+        render(root, media);
+    }
+}

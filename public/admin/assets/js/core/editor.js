@@ -50,7 +50,7 @@ function options(textarea) {
         language_url: `${BASE_URL}/langs/tr.js`,
 
         height: Number(textarea.dataset.editorHeight) || 500,
-        menubar: false,
+        menubar: 'file edit view insert format tools table help',
         branding: false,
         promotion: false,
         statusbar: true,

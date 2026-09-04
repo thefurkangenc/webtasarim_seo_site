@@ -2,10 +2,15 @@
     // HasSeo kullanan model; yeni kayıtta null olabilir.
     'model' => null,
     'prefix' => 'seo',
-    // Önizlemede meta alanları boşken hangi form alanına düşüleceği.
+    // Kaynak alan boşken önizleme ve otomatik doldurma buraya düşer.
+    // Meta alanı kullanıcı tarafından elle değiştirilmediği sürece kaynak
+    // değiştikçe eşzamanlı güncellenir (bkz. core/seo-field.js).
     'titleSource' => 'title',
     'descriptionSource' => 'excerpt',
     'slugSource' => 'slug',
+    // Kapak görseli alanının adı (örn. 'cover_media_id'). Verilmezse paylaşım
+    // görseli otomatik doldurulmaz, elle seçilir.
+    'imageSource' => null,
     // Önizleme URL'inde başlığın önüne gelen yol: /blog/ornek-yazi
     'path' => '',
     'wrapper' => 'mb-[20px] md:mb-[25px] last:mb-0',
@@ -27,6 +32,7 @@
     data-seo-title-source="{{ $titleSource }}"
     data-seo-description-source="{{ $descriptionSource }}"
     data-seo-slug-source="{{ $slugSource }}"
+    data-seo-image-source="{{ $imageSource }}"
     data-seo-host="{{ $host }}"
     data-seo-path="{{ trim($path, '/') }}">
 
@@ -64,20 +70,11 @@
             </div>
 
             <x-admin::form.input :name="$prefix.'.meta_keywords'" label="Meta Anahtar Kelimeler"
-                :value="$seo?->meta_keywords" placeholder="virgülle ayırın: web tasarım, kurumsal site" />
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-[15px]">
-                <x-admin::form.switch :name="$prefix.'.robots_index'" label="Arama motorlarına açık"
-                    :checked="$seo?->robots_index ?? true"
-                    hint="Kapatılırsa noindex verilir; sayfa sonuçlarda çıkmaz." wrapper="" />
-
-                <x-admin::form.switch :name="$prefix.'.robots_follow'" label="Bağlantılar takip edilsin"
-                    :checked="$seo?->robots_follow ?? true"
-                    hint="Kapatılırsa nofollow verilir." wrapper="" />
-            </div>
+                :value="$seo?->meta_keywords" placeholder="virgülle ayırın: web tasarım, kurumsal site"
+                wrapper="mb-0" />
         </div>
 
-        {{-- Sağ: önizleme + paylaşım görseli + canonical --}}
+        {{-- Sağ: önizleme + paylaşım görseli --}}
         <div>
             <div class="mb-[20px] rounded-md border border-gray-100 dark:border-[#172036] bg-gray-50 dark:bg-[#15203c] p-[17px]">
                 <span class="block text-xs text-gray-500 dark:text-gray-400 mb-[12px] uppercase tracking-[.5px]">
@@ -96,12 +93,8 @@
             </div>
 
             <x-admin::form.image :name="$prefix.'.og_media_id'" label="Paylaşım Görseli"
-                preset="seo.og" :media="$seo?->ogMedia"
+                preset="seo.og" :media="$seo?->ogMedia" wrapper="mb-0"
                 hint="Sosyal medyada paylaşıldığında görünen görsel. Boşsa kapak görseli kullanılır." />
-
-            <x-admin::form.input :name="$prefix.'.canonical_url'" type="url" label="Canonical URL"
-                :value="$seo?->canonical_url" placeholder="Aynı içerik başka bir adreste de varsa asıl adres"
-                wrapper="mb-0" />
         </div>
     </div>
 </div>

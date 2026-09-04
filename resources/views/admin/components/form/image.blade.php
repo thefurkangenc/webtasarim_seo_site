@@ -28,39 +28,62 @@
         data-media-height="{{ $size['height'] ?? '' }}"
         data-media-label="{{ $size['label'] ?? '' }}"
         data-media-folder="{{ $folder }}"
-        class="relative border border-gray-200 dark:border-[#172036] rounded-md p-[12px]">
+        class="relative">
 
         <input type="hidden" name="{{ $field }}" data-media-input value="{{ old($name, $media?->id) }}">
         <input type="file" data-media-file accept="{{ $accepts }}" class="hidden">
 
-        {{-- Önizleme — üstte, geniş; kırpım sonucu net görülsün diye. --}}
-        <div data-media-preview
-            class="{{ $media ? '' : 'hidden' }} w-full h-[190px] rounded-md overflow-hidden border border-gray-100 dark:border-[#172036] bg-gray-50 dark:bg-[#15203c] mb-[12px]">
-            <img data-media-image class="w-full h-full object-cover"
-                src="{{ $media?->url('thumb') }}" data-original="{{ $media?->url() }}"
-                alt="{{ $media?->alt }}">
+        {{-- Önizleme / boş durum — aynı zamanda bırakma (drop) alanı. Dolu iken
+             de dosya sürüklenip bırakılırsa mevcut görsel değiştirilir. --}}
+        <div data-media-drop
+            class="group relative w-full h-[190px] rounded-md overflow-hidden border-2 border-dashed border-gray-200 dark:border-[#172036] bg-gray-50 dark:bg-[#15203c] transition-all hover:border-primary-300 dark:hover:border-primary-500/50">
+
+            <div data-media-preview class="{{ $media ? '' : 'hidden' }} absolute inset-0">
+                <img data-media-image class="w-full h-full object-cover"
+                    src="{{ $media?->url('medium') }}" data-original="{{ $media?->url() }}"
+                    alt="{{ $media?->alt }}">
+                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all pointer-events-none"></div>
+            </div>
+
+            <button type="button" data-media-action="select" data-media-empty
+                class="{{ $media ? 'hidden' : '' }} absolute inset-0 w-full h-full flex flex-col items-center justify-center gap-[6px] text-gray-400 hover:text-primary-500 transition-all cursor-pointer">
+                <i class="material-symbols-outlined !text-[36px]">cloud_upload</i>
+                <span class="text-xs font-medium">Sürükleyip bırakın ya da tıklayın</span>
+                @if ($size)
+                    <span class="text-[11px] text-gray-400">Hedef boyut: {{ $size['width'] }}×{{ $size['height'] }} px</span>
+                @endif
+            </button>
+
+            {{-- Sürükleme sırasında beliren vurgu katmanı. --}}
+            <div data-media-dragover
+                class="hidden absolute inset-0 z-[1] rounded-md bg-primary-500/10 border-2 border-primary-500 flex items-center justify-center pointer-events-none">
+                <span class="flex items-center gap-[6px] text-primary-500 font-medium text-sm bg-white dark:bg-[#0c1427] py-[6px] px-[14px] rounded-md shadow-3xl">
+                    <i class="material-symbols-outlined !text-[19px]">file_download</i> Bırakın
+                </span>
+            </div>
+
+            {{-- Yükleme örtüsü --}}
+            <div data-media-busy
+                class="hidden absolute inset-0 z-[2] bg-white/80 dark:bg-[#0c1427]/80 flex items-center justify-center">
+                <span class="flex items-center gap-[8px] text-primary-500 font-medium text-sm">
+                    <i class="material-symbols-outlined animate-spin !text-[20px]">progress_activity</i> Yükleniyor...
+                </span>
+            </div>
         </div>
 
-        {{-- Boş durum --}}
-        <div data-media-empty
-            class="{{ $media ? 'hidden' : '' }} w-full h-[190px] rounded-md border border-dashed border-gray-200 dark:border-[#172036] flex items-center justify-center text-gray-400 mb-[12px]">
-            <i class="material-symbols-outlined !text-[36px]">image</i>
-        </div>
-
-        <p data-media-info class="!mb-[10px] text-xs text-gray-500 dark:text-gray-400 truncate">
+        {{-- Boşken hedef boyut zaten dropzone içinde yazıyor; tekrar etmesin. --}}
+        <p data-media-info class="{{ $media ? '' : 'hidden' }} !mb-0 mt-[10px] text-xs text-gray-500 dark:text-gray-400 truncate">
             @if ($media)
                 {{ $media->name }} · {{ $media->width }}×{{ $media->height }} · {{ $media->humanSize() }}
-            @elseif ($size)
-                Hedef boyut: {{ $size['width'] }}×{{ $size['height'] }} px
-            @else
-                Henüz görsel seçilmedi
             @endif
         </p>
 
-        <div class="flex items-center gap-[6px] flex-wrap">
+        {{-- Yalnızca görsel varken görünür; boşken tıklama/sürükleme zaten üstteki
+             dropzone'dan yapılır. --}}
+        <div data-media-actions class="{{ $media ? '' : 'hidden' }} flex items-center gap-[6px] flex-wrap mt-[10px]">
             <button type="button" data-media-action="select"
-                class="inline-flex items-center gap-[5px] py-[7px] px-[14px] text-xs bg-primary-500 text-white transition-all hover:bg-primary-400 rounded-md border border-primary-500 hover:border-primary-400">
-                <i class="material-symbols-outlined !text-[16px]">upload</i> Dosya Seç
+                class="inline-flex items-center gap-[5px] py-[7px] px-[14px] text-xs text-black dark:text-white transition-all rounded-md border border-gray-200 dark:border-[#172036] hover:bg-gray-50 dark:hover:bg-[#15203c]">
+                <i class="material-symbols-outlined !text-[16px]">upload</i> Değiştir
             </button>
 
             <button type="button" data-media-action="library"
@@ -74,17 +97,9 @@
             </button>
 
             <button type="button" data-media-action="remove"
-                class="inline-flex items-center gap-[5px] py-[7px] px-[14px] text-xs text-danger-500 transition-all rounded-md border border-gray-200 dark:border-[#172036] hover:bg-danger-100 dark:hover:bg-[#15203c]">
+                class="inline-flex items-center gap-[5px] py-[7px] px-[14px] text-xs text-danger-500 transition-all rounded-md border border-gray-200 dark:border-[#172036] hover:bg-danger-100 dark:hover:bg-[#15203c] ltr:ml-auto rtl:mr-auto">
                 <i class="material-symbols-outlined !text-[16px]">close</i> Kaldır
             </button>
-        </div>
-
-        {{-- Yükleme örtüsü --}}
-        <div data-media-busy
-            class="hidden absolute inset-0 z-[2] rounded-md bg-white/80 dark:bg-[#0c1427]/80 flex items-center justify-center">
-            <span class="flex items-center gap-[8px] text-primary-500 font-medium text-sm">
-                <i class="material-symbols-outlined animate-spin !text-[20px]">progress_activity</i> Yükleniyor...
-            </span>
         </div>
     </div>
 

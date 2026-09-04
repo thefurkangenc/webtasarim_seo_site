@@ -1741,8 +1741,10 @@ html[dir="rtl"] {
     display: none;
 }
 
+/* Ay/yıl başlığı — trezo-card-header ile aynı ton, takvimin üst köşelerine
+   kilitli. Konumu 'relative' olmalı: ok butonları buna göre ortalanır. */
 .flatpickr-months {
-    @apply p-[10px] pb-0;
+    @apply relative py-[12px] px-[10px] bg-gray-50 dark:bg-[#15203c] border-b border-gray-100 dark:border-[#172036] rounded-t-md;
 }
 
 .flatpickr-current-month {
@@ -1757,12 +1759,19 @@ html[dir="rtl"] {
     @apply text-black dark:text-white dark:bg-[#172036];
 }
 
+/* flatpickr'ın kendi kuralı ok butonlarını üste (top:0) sabitler; başlığın
+   dikey ortasına değil. Burada ay yazısıyla aynı hizaya, dikey ortalanmış
+   şekilde konumlandırılıyor. */
 .flatpickr-prev-month,
 .flatpickr-next-month {
-    @apply text-gray-500 dark:fill-gray-400;
+    @apply text-gray-500 dark:fill-gray-400 !top-1/2 !-translate-y-1/2 rounded-md;
 
     svg {
         @apply fill-gray-500 dark:fill-gray-400;
+    }
+
+    &:hover {
+        @apply bg-gray-100 dark:bg-[#172036];
     }
 
     &:hover svg {

@@ -181,7 +181,15 @@ layout'ta yüklüdür ve `document` seviyesinde olay delegasyonu ile çalışır
 ajax modal içinde açılan formlarda da kendiliğinden devreye girer.
 
 Alan seçilen görseli hemen yükler ve gizli input'a `media_id` yazar; form
-gönderildiğinde sunucuya sadece bu id gider.
+gönderildiğinde sunucuya sadece bu id gider. Sürükle-bırak, tıklamayla dosya
+seçme ve kütüphaneden seçme aynı `render()` akışından geçer.
+
+Her değişimde (yükleme/seçim/yeniden kırpma) alanın kökünde `media:change`
+custom event'i fırlatılır (`bubbles: true`, `detail` = medya payload'ı ya da
+`null` kaldırıldıysa). Başka bir core modülü bir görsel alanını programatik
+doldurmak isterse `setFieldMedia(root, media)` export'unu kullanır —
+`core/seo-field.js`'in kapak görselinden paylaşım görselini eşzamanlı
+doldurması bunun üzerine kurulu.
 
 ### toast.js / confirm.js
 

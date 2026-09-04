@@ -62,7 +62,7 @@
                         </div>
                     </div>
                     <div class="trezo-card-content">
-                        <x-admin::form.seo :model="$blog" path="blog" wrapper="" />
+                        <x-admin::form.seo :model="$blog" path="blog" imageSource="cover_media_id" wrapper="" />
                     </div>
                 </div>
             </div>

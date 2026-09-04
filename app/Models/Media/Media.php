@@ -87,7 +87,13 @@ class Media extends Model
             'alt' => $this->alt,
             'title' => $this->title,
             'url' => $this->url(),
+            // Kütüphane ızgarası her zaman kare bir kart ister; 'thumb' bunun için
+            // 400x400'e cover-crop edilir. Form alanı önizlemesi bunu kullanmamalı —
+            // geniş/dar bir preset üzerinde ikinci bir kare kırpma, kullanıcının
+            // modalda seçtiğinden çok daha kırpılmış görünmesine yol açar.
             'thumb' => $this->url('thumb'),
+            // Oranı bozmadan küçültür (crop yok); form alanı önizlemesi bunu kullanır.
+            'medium' => $this->url('medium'),
             'extension' => $this->extension,
             'mime_type' => $this->mime_type,
             'size' => $this->size,

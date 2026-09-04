@@ -263,6 +263,12 @@ yükler ve gizli input'a `media_id` yazar. Boyutlar `config/media.php`
 içindeki `presets`'ten gelir; yeni bir alan için önce oraya boyut ekle.
 Modelde `image` kolonu açma — bağlantı `HasMedia` trait'i ile kurulur.
 
+Yerleşim: önizleme üstte geniş bir sürükle-bırak alanı (`data-media-drop`,
+tıklanabilir de), butonlar (Değiştir/Kütüphaneden Seç/Yeniden Kırp/Kaldır)
+altta. Butonlar **yalnızca görsel seçiliyken** görünür — boşken sadece
+dropzone'un kendi "sürükleyip bırakın ya da tıklayın" yazısı var, ayrı bir
+buton kalabalığı olmaz.
+
 Component'ler `AppServiceProvider` içinde `Blade::anonymousComponentPath()` ile
 `admin` namespace'ine bağlanır. Class dizileri **sadece** component dosyalarında
 bulunur; sayfa Blade'lerinde ham input yazma.
@@ -317,25 +323,56 @@ alanları **sayfa JS'i hiçbir şey çağırmadan** kendiliğinden kurulur.
 Bunları modül Blade'ine kopyalayarak çoğaltma.
 
 ```blade
-{{-- SEO: meta alanları + robots + paylaşım görseli + canlı Google önizlemesi --}}
-<x-admin::form.seo :model="$blog" path="blog" />
+{{-- SEO: meta başlık/açıklama/anahtar kelime + paylaşım görseli + canlı Google önizlemesi --}}
+<x-admin::form.seo :model="$blog" path="blog" imageSource="cover_media_id" />
 
 {{-- Etiket: yazarken önerir, olmayanı Enter ile oluşturur --}}
 <x-admin::form.tags :model="$blog" />
 
-{{-- Zengin metin: TinyMCE 7, görsel butonu medya seçicisini açar --}}
+{{-- Zengin metin: TinyMCE 7, üst menü açık, görsel butonu medya seçicisini açar --}}
 <x-admin::form.editor name="content" :value="$blog?->content" :height="560" />
 ```
 
-`form.seo` bileşeni önizlemeyi formdaki kaynak alanlardan besler; alan adları
-farklıysa `titleSource` / `descriptionSource` / `slugSource` verilir:
+`form.seo` içinde **canonical URL ve robots (index/follow) switch'leri yok** —
+kaldırıldı, `HasSeo::syncSeo()` bunları formdan bağımsız olarak her zaman
+`index,follow` ve canonical=null varsayar.
+
+**Kaynak alan eşlemesi:** `titleSource` / `descriptionSource` / `slugSource` /
+`imageSource` props'ları formdaki hangi alanın SEO'yu beslediğini söyler.
+Alan adları modül tablosuna göre değişir, bu yüzden her modülde eşleşme
+tekrar verilir — sabit varsayılan `title`/`excerpt`/`slug`'dır, `imageSource`
+varsayılan olarak boştur (kapak görseli yoksa verilmez):
 
 ```blade
 <x-admin::form.seo :model="$category" titleSource="name" descriptionSource="description"
                    path="blog/kategori" />
 ```
 
+**Eşzamanlı doldurma (`core/seo-field.js`):** meta başlık/açıklama/paylaşım
+görseli, kaynak alan değiştikçe **kullanıcı o meta alana daha önce hiç
+dokunmadıysa** otomatik doldurulur — blog başlığına yazınca meta başlık da
+aynı anda dolar. Kullanıcı meta alanı elle değiştirdiği (ya da düzenleme
+ekranında zaten doluysa) andan itibaren senkron o alan için durur, bir daha
+ezmez. Görsel senkronu `media:change` olayını dinler — `core/media-field.js`
+bunu her yükleme/seçim/kaldırmada fırlatır, ayrı bir kablolamaya gerek yoktur.
+
 Modelde `use HasSeo;` / `use HasTags;` olmadan bu bileşenler çalışmaz.
+
+### Görsel alanı önizlemesi: `medium` kullan, `thumb` değil
+
+`Media::toPayload()` iki küçültülmüş sürüm döndürür:
+
+| Anahtar | Ne yapar | Nerede kullanılır |
+|---|---|---|
+| `thumb` | 400×400'e **cover-crop** — oranı bozar | Yalnızca medya kütüphanesi ızgarası (kart görünümü tek tip kare ister) |
+| `medium` | Oranı koruyarak küçültür, kırpmaz | `<x-admin::form.image>` alan önizlemesi |
+
+`thumb`'ı bir alan önizlemesinde kullanma: preset geniş/dar bir orana
+sahipse (örn. `blog.cover` 1200×630) `thumb`'ın kendi kare kırpması
+üste biner, kullanıcının modalda seçtiğinden çok daha fazla kırpılmış
+görünür. Bu proje daha önce bu hatayı yaşadı — `image.blade.php` ve
+`media-field.js`'in `render()`'ı her ikisi de `medium` kullanır, yeni bir
+görsel önizlemesi eklerken aynısını yap.
 
 ### Nokta notasyonlu alan adı
 

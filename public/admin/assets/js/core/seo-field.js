@@ -1,10 +1,15 @@
 /**
- * <x-admin::form.seo> davranışı: karakter sayaçları ve canlı arama sonucu
- * önizlemesi.
+ * <x-admin::form.seo> davranışı: karakter sayaçları, canlı arama sonucu
+ * önizlemesi ve kaynak alanlardan otomatik doldurma.
  *
- * Meta alanları boşken önizleme, formdaki kaynak alanlara düşer — panelde
- * görülen şey, ön yüzde HasSeo::seoMeta()'nın üreteceği şeyle aynı olsun diye.
+ * Otomatik doldurma: meta başlık/açıklama/paylaşım görseli, ilgili kaynak
+ * alan (örn. blog başlığı) değiştikçe eşzamanlı güncellenir — ama SADECE
+ * kullanıcı o meta alana daha önce hiç dokunmadıysa. Elle bir değer
+ * yazıldığı (ya da mevcut kayıtta zaten doluysa) andan itibaren senkron
+ * durur, kullanıcının girdisi ezilmez.
  */
+
+import { setFieldMedia } from './media-field.js';
 
 const TR_MAP = { ç: 'c', ğ: 'g', ı: 'i', ö: 'o', ş: 's', ü: 'u', İ: 'i', I: 'i' };
 
@@ -39,24 +44,97 @@ class SeoField {
         };
 
         this.sources = {
-            title: this.source(root.dataset.seoTitleSource),
-            description: this.source(root.dataset.seoDescriptionSource),
-            slug: this.source(root.dataset.seoSlugSource),
+            title: this.field(root.dataset.seoTitleSource),
+            description: this.field(root.dataset.seoDescriptionSource),
+            slug: this.field(root.dataset.seoSlugSource),
         };
 
-        this.bind();
+        // Zaten dolu bir alana (düzenleme ekranında elle girilmiş bir meta gibi)
+        // otomatik doldurma dokunmaz — kullanıcı bilinçli olarak özelleştirmiş sayılır.
+        this.touched = {
+            title: this.value(this.metaTitle) !== '',
+            description: this.value(this.metaDescription) !== '',
+            image: false,
+        };
+
+        this.bindText();
+        this.bindImage(root.dataset.seoImageSource);
         this.render();
     }
 
     /** Kaynak alanlar bu bileşenin dışında, formun başka yerindedir. */
-    source(name) {
+    field(name) {
         return name ? this.form.querySelector(`[name="${CSS.escape(name)}"]`) : null;
     }
 
-    bind() {
-        [this.metaTitle, this.metaDescription, ...Object.values(this.sources)]
-            .filter(Boolean)
-            .forEach((input) => input.addEventListener('input', () => this.render()));
+    bindText() {
+        // Meta alana elle yazıldığında senkron o alan için biter.
+        this.metaTitle?.addEventListener('input', () => {
+            this.touched.title = true;
+            this.render();
+        });
+
+        this.metaDescription?.addEventListener('input', () => {
+            this.touched.description = true;
+            this.render();
+        });
+
+        // Kaynak değiştikçe dokunulmamış meta alana kopyalanır.
+        this.sources.title?.addEventListener('input', () => {
+            if (! this.touched.title && this.metaTitle) {
+                this.metaTitle.value = this.sources.title.value;
+            }
+
+            this.render();
+        });
+
+        this.sources.description?.addEventListener('input', () => {
+            if (! this.touched.description && this.metaDescription) {
+                this.metaDescription.value = this.sources.description.value;
+            }
+
+            this.render();
+        });
+
+        this.sources.slug?.addEventListener('input', () => this.render());
+    }
+
+    /**
+     * Kapak görseli değiştikçe paylaşım görselini eşzamanlı doldurur.
+     * imageSource verilmemişse (modülde kapak görseli yoksa) hiçbir şey yapmaz.
+     */
+    bindImage(sourceFieldName) {
+        this.imageTarget = this.root.querySelector('[data-media-field]');
+
+        if (! sourceFieldName || ! this.imageTarget) {
+            return;
+        }
+
+        this.imageSource = this.form
+            .querySelector(`[data-media-input][name="${CSS.escape(sourceFieldName)}"]`)
+            ?.closest('[data-media-field]');
+
+        if (! this.imageSource) {
+            return;
+        }
+
+        this.touched.image = Boolean(
+            this.imageTarget.querySelector('[data-media-input]')?.value,
+        );
+
+        // Hedef alanda kullanıcı doğrudan bir işlem yaparsa (seç/kütüphane/kaldır/
+        // yeniden kırp) senkron o andan itibaren biter.
+        this.imageTarget.addEventListener('click', (event) => {
+            if (event.target.closest('[data-media-action]')) {
+                this.touched.image = true;
+            }
+        });
+
+        this.imageSource.addEventListener('media:change', (event) => {
+            if (! this.touched.image) {
+                setFieldMedia(this.imageTarget, event.detail);
+            }
+        });
     }
 
     render() {
@@ -107,3 +185,4 @@ export function initSeoFields(root = document) {
 }
 
 document.addEventListener('DOMContentLoaded', () => initSeoFields());
+document.addEventListener('admin:content-loaded', (event) => initSeoFields(event.target));
