@@ -1724,116 +1724,6 @@ html[dir="rtl"] {
     }
 }
 /** ==========================================================================
- * Choices.js — native select yerine geçen tema uyumlu dropdown
- * ========================================================================== */
-.choices {
-    @apply m-0 text-sm;
-
-    &:focus {
-        @apply outline-0;
-    }
-}
-
-/* Tek/çoklu seçim kutusunun görünümü — form.select bileşenindeki h-[42px]
-   input ile aynı boy ve renk paleti. */
-.choices__inner {
-    @apply min-h-[42px] !py-0 !pl-[12px] !pr-[30px] rounded-md text-black bg-white border border-gray-200 transition-all
-        dark:text-white dark:bg-[#0c1427] dark:border-[#172036];
-}
-
-.choices.is-focused .choices__inner,
-.choices.is-open .choices__inner {
-    @apply border-primary-500;
-}
-
-.choices[data-type*='select-one'] .choices__inner {
-    @apply flex items-center;
-}
-
-.choices[data-type*='select-one'] .choices__input {
-    @apply m-0 mt-[8px] mb-[4px] text-sm text-black bg-gray-50 border-0 border-b border-gray-100
-        dark:text-white dark:bg-[#15203c] dark:border-[#172036];
-}
-
-/* Tekli seçimde seçili öğe metni; boyu inner ile aynı hizada dursun diye
-   satır yüksekliği sabitlenir. */
-.choices__list--single {
-    @apply p-0 leading-[40px];
-}
-
-.choices__list--single .choices__item {
-    @apply text-black dark:text-white;
-}
-
-.choices[data-type*='select-one'] .choices__item[data-placeholder] {
-    @apply text-gray-500 dark:text-gray-400;
-}
-
-/* Ok ikonu — panelin diğer select'leriyle aynı stil. */
-.choices[data-type*='select-one']::after {
-    @apply border-t-gray-500 dark:border-t-gray-400 right-[14px];
-}
-
-.choices[data-type*='select-one'].is-open::after {
-    @apply border-t-0 border-b-gray-500 dark:border-b-gray-400;
-}
-
-.choices[data-type*='select-one'] .choices__button {
-    @apply opacity-60 hover:opacity-100;
-}
-
-/* Çoklu seçim etiketleri (chip) — panelin primary tonuna uyar. */
-.choices__list--multiple .choices__item {
-    @apply text-xs font-medium rounded-md border-0 bg-primary-500 text-white my-[2px] mr-[4px] py-[3px] px-[8px];
-}
-
-.choices__list--multiple .choices__item.is-highlighted {
-    @apply bg-primary-400;
-}
-
-/* Açılır liste — trezo-card'daki dropdown'larla aynı görünüm dili. */
-.choices__list--dropdown,
-.choices__list[aria-expanded] {
-    @apply mt-[4px] rounded-md border border-gray-100 bg-white shadow-3xl z-[20]
-        dark:bg-[#172036] dark:border-[#172036] dark:shadow-none;
-}
-
-.choices__list--dropdown .choices__item,
-.choices__list[aria-expanded] .choices__item {
-    @apply text-sm text-black py-[8px] px-[12px] dark:text-white;
-}
-
-.choices__list--dropdown .choices__item--selectable.is-highlighted,
-.choices__list[aria-expanded] .choices__item--selectable.is-highlighted {
-    @apply bg-gray-50 dark:bg-[#15203c];
-}
-
-.choices__list--dropdown .choices__item--selectable.is-selected,
-.choices__list[aria-expanded] .choices__item--selectable.is-selected {
-    @apply text-primary-500 font-medium;
-}
-
-.choices__list--dropdown .choices__list,
-.choices__list[aria-expanded] .choices__list {
-    @apply max-h-[220px];
-}
-
-/* Açılır listenin üstündeki arama kutusu. */
-.choices__list--dropdown .choices__input,
-.choices__list[aria-expanded] .choices__input {
-    @apply text-sm text-black bg-white border-0 border-b border-gray-100 m-0 py-[10px] px-[12px]
-        dark:text-white dark:bg-[#172036] dark:border-[#172036] dark:placeholder:text-gray-400;
-}
-
-.choices__heading {
-    @apply text-gray-500 dark:text-gray-400 border-gray-100 dark:border-[#172036];
-}
-
-.choices.is-disabled .choices__inner {
-    @apply opacity-60 cursor-not-allowed;
-}
-
-/** ==========================================================================
  * Flatpickr — tarih/saat seçici, panel temasına ve karanlık moda uyumlu
  * ========================================================================== */
 .flatpickr-calendar {
@@ -2218,22 +2108,120 @@ a:focus-visible,
     border-right: 0;
 }
 
-/** Choices.js — native select'lerle aynı görsel dile hizalanır.
-    Köşe yarıçapını zaten rounded-md token'ından alıyor; burada yalnızca
-    kenar rengi, odak halkası ve chip tonu düzeltiliyor. */
+/** ==========================================================================
+ * Choices.js — kapalı kutu + açılır liste tasarımı
+ *
+ * Vendor CSS (vendor/choices.min.css) bu dosyadan ÖNCE yükleniyor; her ikisi
+ * de katmansız olduğu için eşit özgüllükte buradaki kurallar kazanır. Bazı
+ * vendor kuralları daha özgül (.is-open .choices__inner gibi) — onlar aynı
+ * veya daha yüksek özgüllükle burada tekrar ezilir.
+ * ========================================================================== */
+
+/* --- Kapalı kutu --------------------------------------------------------- */
+
+.choices {
+    @apply m-0 text-sm;
+
+    &:focus {
+        @apply outline-0;
+    }
+}
+
+/* form.select bileşenindeki h-[42px] input ile aynı boy ve renk paleti. */
 .choices__inner {
+    @apply min-h-[42px] !py-0 !pl-[12px] !pr-[36px] rounded-md text-black bg-white border transition-all
+        dark:text-white dark:bg-[#0c1427];
+
     border-color: var(--ui-field-border);
     transition: border-color .18s ease, box-shadow .18s ease;
 }
 
+.choices:not(.is-open):not(.is-disabled) .choices__inner:hover {
+    border-color: var(--color-gray-300);
+}
+
 .choices.is-focused .choices__inner,
 .choices.is-open .choices__inner {
+    border-color: var(--color-primary-500);
     box-shadow: var(--ui-ring);
 }
 
-/* Çoklu seçim etiketleri: dolu primary yerine tonlu — form.tags ve
-   form.faqs bileşenlerindeki chip'lerle aynı görünüm. */
+/* Vendor açıkken alt köşeleri düzleştiriyor (liste kutuya yapışık sanıyor).
+   Bizde liste ayrı bir kart olarak boşlukla duruyor — yarıçap korunur. */
+.choices.is-open .choices__inner,
+.choices.is-flipped.is-open .choices__inner {
+    border-radius: var(--radius-md);
+}
+
+.choices[data-type*='select-one'] .choices__inner {
+    @apply flex items-center;
+}
+
+.choices[data-type*='select-one'] .choices__input {
+    @apply m-0 mt-[8px] mb-[4px] text-sm text-black bg-gray-50 border-0 border-b border-gray-100
+        dark:text-white dark:bg-[#15203c] dark:border-[#172036];
+}
+
+/* Tekli seçimde seçili öğe metni; boyu inner ile aynı hizada dursun diye
+   satır yüksekliği sabitlenir. */
+.choices__list--single {
+    @apply p-0 leading-[40px];
+}
+
+.choices__list--single .choices__item {
+    @apply text-black dark:text-white;
+}
+
+.choices[data-type*='select-one'] .choices__item[data-placeholder] {
+    @apply text-gray-500 dark:text-gray-400;
+}
+
+/* --- Ok --------------------------------------------------------------------
+   Vendor'ın border ile çizilmiş üçgeni yerine remixicon chevron'u. Açılırken
+   180° dönüyor; iki ayrı glif yerine tek glifin dönmesi yumuşak bir geçiş
+   veriyor (sidebar'daki ::before chevron'u ile aynı yaklaşım). */
+
+.choices[data-type*='select-one']::after {
+    content: "\ea4e";
+    font-family: "remixicon";
+    border: 0;
+    width: auto;
+    height: auto;
+    margin: 0;
+    top: 50%;
+    line-height: 1;
+    pointer-events: none;
+    transform: translateY(-50%);
+    transition: transform .2s ease, color .18s ease;
+    @apply text-[18px] text-gray-500 dark:text-gray-400;
+}
+
+.choices[data-type*='select-one'].is-open::after {
+    border: 0;
+    margin: 0;
+    transform: translateY(-50%) rotate(180deg);
+    color: var(--color-primary-500);
+}
+
+[dir="ltr"] .choices[data-type*='select-one']::after {
+    right: 12px;
+    left: auto;
+}
+
+[dir="rtl"] .choices[data-type*='select-one']::after {
+    left: 12px;
+    right: auto;
+}
+
+.choices[data-type*='select-one'] .choices__button {
+    @apply opacity-60 hover:opacity-100;
+}
+
+/* --- Çoklu seçim etiketleri (chip) -------------------------------------- */
+
 .choices__list--multiple .choices__item {
+    @apply text-xs font-medium rounded-md border-0 my-[2px] mr-[4px] py-[3px] px-[8px];
+
     background-color: color-mix(in srgb, var(--color-primary-500) 10%, transparent);
     color: var(--color-primary-500);
     border: 1px solid color-mix(in srgb, var(--color-primary-500) 22%, transparent);
@@ -2254,12 +2242,132 @@ a:focus-visible,
     opacity: 1;
 }
 
+/* --- Açılır liste ----------------------------------------------------------
+   Vendor listeyi display:none <-> block ile açıp kapatıyor; display
+   animasyonlanamaz. Liste her zaman display:block bırakılıp görünürlük
+   opacity + visibility + transform ile yönetiliyor — böylece açılış/kapanış
+   yumuşak oluyor, kapalıyken de tıklamayı yakalamıyor. */
+
 .choices__list--dropdown,
 .choices__list[aria-expanded] {
+    @apply mt-[6px] bg-white z-[20] dark:bg-[#172036];
+
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+    /* Yalnızca kaydırma, ölçek YOK: Choices açılırken listeyi
+       getBoundingClientRect() ile ölçüp yukarı mı açacağına karar veriyor
+       (bkz. Container.shouldFlip). scale() ölçülen yüksekliği bozar; translate
+       yalnızca konumu birkaç piksel kaydırır ve yükseklik doğru kalır.
+       Ayrıca ölçeklenen metin geçiş boyunca bulanık görünüyordu. */
+    transform: translateY(-6px);
+    transition: opacity .16s ease, transform .16s ease, visibility .16s;
+    border: 1px solid var(--ui-hairline);
     border-radius: 12px;
-    border-color: var(--ui-hairline);
     box-shadow: var(--ui-shadow-lg);
     overflow: hidden;
+}
+
+.choices__list--dropdown.is-active,
+.choices__list[aria-expanded].is-active {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Liste yukarı doğru açıldığında (ekran altına sığmıyorsa) geçiş de tersine. */
+.is-flipped .choices__list--dropdown,
+.is-flipped .choices__list[aria-expanded] {
+    @apply mt-0 mb-[6px];
+
+    transform: translateY(6px);
+    border-radius: 12px;
+}
+
+.is-flipped .choices__list--dropdown.is-active,
+.is-flipped .choices__list[aria-expanded].is-active {
+    transform: translateY(0);
+}
+
+.choices__list--dropdown .choices__list,
+.choices__list[aria-expanded] .choices__list {
+    @apply max-h-[240px] p-[6px];
+}
+
+/* Satırlar: kenarlardan içeri alınmış, yuvarlatılmış, yumuşak geçişli. */
+.choices__list--dropdown .choices__item,
+.choices__list[aria-expanded] .choices__item {
+    @apply text-sm text-black py-[9px] px-[12px] rounded-[8px] dark:text-white;
+
+    transition: background-color .14s ease, color .14s ease;
+}
+
+.choices__list--dropdown .choices__item--selectable.is-highlighted,
+.choices__list[aria-expanded] .choices__item--selectable.is-highlighted {
+    background-color: color-mix(in srgb, var(--color-primary-500) 8%, transparent);
+    color: var(--color-primary-500);
+}
+
+/* Vendor, vurgulanan satıra "seçmek için bas" metni sığsın diye 100px sağ
+   dolgu koyuyor; bu panelde o metin kapalı (itemSelectText: ''), dolgu da
+   uzun etiketleri gereksiz yere sardırıyordu. */
+@media (width >= 40rem) {
+    .choices__list--dropdown .choices__item--selectable.is-highlighted[data-select-text],
+    .choices__list[aria-expanded] .choices__item--selectable.is-highlighted[data-select-text] {
+        padding-right: 12px;
+    }
+}
+
+/* Seçili satır: primary metin + sağda onay işareti. Vendor bu ::after'ı
+   `content: none !important` ile kapattığı için burada da !important gerekli. */
+.choices__list--dropdown .choices__item--selectable.is-selected,
+.choices__list[aria-expanded] .choices__item--selectable.is-selected {
+    @apply text-primary-500 font-medium;
+}
+
+.choices__list--dropdown .choices__item--selectable.is-selected::after,
+.choices__list[aria-expanded] .choices__item--selectable.is-selected::after {
+    content: "\eb7b" !important;
+    font-family: "remixicon";
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    line-height: 1;
+    color: var(--color-primary-500);
+    @apply text-[16px];
+}
+
+[dir="ltr"] .choices__list--dropdown .choices__item--selectable.is-selected::after {
+    right: 10px;
+}
+
+[dir="rtl"] .choices__list--dropdown .choices__item--selectable.is-selected::after {
+    left: 10px;
+}
+
+/* Seçilemeyen satırlar (sonuç yok / seçenek yok) ortada ve soluk dursun. */
+.choices__list--dropdown .choices__item--choice.has-no-results,
+.choices__list--dropdown .choices__item--choice.has-no-choices {
+    @apply text-center text-gray-500 dark:text-gray-400;
+}
+
+/* Açılır listenin üstündeki arama kutusu. */
+.choices__list--dropdown .choices__input,
+.choices__list[aria-expanded] .choices__input {
+    @apply text-sm text-black bg-white border-0 m-0 py-[11px] px-[14px] rounded-none
+        dark:text-white dark:bg-[#172036] dark:placeholder:text-gray-400;
+
+    border-bottom: 1px solid var(--ui-hairline);
+}
+
+.choices__heading {
+    @apply text-gray-500 dark:text-gray-400 px-[12px];
+
+    border-bottom-color: var(--ui-hairline);
+}
+
+.choices.is-disabled .choices__inner {
+    @apply opacity-60 cursor-not-allowed;
 }
 
 /** Flatpickr — takvim kartı da kart diliyle aynı olsun. */
