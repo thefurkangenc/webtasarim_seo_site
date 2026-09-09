@@ -1,0 +1,108 @@
+<?php
+
+namespace App\Services\Service;
+
+use App\Models\Service\Service;
+use App\Services\Concerns\ReordersRecords;
+use App\Support\Placeholder;
+use App\Support\Slug;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
+
+class ServiceService
+{
+    use ReordersRecords;
+
+    public function list(array $filters): LengthAwarePaginator
+    {
+        return Service::query()
+            ->with(['author:id,name', 'media'])
+            ->withCount('regions')
+            ->when($filters['search'] ?? null, fn ($query, $term) => $query->where(
+                fn ($q) => $q->where('title', 'like', "%{$term}%")->orWhere('excerpt', 'like', "%{$term}%"),
+            ))
+            ->when($filters['status'] ?? null, fn ($query, $status) => $query->where('status', $status))
+            // Bölge filtresi pivot üzerinden: yalnızca o bölgeye bağlı hizmetler.
+            ->when($filters['service_region_id'] ?? null,
+                fn ($query, $id) => $query->whereHas('regions', fn ($q) => $q->whereKey($id)))
+            ->orderBy($filters['sort'] ?? 'sort_order', $filters['direction'] ?? 'asc')
+            ->paginate($filters['per_page'] ?? 15)
+            ->through(fn (Service $service) => $service->toPayload());
+    }
+
+    public function create(array $data): Service
+    {
+        return DB::transaction(function () use ($data) {
+            $service = Service::create([
+                ...$this->attributes($data),
+                'slug' => Slug::unique($this->slugSource($data), 'services'),
+                'user_id' => auth()->id(),
+            ]);
+
+            $this->syncRelations($service, $data);
+
+            return $service;
+        });
+    }
+
+    public function update(Service $service, array $data): Service
+    {
+        return DB::transaction(function () use ($service, $data) {
+            $service->update([
+                ...$this->attributes($data),
+                'slug' => Slug::unique($this->slugSource($data), 'services', $service->id),
+            ]);
+
+            $this->syncRelations($service, $data);
+
+            return $service;
+        });
+    }
+
+    public function delete(Service $service): void
+    {
+        DB::transaction(function () use ($service) {
+            // Medya kütüphanedeki dosyayı silmez, yalnızca bağı koparır.
+            $service->syncMedia(null, 'cover');
+            $service->tags()->detach();
+            $service->regions()->detach();
+            $service->seo()->delete();
+            $service->delete();
+        });
+    }
+
+    protected function reorderModel(): string
+    {
+        return Service::class;
+    }
+
+    /**
+     * Slug bölgeden bağımsızdır — URL'de bölge ayrı bir segment olarak durur.
+     * Bu yüzden başlıktaki yer tutucular slug'a girmeden atılır:
+     * "{{city}} Web Tasarım" -> "web-tasarim". Elle slug girildiyse aynen kalır.
+     */
+    private function slugSource(array $data): string
+    {
+        return ($data['slug'] ?? null) ?: (Placeholder::strip($data['title']) ?: $data['title']);
+    }
+
+    /** `sort_order` burada yok: formda girilmez, HasSortOrder verir, sıralama modu değiştirir. */
+    private function attributes(array $data): array
+    {
+        return [
+            'title' => $data['title'],
+            'excerpt' => $data['excerpt'] ?? null,
+            'content' => $data['content'] ?? null,
+            'status' => $data['status'] ?? Service::STATUS_DRAFT,
+        ];
+    }
+
+    /** Paylaşılan bileşenlerin kaydı: kapak görseli, etiketler, SEO ve bölgeler. */
+    private function syncRelations(Service $service, array $data): void
+    {
+        $service->syncMedia($data['cover_media_id'] ?? null, 'cover');
+        $service->syncTags($data['tags'] ?? []);
+        $service->syncSeo($data['seo'] ?? []);
+        $service->regions()->sync($data['service_regions'] ?? []);
+    }
+}

@@ -2112,6 +2112,9 @@
   .max-w-\[550px\] {
     max-width: 550px;
   }
+  .max-w-\[600px\] {
+    max-width: 600px;
+  }
   .max-w-\[620px\] {
     max-width: 620px;
   }
@@ -3544,6 +3547,9 @@
   }
   .text-left {
     text-align: left;
+  }
+  .align-\[-2px\] {
+    vertical-align: -2px;
   }
   .align-\[-3px\] {
     vertical-align: -3px;

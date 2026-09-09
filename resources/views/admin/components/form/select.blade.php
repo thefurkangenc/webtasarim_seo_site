@@ -8,12 +8,22 @@
     'wrapper' => 'mb-[20px] md:mb-[25px] last:mb-0',
     // true verilirse Choices.js uygulanmaz, tarayıcının native select'i kalır.
     'plain' => false,
+    // Çoklu seçim: HTML name'i `alan[]` olur, boş placeholder seçeneği basılmaz
+    // (Choices.js onu silinebilir bir etiket sanardı) ve `value` dizi beklenir.
+    // Choices.js çoklu modu kendiliğinden devreye girer — core/select.js
+    // `removeItemButton`'ı `select.multiple`'a göre açar.
+    'multiple' => false,
 ])
 
 @php
-    $field = \App\Support\Field::name($name);
+    $field = \App\Support\Field::name($name).($multiple ? '[]' : '');
     $id = \App\Support\Field::id($name);
     $selected = old($name, $value);
+    // Çoklu modda karşılaştırma dizi üyeliği üzerinden yapılır; tekil modda
+    // eskisi gibi tek değer karşılaştırması.
+    $selectedKeys = $multiple
+        ? collect($selected ?? [])->map(fn ($item) => (string) $item)->all()
+        : [];
 @endphp
 
 <div class="{{ $wrapper }}">
@@ -27,10 +37,11 @@
         name="{{ $field }}"
         id="{{ $id }}"
         @if ($required) required @endif
+        @if ($multiple) multiple @endif
         @unless ($plain) data-choices @endunless
-        {{ $attributes->merge(['class' => 'h-[42px] rounded-md text-sm text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[12px] block w-full outline-0 cursor-pointer transition-all focus:border-primary-500']) }}>
+        {{ $attributes->merge(['class' => ($multiple ? 'min-h-[42px] py-[4px]' : 'h-[42px]').' rounded-md text-sm text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[12px] block w-full outline-0 cursor-pointer transition-all focus:border-primary-500']) }}>
 
-        @if ($placeholder)
+        @if ($placeholder && ! $multiple)
             <option value="">{{ $placeholder }}</option>
         @endif
 
@@ -41,7 +52,10 @@
                 $optionIcon = is_array($optionLabel) ? ($optionLabel['icon'] ?? null) : null;
                 $optionText = is_array($optionLabel) ? $optionLabel['label'] : $optionLabel;
             @endphp
-            <option value="{{ $optionValue }}" @selected((string) $selected === (string) $optionValue)
+            <option value="{{ $optionValue }}"
+                @selected($multiple
+                    ? in_array((string) $optionValue, $selectedKeys, true)
+                    : (string) $selected === (string) $optionValue)
                 @if ($optionIcon) data-custom-properties="{{ json_encode(['icon' => $optionIcon]) }}" @endif>
                 {{ $optionText }}
             </option>

@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             AdminUserSeeder::class,
             AiPromptSeeder::class,
+            ServiceRegionSeeder::class,
         ]);
     }
 }

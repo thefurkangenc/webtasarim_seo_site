@@ -36,6 +36,7 @@ return [
     'presets' => [
         'blog.cover' => ['width' => 1200, 'height' => 630, 'label' => 'Blog Kapak Görseli'],
         'service.icon' => ['width' => 256, 'height' => 256, 'label' => 'Hizmet İkonu'],
+        'service.cover' => ['width' => 1200, 'height' => 630, 'label' => 'Hizmet Kapak Görseli'],
         'social.icon' => ['width' => 256, 'height' => 256, 'label' => 'Sosyal Medya İkonu'],
         'testimonial.photo' => ['width' => 200, 'height' => 200, 'label' => 'Müşteri Yorumu Fotoğrafı'],
         'slider.image' => ['width' => 1920, 'height' => 800, 'label' => 'Slider Görseli'],

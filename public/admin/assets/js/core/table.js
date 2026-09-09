@@ -174,10 +174,24 @@ export class DataTable {
         });
     }
 
-    /** Sıralama modunda tüm kayıtlar tek seferde, sort_order'a göre gelir. */
+    /**
+     * Sıralama modunda tüm kayıtlar tek seferde, sort_order'a göre gelir.
+     *
+     * Filtreler varsayılan olarak yok sayılır — filtrelenmiş bir alt kümeyi
+     * sıralamak, dışarıda kalan kayıtların sırasıyla iç içe geçerdi. Sıralama
+     * gerçekten bir kapsam içinde tekilse (ağaç seviyesi gibi) o kapsamı
+     * belirleyen filtreler adlarıyla verilir:
+     * `reorder: { ..., withFilters: ['parent_id'] }`.
+     */
     async loadForReorder() {
+        const scope = Object.fromEntries(
+            (this.reorderConfig.withFilters ?? [])
+                .filter((name) => this.filters[name])
+                .map((name) => [name, this.filters[name].value]),
+        );
+
         try {
-            const { data } = await http.get(this.options.endpoint, { per_page: 1000, sort: 'sort_order', direction: 'asc' });
+            const { data } = await http.get(this.options.endpoint, { ...scope, per_page: 1000, sort: 'sort_order', direction: 'asc' });
 
             this.body.innerHTML = (data ?? []).map((item, index) => this.options.row(item, index)).join('');
         } catch (error) {

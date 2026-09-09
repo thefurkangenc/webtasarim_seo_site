@@ -13,6 +13,8 @@ use App\Http\Controllers\Admin\Integration\IntegrationController;
 use App\Http\Controllers\Admin\Media\MediaController;
 use App\Http\Controllers\Admin\Media\MediaFolderController;
 use App\Http\Controllers\Admin\Reference\ReferenceController;
+use App\Http\Controllers\Admin\Service\ServiceController;
+use App\Http\Controllers\Admin\ServiceRegion\ServiceRegionController;
 use App\Http\Controllers\Admin\Setting\SettingController;
 use App\Http\Controllers\Admin\SocialLink\SocialLinkController;
 use App\Http\Controllers\Admin\Tag\TagController;
@@ -143,6 +145,34 @@ Route::middleware('auth')->group(function () {
         Route::get('{blog}/edit', 'edit')->name('edit')->middleware('permission:blog.update');
         Route::put('{blog}', 'update')->name('update')->middleware('permission:blog.update');
         Route::delete('{blog}', 'destroy')->name('destroy')->middleware('permission:blog.delete');
+    });
+
+    // Bölge ağacı: liste kırılımlı çalışır, datatable parent_id filtresiyle
+    // yalnızca o seviyeyi döndürür.
+    Route::prefix('service-region')->name('service-region.')->controller(ServiceRegionController::class)->group(function () {
+        Route::get('/', 'index')->name('index')->middleware('permission:service-region.view');
+        Route::get('datatable', 'datatable')->name('datatable')->middleware('permission:service-region.view');
+        // Kırılım başlığı için kökten seçili bölgeye kadarki zincir.
+        Route::get('breadcrumb/{region}', 'breadcrumb')->name('breadcrumb')->middleware('permission:service-region.view');
+        Route::get('form/{region?}', 'form')->name('form')->middleware('permission:service-region.view');
+        Route::post('/', 'store')->name('store')->middleware('permission:service-region.create');
+        // 'reorder' sabit segmenti, aşağıdaki {region} joker'ından ÖNCE
+        // tanımlanmalı — aksi halde 'reorder' bir bölge kimliği sanılır.
+        Route::put('reorder', 'reorder')->name('reorder')->middleware('permission:service-region.update');
+        Route::put('{region}', 'update')->name('update')->middleware('permission:service-region.update');
+        Route::delete('{region}', 'destroy')->name('destroy')->middleware('permission:service-region.delete');
+    });
+
+    Route::prefix('service')->name('service.')->controller(ServiceController::class)->group(function () {
+        Route::get('/', 'index')->name('index')->middleware('permission:service.view');
+        Route::get('datatable', 'datatable')->name('datatable')->middleware('permission:service.view');
+        Route::get('create', 'create')->name('create')->middleware('permission:service.create');
+        Route::post('/', 'store')->name('store')->middleware('permission:service.create');
+        // 'reorder' sabit segmenti {service} joker'ından ÖNCE tanımlanmalı.
+        Route::put('reorder', 'reorder')->name('reorder')->middleware('permission:service.update');
+        Route::get('{service}/edit', 'edit')->name('edit')->middleware('permission:service.update');
+        Route::put('{service}', 'update')->name('update')->middleware('permission:service.update');
+        Route::delete('{service}', 'destroy')->name('destroy')->middleware('permission:service.delete');
     });
 
     // Tekil kayıt modülü: liste, ekleme ve silme yok — tek form.

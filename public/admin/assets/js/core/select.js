@@ -46,7 +46,10 @@ function init(root = document) {
     root.querySelectorAll?.('select[data-choices]:not([data-choices-ready])').forEach((select) => {
         select.dataset.choicesReady = '1';
 
-        new Choices(select, {
+        // Örnek select üzerinde saklanır: sayfa JS'i programatik seçim yapmak
+        // istediğinde (çoklu alanlarda "tümünü seç" gibi kısayollar) native
+        // select'e yazmak yetmez, Choices kendi arayüzünü tazelemelidir.
+        select.choicesInstance = new Choices(select, {
             searchEnabled: select.options.length > 7,
             searchPlaceholderValue: 'Ara...',
             noResultsText: 'Sonuç bulunamadı',

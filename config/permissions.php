@@ -29,6 +29,8 @@ return [
         'faq' => 'Sıkça Sorulan Sorular',
         'why-choose-us' => 'Neden Biz',
         'hero' => 'Tanıtım Alanı',
+        'service' => 'Hizmetler',
+        'service-region' => 'Hizmet Bölgeleri',
     ],
 
     'permissions' => [
@@ -97,6 +99,16 @@ return [
         ['name' => 'hero.view', 'label' => 'Tanıtım Alanı - Görüntüle', 'category' => 'hero', 'guard_name' => 'web'],
         ['name' => 'hero.update', 'label' => 'Tanıtım Alanı - Düzenle', 'category' => 'hero', 'guard_name' => 'web'],
 
+        ['name' => 'service.view', 'label' => 'Hizmet - Listele', 'category' => 'service', 'guard_name' => 'web'],
+        ['name' => 'service.create', 'label' => 'Hizmet - Ekle', 'category' => 'service', 'guard_name' => 'web'],
+        ['name' => 'service.update', 'label' => 'Hizmet - Düzenle', 'category' => 'service', 'guard_name' => 'web'],
+        ['name' => 'service.delete', 'label' => 'Hizmet - Sil', 'category' => 'service', 'guard_name' => 'web'],
+
+        ['name' => 'service-region.view', 'label' => 'Hizmet Bölgesi - Listele', 'category' => 'service-region', 'guard_name' => 'web'],
+        ['name' => 'service-region.create', 'label' => 'Hizmet Bölgesi - Ekle', 'category' => 'service-region', 'guard_name' => 'web'],
+        ['name' => 'service-region.update', 'label' => 'Hizmet Bölgesi - Düzenle', 'category' => 'service-region', 'guard_name' => 'web'],
+        ['name' => 'service-region.delete', 'label' => 'Hizmet Bölgesi - Sil', 'category' => 'service-region', 'guard_name' => 'web'],
+
     ],
 
     /*
@@ -109,7 +121,7 @@ return [
     'roles' => [
         'super-admin' => '*',
         'admin' => '*',
-        'editor' => ['media.*', 'ai.generate', 'blog.*', 'blog-category.view', 'testimonial.*', 'reference.*', 'faq.*', 'why-choose-us.*', 'hero.*'],
+        'editor' => ['media.*', 'ai.generate', 'blog.*', 'blog-category.view', 'testimonial.*', 'reference.*', 'faq.*', 'why-choose-us.*', 'hero.*', 'service.*', 'service-region.view'],
     ],
 
 ];

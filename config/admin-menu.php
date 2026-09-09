@@ -72,6 +72,24 @@ return [
                 ],
             ],
             [
+                'title' => 'Hizmetler',
+                'icon' => 'design_services',
+                'children' => [
+                    [
+                        'title' => 'Hizmetler',
+                        'route' => 'admin.service.index',
+                        'active' => 'admin.service.*',
+                        'permission' => 'service.view',
+                    ],
+                    [
+                        'title' => 'Hizmet Bölgeleri',
+                        'route' => 'admin.service-region.index',
+                        'active' => 'admin.service-region.*',
+                        'permission' => 'service-region.view',
+                    ],
+                ],
+            ],
+            [
                 'title' => 'Müşteri Yorumları',
                 'icon' => 'reviews',
                 'route' => 'admin.testimonial.index',
