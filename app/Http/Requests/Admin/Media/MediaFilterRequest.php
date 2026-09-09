@@ -9,7 +9,7 @@ class MediaFilterRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('media.view');
+        return $this->user()->can('media.datatable');
     }
 
     /** @return array<string, mixed> */

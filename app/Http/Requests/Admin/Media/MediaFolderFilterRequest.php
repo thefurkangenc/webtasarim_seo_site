@@ -8,7 +8,7 @@ class MediaFolderFilterRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('media.view');
+        return $this->user()->can('media.folders.index');
     }
 
     /** @return array<string, mixed> */

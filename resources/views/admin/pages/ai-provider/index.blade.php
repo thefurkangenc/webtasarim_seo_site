@@ -41,7 +41,7 @@
                     @endforeach
                 </select>
 
-                @can('ai-provider.create')
+                @can('ai-provider.store')
                     <button type="button" id="provider-create"
                         class="inline-flex items-center gap-[6px] py-[9px] px-[20px] bg-primary-500 text-white transition-all hover:bg-primary-400 rounded-md border border-primary-500 hover:border-primary-400">
                         <i class="material-symbols-outlined !text-[19px]">add</i>

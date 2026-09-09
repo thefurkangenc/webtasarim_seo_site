@@ -9,7 +9,7 @@ class SettingContactRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('setting.update');
+        return $this->user()->can('setting.contact.update');
     }
 
     /** @return array<string, array<int, mixed>> */

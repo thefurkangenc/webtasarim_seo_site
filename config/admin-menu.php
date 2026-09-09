@@ -9,7 +9,7 @@
 |            'icon'       => 'material symbols ikon adı',   (sadece üst seviye öğede)
 |            'route'      => 'admin.blog.index',            (children yoksa zorunlu)
 |            'active'     => 'admin.blog.*',                (opsiyonel; yoksa route kullanılır)
-|            'permission' => 'blog.view',                   (opsiyonel; yoksa herkese açık)
+|            'permission' => 'blog.index',                  (opsiyonel; yoksa herkese açık)
 |            'children'   => [ ...alt öğeler... ],          (opsiyonel)
 |        ]
 |
@@ -18,8 +18,9 @@
 */
 
 return [
+
     [
-        'title' => 'Genel',
+        'title' => 'Modüller',
         'items' => [
             [
                 'title' => 'Dashboard',
@@ -27,31 +28,11 @@ return [
                 'route' => 'admin.dashboard',
             ],
             [
-                'title' => 'Medya Kütüphanesi',
-                'icon' => 'perm_media',
-                'route' => 'admin.media.index',
-                'active' => 'admin.media.*',
-                'permission' => 'media.view',
-            ],
-            [
-                'title' => 'Site Ayarları',
-                'icon' => 'settings',
-                'route' => 'admin.setting.index',
-                'active' => 'admin.setting.*',
-                'permission' => 'setting.view',
-            ],
-        ],
-    ],
-
-    [
-        'title' => 'İçerik',
-        'items' => [
-            [
                 'title' => 'Tanıtım Alanı',
                 'icon' => 'wallpaper',
                 'route' => 'admin.hero.index',
                 'active' => 'admin.hero.*',
-                'permission' => 'hero.view',
+                'permission' => 'hero.index',
             ],
             [
                 'title' => 'Blog',
@@ -61,13 +42,13 @@ return [
                         'title' => 'Yazılar',
                         'route' => 'admin.blog.index',
                         'active' => 'admin.blog.*',
-                        'permission' => 'blog.view',
+                        'permission' => 'blog.index',
                     ],
                     [
                         'title' => 'Kategoriler',
                         'route' => 'admin.blog-category.index',
                         'active' => 'admin.blog-category.*',
-                        'permission' => 'blog-category.view',
+                        'permission' => 'blog-category.index',
                     ],
                 ],
             ],
@@ -79,13 +60,13 @@ return [
                         'title' => 'Hizmetler',
                         'route' => 'admin.service.index',
                         'active' => 'admin.service.*',
-                        'permission' => 'service.view',
+                        'permission' => 'service.index',
                     ],
                     [
                         'title' => 'Hizmet Bölgeleri',
                         'route' => 'admin.service-region.index',
                         'active' => 'admin.service-region.*',
-                        'permission' => 'service-region.view',
+                        'permission' => 'service-region.index',
                     ],
                 ],
             ],
@@ -94,28 +75,28 @@ return [
                 'icon' => 'reviews',
                 'route' => 'admin.testimonial.index',
                 'active' => 'admin.testimonial.*',
-                'permission' => 'testimonial.view',
+                'permission' => 'testimonial.index',
             ],
             [
                 'title' => 'Referanslar',
                 'icon' => 'handshake',
                 'route' => 'admin.reference.index',
                 'active' => 'admin.reference.*',
-                'permission' => 'reference.view',
+                'permission' => 'reference.index',
             ],
             [
                 'title' => 'Sıkça Sorulan Sorular',
                 'icon' => 'quiz',
                 'route' => 'admin.faq.index',
                 'active' => 'admin.faq.*',
-                'permission' => 'faq.view',
+                'permission' => 'faq.index',
             ],
             [
                 'title' => 'Neden Biz',
                 'icon' => 'verified',
                 'route' => 'admin.why-choose-us.index',
                 'active' => 'admin.why-choose-us.*',
-                'permission' => 'why-choose-us.view',
+                'permission' => 'why-choose-us.index',
             ],
         ],
     ],
@@ -128,14 +109,29 @@ return [
                 'icon' => 'admin_panel_settings',
                 'route' => 'admin.role.index',
                 'active' => 'admin.role.*',
-                'permission' => 'role.view',
+                'permission' => 'role.index',
             ],
         ],
     ],
 
     [
-        'title' => 'Yapay Zeka',
+        'title' => 'Genel',
         'items' => [
+
+            [
+                'title' => 'Medya Kütüphanesi',
+                'icon' => 'perm_media',
+                'route' => 'admin.media.index',
+                'active' => 'admin.media.*',
+                'permission' => 'media.index',
+            ],
+            [
+                'title' => 'Site Ayarları',
+                'icon' => 'settings',
+                'route' => 'admin.setting.index',
+                'active' => 'admin.setting.*',
+                'permission' => 'setting.index',
+            ],
             [
                 'title' => 'Yapay Zeka',
                 'icon' => 'smart_toy',
@@ -144,16 +140,17 @@ return [
                         'title' => 'Sağlayıcılar',
                         'route' => 'admin.ai-provider.index',
                         'active' => 'admin.ai-provider.*',
-                        'permission' => 'ai-provider.view',
+                        'permission' => 'ai-provider.index',
                     ],
                     [
                         'title' => 'Prompt Şablonları',
                         'route' => 'admin.ai-prompt.index',
                         'active' => 'admin.ai-prompt.*',
-                        'permission' => 'ai-prompt.view',
+                        'permission' => 'ai-prompt.index',
                     ],
                 ],
             ],
         ],
     ],
+
 ];

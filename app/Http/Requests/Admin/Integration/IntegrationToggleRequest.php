@@ -8,7 +8,7 @@ class IntegrationToggleRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('setting.update');
+        return $this->user()->can('integration.toggle');
     }
 
     /** @return array<string, array<int, mixed>> */

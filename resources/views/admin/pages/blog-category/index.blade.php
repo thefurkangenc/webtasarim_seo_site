@@ -37,7 +37,7 @@
                     <option value="0">Pasif</option>
                 </select>
 
-                @can('blog-category.update')
+                    @can('blog-category.reorder')
                     <button type="button" id="category-reorder"
                         class="inline-flex items-center gap-[6px] py-[9px] px-[18px] text-black dark:text-white transition-all rounded-md border border-gray-200 dark:border-[#172036] hover:bg-gray-50 dark:hover:bg-[#15203c]">
                         <i class="material-symbols-outlined !text-[19px]">drag_indicator</i>
@@ -45,7 +45,7 @@
                     </button>
                 @endcan
 
-                @can('blog-category.create')
+                    @can('blog-category.store')
                     <button type="button" id="category-create"
                         class="inline-flex items-center gap-[6px] py-[9px] px-[20px] bg-primary-500 text-white transition-all hover:bg-primary-400 rounded-md border border-primary-500 hover:border-primary-400">
                         <i class="material-symbols-outlined !text-[19px]">add</i>

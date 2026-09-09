@@ -9,7 +9,7 @@ class MediaBulkMoveRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('media.update');
+        return $this->user()->can('media.bulk-move');
     }
 
     /** @return array<string, mixed> */

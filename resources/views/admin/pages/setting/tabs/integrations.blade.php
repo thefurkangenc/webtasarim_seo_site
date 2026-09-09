@@ -1,5 +1,5 @@
 @php
-    $canUpdate = auth()->user()->can('setting.update');
+    $canUpdate = auth()->user()->can('integration.update');
 @endphp
 
 <p class="text-sm text-gray-500 dark:text-gray-400 mb-[20px] md:mb-[25px]">

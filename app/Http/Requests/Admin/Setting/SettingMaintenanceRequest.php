@@ -9,7 +9,7 @@ class SettingMaintenanceRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('setting.update');
+        return $this->user()->can('setting.maintenance.update');
     }
 
     protected function prepareForValidation(): void

@@ -8,7 +8,7 @@ class MediaFolderCreateRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('media.create');
+        return $this->user()->can('media.folders.store');
     }
 
     /** @return array<string, mixed> */

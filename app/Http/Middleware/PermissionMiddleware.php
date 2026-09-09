@@ -15,23 +15,38 @@ class PermissionMiddleware
         $user = Auth::user();
 
         if ($user === null) {
-            return abort(403, 'Bu işlemi yapma yetkiniz yok.');
+            return $this->deny();
         }
 
         if ($user->hasRole('super-admin')) {
             return $next($request);
         }
 
-        $routeName = $request->route()->getName();
+        $routeName = $request->route()?->getName();
+        $permission = $routeName && str_starts_with($routeName, 'admin.')
+            ? substr($routeName, strlen('admin.'))
+            : null;
 
         try {
-            if ($user->hasPermissionTo($routeName)) {
+            if ($permission && $user->hasPermissionTo($permission)) {
                 return $next($request);
             }
         } catch (PermissionDoesNotExist) {
-            return abort(403, 'Bu işlemi yapma yetkiniz yok.');
+            return $this->deny();
         }
 
-        return abort(403, 'Bu işlemi yapma yetkiniz yok.');
+        return $this->deny();
+    }
+
+    private function deny(): Response
+    {
+        if (request()->expectsJson()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Bu işlem için yetkiniz yok.',
+            ], 403);
+        }
+
+        abort(403, 'Bu işlemi yapma yetkiniz yok.');
     }
 }

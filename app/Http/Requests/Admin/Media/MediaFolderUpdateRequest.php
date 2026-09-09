@@ -8,7 +8,7 @@ class MediaFolderUpdateRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('media.update');
+        return $this->user()->can('media.folders.update');
     }
 
     /** @return array<string, mixed> */

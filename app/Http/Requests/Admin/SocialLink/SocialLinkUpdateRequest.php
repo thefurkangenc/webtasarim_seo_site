@@ -2,5 +2,10 @@
 
 namespace App\Http\Requests\Admin\SocialLink;
 
-/** Kurallar ekleme ile aynı. */
-class SocialLinkUpdateRequest extends SocialLinkCreateRequest {}
+class SocialLinkUpdateRequest extends SocialLinkCreateRequest
+{
+    public function authorize(): bool
+    {
+        return $this->user()->can('social-link.update');
+    }
+}

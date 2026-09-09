@@ -8,7 +8,7 @@ class MediaUploadRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('media.create');
+        return $this->user()->can('media.upload');
     }
 
     /** Kırpım verisi FormData içinde JSON metni olarak gelir. */

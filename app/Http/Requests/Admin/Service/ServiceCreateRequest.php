@@ -13,7 +13,7 @@ class ServiceCreateRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return $this->user()->can('service.create');
+        return $this->user()->can('service.store');
     }
 
     /** @return array<string, array<int, mixed>> */

@@ -31,7 +31,7 @@
                         <div class="trezo-card-title">
                             <h5 class="!mb-0">İçerik</h5>
                         </div>
-                        @can('ai.generate')
+                        @can('ai.generate.form')
                             <button type="button" id="blog-ai"
                                 class="inline-flex items-center gap-[6px] py-[9px] px-[18px] text-white transition-all rounded-md bg-primary-500 hover:bg-primary-400 border border-primary-500 hover:border-primary-400">
                                 <i class="material-symbols-outlined !text-[19px]">auto_awesome</i>

@@ -9,7 +9,7 @@ class RoleFilterRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('role.view');
+        return $this->user()->can('role.datatable');
     }
 
     /** @return array<string, array<int, mixed>> */

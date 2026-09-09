@@ -9,7 +9,7 @@ class MediaBulkDeleteRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('media.delete');
+        return $this->user()->can('media.bulk-delete');
     }
 
     /** @return array<string, mixed> */

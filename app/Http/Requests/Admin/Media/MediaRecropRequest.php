@@ -8,7 +8,7 @@ class MediaRecropRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('media.update');
+        return $this->user()->can('media.recrop');
     }
 
     protected function prepareForValidation(): void

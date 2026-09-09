@@ -12,9 +12,8 @@ use Spatie\Permission\PermissionRegistrar;
 /**
  * İzinleri ve rolleri config/permissions.php'den senkronlar.
  *
- * Tekrar çalıştırılabilir: mevcut izinlerin etiketi güncellenir, rol
- * atamaları korunur. Config'ten kaldırılan izinler SİLİNMEZ — rol
- * atamalarını sessizce düşürmemek için sadece uyarı basılır.
+ * Her satır olduğu gibi yazılır: name, label, category, guard_name.
+ * Tekrar çalıştırılabilir. Config'ten kalkan izinler silinir.
  */
 class RolePermissionSeeder extends Seeder
 {
@@ -28,13 +27,20 @@ class RolePermissionSeeder extends Seeder
             Permission::updateOrCreate(
                 [
                     'name' => $permission['name'],
-                    'guard_name' => $permission['guard_name'] ?? 'web',
+                    'guard_name' => $permission['guard_name'],
                 ],
                 [
-                    'label' => $permission['label'] ?? $permission['name'],
-                    'category' => $permission['category'] ?? null,
+                    'label' => $permission['label'],
+                    'category' => $permission['category'],
                 ],
             );
+        }
+
+        $orphans = Permission::whereNotIn('name', $defined->pluck('name'))->get();
+
+        if ($orphans->isNotEmpty()) {
+            $this->command?->warn('Config dışında kalan izinler silindi: '.$orphans->pluck('name')->implode(', '));
+            Permission::whereIn('id', $orphans->pluck('id'))->delete();
         }
 
         foreach (config('permissions.roles', []) as $role => $patterns) {
@@ -56,8 +62,6 @@ class RolePermissionSeeder extends Seeder
         }
 
         app(PermissionRegistrar::class)->forgetCachedPermissions();
-
-        $this->warnAboutOrphans($defined->pluck('name'));
     }
 
     /**
@@ -76,20 +80,6 @@ class RolePermissionSeeder extends Seeder
 
         return $permissions->filter(
             fn (Permission $permission) => Str::is((array) $patterns, $permission->name),
-        );
-    }
-
-    /** @param  Collection<int, string>  $definedNames */
-    private function warnAboutOrphans(Collection $definedNames): void
-    {
-        $orphans = Permission::whereNotIn('name', $definedNames)->pluck('name');
-
-        if ($orphans->isEmpty()) {
-            return;
-        }
-
-        $this->command?->warn(
-            'config/permissions.php içinde bulunmayan izinler var (silinmedi): '.$orphans->implode(', '),
         );
     }
 }

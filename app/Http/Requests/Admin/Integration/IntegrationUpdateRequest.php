@@ -9,7 +9,7 @@ class IntegrationUpdateRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('setting.update');
+        return $this->user()->can('integration.update');
     }
 
     protected function prepareForValidation(): void

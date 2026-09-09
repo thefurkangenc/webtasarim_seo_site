@@ -8,7 +8,7 @@ class SettingContentsRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('setting.update');
+        return $this->user()->can('setting.contents.update');
     }
 
     protected function prepareForValidation(): void

@@ -8,7 +8,7 @@ class SettingSeoRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('setting.update');
+        return $this->user()->can('setting.seo.update');
     }
 
     /** @return array<string, array<int, mixed>> */
