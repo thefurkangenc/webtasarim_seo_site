@@ -47,6 +47,13 @@ function withIcons(template) {
 
         element.style.paddingLeft = `${14 + depth * 18}px`;
 
+        // <option> metni native/plain select (Choices henüz kurulmadan ya da
+        // 'plain' modda) için görünmez boşluk + "↳" oku ile girintili gelir
+        // — bkz. App\Support\Tree::render(). Choices kurulunca aynı işi bu
+        // ikon üstlenir; metindeki ham öneki burada temizlemezsek ikisi
+        // üst üste görünür (çift ok).
+        element.textContent = element.textContent.replace(/^[\u00A0]*\u21B3\s*/, '');
+
         const marker = document.createElement('i');
         marker.className = 'material-symbols-outlined ltr:mr-[4px] rtl:ml-[4px] !text-[15px] align-[-3px] text-gray-400 dark:text-gray-500';
         marker.textContent = 'subdirectory_arrow_right';

@@ -47,4 +47,32 @@ class Tree
 
         return $result;
     }
+
+    /**
+     * Bir ağaç seçeneğinin görüntülenecek metnini ve Choices.js'e geçecek
+     * özel özelliklerini üretir. `options()`'ın ürettiği `['label' => ...,
+     * 'depth' => ...]` çiftini hem `<x-admin::form.select>` bileşeni hem de
+     * (bileşen kullanmayan) ham filtre select'leri aynı şekilde işlesin diye
+     * paylaşılan tek yer burası.
+     *
+     * @return array{display: string, customProperties: array<string, mixed>}
+     */
+    public static function render(string $label, int $depth = 0, ?string $icon = null): array
+    {
+        // Choices henüz kurulmadan (ya da 'plain' modda) görünen ham metin:
+        // her seviye görünmez boşluk + bir "alt dal" oku ile girintilenir.
+        // Choices kurulunca core/select.js kendi girinti/ikonunu uygular,
+        // bu metin ekranda görünmez hale gelir — yalnızca düşer.
+        $display = $depth > 0
+            ? str_repeat("\u{00A0}\u{00A0}\u{00A0}\u{00A0}", $depth)."\u{21B3} {$label}"
+            : $label;
+
+        return [
+            'display' => $display,
+            'customProperties' => array_filter(
+                ['icon' => $icon, 'depth' => $depth ?: null],
+                fn ($value) => $value !== null,
+            ),
+        ];
+    }
 }

@@ -11,6 +11,7 @@ use App\Http\Requests\Admin\Service\ServiceUpdateRequest;
 use App\Models\Service\Service;
 use App\Models\ServiceRegion\ServiceRegion;
 use App\Services\Service\ServiceService;
+use App\Support\Tree;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 
@@ -78,17 +79,16 @@ class ServiceController extends Controller
     }
 
     /**
-     * Bölge seçenekleri: etiket olarak tam yol ("Gaziantep - Şahinbey") görünür,
-     * böylece aynı adı taşıyan alt bölgeler ayırt edilir.
+     * Bölgeler çoklu select'te ağaç (girintili) görünümde sunulur — bir ilin
+     * altındaki ilçe soldan boşluk + ikonla onun çocuğu gibi görünür.
      *
-     * @return array<int, string>
+     * @return array<int, array{label: string, depth: int}>
      */
     private function regionOptions(): array
     {
-        return ServiceRegion::where('is_active', true)
-            ->orderBy('path')
-            ->pluck('path', 'id')
-            ->all();
+        return Tree::options(
+            ServiceRegion::where('is_active', true)->orderBy('sort_order')->orderBy('name')->get(['id', 'parent_id', 'name']),
+        );
     }
 
     /**

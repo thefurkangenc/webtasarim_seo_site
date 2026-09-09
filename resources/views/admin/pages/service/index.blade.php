@@ -33,8 +33,14 @@
                 <select id="service-region" data-choices
                     class="h-[40px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[13px] outline-0 cursor-pointer transition-all focus:border-primary-500">
                     <option value="">Tüm bölgeler</option>
-                    @foreach ($regions as $id => $path)
-                        <option value="{{ $id }}">{{ $path }}</option>
+                    {{-- $regions artık App\Support\Tree::options() çıktısı — bir ilin
+                         altındaki ilçe soldan girintili, ikonlu görünür. --}}
+                    @foreach ($regions as $id => $region)
+                        @php($rendered = \App\Support\Tree::render($region['label'], $region['depth']))
+                        <option value="{{ $id }}"
+                            @if ($rendered['customProperties']) data-custom-properties="{{ json_encode($rendered['customProperties']) }}" @endif>
+                            {{ $rendered['display'] }}
+                        </option>
                     @endforeach
                 </select>
 
