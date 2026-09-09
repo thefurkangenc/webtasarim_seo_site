@@ -167,8 +167,17 @@ class MediaService
     {
         $count = Media::query()->count();
         $size = (int) Media::query()->sum('size');
+        $quota = (int) config('media.quota');
 
-        return ['count' => $count, 'size' => $size, 'human_size' => Media::formatSize($size)];
+        return [
+            'count' => $count,
+            'size' => $size,
+            'human_size' => Media::formatSize($size),
+            'quota' => $quota,
+            'quota_human' => Media::formatSize($quota),
+            // Sidebar'daki çubuğun genişliği; kota tanımsızsa çubuk hep boş kalır.
+            'percent' => $quota > 0 ? min(100, round($size / $quota * 100, 1)) : 0,
+        ];
     }
 
     public function list(array $filters): LengthAwarePaginator

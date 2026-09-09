@@ -26,133 +26,60 @@
 
     <!--===== BLOG AREA START =====-->
 
-    <div class="blog1 sp">
+    <div class="blog2 sp">
      <div class="container">
-        <div class="vl-blog-12-item mt-30" data-aos="fade-up" data-aos-duration="1100">
-           <div class="row">
-              <div class="col-lg-6">
-                 <div class=" vl-blog-12-thumb image-anime overflow-hidden _relative">
-                    <img class="w-full" src="assets/img/blog/blog-page1-image1.png" alt="">
-                 </div>
-              </div>
-              <div class="col-lg-6">
-                 <div class="vl-blog-12-content heading2">
-                    <div class="vl-blog12-meta pb-16">
-                       <a href="#" class="date"><img src="assets/img/icons/date1.svg" alt=""> 12/12/2024</a>
-                       <a href="#" class="author"><img src="assets/img/icons/author1.svg" alt=""> John Doe</a>
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="vl-blog-11-item mt-30 aos-init aos-animate" data-aos="fade-up" data-aos-duration="900">
+                    <div class=" vl-blog-11-thumb image-anime overflow-hidden _relative">
+                        <img class="w-full" src="assets/img/blog/blog-page1-image1.png" alt="">
+                     </div>
+                    <div class="vl-blog-11-content heading2">
+                        <div class="vl-blog11-meta pb-16">
+                            <a href="#" class="date"><img src="assets/img/icons/date1.svg" alt=""> 12/12/2024</a>
+                            <a href="#" class="author"><img src="assets/img/icons/author1.svg" alt=""> Dustin Turcotte</a>
+                        </div>
+                        <h4><a href="blog-details.html">Discover the emerging trends that are reshaping the startup ecosystem.</a></h4>
+                        <a href="blog-details.html" class="learn">Read More <span class="arrow1"><i class="fa-solid fa-arrow-right"></i></span><span class="arrow2"><i class="fa-solid fa-arrow-right"></i></span></a>
                     </div>
-                    <h4><a href="blog-details.html">Transform Your Online Presence with Expert SEO Strategies – Drive Traffic, Conversions & Business Growth with SEOX.</a></h4>
-                    <p class="mt-16">the digital age, simply having a website isn't enough. To stand out in a sea of competition, you need strategic search engine optimization (SEO) that positions your brand.</p>
-                    <a href="blog-details.html" class="learn">Read More <span class="arrow1"><i class="fa-solid fa-arrow-right"></i></span><span class="arrow2"><i class="fa-solid fa-arrow-right"></i></span></a>
                  </div>
-              </div>
-           </div>
-        </div>
+            </div>
 
-        <div class="vl-blog-12-item mt-30" data-aos="fade-up" data-aos-duration="900">
-           <div class="row">
-              <div class="col-lg-6">
-                 <div class="vl-blog-12-content heading2">
-                    <div class="vl-blog12-meta pb-16">
-                       <a href="#" class="date"><img src="assets/img/icons/date1.svg" alt=""> 12/12/2024</a>
-                       <a href="#" class="author"><img src="assets/img/icons/author1.svg" alt=""> John Doe</a>
+            <div class="col-lg-4">
+                <div class="vl-blog-11-item mt-30 aos-init aos-animate" data-aos="fade-up" data-aos-duration="900">
+                    <div class=" vl-blog-11-thumb image-anime overflow-hidden _relative">
+                        <img class="w-full" src="assets/img/blog/blog-page1-image2.png" alt="">
+                     </div>
+                    <div class="vl-blog-11-content heading2">
+                        <div class="vl-blog11-meta pb-20">
+                            <a href="#" class="date"><img src="assets/img/icons/date1.svg" alt=""> 12/12/2024</a>
+                            <a href="#" class="author"><img src="assets/img/icons/author1.svg" alt=""> Alex Carey</a>
+                        </div>
+                        <h4><a href="blog-details.html">Learn the secrets to creating a brand that resonates with your audience.</a></h4>
+                        <a href="blog-details.html" class="learn">Read More <span class="arrow1"><i class="fa-solid fa-arrow-right"></i></span><span class="arrow2"><i class="fa-solid fa-arrow-right"></i></span></a>
                     </div>
-                    <h4><a href="blog-details.html">Maximize Your Business Success with Tailored SEO Solutions – Partner with SEOX to Optimize Your Digital Growth.</a></h4>
-                    <p class="mt-16">Are you ready to unlock the full potential of your business online? With SEOX, achieving top rankings on search engines has never been easier, We combine innovative SEO techniques.</p>
-                    <a href="blog-details.html" class="learn">Read More <span class="arrow1"><i class="fa-solid fa-arrow-right"></i></span><span class="arrow2"><i class="fa-solid fa-arrow-right"></i></span></a>
                  </div>
-              </div>
-              <div class="col-lg-6">
-                 <div class=" vl-blog-12-thumb image-anime overflow-hidden _relative">
-                    <img class="w-full" src="assets/img/blog/blog-page1-image2.png" alt="">
+            </div>
+
+            <div class="col-lg-4">
+                <div class="vl-blog-11-item mt-30 aos-init aos-animate" data-aos="fade-up" data-aos-duration="900">
+                    <div class=" vl-blog-11-thumb image-anime overflow-hidden _relative">
+                        <img class="w-full" src="assets/img/blog/blog-page1-image3.png" alt="">
+                     </div>
+                    <div class="vl-blog-11-content heading2">
+                        <div class="vl-blog11-meta pb-20">
+                            <a href="#" class="date"><img src="assets/img/icons/date1.svg" alt=""> 12/12/2024</a>
+                            <a href="#" class="author"><img src="assets/img/icons/author1.svg" alt=""> Patricia Sanders</a>
+                        </div>
+                        <h4><a href="blog-details.html">Mastering SEO: The Ultimate Guide to Boosting Website Traffic</a></h4>
+                        <a href="blog-details.html" class="learn">Read More <span class="arrow1"><i class="fa-solid fa-arrow-right"></i></span><span class="arrow2"><i class="fa-solid fa-arrow-right"></i></span></a>
+                    </div>
                  </div>
-              </div>
-           </div>
+            </div>
+
+
+
         </div>
-
-        <div class="vl-blog-12-item mt-30" data-aos="fade-up" data-aos-duration="900">
-         <div class="row">
-             <div class="col-lg-6">
-                 <div class=" vl-blog-12-thumb image-anime overflow-hidden _relative">
-                    <img class="w-full" src="assets/img/blog/blog-page1-image3.png" alt="">
-                 </div>
-              </div>
-            <div class="col-lg-6">
-               <div class="vl-blog-12-content heading2">
-                  <div class="vl-blog12-meta pb-16">
-                     <a href="#" class="date"><img src="assets/img/icons/date1.svg" alt=""> 12/12/2024</a>
-                     <a href="#" class="author"><img src="assets/img/icons/author1.svg" alt=""> John Doe</a>
-                  </div>
-                  <h4><a href="blog-details.html">"Mastering the Art of Search Engine Optimization: A Comprehensive Guide to Driving Organic Traffic and Building Online Authority"</a></h4>
-                  <p class="mt-16">Search Engine Optimization (SEO) is the backbone of modern digital marketing, offering businesses a way to enhance their visibility and attract targeted traffic. </p>
-                  <a href="blog-details.html" class="learn">Read More <span class="arrow1"><i class="fa-solid fa-arrow-right"></i></span><span class="arrow2"><i class="fa-solid fa-arrow-right"></i></span></a>
-               </div>
-            </div>
-         </div>
-      </div>
-
-      <div class="vl-blog-12-item mt-30" data-aos="fade-up" data-aos-duration="900">
-         <div class="row">
-            <div class="col-lg-6">
-               <div class="vl-blog-12-content heading2">
-                  <div class="vl-blog12-meta pb-16">
-                     <a href="#" class="date"><img src="assets/img/icons/date1.svg" alt=""> 12/12/2024</a>
-                     <a href="#" class="author"><img src="assets/img/icons/author1.svg" alt=""> John Doe</a>
-                  </div>
-                  <h4><a href="blog-details.html">"Creating Impactful Content Marketing Strategies: How to Boost Engagement and Strengthen Your Digital Presence in Competitive Markets"</a></h4>
-                  <p class="mt-16">In today’s crowded digital landscape, creating compelling and relevant content is crucial for standing out. This blog explores how to craft impactful content marketing strategies. </p>
-                  <a href="blog-details.html" class="learn">Read More <span class="arrow1"><i class="fa-solid fa-arrow-right"></i></span><span class="arrow2"><i class="fa-solid fa-arrow-right"></i></span></a>
-               </div>
-            </div>
-            <div class="col-lg-6">
-               <div class=" vl-blog-12-thumb image-anime overflow-hidden _relative">
-                  <img class="w-full" src="assets/img/blog/blog-page1-image4.png" alt="">
-               </div>
-            </div>
-         </div>
-      </div>
-
-      <div class="vl-blog-12-item mt-30" data-aos="fade-up" data-aos-duration="900">
-         <div class="row">
-             <div class="col-lg-6">
-                 <div class=" vl-blog-12-thumb image-anime overflow-hidden _relative">
-                    <img class="w-full" src="assets/img/blog/blog-page1-image5.png" alt="">
-                 </div>
-              </div>
-            <div class="col-lg-6">
-               <div class="vl-blog-12-content heading2">
-                  <div class="vl-blog12-meta pb-16">
-                     <a href="#" class="date"><img src="assets/img/icons/date1.svg" alt=""> 12/12/2024</a>
-                     <a href="#" class="author"><img src="assets/img/icons/author1.svg" alt=""> John Doe</a>
-                  </div>
-                  <h4><a href="blog-details.html">"Unleashing the Full Potential of Social Media Marketing: Proven Tactics to Elevate Your Brand's Voice and Customer Connection"</a></h4>
-                  <p class="mt-16">Social media marketing is more than just posting updates—it’s about building relationships, telling your brand’s story, and engaging with your audience on a deeper level.  </p>
-                  <a href="blog-details.html" class="learn">Read More <span class="arrow1"><i class="fa-solid fa-arrow-right"></i></span><span class="arrow2"><i class="fa-solid fa-arrow-right"></i></span></a>
-               </div>
-            </div>
-         </div>
-      </div>
-
-      <div class="vl-blog-12-item mt-30" data-aos="fade-up" data-aos-duration="900">
-         <div class="row">
-            <div class="col-lg-6">
-               <div class="vl-blog-12-content heading2">
-                  <div class="vl-blog12-meta pb-16">
-                     <a href="#" class="date"><img src="assets/img/icons/date1.svg" alt=""> 12/12/2024</a>
-                     <a href="#" class="author"><img src="assets/img/icons/author1.svg" alt=""> John Doe</a>
-                  </div>
-                  <h4><a href="blog-details.html">"Maximizing ROI with PPC Advertising: A Step-by-Step Approach to Combining Paid Ads with SEO for Better Results"</a></h4>
-                  <p class="mt-16">PPC advertising is a powerful tool for immediate results, but its true strength lies in strategic integration with SEO. This blog provides a step-by-step guide to blending paid advertising. </p>
-                  <a href="blog-details.html" class="learn">Read More <span class="arrow1"><i class="fa-solid fa-arrow-right"></i></span><span class="arrow2"><i class="fa-solid fa-arrow-right"></i></span></a>
-               </div>
-            </div>
-            <div class="col-lg-6">
-               <div class=" vl-blog-12-thumb image-anime overflow-hidden _relative">
-                  <img class="w-full" src="assets/img/blog/blog-page1-image6.png" alt="">
-               </div>
-            </div>
-         </div>
-      </div>
 
       <div class="space60"></div>
          <div class="row">

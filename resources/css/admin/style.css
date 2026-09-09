@@ -5,11 +5,116 @@
 @source "../../views/admin/html/**/*.html";
 @source "../../../public/admin/assets/js/**/*.js";
 
+/**
+ * Poppins — self-host. Dosyalar public/admin/assets/fonts/poppins/ altında,
+ * yol bu dosyanın DERLENDİĞİ yere göredir (public/admin/assets/css/style.css),
+ * kaynak dosyanın yerine göre değil.
+ *
+ * Yalnızca latin + latin-ext altkümeleri indirildi: Türkçe'nin ı harfi latin
+ * aralığında (U+0131), ğ/ş/İ ise latin-ext'te (U+0100-02BA). Devanagari vb.
+ * altkümeler bilinçli olarak alınmadı.
+ */
+/* Poppins 300 — latin */
+@font-face {
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: 300;
+    font-display: swap;
+    src: url("../fonts/poppins/poppins-300-latin.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Poppins 300 — latin-ext */
+@font-face {
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: 300;
+    font-display: swap;
+    src: url("../fonts/poppins/poppins-300-latin-ext.woff2") format("woff2");
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Poppins 400 — latin */
+@font-face {
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../fonts/poppins/poppins-400-latin.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Poppins 400 — latin-ext */
+@font-face {
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../fonts/poppins/poppins-400-latin-ext.woff2") format("woff2");
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Poppins 500 — latin */
+@font-face {
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url("../fonts/poppins/poppins-500-latin.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Poppins 500 — latin-ext */
+@font-face {
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url("../fonts/poppins/poppins-500-latin-ext.woff2") format("woff2");
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Poppins 600 — latin */
+@font-face {
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url("../fonts/poppins/poppins-600-latin.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Poppins 600 — latin-ext */
+@font-face {
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url("../fonts/poppins/poppins-600-latin-ext.woff2") format("woff2");
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Poppins 700 — latin */
+@font-face {
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("../fonts/poppins/poppins-700-latin.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Poppins 700 — latin-ext */
+@font-face {
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("../fonts/poppins/poppins-700-latin-ext.woff2") format("woff2");
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
 
 @custom-variant dark (&:where([class=dark], [class=dark] *));
 
 @theme {
-    --font-body: "Inter", serif;
+    /* Trezo varsayılanı 4/6/8px idi; tasarım yenilemesiyle yumuşatıldı.
+       rounded-sm/md/lg kullanan tüm bileşenler buradan beslenir. */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 12px;
+    --font-body: "Poppins", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
     --text-xs: 12px;
     --text-sm: 13px;
     --text-base: 14px;
@@ -1876,4 +1981,360 @@ tr.sortable-drag {
 
 [data-social-card].sortable-drag {
     @apply bg-white dark:bg-[#0c1427] shadow-3xl;
+}
+
+/* ==========================================================================
+   Tasarım Yenilemesi — Aşama 1
+   --------------------------------------------------------------------------
+   Bu blok bilinçli olarak dosyanın SONUNDA ve HİÇBİR @layer içinde değil.
+   Tailwind utility'leri (rounded-md, bg-gray-50, border-gray-200 ...)
+   `@layer utilities` içinde derlenir; CSS kaskadında katmansız kurallar
+   katmanlı olanları özgüllükten bağımsız olarak yener. Bu sayede 31 Blade
+   dosyasındaki satır içi class'lara dokunmadan görünüm değiştirilebiliyor —
+   data-* kancaları, JS ve form davranışı hiç etkilenmiyor.
+
+   Bir kuralı geri almak istersen: bu bloktan sil, `npm run admin:css` çalıştır.
+   ========================================================================== */
+
+:root {
+    --ui-hairline: #eef0f5;
+    --ui-field-border: #e2e6ee;
+    --ui-shadow-sm: 0 1px 2px rgba(16, 24, 40, .04);
+    --ui-shadow: 0 1px 2px rgba(16, 24, 40, .04), 0 6px 18px -6px rgba(16, 24, 40, .08);
+    --ui-shadow-lg: 0 8px 20px -6px rgba(16, 24, 40, .12), 0 24px 48px -12px rgba(16, 24, 40, .18);
+    --ui-ring: 0 0 0 3px rgba(96, 93, 255, .13);
+    --ui-surface-soft: #f7f8fa;
+}
+
+/* Karanlık modda gölge yerine kontrast; koyu zeminde gölge kir gibi durur. */
+.dark {
+    --ui-hairline: #172036;
+    --ui-field-border: #172036;
+    --ui-shadow-sm: none;
+    --ui-shadow: none;
+    --ui-shadow-lg: 0 24px 48px -12px rgba(0, 0, 0, .55);
+    --ui-ring: 0 0 0 3px rgba(96, 93, 255, .22);
+    --ui-surface-soft: #15203c;
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Poppins geometrik ve geniş bir font; başlıklarda hafif sıkma dengeliyor. */
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+    letter-spacing: -0.011em;
+}
+
+/** Kart */
+.trezo-card {
+    border: 1px solid var(--ui-hairline);
+    border-radius: 14px;
+    box-shadow: var(--ui-shadow);
+}
+
+/* Modal gövdesi sayfadan kopuk durmalı — daha derin gölge, daha yumuşak köşe. */
+.popup-dialog > .trezo-card {
+    border-radius: 16px;
+    box-shadow: var(--ui-shadow-lg);
+}
+
+/* Kart/modal başlığındaki gri bant kaldırıldı: dolu zemin yerine ince ayraç.
+   Yalnızca bandı GERÇEKTEN taşıyan başlıkları hedefler (.bg-gray-50), zemini
+   olmayan sayfa kartı başlıkları etkilenmez. */
+.trezo-card-header.bg-gray-50 {
+    background-color: transparent;
+    border-bottom: 1px solid var(--ui-hairline);
+    border-radius: 0;
+}
+
+/* Ayraç renkleri tek kaynaktan gelsin (kart altı aksiyon çubuğu vb.). */
+.trezo-card-footer {
+    border-color: var(--ui-hairline);
+}
+
+/** Form alanları
+    Tip bazlı seçici kullanıldı: checkbox/radio/file/hidden'a dokunmaz, yani
+    switch bileşeninin sr-only checkbox'ı ve medya yükleme input'u etkilenmez.
+    Choices.js, TinyMCE ve Flatpickr kendi iç input'larını aşağıda hariç tutar. */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="url"],
+input[type="tel"],
+input[type="search"],
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
+textarea,
+select {
+    border-radius: 10px;
+    transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
+}
+
+/* Sert gri yerine daha yumuşak kenar — yalnızca form alanlarında; butonlar
+   gray-200'ü kullanmaya devam eder. */
+input[type="text"].border-gray-200,
+input[type="email"].border-gray-200,
+input[type="password"].border-gray-200,
+input[type="number"].border-gray-200,
+input[type="url"].border-gray-200,
+input[type="tel"].border-gray-200,
+input[type="search"].border-gray-200,
+input[type="date"].border-gray-200,
+input[type="time"].border-gray-200,
+textarea.border-gray-200,
+select.border-gray-200 {
+    border-color: var(--ui-field-border);
+}
+
+/* Odak halkası: outline-0 utility'si taşıyıcıyı çıplak bırakıyordu. */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="url"]:focus,
+input[type="tel"]:focus,
+input[type="search"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
+input[type="datetime-local"]:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--color-primary-500);
+    box-shadow: var(--ui-ring);
+}
+
+/* Üçüncü parti bileşenlerin iç input'ları kendi tasarımlarını korusun. */
+.choices input.choices__input,
+.tox input,
+.tox textarea,
+.flatpickr-calendar input {
+    border-radius: inherit;
+    box-shadow: none;
+}
+
+/* Dolgulu (arama kutusu) varyantı: kenarlığı zeminine eşit olanlar. */
+input.border-gray-50:focus {
+    border-color: var(--color-primary-500);
+}
+
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+}
+
+/** Sidebar — aktif öğe düz gri kutu yerine renk tonlu hap + sol vurgu çubuğu */
+.sidebar-area {
+    border-right: 1px solid var(--ui-hairline);
+}
+
+.sidebar-area .accordion .accordion-item .accordion-button {
+    border-radius: 10px;
+}
+
+.sidebar-area .accordion .accordion-item .accordion-button.open,
+.sidebar-area .accordion .accordion-item .accordion-button.active {
+    background-color: color-mix(in srgb, var(--color-primary-500) 9%, transparent);
+    color: var(--color-primary-500);
+}
+
+.sidebar-area .accordion .accordion-item .accordion-button.open i,
+.sidebar-area .accordion .accordion-item .accordion-button.active i {
+    color: var(--color-primary-500);
+}
+
+/* Sol vurgu çubuğu — chevron ::before'u kullanıyor, bu yüzden ::after. */
+.sidebar-area .accordion .accordion-item .accordion-button.active::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 18px;
+    border-radius: 0 3px 3px 0;
+    background-color: var(--color-primary-500);
+}
+
+.sidebar-area .accordion .accordion-item .accordion-collapse .sidebar-sub-menu .sidemenu-item .sidemenu-link {
+    border-radius: 10px;
+}
+
+.sidebar-area .accordion .accordion-item .accordion-collapse .sidebar-sub-menu .sidemenu-item .sidemenu-link.active,
+.sidebar-area .accordion .accordion-item .accordion-collapse .sidebar-sub-menu .sidemenu-item .sidemenu-link.open {
+    background-color: color-mix(in srgb, var(--color-primary-500) 8%, transparent);
+}
+
+/* Grup başlıkları (GENEL, YAPAY ZEKA ...) biraz daha nefes alsın. */
+.sidebar-area .accordion > span {
+    letter-spacing: .07em;
+}
+
+/** Modal arka planı — düz siyah yerine bulanık, daha yumuşak */
+.add-new-popup {
+    background-color: rgba(15, 20, 34, .45);
+    backdrop-filter: blur(3px);
+}
+
+/** Tablo başlığı — dolu gri bant yerine yumuşak zemin + alt ayraç */
+.trezo-card-content thead th {
+    background-color: var(--ui-surface-soft);
+    border-bottom: 1px solid var(--ui-hairline);
+}
+
+/** İnce kaydırma çubukları */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-gray-300) transparent;
+}
+
+.dark * {
+    scrollbar-color: #2a3654 transparent;
+}
+
+/* Yön duyarlı konumlar — dosyanın geri kalanı ltr:/rtl: variant'larıyla aynı
+   ikiliği koruyor, vurgu çubuğu ve sidebar ayracı da onu izler. */
+[dir="ltr"] .sidebar-area .accordion .accordion-item .accordion-button.active::after {
+    left: 0;
+}
+
+[dir="rtl"] .sidebar-area .accordion .accordion-item .accordion-button.active::after {
+    right: 0;
+    border-radius: 3px 0 0 3px;
+}
+
+[dir="ltr"] .sidebar-area {
+    border-right: 1px solid var(--ui-hairline);
+    border-left: 0;
+}
+
+[dir="rtl"] .sidebar-area {
+    border-left: 1px solid var(--ui-hairline);
+    border-right: 0;
+}
+
+/** Choices.js — native select'lerle aynı görsel dile hizalanır.
+    Köşe yarıçapını zaten rounded-md token'ından alıyor; burada yalnızca
+    kenar rengi, odak halkası ve chip tonu düzeltiliyor. */
+.choices__inner {
+    border-color: var(--ui-field-border);
+    transition: border-color .18s ease, box-shadow .18s ease;
+}
+
+.choices.is-focused .choices__inner,
+.choices.is-open .choices__inner {
+    box-shadow: var(--ui-ring);
+}
+
+/* Çoklu seçim etiketleri: dolu primary yerine tonlu — form.tags ve
+   form.faqs bileşenlerindeki chip'lerle aynı görünüm. */
+.choices__list--multiple .choices__item {
+    background-color: color-mix(in srgb, var(--color-primary-500) 10%, transparent);
+    color: var(--color-primary-500);
+    border: 1px solid color-mix(in srgb, var(--color-primary-500) 22%, transparent);
+    padding-block: 4px;
+}
+
+.choices__list--multiple .choices__item.is-highlighted {
+    background-color: color-mix(in srgb, var(--color-primary-500) 18%, transparent);
+}
+
+.choices[data-type*='select-multiple'] .choices__button {
+    border-left-color: color-mix(in srgb, var(--color-primary-500) 30%, transparent);
+    filter: none;
+    opacity: .6;
+}
+
+.choices[data-type*='select-multiple'] .choices__button:hover {
+    opacity: 1;
+}
+
+.choices__list--dropdown,
+.choices__list[aria-expanded] {
+    border-radius: 12px;
+    border-color: var(--ui-hairline);
+    box-shadow: var(--ui-shadow-lg);
+    overflow: hidden;
+}
+
+/** Flatpickr — takvim kartı da kart diliyle aynı olsun. */
+.flatpickr-calendar {
+    border-radius: 12px;
+    border-color: var(--ui-hairline);
+    box-shadow: var(--ui-shadow-lg);
+}
+
+/** Header — sayfadan ayrılsın diye ince ayraç + yumuşak gölge */
+.header-area {
+    border-bottom: 1px solid var(--ui-hairline);
+    border-radius: 0 0 14px 14px;
+    box-shadow: var(--ui-shadow-sm);
+}
+
+/* ==========================================================================
+   Tasarım Yenilemesi — Aşama 3: Ayarlar sayfası
+   --------------------------------------------------------------------------
+   Ayar sekmelerinde tekrar eden "iç bölüm paneli" idiomu. Önceden her sekmede
+   şu utility dizisi elle yazılıydı (24 yerde):
+
+     rounded-md border border-gray-100 dark:border-[#172036]
+     bg-gray-50 dark:bg-[#15203c] p-[20px] md:p-[25px]
+
+   Dolu gri zemin beyaz kartın içinde ağır duruyordu; artık zemin şeffaf,
+   gruplamayı yalnızca ince bir çerçeve yapıyor. Görünüm tek yerden gelir.
+   ========================================================================== */
+
+.settings-panel {
+    border: 1px solid var(--ui-hairline);
+    border-radius: 12px;
+    background-color: transparent;
+    padding: 20px;
+}
+
+@media (width >= 48rem) {
+    .settings-panel {
+        padding: 25px;
+    }
+}
+
+/* Liste kartları (sosyal medya bağlantıları) daha dar nefes ister. */
+.settings-panel.is-tight {
+    padding: 15px;
+}
+
+@media (width >= 48rem) {
+    .settings-panel.is-tight {
+        padding: 20px;
+    }
+}
+
+/* Tıklanabilir/yönetilebilir paneller — entegrasyon ve sosyal medya kartları. */
+.settings-panel.is-interactive {
+    transition: border-color .18s ease, box-shadow .18s ease;
+}
+
+.settings-panel.is-interactive:hover {
+    border-color: var(--color-primary-300);
+    box-shadow: var(--ui-shadow);
+}
+
+/* Panel içindeki logo/ikon kutusu. Panel zemini artık şeffaf olduğu için
+   beyaz kutu beyaz üstünde kayboluyordu; hafif tonlu zemin veriliyor. */
+.settings-chip {
+    background-color: var(--ui-surface-soft);
+    border: 1px solid var(--ui-hairline);
+    border-radius: 10px;
+}
+
+/** Ayarlar navigasyonu — uzun sekmelerde ekranla birlikte kayar. */
+@media (width >= 64rem) {
+    .settings-nav {
+        position: sticky;
+        top: 95px;
+    }
 }

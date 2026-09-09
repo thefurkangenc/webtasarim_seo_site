@@ -20,6 +20,58 @@ import { folderPicker } from './folder-picker.js';
 import { mediaPreview } from './media-preview.js';
 import { cropModal } from './cropper.js';
 
+/**
+ * Dosya uzantısı -> ikon + renk. Material Symbols bu panelde FILL ekseni 0'a
+ * sabit yükleniyor (bkz. layout/partials/styles.blade.php), yani dolgulu
+ * varyantı yok; dolgulu ikonlar yerel Remix Icon setinden alınıyor.
+ */
+const FILE_TYPES = [
+    [/^(pdf)$/, 'ri-file-pdf-fill', 'text-danger-500'],
+    [/^(docx?|odt|rtf)$/, 'ri-file-word-fill', 'text-secondary-500'],
+    [/^(xlsx?|csv|ods)$/, 'ri-file-excel-fill', 'text-success-600'],
+    [/^(pptx?|odp)$/, 'ri-file-ppt-fill', 'text-orange-500'],
+    [/^(zip|rar|7z|tar|gz|bz2)$/, 'ri-file-zip-fill', 'text-warning-600'],
+    [/^(mp4|mov|avi|mkv|webm)$/, 'ri-video-fill', 'text-purple-500'],
+    [/^(mp3|wav|ogg|m4a|aac)$/, 'ri-music-fill', 'text-info-500'],
+    [/^(json|xml|js|css|html|php|txt|md)$/, 'ri-file-code-fill', 'text-gray-500'],
+];
+
+/** @returns {{icon: string, color: string}} */
+function fileType(media) {
+    // Görseller küçük resimleriyle gösteriliyor; ikon da görsel ikonu olmalı.
+    // Bu kontrol uzantı eşlemesinden ÖNCE gelir, aksi halde SVG hem küçük
+    // resim hem "kod dosyası" ikonu alıp tutarsız görünürdü.
+    if (media.is_image) {
+        return { icon: 'ri-image-fill', color: 'text-secondary-500' };
+    }
+
+    const extension = String(media.extension ?? '').toLowerCase();
+    const match = FILE_TYPES.find(([pattern]) => pattern.test(extension));
+
+    return match
+        ? { icon: match[1], color: match[2] }
+        : { icon: 'ri-file-fill', color: 'text-gray-400' };
+}
+
+/** Kartların sağ üstündeki üç nokta — bağlam menüsünü açar. */
+function menuButton() {
+    return `<button type="button" data-item-menu
+        class="absolute top-[6px] ltr:right-[6px] rtl:left-[6px] z-[2] w-[26px] h-[26px] rounded-[7px] inline-flex items-center justify-center
+               bg-white/90 dark:bg-[#0c1427]/90 text-gray-500 dark:text-gray-400 opacity-0 transition-all
+               group-hover:opacity-100 hover:text-primary-500 hover:bg-white dark:hover:bg-[#0c1427]">
+        <i class="ri-more-fill text-[16px]"></i>
+    </button>`;
+}
+
+/** Kartların sol üstündeki seçim kutusu — durumu renderSelection() yönetir. */
+function checkBox() {
+    return `<span data-item-check
+        class="absolute top-[8px] ltr:left-[8px] rtl:right-[8px] z-[2] w-[20px] h-[20px] rounded-[6px] border inline-flex items-center justify-center transition-all
+               opacity-0 bg-white/90 dark:bg-[#0c1427]/90 border-gray-300 dark:border-[#172036] text-transparent">
+        <i class="ri-check-line text-[13px]"></i>
+    </span>`;
+}
+
 export class MediaBrowser {
     /**
      * @param {HTMLElement} root  [data-media-browser] elemanı
@@ -42,7 +94,14 @@ export class MediaBrowser {
         this.menu = null;
         this.dragDepth = 0;
 
+        // [data-media-grid] artık ızgaranın kendisi değil, "Klasörler" ve
+        // "Dosyalar" bölümlerini saran kapsayıcı. Görünüm anahtarı ve shift ile
+        // aralık seçimi ona dayandığı için referans adı korunuyor.
         this.grid = root.querySelector('[data-media-grid]');
+        this.folderSection = root.querySelector('[data-media-folders-section]');
+        this.fileSection = root.querySelector('[data-media-files-section]');
+        this.folderList = root.querySelector('[data-media-folders]');
+        this.fileList = root.querySelector('[data-media-files]');
         this.list = root.querySelector('[data-media-list]');
         this.listBody = root.querySelector('[data-media-list-body]');
         this.viewToggle = root.querySelector('[data-media-view-toggle]');
@@ -174,6 +233,29 @@ export class MediaBrowser {
             return;
         }
 
+        // Karttaki üç nokta: sağ tıkla aynı menüyü butonun altında açar.
+        const trigger = event.target.closest('[data-item-menu]');
+
+        if (trigger) {
+            // Bu tıklama document'e ulaşırsa menüyü kapatan genel dinleyici
+            // (bkz. bind()) menüyü açılır açılmaz kapatır. Sağ tık menüsü
+            // 'contextmenu' olayını kullandığı için bu sorunu yaşamıyor.
+            event.stopPropagation();
+
+            const owner = trigger.closest('[data-item-key]');
+
+            if (! this.selection.has(owner.dataset.itemKey)) {
+                this.selection = new Set([owner.dataset.itemKey]);
+                this.lastSelectedKey = owner.dataset.itemKey;
+                this.renderSelection();
+            }
+
+            const rect = trigger.getBoundingClientRect();
+            this.openMenu(rect.left, rect.bottom + 4, owner);
+
+            return;
+        }
+
         const card = event.target.closest('[data-item-key]');
 
         if (! card) {
@@ -267,8 +349,10 @@ export class MediaBrowser {
 
         this.viewToggle.querySelectorAll('[data-media-view]').forEach((button) => {
             const active = button.dataset.mediaView === this.view;
-            button.classList.toggle('bg-primary-500', active);
-            button.classList.toggle('text-white', active);
+            button.classList.toggle('bg-white', active);
+            button.classList.toggle('dark:bg-[#0c1427]', active);
+            button.classList.toggle('text-primary-500', active);
+            button.classList.toggle('shadow-sm', active);
             button.classList.toggle('text-gray-500', ! active);
             button.classList.toggle('dark:text-gray-400', ! active);
         });
@@ -281,6 +365,27 @@ export class MediaBrowser {
             card.classList.toggle('bg-primary-50/60', selected);
             card.classList.toggle('dark:bg-[#15203c]', selected);
             card.classList.toggle('border-gray-100', ! selected);
+
+            // Seçim kutusu: seçiliyken dolu ve her zaman görünür, boşken yalnızca
+            // kartın üzerine gelindiğinde. Çakışan sınıflar (opacity-0 /
+            // opacity-100) sıraya güvenmemek için karşılıklı kaldırılıyor.
+            const check = card.querySelector('[data-item-check]');
+
+            if (! check) {
+                return;
+            }
+
+            check.classList.toggle('opacity-100', selected);
+            check.classList.toggle('bg-primary-500', selected);
+            check.classList.toggle('border-primary-500', selected);
+            check.classList.toggle('text-white', selected);
+            check.classList.toggle('opacity-0', ! selected);
+            check.classList.toggle('group-hover:opacity-100', ! selected);
+            check.classList.toggle('bg-white/90', ! selected);
+            check.classList.toggle('dark:bg-[#0c1427]/90', ! selected);
+            check.classList.toggle('border-gray-300', ! selected);
+            check.classList.toggle('dark:border-[#172036]', ! selected);
+            check.classList.toggle('text-transparent', ! selected);
         });
 
         if (! this.bulkbar) {
@@ -348,6 +453,21 @@ export class MediaBrowser {
         this.load();
     }
 
+    /**
+     * goToFolder gibi ama TAM yolu alır. Sidebar klasör ağacı iç içe bir
+     * klasöre atlarken bunu kullanır; aksi halde breadcrumb kökün hemen
+     * altındaymış gibi tek seviye gösterirdi.
+     *
+     * @param {{id: number, name: string}[]} path
+     */
+    goToPath(path) {
+        this.mode = 'folder';
+        this.path = path.map(({ id, name }) => ({ id, name }));
+        this.state.page = 1;
+        this.clearSelection();
+        this.load();
+    }
+
     showRecent() {
         this.mode = 'recent';
         this.path = [];
@@ -368,10 +488,11 @@ export class MediaBrowser {
         if (this.mode !== 'folder') {
             const label = this.mode === 'recent' ? 'Son Eklenenler' : 'Bağlantısız Dosyalar';
 
-            this.breadcrumb.innerHTML = `<span class="flex items-center gap-[4px]">
-                <button type="button" data-crumb-index="0" class="text-gray-500 dark:text-gray-400 hover:text-primary-500 transition-all">Medya</button>
-                <i class="material-symbols-outlined !text-[16px] text-gray-400">chevron_right</i>
-                <span class="text-black dark:text-white">${label}</span>
+            this.breadcrumb.innerHTML = `<span class="flex items-center gap-[2px]">
+                <button type="button" data-crumb-index="0"
+                    class="text-sm text-gray-500 dark:text-gray-400 hover:text-primary-500 py-[4px] px-[8px] rounded-[8px] hover:bg-gray-50 dark:hover:bg-[#15203c] transition-all">Medya</button>
+                <i class="material-symbols-outlined !text-[17px] text-gray-300 dark:text-gray-600">chevron_right</i>
+                <span class="text-md font-semibold text-black dark:text-white py-[4px] px-[8px]">${label}</span>
             </span>`;
 
             return;
@@ -382,10 +503,12 @@ export class MediaBrowser {
         this.breadcrumb.innerHTML = crumbs.map((crumb, index) => {
             const isLast = index === crumbs.length - 1;
 
-            return `<span class="flex items-center gap-[4px]">
-                ${index > 0 ? '<i class="material-symbols-outlined !text-[16px] text-gray-400">chevron_right</i>' : ''}
+            return `<span class="flex items-center gap-[2px]">
+                ${index > 0 ? '<i class="material-symbols-outlined !text-[17px] text-gray-300 dark:text-gray-600">chevron_right</i>' : ''}
                 <button type="button" data-crumb-index="${index}" data-crumb-id="${crumb.id ?? ''}"
-                    class="${isLast ? 'text-black dark:text-white cursor-default' : 'text-gray-500 dark:text-gray-400 hover:text-primary-500'} transition-all">
+                    class="py-[4px] px-[8px] rounded-[8px] transition-all ${isLast
+                        ? 'text-md font-semibold text-black dark:text-white cursor-default'
+                        : 'text-sm text-gray-500 dark:text-gray-400 hover:text-primary-500 hover:bg-gray-50 dark:hover:bg-[#15203c]'}">
                     ${escapeHtml(crumb.name)}
                 </button>
             </span>`;
@@ -396,6 +519,11 @@ export class MediaBrowser {
         this.status.textContent = 'Yükleniyor...';
         this.status.classList.remove('hidden');
         this.renderBreadcrumb();
+
+        // Konum değişti — sidebar (varsa) aktif öğesini buna göre günceller.
+        // Yalnızca sidebar tıklamasında değil, breadcrumb ve çift tıklamayla
+        // gezinmede de tetiklenir.
+        this.options.onNavigate?.({ mode: this.mode, folderId: this.currentFolderId });
 
         const flat = this.mode !== 'folder';
 
@@ -417,18 +545,29 @@ export class MediaBrowser {
             this.items.clear();
             filesResponse.data.forEach((media) => this.items.set(media.id, media));
 
-            this.grid.innerHTML = folders.map((folder) => this.folderCard(folder)).join('')
-                + filesResponse.data.map((media) => this.fileCard(media)).join('');
+            // Izgara: klasörler ve dosyalar ayrı bölümlerde; boş olan bölüm gizlenir.
+            this.folderList.innerHTML = folders.map((folder) => this.folderCard(folder)).join('');
+            this.fileList.innerHTML = filesResponse.data.map((media) => this.fileCard(media)).join('');
+            this.folderSection.classList.toggle('hidden', folders.length === 0);
+            this.fileSection.classList.toggle('hidden', filesResponse.data.length === 0);
+
+            // Liste görünümü tek tablo — klasörler yine üstte.
             this.listBody.innerHTML = folders.map((folder) => this.folderRow(folder)).join('')
                 + filesResponse.data.map((media) => this.fileRow(media)).join('');
 
             const empty = folders.length === 0 && filesResponse.data.length === 0;
             this.status.classList.toggle('hidden', ! empty);
-            this.status.textContent = this.state.search ? 'Sonuç bulunamadı.' : 'Bu klasör boş.';
+
+            if (empty) {
+                this.renderEmpty();
+            }
             this.renderPagination(filesResponse.meta);
             this.renderSelection();
         } catch (error) {
-            this.grid.innerHTML = '';
+            this.folderList.innerHTML = '';
+            this.fileList.innerHTML = '';
+            this.folderSection.classList.add('hidden');
+            this.fileSection.classList.add('hidden');
             this.listBody.innerHTML = '';
             this.status.classList.remove('hidden');
             this.status.textContent = error instanceof HttpError ? error.message : 'Yüklenemedi.';
@@ -441,28 +580,35 @@ export class MediaBrowser {
         return data;
     }
 
+    /** Klasör kartı — Drive'daki gibi yatay satır, dosyaların üstünde ayrı bölümde. */
     folderCard(folder) {
         return `
             <div data-item-key="folder:${folder.id}" data-item-type="folder" data-item-id="${folder.id}" draggable="true"
-                class="group relative flex flex-col items-center justify-center gap-[4px] py-[12px] px-[6px] rounded-md border border-gray-100 dark:border-[#172036] cursor-pointer select-none transition-all hover:border-primary-300">
-                <i class="material-symbols-outlined !text-[32px] text-[#ffb264]">folder</i>
-                <p class="!mb-0 text-[11px] text-black dark:text-white truncate max-w-full text-center" title="${escapeHtml(folder.name)}">${escapeHtml(folder.name)}</p>
+                class="group relative flex items-center gap-[10px] py-[11px] ltr:pl-[13px] ltr:pr-[38px] rtl:pr-[13px] rtl:pl-[38px] rounded-[10px] border border-gray-100 dark:border-[#172036] cursor-pointer select-none transition-all hover:border-primary-300 hover:bg-gray-50 dark:hover:bg-[#15203c]">
+                <i class="ri-folder-fill text-[21px] text-[#f2b544] shrink-0 leading-none"></i>
+                <span class="text-sm text-black dark:text-white truncate grow" title="${escapeHtml(folder.name)}">${escapeHtml(folder.name)}</span>
+                <span class="text-[11px] text-gray-500 dark:text-gray-400 shrink-0">${folder.media_count ?? 0}</span>
+                ${this.manageable ? menuButton() : ''}
             </div>`;
     }
 
+    /** Dosya kartı — büyük önizleme + üzerine gelince seçim kutusu ve menü. */
     fileCard(media) {
+        const type = fileType(media);
+
         const thumb = media.is_image
-            ? `<img src="${escapeHtml(media.thumb)}" alt="${escapeHtml(media.alt ?? '')}" loading="lazy" class="w-full h-full object-cover">`
-            : `<div class="w-full h-full flex items-center justify-center text-gray-400">
-                   <i class="material-symbols-outlined !text-[26px]">draft</i>
-               </div>`;
+            ? `<img src="${escapeHtml(media.thumb)}" alt="${escapeHtml(media.alt ?? '')}" loading="lazy" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.03]">`
+            : `<i class="${type.icon} ${type.color} text-[40px] leading-none"></i>`;
 
         return `
             <div data-item-key="media:${media.id}" data-item-type="media" data-item-id="${media.id}" draggable="true"
-                class="group relative rounded-md border border-gray-100 dark:border-[#172036] overflow-hidden cursor-pointer select-none transition-all hover:border-primary-300">
-                <div class="aspect-square bg-gray-50 dark:bg-[#15203c]">${thumb}</div>
-                <div class="px-[6px] py-[5px]">
-                    <p class="!mb-0 text-[10px] text-black dark:text-white truncate" title="${escapeHtml(media.name)}">${escapeHtml(media.name)}</p>
+                class="group relative rounded-[12px] border border-gray-100 dark:border-[#172036] overflow-hidden cursor-pointer select-none transition-all hover:border-primary-300 hover:shadow-[0_4px_14px_-4px_rgba(16,24,40,.14)]">
+                ${checkBox()}
+                ${this.manageable ? menuButton() : ''}
+                <div class="aspect-[4/3] bg-gray-50 dark:bg-[#15203c] flex items-center justify-center overflow-hidden">${thumb}</div>
+                <div class="flex items-center gap-[7px] px-[10px] py-[9px] border-t border-gray-100 dark:border-[#172036]">
+                    <i class="${type.icon} ${type.color} text-[15px] shrink-0 leading-none"></i>
+                    <p class="!mb-0 text-xs text-black dark:text-white truncate" title="${escapeHtml(media.name)}">${escapeHtml(media.name)}</p>
                 </div>
             </div>`;
     }
@@ -473,7 +619,7 @@ export class MediaBrowser {
                 class="cursor-pointer select-none transition-all border-b border-gray-100 dark:border-[#172036] hover:bg-gray-50 dark:hover:bg-[#15203c]">
                 <td class="px-[15px] py-[10px]">
                     <span class="flex items-center gap-[8px]">
-                        <i class="material-symbols-outlined !text-xl text-[#ffb264]">folder</i>
+                        <i class="ri-folder-fill text-[19px] text-[#f2b544] leading-none"></i>
                         ${escapeHtml(folder.name)}
                     </span>
                 </td>
@@ -483,9 +629,12 @@ export class MediaBrowser {
     }
 
     fileRow(media) {
+        const type = fileType(media);
         const icon = media.is_image
-            ? `<img src="${escapeHtml(media.thumb)}" alt="" class="w-[28px] h-[28px] rounded-sm object-cover">`
-            : '<i class="material-symbols-outlined !text-xl text-gray-400">draft</i>';
+            ? `<img src="${escapeHtml(media.thumb)}" alt="" class="w-[28px] h-[28px] rounded-[6px] object-cover">`
+            : `<span class="w-[28px] h-[28px] rounded-[6px] bg-gray-50 dark:bg-[#15203c] inline-flex items-center justify-center">
+                   <i class="${type.icon} ${type.color} text-[15px] leading-none"></i>
+               </span>`;
 
         return `
             <tr data-item-key="media:${media.id}" data-item-type="media" data-item-id="${media.id}" draggable="true"
@@ -499,6 +648,22 @@ export class MediaBrowser {
                 <td class="px-[15px] py-[8px] text-gray-500 dark:text-gray-400 text-sm">${media.created_at ?? '—'}</td>
                 <td class="px-[15px] py-[8px] text-gray-500 dark:text-gray-400 text-sm">${escapeHtml(media.human_size)}</td>
             </tr>`;
+    }
+
+    /** Boş klasör / sonuçsuz arama — düz yazı yerine ikonlu durum. */
+    renderEmpty() {
+        const searching = Boolean(this.state.search);
+
+        this.status.innerHTML = `
+            <div class="flex flex-col items-center gap-[10px] py-[20px]">
+                <span class="w-[64px] h-[64px] rounded-full bg-gray-50 dark:bg-[#15203c] inline-flex items-center justify-center">
+                    <i class="material-symbols-outlined !text-[30px] text-gray-400">${searching ? 'search_off' : 'folder_open'}</i>
+                </span>
+                <p class="!mb-0 font-medium text-black dark:text-white">${searching ? 'Sonuç bulunamadı' : 'Bu klasör boş'}</p>
+                <p class="!mb-0 text-sm">${searching
+                    ? 'Farklı bir arama terimi deneyin.'
+                    : 'Dosyaları buraya sürükleyip bırakabilir ya da Yükle butonunu kullanabilirsiniz.'}</p>
+            </div>`;
     }
 
     renderPagination(meta) {

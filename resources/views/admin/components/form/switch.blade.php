@@ -28,9 +28,9 @@
                 @checked((bool) ($bare ? $checked : old($name, $checked)))
                 {{ $attributes->merge(['class' => 'peer sr-only']) }}>
             <span
-                class="block w-[44px] h-[24px] rounded-full bg-gray-200 dark:bg-[#172036] transition-all peer-checked:bg-primary-500"></span>
+                class="block w-[44px] h-[24px] rounded-full bg-gray-200 dark:bg-[#172036] transition-all peer-checked:bg-primary-500 peer-focus-visible:ring-[3px] peer-focus-visible:ring-primary-500/25"></span>
             <span
-                class="absolute top-[3px] ltr:left-[3px] rtl:right-[3px] w-[18px] h-[18px] rounded-full bg-white transition-all peer-checked:ltr:translate-x-[20px] peer-checked:rtl:-translate-x-[20px]"></span>
+                class="absolute top-[3px] ltr:left-[3px] rtl:right-[3px] w-[18px] h-[18px] rounded-full bg-white shadow-[0_1px_3px_rgba(16,24,40,.25)] transition-all peer-checked:ltr:translate-x-[20px] peer-checked:rtl:-translate-x-[20px]"></span>
         </span>
 
         @if ($label)

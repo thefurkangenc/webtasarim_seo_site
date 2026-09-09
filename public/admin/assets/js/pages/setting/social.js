@@ -25,7 +25,7 @@ function iconUrl(item) {
 function card(item) {
     const icon = iconUrl(item)
         ? `<img src="${escapeHtml(iconUrl(item))}" alt="" class="w-[40px] h-[40px] object-contain rounded-md">`
-        : `<span class="w-[40px] h-[40px] flex items-center justify-center rounded-md bg-gray-50 dark:bg-[#15203c] text-gray-400"><i class="material-symbols-outlined !text-[22px]">share</i></span>`;
+        : `<span class="settings-chip w-[40px] h-[40px] flex items-center justify-center text-gray-400"><i class="material-symbols-outlined !text-[22px]">share</i></span>`;
 
     const handle = canUpdate
         ? `<i data-reorder-handle class="material-symbols-outlined !text-[19px] text-gray-400 cursor-grab active:cursor-grabbing">drag_indicator</i>`
@@ -42,7 +42,7 @@ function card(item) {
         </div>`
         : '';
 
-    return `<div data-social-card data-id="${item.id}" class="rounded-md border border-gray-100 dark:border-[#172036] p-[15px] md:p-[20px] bg-gray-50 dark:bg-[#15203c]">
+    return `<div data-social-card data-id="${item.id}" class="settings-panel is-tight is-interactive">
         <div class="flex items-center gap-[15px]">
             ${handle}
             ${icon}

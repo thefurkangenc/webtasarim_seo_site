@@ -7,9 +7,9 @@
     @method('PUT')
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-[20px] md:gap-[25px]">
-        <div class="rounded-md border border-gray-100 dark:border-[#172036] bg-gray-50 dark:bg-[#15203c] p-[20px] md:p-[25px]">
+        <div class="settings-panel">
             <div class="flex items-center gap-[12px] mb-[20px]">
-                <span class="w-[40px] h-[40px] rounded-md bg-white dark:bg-[#0c1427] border border-gray-100 dark:border-[#172036] flex items-center justify-center shrink-0">
+                <span class="settings-chip w-[40px] h-[40px] flex items-center justify-center shrink-0">
                     <img src="{{ asset('admin/assets/images/icons/tracking/google.svg') }}" alt="" class="w-[24px] h-[24px] object-contain">
                 </span>
                 <p class="!mb-0 font-medium text-black dark:text-white">Google</p>
@@ -39,9 +39,9 @@
                 wrapper="mb-0" />
         </div>
 
-        <div class="rounded-md border border-gray-100 dark:border-[#172036] bg-gray-50 dark:bg-[#15203c] p-[20px] md:p-[25px]">
+        <div class="settings-panel">
             <div class="flex items-center gap-[12px] mb-[20px]">
-                <span class="w-[40px] h-[40px] rounded-md bg-white dark:bg-[#0c1427] border border-gray-100 dark:border-[#172036] flex items-center justify-center shrink-0">
+                <span class="settings-chip w-[40px] h-[40px] flex items-center justify-center shrink-0">
                     <img src="{{ asset('admin/assets/images/icons/tracking/microsoft.svg') }}" alt="" class="w-[24px] h-[24px] object-contain">
                 </span>
                 <p class="!mb-0 font-medium text-black dark:text-white">Microsoft</p>
@@ -58,9 +58,9 @@
                 wrapper="mb-0" />
         </div>
 
-        <div class="rounded-md border border-gray-100 dark:border-[#172036] bg-gray-50 dark:bg-[#15203c] p-[20px] md:p-[25px]">
+        <div class="settings-panel">
             <div class="flex items-center gap-[12px] mb-[20px]">
-                <span class="w-[40px] h-[40px] rounded-md bg-white dark:bg-[#0c1427] border border-gray-100 dark:border-[#172036] flex items-center justify-center shrink-0">
+                <span class="settings-chip w-[40px] h-[40px] flex items-center justify-center shrink-0">
                     <img src="{{ asset('admin/assets/images/icons/tracking/meta.svg') }}" alt="" class="w-[24px] h-[24px] object-contain">
                 </span>
                 <p class="!mb-0 font-medium text-black dark:text-white">Meta</p>
@@ -73,9 +73,9 @@
                 wrapper="mb-0" />
         </div>
 
-        <div class="rounded-md border border-gray-100 dark:border-[#172036] bg-gray-50 dark:bg-[#15203c] p-[20px] md:p-[25px]">
+        <div class="settings-panel">
             <div class="flex items-center gap-[12px] mb-[20px]">
-                <span class="w-[40px] h-[40px] rounded-md bg-white dark:bg-[#0c1427] border border-gray-100 dark:border-[#172036] flex items-center justify-center shrink-0">
+                <span class="settings-chip w-[40px] h-[40px] flex items-center justify-center shrink-0">
                     <img src="{{ asset('admin/assets/images/icons/tracking/yandex.svg') }}" alt="" class="w-[24px] h-[24px] object-contain">
                 </span>
                 <p class="!mb-0 font-medium text-black dark:text-white">Yandex</p>
@@ -92,9 +92,9 @@
                 wrapper="mb-0" />
         </div>
 
-        <div class="rounded-md border border-gray-100 dark:border-[#172036] bg-gray-50 dark:bg-[#15203c] p-[20px] md:p-[25px]">
+        <div class="settings-panel">
             <div class="flex items-center gap-[12px] mb-[20px]">
-                <span class="w-[40px] h-[40px] rounded-md bg-white dark:bg-[#0c1427] border border-gray-100 dark:border-[#172036] flex items-center justify-center shrink-0">
+                <span class="settings-chip w-[40px] h-[40px] flex items-center justify-center shrink-0">
                     <img src="{{ asset('admin/assets/images/icons/tracking/tiktok.svg') }}" alt="" class="w-[24px] h-[24px] object-contain">
                 </span>
                 <p class="!mb-0 font-medium text-black dark:text-white">TikTok</p>
@@ -107,9 +107,9 @@
                 wrapper="mb-0" />
         </div>
 
-        <div class="rounded-md border border-gray-100 dark:border-[#172036] bg-gray-50 dark:bg-[#15203c] p-[20px] md:p-[25px]">
+        <div class="settings-panel">
             <div class="flex items-center gap-[12px] mb-[20px]">
-                <span class="w-[40px] h-[40px] rounded-md bg-white dark:bg-[#0c1427] border border-gray-100 dark:border-[#172036] flex items-center justify-center shrink-0">
+                <span class="settings-chip w-[40px] h-[40px] flex items-center justify-center shrink-0">
                     <img src="{{ asset('admin/assets/images/icons/tracking/linkedin.svg') }}" alt="" class="w-[24px] h-[24px] object-contain">
                 </span>
                 <p class="!mb-0 font-medium text-black dark:text-white">LinkedIn</p>
@@ -123,9 +123,9 @@
         </div>
     </div>
 
-    <div class="rounded-md border border-gray-100 dark:border-[#172036] bg-gray-50 dark:bg-[#15203c] p-[20px] md:p-[25px] mt-[20px] md:mt-[25px]">
+    <div class="settings-panel mt-[20px] md:mt-[25px]">
         <div class="flex items-center gap-[12px] mb-[20px]">
-            <span class="w-[40px] h-[40px] rounded-md bg-white dark:bg-[#0c1427] border border-gray-100 dark:border-[#172036] flex items-center justify-center shrink-0">
+            <span class="settings-chip w-[40px] h-[40px] flex items-center justify-center shrink-0">
                 <i class="material-symbols-outlined !text-[22px] text-primary-500">code</i>
             </span>
             <div class="min-w-0">

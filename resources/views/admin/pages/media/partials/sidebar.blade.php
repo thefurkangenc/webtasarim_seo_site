@@ -1,38 +1,64 @@
 {{--
     Dosya yöneticisinin sol paneli — sadece /admin/media sayfasında, picker
-    modalında yok. İşlevi core/pages/media/index.js verir: kök klasör
-    kısayolları, "Son Eklenenler"/"Bağlantısız" ve depolama özeti — hepsi
-    gerçek veriden, sayfa yüklenince bir kerede çekilir.
+    modalında yok. İşlevi pages/media/index.js verir: hızlı erişim kısayolları,
+    açılıp kapanan klasör ağacı ve depolama özeti — hepsi gerçek veriden,
+    sayfa yüklenince bir kerede çekilir.
+
+    Aktif öğe işaretlemesi de o dosyada: MediaBrowser'ın onNavigate geri
+    çağrısını dinler, böylece breadcrumb veya çift tıklamayla gezinildiğinde de
+    doğru satır vurgulanır.
 --}}
-<div data-media-sidebar class="trezo-card bg-white dark:bg-[#0c1427] p-[20px] md:p-[25px] rounded-md">
+<div data-media-sidebar class="trezo-card bg-white dark:bg-[#0c1427] p-[15px] md:p-[18px] rounded-md">
     <div class="trezo-card-content">
-        <ul class="mb-[20px] md:mb-[25px]">
-            <li class="font-medium mb-[15px] md:mb-[19px] last:mb-0">
+
+        {{-- Hızlı erişim --}}
+        <ul class="flex flex-col gap-[3px]">
+            <li>
                 <button type="button" data-sidebar-action="root"
-                    class="w-full text-left relative flex items-center ltr:pl-[28px] rtl:pr-[28px] transition-all text-primary-500">
-                    <i class="material-symbols-outlined absolute !text-lg ltr:left-0 rtl:right-0 top-1/2 -translate-y-1/2 -mt-[.5px]">perm_media</i>
+                    class="flex items-center gap-[10px] w-full text-left rounded-[10px] py-[9px] px-[12px] text-sm font-medium transition-all text-black dark:text-white hover:bg-gray-50 dark:hover:bg-[#15203c]">
+                    <i class="ri-hard-drive-2-fill text-[18px] text-primary-500 shrink-0 leading-none"></i>
                     Tüm Medya
                 </button>
-                <ul data-sidebar-folders class="ltr:pl-[28px] rtl:pr-[28px] mt-[15px] md:mt-[17px] mb-[17px] md:mb-[21px]"></ul>
             </li>
-            <li class="font-medium mb-[15px] md:mb-[19px] last:mb-0">
+            <li>
                 <button type="button" data-sidebar-action="recent"
-                    class="w-full text-left relative flex items-center ltr:pl-[28px] rtl:pr-[28px] transition-all text-black dark:text-white hover:text-primary-500">
-                    <i class="material-symbols-outlined text-purple-500 absolute !text-lg ltr:left-0 rtl:right-0 top-1/2 -translate-y-1/2 -mt-[.5px]">schedule</i>
+                    class="flex items-center gap-[10px] w-full text-left rounded-[10px] py-[9px] px-[12px] text-sm font-medium transition-all text-black dark:text-white hover:bg-gray-50 dark:hover:bg-[#15203c]">
+                    <i class="ri-time-fill text-[18px] text-purple-500 shrink-0 leading-none"></i>
                     Son Eklenenler
                 </button>
             </li>
-            <li class="font-medium mb-[15px] md:mb-[19px] last:mb-0">
+            <li>
                 <button type="button" data-sidebar-action="unattached"
-                    class="w-full text-left relative flex items-center ltr:pl-[28px] rtl:pr-[28px] transition-all text-black dark:text-white hover:text-primary-500">
-                    <i class="material-symbols-outlined text-warning-500 absolute !text-lg ltr:left-0 rtl:right-0 top-1/2 -translate-y-1/2 -mt-[.5px]">link_off</i>
+                    class="flex items-center gap-[10px] w-full text-left rounded-[10px] py-[9px] px-[12px] text-sm font-medium transition-all text-black dark:text-white hover:bg-gray-50 dark:hover:bg-[#15203c]">
+                    <i class="ri-link-unlink text-[18px] text-warning-600 shrink-0 leading-none"></i>
                     Bağlantısız
                 </button>
             </li>
         </ul>
-        <div class="border-t border-gray-100 dark:border-[#172036] -mx-[20px] md:-mx-[25px] px-[20px] md:px-[25px] pt-[20px] md:pt-[25px]">
-            <h6 class="!mb-[11px] !text-[15px]">Depolama</h6>
-            <span data-sidebar-stats-text class="block text-sm text-gray-500 dark:text-gray-400">Yükleniyor...</span>
+
+        {{-- Klasör ağacı — JS dolduruyor --}}
+        <div class="mt-[16px] pt-[16px] border-t border-gray-100 dark:border-[#172036]">
+            <h6 class="!mb-[8px] !text-[11px] font-semibold uppercase tracking-[.06em] text-gray-500 dark:text-gray-400">
+                Klasörler
+            </h6>
+            <ul data-sidebar-folders class="flex flex-col gap-[2px]">
+                <li class="text-sm text-gray-500 dark:text-gray-400 px-[12px] py-[6px]">Yükleniyor...</li>
+            </ul>
         </div>
+
+        {{-- Depolama --}}
+        <div class="mt-[16px] pt-[16px] border-t border-gray-100 dark:border-[#172036]">
+            <h6 class="!mb-[10px] !text-[11px] font-semibold uppercase tracking-[.06em] text-gray-500 dark:text-gray-400">
+                Depolama
+            </h6>
+            <div class="h-[6px] w-full rounded-full bg-gray-100 dark:bg-[#172036] overflow-hidden">
+                <span data-sidebar-stats-bar class="block h-full rounded-full bg-primary-500 transition-all duration-500"
+                    style="width: 0%"></span>
+            </div>
+            <span data-sidebar-stats-text class="block text-xs text-gray-500 dark:text-gray-400 mt-[8px]">
+                Yükleniyor...
+            </span>
+        </div>
+
     </div>
 </div>

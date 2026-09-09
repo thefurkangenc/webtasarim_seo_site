@@ -17,6 +17,13 @@ return [
     'driver' => extension_loaded('imagick') ? 'imagick' : 'gd',
 
     'quality' => 85,
+
+    /*
+    | Depolama çubuğunun paydası (bayt). Sunucuda zorlanan bir sınır DEĞİLDİR
+    | — yalnızca medya kütüphanesi sidebar'ındaki "X / Y kullanılıyor"
+    | göstergesini ölçeklendirir. Barındırma paketinin alanına göre ayarla.
+    */
+    'quota' => 5 * 1024 * 1024 * 1024, // 5 GB
     'max_size' => 8192, // KB
     'accepts' => ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'],
 

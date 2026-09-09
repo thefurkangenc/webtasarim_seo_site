@@ -1,5 +1,7 @@
 
-<div class="trezo-card bg-white dark:bg-[#0c1427] p-[15px] md:p-[20px] rounded-md">
+{{-- settings-nav: geniş ekranda sayfayla birlikte kayar. İzleme Kodları gibi
+     uzun sekmelerde menü yukarıda kalıp görünmez oluyordu. --}}
+<div class="settings-nav trezo-card bg-white dark:bg-[#0c1427] p-[15px] md:p-[20px] rounded-md">
     <div class="trezo-card-content">
         <ul class="flex flex-col gap-[6px]">
             @foreach ($groups as $key => $item)

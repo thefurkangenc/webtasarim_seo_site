@@ -10,10 +10,10 @@
     class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[20px] md:gap-[25px]">
     @foreach ($integrations as $item)
         <div data-integration="{{ $item['key'] }}" data-title="{{ $item['title'] }}"
-            class="rounded-md border border-gray-100 dark:border-[#172036] bg-gray-50 dark:bg-[#15203c] p-[20px] md:p-[25px] h-full">
+            class="settings-panel is-interactive h-full">
             <div class="flex items-start justify-between gap-[15px] mb-[15px]">
                 <span
-                    class="w-[48px] h-[48px] rounded-md bg-white dark:bg-[#0c1427] border border-gray-100 dark:border-[#172036] flex items-center justify-center shrink-0">
+                    class="settings-chip w-[48px] h-[48px] flex items-center justify-center shrink-0">
                     <img src="{{ asset('admin/assets/images/icons/integrations/'.$item['icon']) }}" alt=""
                         class="w-[24px] h-[24px] object-contain">
                 </span>

@@ -16,12 +16,17 @@
 <link rel="icon" type="image/png" href="{{ asset('admin/assets/images/favicon.ico') }}">
 
 
-<!-- Font Family -->
+{{-- Gövde fontu (Poppins) self-host: @font-face tanımları style.css içinde,
+     dosyalar public/admin/assets/fonts/poppins/ altında. Google Fonts'tan
+     çekilmiyor — en sık kullanılan iki ağırlık önden yükleniyor. --}}
+<link rel="preload" as="font" type="font/woff2" crossorigin
+    href="{{ asset('admin/assets/fonts/poppins/poppins-400-latin.woff2') }}">
+<link rel="preload" as="font" type="font/woff2" crossorigin
+    href="{{ asset('admin/assets/fonts/poppins/poppins-500-latin.woff2') }}">
+
+{{-- Material Symbols hâlâ Google'dan geliyor (ikon fontu, gövde fontu değil). --}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link
-    href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-    rel="stylesheet">
 
 <!-- Material Icons -->
 <link rel="stylesheet"

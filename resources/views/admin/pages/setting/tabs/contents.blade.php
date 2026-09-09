@@ -2,9 +2,9 @@
     @csrf
     @method('PUT')
 
-    <div class="rounded-md border border-gray-100 dark:border-[#172036] bg-gray-50 dark:bg-[#15203c] p-[20px] md:p-[25px] mb-[20px] md:mb-[25px]">
+    <div class="settings-panel mb-[20px] md:mb-[25px]">
         <div class="flex items-center gap-[12px] mb-[20px]">
-            <span class="w-[40px] h-[40px] rounded-md bg-white dark:bg-[#0c1427] border border-gray-100 dark:border-[#172036] flex items-center justify-center shrink-0">
+            <span class="settings-chip w-[40px] h-[40px] flex items-center justify-center shrink-0">
                 <i class="material-symbols-outlined !text-[22px] text-primary-500">info</i>
             </span>
             <div class="min-w-0">
@@ -23,9 +23,9 @@
             wrapper="mb-0" />
     </div>
 
-    <div class="rounded-md border border-gray-100 dark:border-[#172036] bg-gray-50 dark:bg-[#15203c] p-[20px] md:p-[25px] mb-[20px] md:mb-[25px]">
+    <div class="settings-panel mb-[20px] md:mb-[25px]">
         <div class="flex items-center gap-[12px] mb-[20px]">
-            <span class="w-[40px] h-[40px] rounded-md bg-white dark:bg-[#0c1427] border border-gray-100 dark:border-[#172036] flex items-center justify-center shrink-0">
+            <span class="settings-chip w-[40px] h-[40px] flex items-center justify-center shrink-0">
                 <i class="material-symbols-outlined !text-[22px] text-primary-500">cookie</i>
             </span>
             <div class="min-w-0">
@@ -40,9 +40,9 @@
             wrapper="mb-0" />
     </div>
 
-    <div class="rounded-md border border-gray-100 dark:border-[#172036] bg-gray-50 dark:bg-[#15203c] p-[20px] md:p-[25px]">
+    <div class="settings-panel">
         <div class="flex items-center gap-[12px] mb-[20px]">
-            <span class="w-[40px] h-[40px] rounded-md bg-white dark:bg-[#0c1427] border border-gray-100 dark:border-[#172036] flex items-center justify-center shrink-0">
+            <span class="settings-chip w-[40px] h-[40px] flex items-center justify-center shrink-0">
                 <i class="material-symbols-outlined !text-[22px] text-primary-500">policy</i>
             </span>
             <div class="min-w-0">
