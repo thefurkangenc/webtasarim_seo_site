@@ -13,7 +13,7 @@ function container() {
     if (! element) {
         element = document.createElement('div');
         element.id = 'admin-toast-container';
-        element.className = 'fixed z-[1000] top-[20px] ltr:right-[20px] rtl:left-[20px] flex flex-col gap-[10px]';
+        element.className = 'fixed z-[1401] top-[20px] ltr:right-[20px] rtl:left-[20px] flex flex-col gap-[10px]';
         document.body.append(element);
     }
 

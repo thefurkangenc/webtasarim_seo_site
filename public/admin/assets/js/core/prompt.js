@@ -14,7 +14,7 @@ let resolver = null;
 function build() {
     const element = document.createElement('div');
     element.id = 'admin-prompt';
-    element.className = 'add-new-popup z-[1004] fixed transition-all inset-0 overflow-x-hidden overflow-y-auto lg:py-[20px]';
+    element.className = 'add-new-popup z-[1405] fixed transition-all inset-0 overflow-x-hidden overflow-y-auto lg:py-[20px]';
     element.innerHTML = `
         <div class="popup-dialog flex transition-all max-w-[420px] min-h-full items-center mx-auto">
             <form data-prompt-form class="trezo-card w-full bg-white dark:bg-[#0c1427] p-[20px] md:p-[25px] rounded-md">

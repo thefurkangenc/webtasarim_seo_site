@@ -10,6 +10,7 @@ use App\Http\Requests\Admin\ServiceRegion\ServiceRegionFilterRequest;
 use App\Http\Requests\Admin\ServiceRegion\ServiceRegionUpdateRequest;
 use App\Models\ServiceRegion\ServiceRegion;
 use App\Services\ServiceRegion\ServiceRegionService;
+use App\Support\Tree;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -38,6 +39,9 @@ class ServiceRegionController extends Controller
         return view('admin.pages.service-region.modals.form', [
             'region' => $region,
             'parent' => $parent,
+            // Kırılımdan gelen üst bölge yalnızca ön dolgu — kullanıcı formda
+            // bunu değiştirebilsin diye tüm ağaç girintili seçenek olarak sunulur.
+            'parentOptions' => $this->parentOptions(),
         ]);
     }
 
@@ -78,5 +82,17 @@ class ServiceRegionController extends Controller
         $this->service->reorder($request->validated('ids'));
 
         return $this->success('Sıralama güncellendi.');
+    }
+
+    /**
+     * Üst bölge select'i için girintili (ağaç) seçenek listesi.
+     *
+     * @return array<int, array{label: string, depth: int}>
+     */
+    private function parentOptions(): array
+    {
+        return Tree::options(
+            ServiceRegion::where('is_active', true)->orderBy('sort_order')->orderBy('name')->get(['id', 'parent_id', 'name']),
+        );
     }
 }

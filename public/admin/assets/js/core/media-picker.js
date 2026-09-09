@@ -4,7 +4,10 @@
  *   const media = await mediaPicker.open();   // seçilen medya ya da null
  *
  * İçerik /admin/media/picker'dan çekilir; davranışı MediaBrowser verir.
- * Form modalının (z-999) üstünde açılır.
+ * Form modalının (z-1400) üstünde açılır. Tüm modal katmanı TinyMCE'nin
+ * kendi taşan araç çubuğunun (`.tox-tinymce-aux`, z-index 1300) üstünde
+ * kalacak şekilde 1400'den başlar — editör içinden açılan bu picker'da
+ * daha düşük bir değer, TinyMCE'nin "..." araç çubuğu altında kalırdı.
  */
 
 import { http, HttpError } from './http.js';
@@ -35,7 +38,7 @@ class MediaPicker {
     build() {
         const root = document.createElement('div');
         root.id = 'media-picker-modal';
-        root.className = 'add-new-popup z-[1003] fixed transition-all inset-0 overflow-x-hidden overflow-y-auto lg:py-[20px]';
+        root.className = 'add-new-popup z-[1404] fixed transition-all inset-0 overflow-x-hidden overflow-y-auto lg:py-[20px]';
         root.innerHTML = TEMPLATE;
         document.body.append(root);
 

@@ -1,11 +1,5 @@
 {{-- AJAX modal gövdesi. Gönderim pages/service-region/index.js tarafından devralınır. --}}
 <form id="region-form" data-id="{{ $region?->id }}">
-    {{-- Üst bölge kırılımdan gelir, formda değiştirilmez — taşıma
-         desteklenmiyor. Yeni kayıtta gizli input ile sunucuya gider. --}}
-    @unless ($region)
-        <input type="hidden" name="parent_id" value="{{ $parent?->id }}">
-    @endunless
-
     <div class="mb-[20px] md:mb-[25px] rounded-md bg-gray-50 dark:bg-[#15203c] px-[15px] py-[12px] flex items-center gap-[8px]">
         <i class="material-symbols-outlined !text-[19px] text-primary-500">account_tree</i>
         <span class="text-sm text-black dark:text-white">
@@ -16,6 +10,17 @@
             @endif
         </span>
     </div>
+
+    {{-- Üst bölge normalde kırılımdan gelir (yukarıdaki bilgi kutusu bunu
+         gösterir); bu select aynı değerle önceden dolu gelir ama kullanıcı
+         hiç kırılıma inmeden de bölgeyi doğrudan buradan seçebilir — bir
+         güvenlik/kolaylık ağı. Düzenlemede taşıma desteklenmiyor, bu yüzden
+         yalnızca yeni kayıtta görünür. --}}
+    @unless ($region)
+        <x-admin::form.select name="parent_id" label="Üst Bölge"
+            :options="$parentOptions" :value="$parent?->id"
+            placeholder="Üst bölge yok — il olarak eklenir" />
+    @endunless
 
     <x-admin::form.input name="name" label="Bölge Adı" required :value="$region?->name"
         placeholder="Örn. Şahinbey" />

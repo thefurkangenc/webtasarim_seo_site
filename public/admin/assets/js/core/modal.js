@@ -53,7 +53,7 @@ export class AjaxModal {
     createRoot(selector) {
         const root = document.createElement('div');
         root.id = selector.replace('#', '');
-        root.className = 'add-new-popup z-[999] fixed transition-all inset-0 overflow-x-hidden overflow-y-auto lg:py-[20px]';
+        root.className = 'add-new-popup z-[1400] fixed transition-all inset-0 overflow-x-hidden overflow-y-auto lg:py-[20px]';
         document.body.append(root);
 
         return root;

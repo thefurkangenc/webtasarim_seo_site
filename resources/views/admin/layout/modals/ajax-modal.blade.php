@@ -6,7 +6,7 @@
     Açılma mekanizması template'e aittir: .add-new-popup elemanına .active
     class'ı eklenir (geçiş tanımı resources/css/admin/style.css içinde).
 --}}
-<div class="add-new-popup z-[999] fixed transition-all inset-0 overflow-x-hidden overflow-y-auto lg:py-[20px]"
+<div class="add-new-popup z-[1400] fixed transition-all inset-0 overflow-x-hidden overflow-y-auto lg:py-[20px]"
     id="ajax-modal">
     <div class="popup-dialog flex transition-all max-w-[550px] min-h-full items-center mx-auto">
         <div class="trezo-card w-full bg-white dark:bg-[#0c1427] p-[20px] md:p-[25px] rounded-md">

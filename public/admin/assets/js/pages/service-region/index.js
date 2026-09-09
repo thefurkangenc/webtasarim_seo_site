@@ -110,6 +110,15 @@ async function goTo(regionId) {
         }
     }
 
+    // Arama açıkken sunucu seviye filtresini yok sayıp ağacın tamamında arar
+    // (bkz. ServiceRegionService::list) — arama metni kalırsa tıklama hiçbir
+    // şey değiştirmemiş gibi görünür (aynı arama sonucu döner). Bir sonuca
+    // tıklanıp seviye değiştirildiğinde arama bu yüzden temizlenir.
+    if (searchInput) {
+        searchInput.value = '';
+        table.state.search = '';
+    }
+
     parentInput.value = regionId ?? '';
     renderPath();
     table.state.page = 1;

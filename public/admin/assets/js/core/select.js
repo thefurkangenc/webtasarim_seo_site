@@ -16,9 +16,15 @@ import Choices from '../vendor/choices/choices.mjs';
  * `choice.customProperties` olarak okuyor, biz sadece varsayılan şablonun
  * (erişilebilirlik/aria öznitelikleri korunarak) başına bir `<img>` ekliyoruz.
  * İkonu olmayan seçenekler etkilenmez, her select için ayrı bir bayrak gerekmez.
+ *
+ * Aynı mekanizma `depth` için de çalışır — `App\Support\Tree::options()` ile
+ * üretilen ağaç seçeneklerinde (`{"depth":1}`) açılır listedeki satır sola
+ * girinti alır ve önüne bir "alt dal" oku eklenir. Yalnızca açılır listede
+ * (`choice`) uygulanır; seçildikten sonra kutuda görünen etiket (`item`)
+ * karmaşıklaşmasın diye düz kalır.
  */
 function withIcons(template) {
-    const withIcon = (element, choice) => {
+    const addIcon = (element, choice) => {
         const icon = choice.customProperties?.icon;
 
         if (icon) {
@@ -32,12 +38,31 @@ function withIcons(template) {
         return element;
     };
 
+    const addTreeIndent = (element, choice) => {
+        const depth = choice.customProperties?.depth;
+
+        if (! depth) {
+            return element;
+        }
+
+        element.style.paddingLeft = `${14 + depth * 18}px`;
+
+        const marker = document.createElement('i');
+        marker.className = 'material-symbols-outlined ltr:mr-[4px] rtl:ml-[4px] !text-[15px] align-[-3px] text-gray-400 dark:text-gray-500';
+        marker.textContent = 'subdirectory_arrow_right';
+        element.prepend(marker);
+
+        return element;
+    };
+
     return {
         item(classNames, choice, removeItemButton) {
-            return withIcon(Choices.defaults.templates.item.call(this, classNames, choice, removeItemButton), choice);
+            return addIcon(Choices.defaults.templates.item.call(this, classNames, choice, removeItemButton), choice);
         },
         choice(classNames, choice, selectText, groupName) {
-            return withIcon(Choices.defaults.templates.choice.call(this, classNames, choice, selectText, groupName), choice);
+            const element = addIcon(Choices.defaults.templates.choice.call(this, classNames, choice, selectText, groupName), choice);
+
+            return addTreeIndent(element, choice);
         },
     };
 }

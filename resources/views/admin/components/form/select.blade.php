@@ -46,18 +46,33 @@
         @endif
 
         @foreach ($options as $optionValue => $optionLabel)
-            {{-- Seçenek ['label' => ..., 'icon' => '/path/icon.svg'] dizisi de olabilir —
-                 Choices.js'in soldaki ikonlu render'ı için (core/select.js `withIcons`). --}}
+            {{-- Seçenek ['label' => ..., 'icon' => '/path/icon.svg', 'depth' => 1] dizisi de
+                 olabilir: 'icon' Choices.js'in soldaki ikonlu render'ı için, 'depth' ise
+                 App\Support\Tree::options() ile üretilen ağaç görünümü için (örn. bölge
+                 alt kategorileri). core/select.js `withIcons` bu ikisini de okuyup Choices
+                 kurulunca gerçek girinti/ikonu uygular. --}}
             @php
                 $optionIcon = is_array($optionLabel) ? ($optionLabel['icon'] ?? null) : null;
+                $optionDepth = is_array($optionLabel) ? (int) ($optionLabel['depth'] ?? 0) : 0;
                 $optionText = is_array($optionLabel) ? $optionLabel['label'] : $optionLabel;
+                $customProps = array_filter(
+                    ['icon' => $optionIcon, 'depth' => $optionDepth ?: null],
+                    fn ($value) => $value !== null,
+                );
+                // Choices henüz kurulmadan (ya da 'plain' modda) görünen ham metin:
+                // her seviye görünmez boşluk + bir "alt dal" oku ile girintilenir.
+                // Choices kurulunca core/select.js kendi girinti/ikonunu uygular,
+                // bu metin ekranda görünmez hale gelir — yalnızca düşer.
+                $optionDisplay = $optionDepth > 0
+                    ? str_repeat("\u{00A0}\u{00A0}\u{00A0}\u{00A0}", $optionDepth)."\u{21B3} {$optionText}"
+                    : $optionText;
             @endphp
             <option value="{{ $optionValue }}"
                 @selected($multiple
                     ? in_array((string) $optionValue, $selectedKeys, true)
                     : (string) $selected === (string) $optionValue)
-                @if ($optionIcon) data-custom-properties="{{ json_encode(['icon' => $optionIcon]) }}" @endif>
-                {{ $optionText }}
+                @if ($customProps) data-custom-properties="{{ json_encode($customProps) }}" @endif>
+                {{ $optionDisplay }}
             </option>
         @endforeach
     </select>

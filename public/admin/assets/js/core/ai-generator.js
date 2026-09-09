@@ -44,7 +44,7 @@ class AiGenerator {
     build() {
         const root = document.createElement('div');
         root.id = 'ai-generator-modal';
-        root.className = 'add-new-popup z-[1005] fixed transition-all inset-0 overflow-x-hidden overflow-y-auto lg:py-[20px]';
+        root.className = 'add-new-popup z-[1406] fixed transition-all inset-0 overflow-x-hidden overflow-y-auto lg:py-[20px]';
         root.innerHTML = TEMPLATE;
         document.body.append(root);
 

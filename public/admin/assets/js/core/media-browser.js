@@ -619,7 +619,7 @@ export class MediaBrowser {
 
         const menu = document.createElement('ul');
         menu.dataset.mediaMenu = '';
-        menu.className = 'fixed z-[1002] min-w-[190px] py-[6px] rounded-md bg-white dark:bg-[#0c1427] border border-gray-100 dark:border-[#172036] shadow-3xl';
+        menu.className = 'fixed z-[1403] min-w-[190px] py-[6px] rounded-md bg-white dark:bg-[#0c1427] border border-gray-100 dark:border-[#172036] shadow-3xl';
         menu.innerHTML = this.menuItems(card).map((item) => `
             <li>
                 <button type="button" data-menu-action="${item.action}"
