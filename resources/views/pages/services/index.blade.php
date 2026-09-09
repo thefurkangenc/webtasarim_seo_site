@@ -26,46 +26,43 @@
 
     <!--=== SERVICE AREA START === -->
 
-    <div class="service5 sp">
+    <div class="service14-section sp">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-4">
-                    <div class="vl-blog-11-item mt-30 aos-init aos-animate" data-aos="fade-up" data-aos-duration="900">
-                        <div class=" vl-blog-11-thumb image-anime overflow-hidden _relative">
-                            <img class="w-full" src="assets/img/blog/blog-page1-image1.png" alt="">
-                         </div>
-                        <div class="vl-blog-11-content heading2">
-                            <h4><a href="blog-details.html">Discover the emerging trends that are reshaping the startup ecosystem.</a></h4>
-                            <a href="blog-details.html" class="learn">Read More <span class="arrow1"><i class="fa-solid fa-arrow-right"></i></span><span class="arrow2"><i class="fa-solid fa-arrow-right"></i></span></a>
-                        </div>
-                     </div>
+            @if ($services->isEmpty())
+                <div class="row">
+                    <div class="col-lg-8 m-auto text-center">
+                        <p>Henüz yayınlanmış bir hizmet bulunmuyor.</p>
+                    </div>
                 </div>
-
-                <div class="col-lg-4">
-                    <div class="vl-blog-11-item mt-30 aos-init aos-animate" data-aos="fade-up" data-aos-duration="900">
-                        <div class=" vl-blog-11-thumb image-anime overflow-hidden _relative">
-                            <img class="w-full" src="assets/img/blog/blog-page1-image1.png" alt="">
-                         </div>
-                        <div class="vl-blog-11-content heading2">
-                            <h4><a href="blog-details.html">Discover the emerging trends that are reshaping the startup ecosystem.</a></h4>
-                            <a href="blog-details.html" class="learn">Read More <span class="arrow1"><i class="fa-solid fa-arrow-right"></i></span><span class="arrow2"><i class="fa-solid fa-arrow-right"></i></span></a>
+            @else
+                <div class="row mt-30">
+                    @foreach ($services as $service)
+                        @php
+                            // Listede bölge bağlamı yok — yer tutucular kaldırılmış
+                            // genel (şemsiye) haliyle gösterilir.
+                            $generic = $service->renderGeneric();
+                            $iconIndex = ($loop->iteration - 1) % 6 + 1;
+                        @endphp
+                        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-duration="900">
+                            <div class="service14-boxarea">
+                                <div class="icons">
+                                    <img src="{{ asset("assets/img/icons/service14-icon{$iconIndex}.svg") }}" alt="">
+                                </div>
+                                <div class="space28"></div>
+                                <div class="content14-area">
+                                    <a href="{{ route('hizmetler.show', $service->slug) }}" class="title">{{ $generic['title'] }}</a>
+                                    <div class="space16"></div>
+                                    <p>{{ $generic['excerpt'] ?: \Illuminate\Support\Str::limit(strip_tags((string) $generic['content']), 120) }}</p>
+                                    <div class="space24"></div>
+                                    <div class="btn-area1">
+                                        <a href="{{ route('hizmetler.show', $service->slug) }}" class="theme-btn27">Detaylı Bilgi</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                     </div>
+                    @endforeach
                 </div>
-
-                <div class="col-lg-4">
-                    <div class="vl-blog-11-item mt-30 aos-init aos-animate" data-aos="fade-up" data-aos-duration="900">
-                        <div class=" vl-blog-11-thumb image-anime overflow-hidden _relative">
-                            <img class="w-full" src="assets/img/blog/blog-page1-image1.png" alt="">
-                         </div>
-                        <div class="vl-blog-11-content heading2">
-                            <h4><a href="blog-details.html">Discover the emerging trends that are reshaping the startup ecosystem.</a></h4>
-                            <a href="blog-details.html" class="learn">Read More <span class="arrow1"><i class="fa-solid fa-arrow-right"></i></span><span class="arrow2"><i class="fa-solid fa-arrow-right"></i></span></a>
-                        </div>
-                     </div>
-                </div>
-
-            </div>
+            @endif
         </div>
     </div>
 

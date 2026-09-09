@@ -71,7 +71,7 @@ class ServiceRegion extends Model
 
     /**
      * İçerikteki yer tutucuların bu bölge için değerleri.
-     * Gaziantep › Şahinbey için: region="Gaziantep - Şahinbey",
+     * Gaziantep › Şahinbey için: region="Gaziantep Şahinbey",
      * city="Gaziantep", district="Şahinbey".
      *
      * @return array<string, string>
@@ -81,7 +81,7 @@ class ServiceRegion extends Model
         $names = $this->ancestorsAndSelf()->pluck('name');
 
         return [
-            'region' => $names->implode(' - '),
+            'region' => $names->implode(' '),
             'city' => (string) $names->first(),
             'district' => (string) ($names->get(1) ?? ''),
         ];

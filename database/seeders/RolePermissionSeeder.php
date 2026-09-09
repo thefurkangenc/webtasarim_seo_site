@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Permission\Permission;
+use App\Models\Role\Role;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 
 /**
@@ -38,8 +38,21 @@ class RolePermissionSeeder extends Seeder
         }
 
         foreach (config('permissions.roles', []) as $role => $patterns) {
-            Role::firstOrCreate(['name' => $role, 'guard_name' => 'web'])
-                ->syncPermissions($this->match($patterns));
+            $label = match ($role) {
+                'super-admin' => 'Süper Yönetici',
+                default => $role,
+            };
+
+            $record = Role::firstOrCreate(
+                ['name' => $role, 'guard_name' => 'web'],
+                ['label' => $label],
+            );
+
+            if (blank($record->label)) {
+                $record->update(['label' => $label]);
+            }
+
+            $record->syncPermissions($this->match($patterns));
         }
 
         app(PermissionRegistrar::class)->forgetCachedPermissions();

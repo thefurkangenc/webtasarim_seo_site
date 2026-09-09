@@ -33,7 +33,7 @@ class BlogController extends Controller
     public function edit(Blog $blog): View
     {
         return view('admin.pages.blog.form', [
-            'blog' => $blog->load(['tags', 'media', 'seo.ogMedia']),
+            'blog' => $blog->load(['tags', 'media', 'seo.ogMedia', 'faqs']),
             'categories' => $this->categories(),
         ]);
     }

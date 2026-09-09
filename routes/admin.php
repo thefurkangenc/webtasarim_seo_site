@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\Integration\IntegrationController;
 use App\Http\Controllers\Admin\Media\MediaController;
 use App\Http\Controllers\Admin\Media\MediaFolderController;
 use App\Http\Controllers\Admin\Reference\ReferenceController;
+use App\Http\Controllers\Admin\Role\RoleController;
 use App\Http\Controllers\Admin\Service\ServiceController;
 use App\Http\Controllers\Admin\ServiceRegion\ServiceRegionController;
 use App\Http\Controllers\Admin\Setting\SettingController;
@@ -32,7 +33,7 @@ Route::middleware('guest')->group(function () {
     Route::post('login', [LoginController::class, 'store'])->name('login.store')->middleware('throttle:5,1');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'permission_middleware'])->group(function () {
     Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
 
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
@@ -215,6 +216,16 @@ Route::middleware('auth')->group(function () {
         Route::put('reorder', 'reorder')->name('reorder')->middleware('permission:faq.update');
         Route::put('{faq}', 'update')->name('update')->middleware('permission:faq.update');
         Route::delete('{faq}', 'destroy')->name('destroy')->middleware('permission:faq.delete');
+    });
+
+    Route::prefix('role')->name('role.')->controller(RoleController::class)->group(function () {
+        Route::get('/', 'index')->name('index')->middleware('permission:role.view');
+        Route::get('datatable', 'datatable')->name('datatable')->middleware('permission:role.view');
+        Route::get('create', 'create')->name('create')->middleware('permission:role.create');
+        Route::post('/', 'store')->name('store')->middleware('permission:role.create');
+        Route::get('{role}/edit', 'edit')->name('edit')->middleware('permission:role.update');
+        Route::put('{role}', 'update')->name('update')->middleware('permission:role.update');
+        Route::delete('{role}', 'destroy')->name('destroy')->middleware('permission:role.delete');
     });
 
     Route::prefix('why-choose-us')->name('why-choose-us.')->controller(WhyChooseUsController::class)->group(function () {

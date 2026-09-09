@@ -7,6 +7,7 @@ use App\Services\Concerns\ReordersRecords;
 use App\Support\Placeholder;
 use App\Support\Slug;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class ServiceService
@@ -65,10 +66,42 @@ class ServiceService
             // Medya kütüphanedeki dosyayı silmez, yalnızca bağı koparır.
             $service->syncMedia(null, 'cover');
             $service->tags()->detach();
+            $service->faqs()->detach();
             $service->regions()->detach();
             $service->seo()->delete();
             $service->delete();
         });
+    }
+
+    /**
+     * Ön yüzde yayındaki hizmetler, sıraya göre — ana sayfa teaser'ı ve
+     * /hizmetler listesi bunu kullanır.
+     *
+     * @return Collection<int, Service>
+     */
+    public function active(?int $limit = null): Collection
+    {
+        return Service::where('status', Service::STATUS_PUBLISHED)
+            ->with('media')
+            ->orderBy('sort_order')
+            ->when($limit, fn ($query, $limit) => $query->limit($limit))
+            ->get();
+    }
+
+    /**
+     * Ön yüzde slug ile tekil hizmet — bağlı olduğu aktif bölgelerle birlikte
+     * (/hizmetler/{hizmet}/{bölge} sayfası ve bölge kenar çubuğu bunu okur).
+     * Taslak bir hizmet ya da hiç eşleşmeyen slug için null döner.
+     */
+    public function findBySlug(string $slug): ?Service
+    {
+        return Service::where('slug', $slug)
+            ->where('status', Service::STATUS_PUBLISHED)
+            ->with([
+                'media',
+                'regions' => fn ($query) => $query->where('is_active', true)->orderBy('sort_order'),
+            ])
+            ->first();
     }
 
     protected function reorderModel(): string
@@ -97,12 +130,13 @@ class ServiceService
         ];
     }
 
-    /** Paylaşılan bileşenlerin kaydı: kapak görseli, etiketler, SEO ve bölgeler. */
+    /** Paylaşılan bileşenlerin kaydı: kapak görseli, etiketler, SEO, FAQ ve bölgeler. */
     private function syncRelations(Service $service, array $data): void
     {
         $service->syncMedia($data['cover_media_id'] ?? null, 'cover');
         $service->syncTags($data['tags'] ?? []);
         $service->syncSeo($data['seo'] ?? []);
+        $service->syncFaqs($data['faqs'] ?? []);
         $service->regions()->sync($data['service_regions'] ?? []);
     }
 }

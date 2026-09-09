@@ -118,7 +118,7 @@ class ServiceRegionService
     {
         return [
             'depth' => $parent ? $parent->depth + 1 : 0,
-            'path' => $parent ? "{$parent->path} - {$name}" : $name,
+            'path' => $parent ? "{$parent->path} {$name}" : $name,
         ];
     }
 

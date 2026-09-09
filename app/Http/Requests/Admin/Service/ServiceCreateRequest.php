@@ -30,6 +30,9 @@ class ServiceCreateRequest extends FormRequest
             'service_regions' => ['nullable', 'array'],
             'service_regions.*' => ['integer', 'exists:service_regions,id'],
 
+            'faqs' => ['nullable', 'array'],
+            'faqs.*' => ['integer', 'exists:faqs,id'],
+
             ...$this->tagRules(),
             ...$this->seoRules(),
         ];

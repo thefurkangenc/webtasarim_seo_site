@@ -120,8 +120,6 @@ return [
     */
     'roles' => [
         'super-admin' => '*',
-        'admin' => '*',
-        'editor' => ['media.*', 'ai.generate', 'blog.*', 'blog-category.view', 'testimonial.*', 'reference.*', 'faq.*', 'why-choose-us.*', 'hero.*', 'service.*', 'service-region.view'],
     ],
 
 ];

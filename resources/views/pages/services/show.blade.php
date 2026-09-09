@@ -1,6 +1,16 @@
 @extends('layout.app')
-@section('title', 'Hizmet Detayları')
+@section('title', $rendered['title'])
+@section('meta_description', (string) $rendered['seo']['description'])
+@section('meta_keywords', (string) $rendered['seo']['keywords'])
+@section('meta_image', (string) $rendered['seo']['image'])
 @section('content')
+    @php
+        // Bölge sayfasında üst kırılım "hizmetin genel adı" olarak bölgesiz
+        // (yer tutucusuz) başlığı gösterir — "Gaziantep Web Tasarım > Gaziantep"
+        // gibi tekrarlı görünmesin diye burada ayrıca çözülür.
+        $genericTitle = $service->renderGeneric()['title'];
+    @endphp
+
     <!--===== HERO AREA START =====-->
 
     <div class="inner-hero" style="background-image: url({{ asset('assets/img/bg/hero12-bg1.png') }});">
@@ -8,14 +18,21 @@
             <div class="row">
                 <div class="col-lg-8 m-auto text-center">
                     <div class="inner-main-heading">
-                        <h1>Travel Guide Expertise </h1>
+                        <h1>{{ $rendered['title'] }}</h1>
                         <div class="breadcrumbs-pages">
                             <ul>
-                                <li><a href="index.html">Home</a></li>
+                                <li><a href="{{ route('anasayfa') }}">Ana Sayfa</a></li>
                                 <li class="angle"><i class="fa-solid fa-angle-right"></i></li>
-                                <li>Service</li>
-                                <li class="angle"><i class="fa-solid fa-angle-right"></i></li>
-                                <li>Travel Guide Expertise </li>
+                                <li><a href="{{ route('hizmetler') }}">Hizmetler</a></li>
+                                @if ($region)
+                                    <li class="angle"><i class="fa-solid fa-angle-right"></i></li>
+                                    <li><a href="{{ route('hizmetler.show', $service->slug) }}">{{ $genericTitle }}</a></li>
+                                    <li class="angle"><i class="fa-solid fa-angle-right"></i></li>
+                                    <li>{{ $region->name }}</li>
+                                @else
+                                    <li class="angle"><i class="fa-solid fa-angle-right"></i></li>
+                                    <li>{{ $rendered['title'] }}</li>
+                                @endif
                             </ul>
                         </div>
                     </div>
@@ -35,62 +52,58 @@
                 <div class="col-lg-3">
                     <div class="sidebar-area">
 
-                        <div class="_sidebar-widget _list">
-                            <h3>Categories</h3>
-                            <p class="text-muted" style="margin-bottom: 15px;font-size: 14px;">
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
-                            </p>
-                            <div class="sidebar-list">
-                                <ul>
-                                    <li><a href="service-details1.html">SEO Marketing <span><i
-                                                    class="fa-solid fa-angle-right"></i></span></a></li>
-                                    <li><a href="service-details2.html">Social Media Strategy <span><i
-                                                    class="fa-solid fa-angle-right"></i></span></a></li>
-                                    <li><a href="service-details3.html">Content Marketing <span><i
-                                                    class="fa-solid fa-angle-right"></i></span></a></li>
-                                    <li><a href="service-details4.html">Pay-Per-Click Advertising <span><i
-                                                    class="fa-solid fa-angle-right"></i></span></a></li>
-                                    <li><a href="service-details5.html" class="active">Travel Guide Expertise <span><i
-                                                    class="fa-solid fa-angle-right"></i></span></a></li>
-                                    <li><a href="service-details6.html">HR Staffing Agency <span><i
-                                                    class="fa-solid fa-angle-right"></i></span></a></li>
-                                    <li><a href="service-details7.html">Insurance Policy <span><i
-                                                    class="fa-solid fa-angle-right"></i></span></a></li>
-                                    <li><a href="service-details8.html">Real Estate <span><i
-                                                    class="fa-solid fa-angle-right"></i></span></a></li>
-                                    <li><a href="service-details9.html">Startup Agency <span><i
-                                                    class="fa-solid fa-angle-right"></i></span></a></li>
-                                </ul>
+                        @if ($service->regions->isNotEmpty())
+                            <div class="_sidebar-widget _list">
+                                <h3>Bu Hizmeti Sunduğumuz Bölgeler</h3>
+                                <p class="text-muted" style="margin-bottom: 15px;font-size: 14px;">
+                                    Bulunduğunuz bölgeye göre {{ $genericTitle }} hizmetimiz hakkında daha fazla bilgi alın.
+                                </p>
+                                <div class="sidebar-list">
+                                    <ul>
+                                        @foreach ($service->regions as $serviceRegion)
+                                            <li>
+                                                <a href="{{ route('hizmetler.show-region', [$service->slug, $serviceRegion->slug]) }}"
+                                                    @class(['active' => $region?->id === $serviceRegion->id])>
+                                                    {{ $serviceRegion->path ?: $serviceRegion->name }}
+                                                    <span><i class="fa-solid fa-angle-right"></i></span>
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
+                        @endif
                     </div>
                 </div>
 
                 <!-- Main Content -->
                 <div class="col-lg-6">
                     <div class="blog-details-content ml-30 md:ml-0 sm:ml-0">
-                        <article>
-                            <div class="details-content">
-                                <div class="image">
-                                    <img class="w-full" src="{{ asset('assets/img/service/service-details5-image.png') }}"
-                                        alt="">
+                        @php($cover = $service->getFirstMedia('cover'))
+                        @if ($cover)
+                            <article>
+                                <div class="details-content">
+                                    <div class="image">
+                                        <img class="w-full" src="{{ $cover->url('medium') }}" alt="{{ $rendered['title'] }}">
+                                    </div>
                                 </div>
-                            </div>
-                        </article>
+                            </article>
+                        @endif
 
                         <article>
                             <div class="details-content">
                                 <div class="heading2 mt-24">
-                                    <h3>Expert Travel Guides for Unforgettable Journeys </h3>
-                                    <p class=" mt-16">We provide expert travel guidance to help you explore the world with
-                                        confidence. Our experienced travel experts curate personalized itineraries, offer
-                                        insightful recommendations, and ensure a hassle-free travel experience tailored to
-                                        your preferences. Whether you're looking for adventure, cultural exploration, or
-                                        luxury getaways, our travel guides equip you with essential information, from
-                                        must-visit destinations to local tips and safety advice. With a deep understanding
-                                        of global travel trends and insider knowledge, we help travelers make the most of
-                                        their journeys, ensuring every trip is enriching, seamless, and unforgettable.</p>
+                                    <h3>{{ $rendered['title'] }}</h3>
+                                    @if (filled($rendered['excerpt']))
+                                        <p class="mt-16">{{ $rendered['excerpt'] }}</p>
+                                    @endif
                                 </div>
+
+                                @if (filled($rendered['content']))
+                                    <div class="heading2 mt-24">
+                                        {!! $rendered['content'] !!}
+                                    </div>
+                                @endif
 
                                 <div class="heading2 mt-40">
                                     <h3>What we Offer </h3>

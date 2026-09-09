@@ -126,6 +126,17 @@
                             :media="$blog?->getFirstMedia('cover')" wrapper="" />
                     </div>
                 </div>
+
+                <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
+                    <div class="trezo-card-header mb-[20px] md:mb-[25px]">
+                        <div class="trezo-card-title">
+                            <h5 class="!mb-0">Sıkça Sorulan Sorular</h5>
+                        </div>
+                    </div>
+                    <div class="trezo-card-content">
+                        <x-admin::form.faqs :model="$blog" wrapper="" />
+                    </div>
+                </div>
             </div>
         </div>
     </form>

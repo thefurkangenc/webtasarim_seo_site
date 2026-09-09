@@ -3,6 +3,7 @@
 namespace App\Models\Blog;
 
 use App\Models\BlogCategory\BlogCategory;
+use App\Models\Concerns\HasFaqs;
 use App\Models\Concerns\HasMedia;
 use App\Models\Concerns\HasSeo;
 use App\Models\Concerns\HasTags;
@@ -17,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 ])]
 class Blog extends Model
 {
-    use HasMedia, HasSeo, HasTags;
+    use HasFaqs, HasMedia, HasSeo, HasTags;
 
     public const STATUS_DRAFT = 'draft';
 

@@ -4,6 +4,7 @@ use App\Http\Controllers\About\AboutController;
 use App\Http\Controllers\Contact\ContactController;
 use App\Http\Controllers\Legal\LegalController;
 use App\Http\Controllers\Maintenance\MaintenanceController;
+use App\Http\Controllers\Service\ServiceController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -12,13 +13,12 @@ Route::get('/', function () {
 
 Route::get('/hakkimizda', [AboutController::class, 'index'])->name('hakkimizda');
 
-Route::get('/hizmetler', function () {
-    return view('pages.services.index');
-})->name('hizmetler');
+Route::get('/hizmetler', [ServiceController::class, 'index'])->name('hizmetler');
 
-Route::get('/hizmetler/{id}', function ($id) {
-    return view('pages.services.show');
-})->name('hizmetler.show');
+// Bölgesiz (şemsiye) sayfa ve bölgeli sayfa segment sayısı farklı olduğu
+// için çakışmaz — Laravel URI'yi segment sayısına göre eşleştirir.
+Route::get('/hizmetler/{slug}', [ServiceController::class, 'show'])->name('hizmetler.show');
+Route::get('/hizmetler/{slug}/{region}', [ServiceController::class, 'showForRegion'])->name('hizmetler.show-region');
 
 Route::get('/blog', function () {
     return view('pages.blog.index');

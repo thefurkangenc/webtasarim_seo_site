@@ -38,7 +38,7 @@ class ServiceController extends Controller
     public function edit(Service $service): View
     {
         return view('admin.pages.service.form', [
-            'service' => $service->load(['tags', 'media', 'seo.ogMedia', 'regions']),
+            'service' => $service->load(['tags', 'media', 'seo.ogMedia', 'regions', 'faqs']),
             'regions' => $this->regionOptions(),
             'cityIds' => $this->cityIds(),
         ]);

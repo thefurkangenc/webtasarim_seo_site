@@ -918,6 +918,9 @@
   .mt-\[\.2px\] {
     margin-top: .2px;
   }
+  .mt-\[1px\] {
+    margin-top: 1px;
+  }
   .mt-\[2px\] {
     margin-top: 2px;
   }
@@ -1689,6 +1692,9 @@
   .max-h-\[320px\] {
     max-height: 320px;
   }
+  .max-h-\[360px\] {
+    max-height: 360px;
+  }
   .min-h-\[42px\] {
     min-height: 42px;
   }
@@ -2120,6 +2126,9 @@
   }
   .max-w-\[620px\] {
     max-width: 620px;
+  }
+  .max-w-\[640px\] {
+    max-width: 640px;
   }
   .max-w-\[720px\] {
     max-width: 720px;
@@ -3446,6 +3455,9 @@
   .pt-px {
     padding-top: 1px;
   }
+  .pr-\[2px\] {
+    padding-right: 2px;
+  }
   .pr-\[12px\] {
     padding-right: 12px;
   }
@@ -3647,6 +3659,9 @@
   }
   .\!text-\[20px\] {
     font-size: 20px !important;
+  }
+  .\!text-\[21px\] {
+    font-size: 21px !important;
   }
   .\!text-\[22px\] {
     font-size: 22px !important;
@@ -8739,6 +8754,9 @@
   }
   .dark\:text-gray-500:where([class=dark], [class=dark] *) {
     color: var(--color-gray-500);
+  }
+  .dark\:text-gray-600:where([class=dark], [class=dark] *) {
+    color: var(--color-gray-600);
   }
   .dark\:text-primary-500:where([class=dark], [class=dark] *) {
     color: var(--color-primary-500);

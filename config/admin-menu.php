@@ -121,6 +121,19 @@ return [
     ],
 
     [
+        'title' => 'Kullanıcı Yönetimi',
+        'items' => [
+            [
+                'title' => 'Roller',
+                'icon' => 'admin_panel_settings',
+                'route' => 'admin.role.index',
+                'active' => 'admin.role.*',
+                'permission' => 'role.view',
+            ],
+        ],
+    ],
+
+    [
         'title' => 'Yapay Zeka',
         'items' => [
             [

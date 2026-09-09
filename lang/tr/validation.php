@@ -174,6 +174,9 @@ return [
 
     'attributes' => [
         'name' => 'ad',
+        'label' => 'görünen ad',
+        'guard_name' => 'guard',
+        'permissions' => 'yetkiler',
         'title' => 'başlık',
         'email' => 'e-posta adresi',
         'password' => 'parola',

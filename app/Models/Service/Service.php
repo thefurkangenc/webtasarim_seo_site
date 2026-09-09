@@ -2,6 +2,7 @@
 
 namespace App\Models\Service;
 
+use App\Models\Concerns\HasFaqs;
 use App\Models\Concerns\HasMedia;
 use App\Models\Concerns\HasSeo;
 use App\Models\Concerns\HasSortOrder;
@@ -21,7 +22,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 #[Fillable(['user_id', 'title', 'slug', 'excerpt', 'content', 'status', 'sort_order'])]
 class Service extends Model
 {
-    use HasMedia, HasSeo, HasSortOrder, HasTags;
+    use HasFaqs, HasMedia, HasSeo, HasSortOrder, HasTags;
 
     public const STATUS_DRAFT = 'draft';
 
@@ -90,6 +91,25 @@ class Service extends Model
             'excerpt' => Placeholder::replace($this->excerpt, $values),
             'content' => Placeholder::replace($this->content, $values),
             'seo' => Placeholder::replaceAll($this->seoMeta(), $values),
+        ];
+    }
+
+    /**
+     * Bölge seçilmeden görüntülenen genel (şemsiye) sayfa için içerik.
+     * renderFor()'un aksine yer tutucular bir bölgeyle değiştirilmez,
+     * tamamen kaldırılır: "{{city}} Web Tasarım" -> "Web Tasarım". Başlık
+     * tamamen yer tutucudan ibaretse (nadiren) ham haline düşülür — boş
+     * başlıkla sayfa açılmasın.
+     *
+     * @return array{title: string, excerpt: string|null, content: string|null, seo: array<string, mixed>}
+     */
+    public function renderGeneric(): array
+    {
+        return [
+            'title' => Placeholder::strip($this->title) ?: $this->title,
+            'excerpt' => Placeholder::strip($this->excerpt),
+            'content' => Placeholder::strip($this->content),
+            'seo' => Placeholder::stripAll($this->seoMeta()),
         ];
     }
 }

@@ -8,10 +8,22 @@
     $metaTitle = $metaPageTitle !== ''
         ? $metaPageTitle.' | '.$metaSiteName
         : ($metaSeo['meta_title'] ?: $metaSiteName);
-    $metaDescription = $metaSeo['meta_description'] ?? null;
-    $metaKeywords = $metaSeo['meta_keywords'] ?? null;
+
+    // Sayfa @section('meta_description'|'meta_keywords'|'meta_image', ...)
+    // tanımlıyorsa (hizmet/bölge sayfaları gibi, kendi SEO alanları olan
+    // modeller için) o kullanılır, tanımlamayan her sayfa (ana sayfa, hakkımızda,
+    // yasal sayfalar...) davranışı hiç değişmeden site geneli ayarlara düşer.
+    $metaPageDescription = trim($__env->yieldContent('meta_description'));
+    $metaPageKeywords = trim($__env->yieldContent('meta_keywords'));
+    $metaPageImage = trim($__env->yieldContent('meta_image'));
+
+    $metaDescription = $metaPageDescription !== '' ? $metaPageDescription : ($metaSeo['meta_description'] ?? null);
+    $metaKeywords = $metaPageKeywords !== '' ? $metaPageKeywords : ($metaSeo['meta_keywords'] ?? null);
+
     $metaOgMediaId = $metaSeo['og_media_id'] ?? null;
-    $metaOgImage = $metaOgMediaId ? \App\Models\Media\Media::query()->find($metaOgMediaId)?->url('medium') : null;
+    $metaOgImage = $metaPageImage !== ''
+        ? $metaPageImage
+        : ($metaOgMediaId ? \App\Models\Media\Media::query()->find($metaOgMediaId)?->url('medium') : null);
 @endphp
 
 <meta charset="UTF-8">

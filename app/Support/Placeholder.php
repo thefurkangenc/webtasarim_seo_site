@@ -60,4 +60,19 @@ class Placeholder
             ->map(fn ($field) => is_string($field) ? self::replace($field, $values) : $field)
             ->all();
     }
+
+    /**
+     * strip()'i bir dizinin tüm metin değerlerine uygular — replaceAll()'ın
+     * yer-tutucusuz karşılığı. Bölge seçilmeden görüntülenen genel/şemsiye
+     * sayfalar için (SEO meta dizisi gibi).
+     *
+     * @param  array<string, mixed>  $fields
+     * @return array<string, mixed>
+     */
+    public static function stripAll(array $fields): array
+    {
+        return collect($fields)
+            ->map(fn ($field) => is_string($field) ? self::strip($field) : $field)
+            ->all();
+    }
 }

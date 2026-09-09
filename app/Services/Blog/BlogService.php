@@ -59,6 +59,7 @@ class BlogService
             // Medya kütüphanedeki dosyayı silmez, yalnızca bağı koparır.
             $blog->syncMedia(null, 'cover');
             $blog->tags()->detach();
+            $blog->faqs()->detach();
             $blog->seo()->delete();
             $blog->delete();
         });
@@ -82,11 +83,12 @@ class BlogService
         ];
     }
 
-    /** Paylaşılan bileşenlerin kaydı: kapak görseli, etiketler, SEO. */
+    /** Paylaşılan bileşenlerin kaydı: kapak görseli, etiketler, SEO, FAQ. */
     private function syncRelations(Blog $blog, array $data): void
     {
         $blog->syncMedia($data['cover_media_id'] ?? null, 'cover');
         $blog->syncTags($data['tags'] ?? []);
         $blog->syncSeo($data['seo'] ?? []);
+        $blog->syncFaqs($data['faqs'] ?? []);
     }
 }

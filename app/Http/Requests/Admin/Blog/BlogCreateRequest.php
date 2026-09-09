@@ -26,6 +26,9 @@ class BlogCreateRequest extends FormRequest
             'is_featured' => ['boolean'],
             'cover_media_id' => ['nullable', 'integer', 'exists:media,id'],
 
+            'faqs' => ['nullable', 'array'],
+            'faqs.*' => ['integer', 'exists:faqs,id'],
+
             ...$this->tagRules(),
             ...$this->seoRules(),
         ];

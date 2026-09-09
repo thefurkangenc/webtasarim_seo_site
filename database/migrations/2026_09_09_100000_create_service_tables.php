@@ -16,7 +16,7 @@ return new class extends Migration
 
             $table->string('name');
             $table->string('slug')->unique();
-            // "Gaziantep - Şahinbey" — kökten bu kayda kadarki insan okunur yol.
+            // "Gaziantep Şahinbey" — kökten bu kayda kadarki insan okunur yol.
             // Yalnızca liste/arama görünümü için; yer tutucu çözümü parent
             // zinciri üzerinden yapılır (bölge adında tire geçerse bozulmasın).
             $table->string('path')->nullable();
