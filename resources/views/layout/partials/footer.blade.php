@@ -5,7 +5,7 @@
     $footerSocialLinks = app(\App\Services\SocialLink\SocialLinkService::class)->list();
 @endphp
 
-<footer class="vl-footer-area14" style="background-image: url(assets/img/bg/footer-bg11.png);">
+<footer class="vl-footer-area14" style="background-image: url({{ asset('assets/img/bg/footer-bg11.png') }});">
 
     <!-- footer area start -->
     <div class="footer-bottom-content">

@@ -152,7 +152,7 @@ a:focus {
 }
 
 .sp {
-    padding: 20px 0px;
+    padding: 80px 0px;
 }
 
 .sp4 {
@@ -18046,7 +18046,7 @@ a:focus {
 */
 .sidebar-area {
     position: sticky;
-    top: 140px;
+    top: 120px;
     left: 0;
 }
 

@@ -1,16 +1,22 @@
-{{--
-    Ayar sekmeleri. Liste config/settings.php'den gelir; sidebar.blade.php
-    elle düzenlenmez. Aktif sekme $group ile işaretlenir.
---}}
-<div class="trezo-card bg-white dark:bg-[#0c1427] p-[20px] md:p-[25px] rounded-md">
+
+<div class="trezo-card bg-white dark:bg-[#0c1427] p-[15px] md:p-[20px] rounded-md">
     <div class="trezo-card-content">
-        <ul>
+        <ul class="flex flex-col gap-[6px]">
             @foreach ($groups as $key => $item)
-                <li class="font-medium mb-[15px] md:mb-[19px] last:mb-0">
+                @php($active = $group === $key)
+                <li>
                     <a href="{{ route('admin.setting.edit', $key) }}"
-                        class="relative flex items-center ltr:pl-[28px] rtl:pr-[28px] transition-all {{ $group === $key ? 'text-primary-500' : 'text-black dark:text-white hover:text-primary-500' }}">
-                        <i class="material-symbols-outlined absolute !text-lg ltr:left-0 rtl:right-0 top-1/2 -translate-y-1/2 -mt-[.5px]">{{ $item['icon'] }}</i>
-                        {{ $item['title'] }}
+                        @if ($active) aria-current="page" @endif
+                        class="flex items-center gap-[10px] w-full rounded-md font-medium py-[9px] ltr:pl-[12px] ltr:pr-[14px] rtl:pr-[12px] rtl:pl-[14px] text-sm transition-all {{ $active
+                            ? 'bg-primary-50 text-primary-500 dark:bg-primary-500/10'
+                            : 'text-black dark:text-white hover:bg-gray-50 dark:hover:bg-[#15203c]' }}">
+                        <span
+                            class="flex items-center justify-center rounded-md w-[32px] h-[32px] shrink-0 {{ $active
+                                ? 'bg-primary-500 text-white'
+                                : 'bg-gray-50 text-gray-500 dark:bg-[#15203c] dark:text-gray-400' }}">
+                            <i class="material-symbols-outlined !text-[20px] leading-none">{{ $item['icon'] }}</i>
+                        </span>
+                        <span class="leading-none">{{ $item['title'] }}</span>
                     </a>
                 </li>
             @endforeach
