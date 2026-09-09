@@ -7,12 +7,17 @@ use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\Blog\BlogController;
 use App\Http\Controllers\Admin\BlogCategory\BlogCategoryController;
 use App\Http\Controllers\Admin\Dashboard\DashboardController;
+use App\Http\Controllers\Admin\Faq\FaqController;
+use App\Http\Controllers\Admin\Hero\HeroController;
 use App\Http\Controllers\Admin\Integration\IntegrationController;
 use App\Http\Controllers\Admin\Media\MediaController;
 use App\Http\Controllers\Admin\Media\MediaFolderController;
+use App\Http\Controllers\Admin\Reference\ReferenceController;
 use App\Http\Controllers\Admin\Setting\SettingController;
 use App\Http\Controllers\Admin\SocialLink\SocialLinkController;
 use App\Http\Controllers\Admin\Tag\TagController;
+use App\Http\Controllers\Admin\Testimonial\TestimonialController;
+use App\Http\Controllers\Admin\WhyChooseUs\WhyChooseUsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -138,6 +143,61 @@ Route::middleware('auth')->group(function () {
         Route::get('{blog}/edit', 'edit')->name('edit')->middleware('permission:blog.update');
         Route::put('{blog}', 'update')->name('update')->middleware('permission:blog.update');
         Route::delete('{blog}', 'destroy')->name('destroy')->middleware('permission:blog.delete');
+    });
+
+    // Tekil kayıt modülü: liste, ekleme ve silme yok — tek form.
+    Route::prefix('hero')->name('hero.')->controller(HeroController::class)->group(function () {
+        Route::get('/', 'edit')->name('index')->middleware('permission:hero.view');
+        Route::put('/', 'update')->name('update')->middleware('permission:hero.update');
+    });
+
+    Route::prefix('testimonial')->name('testimonial.')->controller(TestimonialController::class)->group(function () {
+        Route::get('/', 'index')->name('index')->middleware('permission:testimonial.view');
+        Route::get('datatable', 'datatable')->name('datatable')->middleware('permission:testimonial.view');
+        Route::get('form/{testimonial?}', 'form')->name('form')->middleware('permission:testimonial.view');
+        Route::post('/', 'store')->name('store')->middleware('permission:testimonial.create');
+        // 'reorder' sabit segmenti, aşağıdaki {testimonial} joker'ından ÖNCE
+        // tanımlanmalı — aksi halde 'reorder' bir kayıt kimliği sanılır.
+        Route::put('reorder', 'reorder')->name('reorder')->middleware('permission:testimonial.update');
+        Route::put('{testimonial}', 'update')->name('update')->middleware('permission:testimonial.update');
+        Route::delete('{testimonial}', 'destroy')->name('destroy')->middleware('permission:testimonial.delete');
+    });
+
+    Route::prefix('reference')->name('reference.')->controller(ReferenceController::class)->group(function () {
+        Route::get('/', 'index')->name('index')->middleware('permission:reference.view');
+        Route::get('datatable', 'datatable')->name('datatable')->middleware('permission:reference.view');
+        Route::get('form/{reference?}', 'form')->name('form')->middleware('permission:reference.view');
+        Route::post('/', 'store')->name('store')->middleware('permission:reference.create');
+        // 'reorder' sabit segmenti, aşağıdaki {reference} joker'ından ÖNCE
+        // tanımlanmalı — aksi halde 'reorder' bir kayıt kimliği sanılır.
+        Route::put('reorder', 'reorder')->name('reorder')->middleware('permission:reference.update');
+        Route::put('{reference}', 'update')->name('update')->middleware('permission:reference.update');
+        Route::delete('{reference}', 'destroy')->name('destroy')->middleware('permission:reference.delete');
+    });
+
+    Route::prefix('faq')->name('faq.')->controller(FaqController::class)->group(function () {
+        Route::get('/', 'index')->name('index')->middleware('permission:faq.view');
+        Route::get('datatable', 'datatable')->name('datatable')->middleware('permission:faq.view');
+        Route::get('form/{faq?}', 'form')->name('form')->middleware('permission:faq.view');
+        Route::post('/', 'store')->name('store')->middleware('permission:faq.create');
+        // 'reorder' sabit segmenti, aşağıdaki {faq} joker'ından ÖNCE
+        // tanımlanmalı — aksi halde 'reorder' bir kayıt kimliği sanılır.
+        Route::put('reorder', 'reorder')->name('reorder')->middleware('permission:faq.update');
+        Route::put('{faq}', 'update')->name('update')->middleware('permission:faq.update');
+        Route::delete('{faq}', 'destroy')->name('destroy')->middleware('permission:faq.delete');
+    });
+
+    Route::prefix('why-choose-us')->name('why-choose-us.')->controller(WhyChooseUsController::class)->group(function () {
+        Route::get('/', 'index')->name('index')->middleware('permission:why-choose-us.view');
+        Route::get('datatable', 'datatable')->name('datatable')->middleware('permission:why-choose-us.view');
+        Route::get('form/{why_choose_us?}', 'form')->name('form')->middleware('permission:why-choose-us.view');
+        Route::post('/', 'store')->name('store')->middleware('permission:why-choose-us.create');
+        // 'reorder' ve 'heading' sabit segmentleri, aşağıdaki {why_choose_us}
+        // joker'ından ÖNCE tanımlanmalı — aksi halde bir kayıt kimliği sanılır.
+        Route::put('reorder', 'reorder')->name('reorder')->middleware('permission:why-choose-us.update');
+        Route::put('heading', 'updateHeading')->name('heading')->middleware('permission:why-choose-us.update');
+        Route::put('{why_choose_us}', 'update')->name('update')->middleware('permission:why-choose-us.update');
+        Route::delete('{why_choose_us}', 'destroy')->name('destroy')->middleware('permission:why-choose-us.delete');
     });
 
     /*

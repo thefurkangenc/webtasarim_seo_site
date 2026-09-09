@@ -1,3 +1,10 @@
+@php
+    $headerCompany = \App\Support\Settings::group('company');
+    $headerLogoId = $headerCompany['logo_media_id'] ?? null;
+    $headerLogo = $headerLogoId ? \App\Models\Media\Media::query()->find($headerLogoId) : null;
+    $headerSocialLinks = app(\App\Services\SocialLink\SocialLinkService::class)->list();
+@endphp
+
 <header>
 
     <div id="vl-header-sticky" class="vl-header-area{{ request()->routeIs('anasayfa') ? '14' : '14' }} header-tranperent">
@@ -6,7 +13,8 @@
                 <div class="col-lg-2 col-md-6 col-6">
                     <div class="vl-logo">
                         <a href="{{ route('anasayfa') }}" class="header1-logo-block"><img
-                                src="{{ asset('assets/img/logo/white-logo.png') }}" alt=""></a>
+                                src="{{ $headerLogo?->url('medium') ?? asset('assets/img/logo/white-logo.png') }}"
+                                alt="{{ $headerCompany['name'] ?? '' }}"></a>
                     </div>
                 </div>
                 <div class="col-lg-7 d-none d-lg-block text-end">
@@ -54,7 +62,8 @@
         <div class="vl-offcanvas-header d-flex justify-content-between align-items-center mb-90">
             <div class="vl-offcanvas-logo">
                 <a href="{{ route('anasayfa') }}" class="header1-logo-block"><img
-                        src="{{ asset('assets/img/logo/black-logo.png') }}" alt=""></a>
+                        src="{{ $headerLogo?->url('medium') ?? asset('assets/img/logo/black-logo.png') }}"
+                        alt="{{ $headerCompany['name'] ?? '' }}"></a>
             </div>
             <div class="vl-offcanvas-close">
                 <button class="vl-offcanvas-close-toggle"><i class="fa-solid fa-xmark"></i></button>
@@ -66,42 +75,58 @@
         </div>
 
         <div class="space20"></div>
-        <div class="vl-offcanvas-info">
-            <h4 class="black1 text-24 mb-30 leading-24 font-semibold">İletişim</h4>
-            <div class="single-contact flex align-items-center">
-                <div class="text">
-                    <a href="tel:+11234567890"
-                        class="ml-10 gray2 inline-block p-10-0 text-18 leading-18 text _hover1 font-medium">+90 555 555
-                        55 55</a>
+        @if (filled($headerCompany['phone'] ?? null) || filled($headerCompany['address'] ?? null) || filled($headerCompany['email'] ?? null))
+            <div class="vl-offcanvas-info">
+                <h4 class="black1 text-24 mb-30 leading-24 font-semibold">İletişim</h4>
+
+                @if (filled($headerCompany['phone'] ?? null))
+                    <div class="single-contact flex align-items-center">
+                        <div class="text">
+                            <a href="{{ \App\Support\Phone::href($headerCompany['phone']) }}"
+                                class="ml-10 gray2 inline-block p-10-0 text-18 leading-18 text _hover1 font-medium">{{ $headerCompany['phone'] }}</a>
+                        </div>
+                    </div>
+                @endif
+
+                @if (filled($headerCompany['address'] ?? null))
+                    <div class="single-contact flex align-items-center mt-6">
+                        <div class="text">
+                            <span
+                                class="ml-10 gray2 inline-block p-10-0 text-18 leading-18 text font-medium">{{ $headerCompany['address'] }}</span>
+                        </div>
+                    </div>
+                @endif
+
+                @if (filled($headerCompany['email'] ?? null))
+                    <div class="single-contact flex align-items-center mt-6">
+                        <div class="text">
+                            <a href="mailto:{{ $headerCompany['email'] }}"
+                                class="ml-10 gray2 inline-block p-10-0 text-18 leading-18 text _hover1 font-medium">{{ $headerCompany['email'] }}</a>
+                        </div>
+                    </div>
+                @endif
+            </div>
+            <div class="space20"></div>
+        @endif
+
+        @if ($headerSocialLinks !== [])
+            <div class="vl-offcanvas-social">
+                <h4 class="black1 text-24 mb-20 mt-20 leading-24 font-semibold">Bizi Takip Edin</h4>
+                <div class="vl-copyright-social2 text-start mt-20">
+                    @foreach ($headerSocialLinks as $link)
+                        <a href="{{ $link['url'] }}" target="_blank" rel="noopener noreferrer" title="{{ $link['name'] }}"
+                            style="display: inline-flex; align-items: center;">
+                            @if ($link['icon'])
+                                <img src="{{ $link['icon']['url'] }}" alt="{{ $link['name'] }}"
+                                    style="width: 18px; height: 18px; object-fit: contain;">
+                            @else
+                                {{ $link['name'] }}
+                            @endif
+                        </a>
+                    @endforeach
                 </div>
             </div>
-
-            <div class="single-contact flex align-items-center mt-6">
-                <div class="text">
-                    <a href="#"
-                        class="ml-10 gray2 inline-block p-10-0 text-18 leading-18 text _hover1 font-medium">İstanbul,
-                        Türkiye</a>
-                </div>
-            </div>
-
-            <div class="single-contact flex align-items-center mt-6">
-                <div class="text">
-                    <a href="mailto:Hosticconsult@com"
-                        class="ml-10 gray2 inline-block p-10-0 text-18 leading-18 text _hover1 font-medium">webtasarim@gmail.com</a>
-                </div>
-            </div>
-
-        </div>
-        <div class="space20"></div>
-        <div class="vl-offcanvas-social">
-            <h4 class="black1 text-24 mb-20 mt-20 leading-24 font-semibold">Bizi Takip Edin</h4>
-            <div class="vl-copyright-social2 text-start mt-20">
-                <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-                <a href="#"><i class="fa-brands fa-instagram"></i></a>
-                <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
-                <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
-            </div>
-        </div>
+        @endif
 
     </div>
 </div>

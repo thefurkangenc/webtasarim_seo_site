@@ -24,6 +24,11 @@ return [
         'setting' => 'Site Ayarları',
         'ai' => 'Yapay Zeka',
         'blog' => 'Blog',
+        'testimonial' => 'Müşteri Yorumları',
+        'reference' => 'Referanslar',
+        'faq' => 'Sıkça Sorulan Sorular',
+        'why-choose-us' => 'Neden Biz',
+        'hero' => 'Tanıtım Alanı',
     ],
 
     'permissions' => [
@@ -68,6 +73,30 @@ return [
         ['name' => 'blog.update', 'label' => 'Blog - Düzenle', 'category' => 'blog', 'guard_name' => 'web'],
         ['name' => 'blog.delete', 'label' => 'Blog - Sil', 'category' => 'blog', 'guard_name' => 'web'],
 
+        ['name' => 'testimonial.view', 'label' => 'Müşteri Yorumu - Listele', 'category' => 'testimonial', 'guard_name' => 'web'],
+        ['name' => 'testimonial.create', 'label' => 'Müşteri Yorumu - Ekle', 'category' => 'testimonial', 'guard_name' => 'web'],
+        ['name' => 'testimonial.update', 'label' => 'Müşteri Yorumu - Düzenle', 'category' => 'testimonial', 'guard_name' => 'web'],
+        ['name' => 'testimonial.delete', 'label' => 'Müşteri Yorumu - Sil', 'category' => 'testimonial', 'guard_name' => 'web'],
+
+        ['name' => 'reference.view', 'label' => 'Referans - Listele', 'category' => 'reference', 'guard_name' => 'web'],
+        ['name' => 'reference.create', 'label' => 'Referans - Ekle', 'category' => 'reference', 'guard_name' => 'web'],
+        ['name' => 'reference.update', 'label' => 'Referans - Düzenle', 'category' => 'reference', 'guard_name' => 'web'],
+        ['name' => 'reference.delete', 'label' => 'Referans - Sil', 'category' => 'reference', 'guard_name' => 'web'],
+
+        ['name' => 'faq.view', 'label' => 'SSS - Listele', 'category' => 'faq', 'guard_name' => 'web'],
+        ['name' => 'faq.create', 'label' => 'SSS - Ekle', 'category' => 'faq', 'guard_name' => 'web'],
+        ['name' => 'faq.update', 'label' => 'SSS - Düzenle', 'category' => 'faq', 'guard_name' => 'web'],
+        ['name' => 'faq.delete', 'label' => 'SSS - Sil', 'category' => 'faq', 'guard_name' => 'web'],
+
+        ['name' => 'why-choose-us.view', 'label' => 'Neden Biz - Listele', 'category' => 'why-choose-us', 'guard_name' => 'web'],
+        ['name' => 'why-choose-us.create', 'label' => 'Neden Biz - Ekle', 'category' => 'why-choose-us', 'guard_name' => 'web'],
+        ['name' => 'why-choose-us.update', 'label' => 'Neden Biz - Düzenle', 'category' => 'why-choose-us', 'guard_name' => 'web'],
+        ['name' => 'why-choose-us.delete', 'label' => 'Neden Biz - Sil', 'category' => 'why-choose-us', 'guard_name' => 'web'],
+
+        // Tekil kayıt modülü: ekleme/silme izni yok.
+        ['name' => 'hero.view', 'label' => 'Tanıtım Alanı - Görüntüle', 'category' => 'hero', 'guard_name' => 'web'],
+        ['name' => 'hero.update', 'label' => 'Tanıtım Alanı - Düzenle', 'category' => 'hero', 'guard_name' => 'web'],
+
     ],
 
     /*
@@ -80,7 +109,7 @@ return [
     'roles' => [
         'super-admin' => '*',
         'admin' => '*',
-        'editor' => ['media.*', 'ai.generate', 'blog.*', 'blog-category.view'],
+        'editor' => ['media.*', 'ai.generate', 'blog.*', 'blog-category.view', 'testimonial.*', 'reference.*', 'faq.*', 'why-choose-us.*', 'hero.*'],
     ],
 
 ];

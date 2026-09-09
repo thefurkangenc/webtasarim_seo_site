@@ -1,5 +1,10 @@
+ @php
+     $faviconLogoId = \App\Support\Settings::get('company.logo_media_id');
+     $faviconUrl = $faviconLogoId ? \App\Models\Media\Media::query()->find($faviconLogoId)?->url('medium') : null;
+ @endphp
+
  <!--=====FAB ICON=======-->
- <link rel="shortcut icon" href="{{ asset('assets/img/logo/title3.svg') }}" type="image/x-icon">
+ <link rel="shortcut icon" href="{{ $faviconUrl ?? asset('assets/img/logo/title3.svg') }}" type="image/x-icon">
 
 
  <!--=====CSS=======-->
@@ -15,6 +20,7 @@
  <link rel="stylesheet" href="{{ asset('assets/css/utility.css') }}">
  <link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
  <link rel="stylesheet" href="{{ asset('assets/css/integrations.css') }}">
+ <link rel="stylesheet" href="{{ asset('assets/css/references.css') }}">
  @if (\App\Support\Settings::bool('cookie.enabled'))
      <link rel="stylesheet" href="{{ asset('assets/css/cookie-banner.css') }}">
  @endif

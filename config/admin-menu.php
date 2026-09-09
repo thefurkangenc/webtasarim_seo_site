@@ -47,6 +47,13 @@ return [
         'title' => 'İçerik',
         'items' => [
             [
+                'title' => 'Tanıtım Alanı',
+                'icon' => 'wallpaper',
+                'route' => 'admin.hero.index',
+                'active' => 'admin.hero.*',
+                'permission' => 'hero.view',
+            ],
+            [
                 'title' => 'Blog',
                 'icon' => 'article',
                 'children' => [
@@ -63,6 +70,34 @@ return [
                         'permission' => 'blog-category.view',
                     ],
                 ],
+            ],
+            [
+                'title' => 'Müşteri Yorumları',
+                'icon' => 'reviews',
+                'route' => 'admin.testimonial.index',
+                'active' => 'admin.testimonial.*',
+                'permission' => 'testimonial.view',
+            ],
+            [
+                'title' => 'Referanslar',
+                'icon' => 'handshake',
+                'route' => 'admin.reference.index',
+                'active' => 'admin.reference.*',
+                'permission' => 'reference.view',
+            ],
+            [
+                'title' => 'Sıkça Sorulan Sorular',
+                'icon' => 'quiz',
+                'route' => 'admin.faq.index',
+                'active' => 'admin.faq.*',
+                'permission' => 'faq.view',
+            ],
+            [
+                'title' => 'Neden Biz',
+                'icon' => 'verified',
+                'route' => 'admin.why-choose-us.index',
+                'active' => 'admin.why-choose-us.*',
+                'permission' => 'why-choose-us.view',
             ],
         ],
     ],

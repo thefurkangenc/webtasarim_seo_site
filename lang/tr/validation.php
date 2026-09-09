@@ -237,6 +237,7 @@ return [
         'phone' => 'telefon',
         'fax' => 'fax',
         'address' => 'adres',
+        'short_description' => 'kısa açıklama',
         'latitude' => 'enlem',
         'longitude' => 'boylam',
         'url' => 'bağlantı',

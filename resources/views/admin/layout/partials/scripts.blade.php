@@ -19,6 +19,7 @@
 {{-- Görsel alanı, select ve tarih alanı davranışı: olay delegasyonu ile çalışır,
      sayfa JS'i gerektirmez. --}}
 <script type="module" src="{{ asset('admin/assets/js/core/media-field.js') }}"></script>
+<script type="module" src="{{ asset('admin/assets/js/core/media-gallery.js') }}"></script>
 <script type="module" src="{{ asset('admin/assets/js/core/select.js') }}"></script>
 <script type="module" src="{{ asset('admin/assets/js/core/datepicker.js') }}"></script>
 <script type="module" src="{{ asset('admin/assets/js/core/map-picker.js') }}"></script>

@@ -76,6 +76,10 @@
         </div>
     </div> --}}
 
+    @php
+        $hero = app(\App\Services\Hero\HeroService::class)->current();
+        $heroImages = $hero->getMedia('gallery');
+    @endphp
     <div class="her012-section"
         style="background-image: url(assets/img/bg/hero12-bg1.png); background-position: center bottom; background-repeat: no-repeat; background-size: cover;">
         <img src="assets/img/shapes/works11-shape1.png" alt="" class="hero12-shape1">
@@ -89,94 +93,90 @@
                                 <path
                                     d="M9.99935 1.66699C10.3121 1.66699 10.6205 1.68394 10.9243 1.71783C11.0331 1.72986 11.1385 1.76321 11.2344 1.81596C11.3303 1.86871 11.4148 1.93983 11.4832 2.02526C11.5516 2.11069 11.6025 2.20875 11.633 2.31386C11.6635 2.41896 11.6731 2.52905 11.661 2.63783C11.649 2.7466 11.6156 2.85195 11.5629 2.94784C11.5101 3.04373 11.439 3.12829 11.3536 3.1967C11.2682 3.2651 11.1701 3.31601 11.065 3.34652C10.9599 3.37702 10.8498 3.38653 10.741 3.37449C9.36772 3.22086 7.98062 3.49778 6.77158 4.16693C5.56254 4.83608 4.59131 5.8644 3.99224 7.10966C3.39316 8.35491 3.19585 9.75555 3.42759 11.1178C3.65933 12.4801 4.30867 13.7368 5.2858 14.7139C6.26292 15.691 7.51954 16.3403 8.88183 16.5721C10.2441 16.8038 11.6448 16.6065 12.89 16.0074C14.1353 15.4084 15.1636 14.4371 15.8327 13.2281C16.5019 12.0191 16.7788 10.632 16.6252 9.25866C16.6131 9.14988 16.6226 9.0398 16.6532 8.93469C16.6837 8.82959 16.7346 8.73152 16.803 8.64609C16.9411 8.47356 17.1422 8.36297 17.3618 8.33866C17.5815 8.31435 17.8019 8.3783 17.9744 8.51645C18.0598 8.58486 18.131 8.66942 18.1837 8.76531C18.2365 8.86121 18.2698 8.96655 18.2818 9.07533C18.3152 9.37922 18.3321 9.68755 18.3327 10.0003C18.3327 14.6028 14.6018 18.3337 9.99935 18.3337C5.39685 18.3337 1.66602 14.6028 1.66602 10.0003C1.66602 5.39783 5.39685 1.66699 9.99935 1.66699ZM9.97268 6.56449C10.0276 6.77843 9.99534 7.00542 9.883 7.19558C9.77065 7.38575 9.5874 7.52353 9.37352 7.57866C8.78591 7.73259 8.27438 8.09505 7.93438 8.59842C7.59438 9.10178 7.44914 9.71166 7.52577 10.3142C7.60239 10.9168 7.89564 11.4709 8.3508 11.8732C8.80595 12.2755 9.39192 12.4984 9.99935 12.5003C10.5538 12.5006 11.0925 12.3165 11.5309 11.9771C11.9693 11.6377 12.2824 11.1621 12.421 10.6253C12.4801 10.4156 12.6189 10.2374 12.8078 10.1288C12.9967 10.0202 13.2206 9.98992 13.4315 10.0444C13.6425 10.0989 13.8237 10.2338 13.9364 10.4203C14.049 10.6067 14.0842 10.8299 14.0343 11.042C13.7787 12.0219 13.175 12.8753 12.3361 13.4426C11.4972 14.01 10.4805 14.2525 9.47582 14.1249C8.47115 13.9973 7.5473 13.5083 6.87685 12.7493C6.20641 11.9902 5.83524 11.0131 5.83268 10.0003C5.83254 9.07648 6.13943 8.17879 6.70511 7.44839C7.27079 6.71798 8.06318 6.19629 8.95768 5.96533C9.06367 5.93801 9.174 5.93184 9.28238 5.94716C9.39075 5.96249 9.49504 5.99902 9.5893 6.05466C9.68355 6.1103 9.76592 6.18396 9.8317 6.27144C9.89749 6.35892 9.94539 6.4585 9.97268 6.56449ZM15.4193 1.77283C15.5715 1.83589 15.7015 1.94261 15.793 2.0795C15.8845 2.21639 15.9334 2.37733 15.9335 2.54199V4.06699H17.4577C17.6225 4.06703 17.7836 4.11592 17.9206 4.20749C18.0576 4.29906 18.1644 4.4292 18.2274 4.58145C18.2905 4.7337 18.307 4.90122 18.2748 5.06285C18.2427 5.22448 18.1634 5.37295 18.0468 5.48949L15.0994 8.43366C14.9431 8.58995 14.7312 8.67778 14.5102 8.67783H12.4993L10.976 10.202C10.8196 10.3584 10.6076 10.4462 10.3864 10.4462C10.1653 10.4462 9.95322 10.3584 9.79685 10.202C9.64048 10.0456 9.55264 9.83355 9.55264 9.61241C9.55264 9.39127 9.64048 9.17919 9.79685 9.02283L11.321 7.50033V5.48866C11.3211 5.26766 11.4089 5.05574 11.5652 4.89949L14.511 1.95283C14.6276 1.83621 14.7761 1.75679 14.9377 1.7246C15.0994 1.69241 15.267 1.7089 15.4193 1.77199M14.2668 4.55283L12.9877 5.83366V7.01199H14.166L15.446 5.73283H15.1002C14.8792 5.73283 14.6672 5.64503 14.5109 5.48875C14.3546 5.33247 14.2668 5.12051 14.2668 4.89949V4.55283Z"
                                     fill="white"></path>
-                            </svg>Transparent reporting every step of the way.</h5>
+                            </svg>{{ $hero->badge ?: 'Her adımda şeffaf raporlama.' }}</h5>
                         <div class="space16"></div>
-                        <h2 class="text-anime-style-1">Unlock More Traffic, Leads And Sales with Smart SEO</h2>
+                        <h2 class="text-anime-style-1">{{ $hero->title ?: 'Akıllı SEO ile Daha Fazla Trafik, Müşteri ve Satış' }}</h2>
                         <div class="space16"></div>
-                        <p data-aos="fade-up" data-aos-duration="1000">Our expert SEO services are designed to help
-                            your business rank higher on Google, drive consistent organic the traffic, and turn
-                            visitor into loyal.</p>
-                        <div class="space32"></div>
-                        <div class="btn-area1" data-aos="fade-up" data-aos-duration="1200">
-                            <a href="contact.html" class="theme-btn24">Talk to an SEO Expert <span><i
-                                        class="fa-solid fa-arrow-right"></i></span></a>
-                            <a href="contact.html" class="theme-btn25">Optimize My Site <span><i
-                                        class="fa-solid fa-arrow-right"></i></span></a>
-                        </div>
+                        <p data-aos="fade-up" data-aos-duration="1000">{{ $hero->description ?: 'Uzman ekibimizle sitenizi arama sonuçlarında yükseltiyor, düzenli organik trafik kazandırıyor ve ziyaretçileri müşteriye dönüştürüyoruz.' }}</p>
+                        @if (filled($hero->button_text))
+                            <div class="space32"></div>
+                            <div class="btn-area1" data-aos="fade-up" data-aos-duration="1200">
+                                <a href="{{ $hero->button_url ?: route('iletisim') }}" class="theme-btn24">{{ $hero->button_text }} <span><i
+                                            class="fa-solid fa-arrow-right"></i></span></a>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
 
-            <div class="col-lg-12 mt-60" data-aos="fade-up" data-aos-duration="1000">
-                <div class="hero12-images-slider">
-                    <div class="hero12-img">
-                        <img src="assets/img/hero/hero12-img1.png" alt="">
-                    </div>
-
-                    <div class="hero12-img">
-                        <img src="assets/img/hero/hero12-img2.png" alt="">
-                    </div>
-
-                    <div class="hero12-img">
-                        <img src="assets/img/hero/hero12-img3.png" alt="">
-                    </div>
-                    <div class="hero12-img">
-                        <img src="assets/img/hero/hero12-img1.png" alt="">
-                    </div>
-
-                    <div class="hero12-img">
-                        <img src="assets/img/hero/hero12-img2.png" alt="">
-                    </div>
-
-                    <div class="hero12-img">
-                        <img src="assets/img/hero/hero12-img3.png" alt="">
+            @if ($heroImages->isNotEmpty())
+                <div class="col-lg-12 mt-60" data-aos="fade-up" data-aos-duration="1000">
+                    <div class="hero12-images-slider">
+                        @foreach ($heroImages as $heroImage)
+                            <div class="hero12-img">
+                                <img src="{{ $heroImage->url('medium') }}" alt="{{ $heroImage->alt }}">
+                            </div>
+                        @endforeach
                     </div>
                 </div>
-            </div>
+            @endif
 
 
         </div>
     </div>
-    <!--===== HERO AREA START =====-->
-    <div class="hero14-bottom-slider">
-        <section class="hero10-benar">
-            <div class="container-fluid p-0">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="marquee-wrap">
-                            <div class="marquee-text">
-
-                                <div class="brand-single-box">
-                                    <img src="assets/img/references/google_ads.png" alt="" style="height: 50px;">
+    <!--===== REFERANSLAR (KAYAN LOGO ŞERİDİ) START =====-->
+    @php
+        $references = app(\App\Services\Reference\ReferenceService::class)->active();
+    @endphp
+    @if ($references->isNotEmpty())
+        <div class="hero14-bottom-slider">
+            <section class="hero10-benar">
+                <div class="container-fluid p-0">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="marquee-wrap">
+                                {{-- Şerit iki kez basılıyor: animasyon kendi genişliğinin
+                                     yarısı kadar kayınca ikinci kopya birinciyi tam olarak
+                                     takip eder, akış boşluksuz sürer (bkz. assets/css/references.css).
+                                     İkinci kopya ekran okuyuculardan gizlenir. --}}
+                                <div class="marquee-text">
+                                    @foreach ([false, true] as $isDuplicate)
+                                        <div class="d-flex align-items-center" @if ($isDuplicate) aria-hidden="true" @endif>
+                                            @foreach ($references as $reference)
+                                                @php
+                                                    $logo = $reference->getFirstMedia('logo');
+                                                @endphp
+                                                <div class="brand-single-box">
+                                                    @if ($reference->url)
+                                                        <a href="{{ $reference->url }}" target="_blank"
+                                                            rel="noopener noreferrer">
+                                                            <img src="{{ $logo?->url('medium') }}"
+                                                                alt="{{ $reference->name }}">
+                                                        </a>
+                                                    @else
+                                                        <img src="{{ $logo?->url('medium') }}"
+                                                            alt="{{ $reference->name }}">
+                                                    @endif
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endforeach
                                 </div>
-                                <div class="brand-single-box">
-                                    <img src="assets/img/references/google_cloud.png" alt="" style="height: 50px;">
-                                </div>
-                                <div class="brand-single-box">
-                                    <img src="assets/img/references/google_ads.png" alt="" style="height: 50px;">
-                                </div>
-                                <div class="brand-single-box">
-                                    <img src="assets/img/references/google_cloud.png" alt="" style="height: 50px;">
-                                </div>
-                                <div class="brand-single-box">
-                                    <img src="assets/img/references/google_ads.png" alt="" style="height: 50px;">
-                                </div>
-                                <div class="brand-single-box">
-                                    <img src="assets/img/references/google_cloud.png" alt="" style="height: 50px;">
-                                </div>
-
-
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="slider-after"></div>
-            </div>
-        </section>
-    </div>
+                    <div class="slider-after"></div>
+                </div>
+            </section>
+        </div>
+    @endif
 
     <!--===== ABOUT AREA START =====-->
+    @php
+        $homeAboutTitle = \App\Support\Settings::get('contents.about_title');
+        $homeAboutContent = \App\Support\Settings::get('contents.about_content');
+    @endphp
     <div class="about14-section sp">
         <div class="container">
             <div class="row align-items-center">
@@ -189,12 +189,15 @@
                                     fill="#050422"></path>
                             </svg> About Us</h5>
                         <div class="space16"></div>
-                        <h2 class="text-anime-style-3">Empowering businesses through reliable, future ready IT
-                            solutions.</h2>
+                        <h2 class="text-anime-style-3">{{ $homeAboutTitle ?: 'Dijitalde İz Bırakan Çözümler Üretiyoruz' }}</h2>
                         <div class="space16"></div>
-                        <p data-aos="fade-left" data-aos-duration="1000">At SEOX, we specialize in delivering
-                            end-to-end IT solutions that drive efficiency, security, & scalability. With years of
-                            experience and a team of certified experts, we partner with businesses </p>
+                        @if (filled($homeAboutContent))
+                            <div data-aos="fade-left" data-aos-duration="1000">{!! $homeAboutContent !!}</div>
+                        @else
+                            <p data-aos="fade-left" data-aos-duration="1000">Web tasarımdan dijital pazarlamaya,
+                                işletmenizin ihtiyaç duyduğu her alanda uzman ekibimizle yanınızdayız. Modern, hızlı
+                                ve etkili çözümlerle markanızı bir adım öne taşıyoruz.</p>
+                        @endif
                         <div class="space32"></div>
                         <div class="abotu14-boxarea" data-aos="fade-left" data-aos-duration="1100">
                             <div class="icons">
@@ -372,6 +375,10 @@
     <!--===== SERVICE AREA END =====-->
 
     <!--===== CHOOSE AREA START =====-->
+    @php
+        $homeWhyChooseUs = app(\App\Services\WhyChooseUs\WhyChooseUsService::class)->active();
+        $homeWhyHeading = \App\Support\Settings::group('why_choose_us');
+    @endphp
     <div class="choose14-section sp">
         <div class="container">
             <div class="row">
@@ -395,11 +402,9 @@
                                     fill="#050422"></path>
                             </svg> Why Choose Us</h5>
                         <div class="space16"></div>
-                        <h2 class="text-anime-style-3">Smart technology built scale with your vision.</h2>
+                        <h2 class="text-anime-style-3">{{ $homeWhyHeading['title'] ?? '' ?: 'Vizyonunuzla Birlikte Büyüyen Akıllı Çözümler' }}</h2>
                         <div class="space16"></div>
-                        <p data-aos="fade-up" data-aos-duration="1000">We're not just tech experts we're problem
-                            solvers who care about your business. Our team takes time to understand your needs,
-                            respond quickly, deliver tailored IT solutions that work</p>
+                        <p data-aos="fade-up" data-aos-duration="1000">{{ $homeWhyHeading['description'] ?? '' ?: 'Sadece teknik değil, iş ortağınızız. İhtiyaçlarınızı anlamaya zaman ayırır, hızlı yanıt verir ve işinize özel çözümler üretiriz.' }}</p>
                         <div class="space32"></div>
                         <div class="choose-flex-area" data-aos="fade-up" data-aos-duration="1100">
                             <img src="assets/img/others/abotu14-author1.png" alt="">
@@ -416,23 +421,20 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-lg-6 col-md-6" data-aos="fade-up" data-aos-duration="900">
-                                <div class="choose14-boxarea">
-                                    <a href="#">Your Trusted IT Partner</a>
-                                    <div class="space16"></div>
-                                    <p>We together expertise, reliability, & innovation to deliver IT solutions</p>
-                                </div>
+                        @if ($homeWhyChooseUs->isNotEmpty())
+                            <div class="row">
+                                @foreach ($homeWhyChooseUs as $reason)
+                                    <div class="col-lg-6 col-md-6" data-aos="fade-up"
+                                        data-aos-duration="{{ 900 + $loop->index * 100 }}">
+                                        <div class="choose14-boxarea">
+                                            <a href="#">{{ $reason->title }}</a>
+                                            <div class="space16"></div>
+                                            <p>{{ $reason->description }}</p>
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
-
-                            <div class="col-lg-6 col-md-6" data-aos="fade-up" data-aos-duration="1000">
-                                <div class="choose14-boxarea">
-                                    <a href="#">Smarter IT Starts Here</a>
-                                    <div class="space16"></div>
-                                    <p>We offer future-ready solutions that improve efficiency security </p>
-                                </div>
-                            </div>
-                        </div>
+                        @endif
                         <div class="space32"></div>
                         <div class="btn-area1" data-aos="fade-up" data-aos-duration="1000">
                             <a href="#" class="theme-btn27">Learn More</a>
@@ -526,6 +528,10 @@
     <!--===== CASE STUDY AREA END =====-->
 
     <!--===== FAQ AREA START =====-->
+    @php
+        $homeFaqs = app(\App\Services\Faq\FaqService::class)->active();
+    @endphp
+    @if ($homeFaqs->isNotEmpty())
     <div class="faq14-section sp">
         <div class="container">
             <div class="row align-items-center">
@@ -551,73 +557,29 @@
                         <div class="space32"></div>
                         <div class="faq14-accordion-area">
                             <div class="accordion" id="accordionExample">
-                                <div class="accordion-item" data-aos="fade-left" data-aos-duration="900">
-                                    <h2 class="accordion-header">
-                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#collapseOne" aria-expanded="true"
-                                            aria-controls="collapseOne">
-                                            Do you offer custom IT solutions?
-                                        </button>
-                                    </h2>
-                                    <div id="collapseOne" class="accordion-collapse collapse show"
-                                        data-bs-parent="#accordionExample">
-                                        <div class="accordion-body">
-                                            <p>Yes! Every business is different, so we don’t believe in
-                                                one-size-fits-all. We start by understanding your needs and t</p>
+                                @foreach ($homeFaqs as $faq)
+                                    <div class="accordion-item" data-aos="fade-left" data-aos-duration="900">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button @if (! $loop->first) collapsed @endif"
+                                                type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#faqCollapse{{ $faq->id }}"
+                                                aria-expanded="{{ $loop->first ? 'true' : 'false' }}"
+                                                aria-controls="faqCollapse{{ $faq->id }}">
+                                                {{ $faq->question }}
+                                            </button>
+                                        </h2>
+                                        <div id="faqCollapse{{ $faq->id }}"
+                                            class="accordion-collapse collapse @if ($loop->first) show @endif"
+                                            data-bs-parent="#accordionExample">
+                                            <div class="accordion-body">
+                                                <p>{{ $faq->answer }}</p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="space20"></div>
-                                <div class="accordion-item" data-aos="fade-left" data-aos-duration="1000">
-                                    <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button"
-                                            data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false"
-                                            aria-controls="collapseTwo">
-                                            What types of businesses do you work with?
-                                        </button>
-                                    </h2>
-                                    <div id="collapseTwo" class="accordion-collapse collapse"
-                                        data-bs-parent="#accordionExample">
-                                        <div class="accordion-body">
-                                            <p>Yes! Every business is different, so we don’t believe in
-                                                one-size-fits-all. We start by understanding your needs and t</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="space20"></div>
-                                <div class="accordion-item" data-aos="fade-left" data-aos-duration="1100">
-                                    <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button"
-                                            data-bs-toggle="collapse" data-bs-target="#collapseThree"
-                                            aria-expanded="false" aria-controls="collapseThree">
-                                            Can you help us transition to the cloud?
-                                        </button>
-                                    </h2>
-                                    <div id="collapseThree" class="accordion-collapse collapse"
-                                        data-bs-parent="#accordionExample">
-                                        <div class="accordion-body">
-                                            <p>Yes! Every business is different, so we don’t believe in
-                                                one-size-fits-all. We start by understanding your needs and t</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="space20"></div>
-                                <div class="accordion-item" data-aos="fade-left" data-aos-duration="1200">
-                                    <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button"
-                                            data-bs-toggle="collapse" data-bs-target="#collapseFour"
-                                            aria-expanded="false" aria-controls="collapseFour">
-                                            Can you help us transition to the cloud?
-                                        </button>
-                                    </h2>
-                                    <div id="collapseFour" class="accordion-collapse collapse"
-                                        data-bs-parent="#accordionExample">
-                                        <div class="accordion-body">
-                                            <p>Yes! Every business is different, so we don’t believe in
-                                                one-size-fits-all. We start by understanding your needs and t</p>
-                                        </div>
-                                    </div>
-                                </div>
+                                    @if (! $loop->last)
+                                        <div class="space20"></div>
+                                    @endif
+                                @endforeach
                             </div>
                         </div>
                     </div>
@@ -625,9 +587,14 @@
             </div>
         </div>
     </div>
+    @endif
     <!--===== FAQ AREA END =====-->
 
     <!--===== TESTIMONIAL AREA START =====-->
+    @php
+        $homeTestimonials = app(\App\Services\Testimonial\TestimonialService::class)->active();
+    @endphp
+    @if ($homeTestimonials->isNotEmpty())
     <div class="testimonial14-section sp">
         <div class="container">
             <div class="row align-items-center">
@@ -661,190 +628,41 @@
             <div class="row mt-60">
                 <div class="col-lg-12" data-aos="zoom-out" data-aos-duration="1000">
                     <div class="testimonial14-slider-area">
-                        <div class="testimonial14-boxarea">
-                            <div class="testi14-auhtor-area">
-                                <div class="img1">
-                                    <img src="assets/img/icons/test14-quito1.svg" alt="" class="test14-quito1">
-                                    <img src="assets/img/testimonial/team2-image1.png" alt=""
-                                        class="team2-image1">
+                        @foreach ($homeTestimonials as $testimonial)
+                            <div class="testimonial14-boxarea">
+                                <div class="testi14-auhtor-area">
+                                    <div class="img1">
+                                        <img src="{{ asset('assets/img/icons/test14-quito1.svg') }}" alt=""
+                                            class="test14-quito1">
+                                        <img src="{{ $testimonial->getFirstMedia('photo')?->url('thumb') ?? asset('assets/img/testimonial/team2-image1.png') }}"
+                                            alt="{{ $testimonial->name }}" class="team2-image1">
+                                    </div>
+                                    <div class="tes14-textarea">
+                                        <a href="#">{{ $testimonial->name }}</a>
+                                        @if (filled($testimonial->title))
+                                            <div class="space12"></div>
+                                            <p>{{ $testimonial->title }}</p>
+                                        @endif
+                                    </div>
                                 </div>
-                                <div class="tes14-textarea">
-                                    <a href="#">Ricky Smith</a>
-                                    <div class="space12"></div>
-                                    <p>CEO, BrightEdge Media</p>
-                                </div>
-                            </div>
-                            <div class="space24"></div>
-                            <p class="pera">“We’ve work with other IT providers, but none have matched the level
-                                of service and expertise we get here. They’re proactive, not reactive — which is
-                                exactly what we need.”</p>
-                            <div class="space24"></div>
-                            <div class="starts-area">
-                                <img src="assets/img/others/microsoft.png" alt="" class="microsoft">
-                                <ul class="test14-stars">
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="testimonial14-boxarea">
-                            <div class="testi14-auhtor-area">
-                                <div class="img1">
-                                    <img src="assets/img/icons/test14-quito1.svg" alt="" class="test14-quito1">
-                                    <img src="assets/img/testimonial/team2-image2.png" alt=""
-                                        class="team2-image1">
-                                </div>
-                                <div class="tes14-textarea">
-                                    <a href="#">Daniel Hamilton</a>
-                                    <div class="space12"></div>
-                                    <p>Director of Operations</p>
+                                <div class="space24"></div>
+                                <p class="pera">“{{ $testimonial->content }}”</p>
+                                <div class="space24"></div>
+                                <div class="starts-area">
+                                    <ul class="test14-stars">
+                                        @for ($i = 0; $i < $testimonial->rating; $i++)
+                                            <li><i class="fa-solid fa-star"></i></li>
+                                        @endfor
+                                    </ul>
                                 </div>
                             </div>
-                            <div class="space24"></div>
-                            <p class="pera">“When we partnered with, we were facing constant network issues and
-                                downtime. They stepped in, did a full audit, and built an infrastructure that just
-                                works their team .”</p>
-                            <div class="space24"></div>
-                            <div class="starts-area">
-                                <img src="assets/img/others/microsoft.png" alt="" class="microsoft">
-                                <ul class="test14-stars">
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="testimonial14-boxarea">
-                            <div class="testi14-auhtor-area">
-                                <div class="img1">
-                                    <img src="assets/img/icons/test14-quito1.svg" alt="" class="test14-quito1">
-                                    <img src="assets/img/testimonial/team2-image3.png" alt=""
-                                        class="team2-image1">
-                                </div>
-                                <div class="tes14-textarea">
-                                    <a href="#">Paula Mora</a>
-                                    <div class="space12"></div>
-                                    <p>COO, Zenith Retail </p>
-                                </div>
-                            </div>
-                            <div class="space24"></div>
-                            <p class="pera">“We reached out for basic IT support but they went above and beyond
-                                — optimizing our systems, improving cybersecurity, and even helping us transition to
-                                a hybrid cloud setup.”</p>
-                            <div class="space24"></div>
-                            <div class="starts-area">
-                                <img src="assets/img/others/microsoft.png" alt="" class="microsoft">
-                                <ul class="test14-stars">
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="testimonial14-boxarea">
-                            <div class="testi14-auhtor-area">
-                                <div class="img1">
-                                    <img src="assets/img/icons/test14-quito1.svg" alt="" class="test14-quito1">
-                                    <img src="assets/img/testimonial/team2-image1.png" alt=""
-                                        class="team2-image1">
-                                </div>
-                                <div class="tes14-textarea">
-                                    <a href="#">Ricky Smith</a>
-                                    <div class="space12"></div>
-                                    <p>CEO, BrightEdge Media</p>
-                                </div>
-                            </div>
-                            <div class="space24"></div>
-                            <p class="pera">“We’ve work with other IT providers, but none have matched the level
-                                of service and expertise we get here. They’re proactive, not reactive — which is
-                                exactly what we need.”</p>
-                            <div class="space24"></div>
-                            <div class="starts-area">
-                                <img src="assets/img/others/microsoft.png" alt="" class="microsoft">
-                                <ul class="test14-stars">
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="testimonial14-boxarea">
-                            <div class="testi14-auhtor-area">
-                                <div class="img1">
-                                    <img src="assets/img/icons/test14-quito1.svg" alt="" class="test14-quito1">
-                                    <img src="assets/img/testimonial/team2-image2.png" alt=""
-                                        class="team2-image1">
-                                </div>
-                                <div class="tes14-textarea">
-                                    <a href="#">Ricky Smith</a>
-                                    <div class="space12"></div>
-                                    <p>CEO, BrightEdge Media</p>
-                                </div>
-                            </div>
-                            <div class="space24"></div>
-                            <p class="pera">“We’ve work with other IT providers, but none have matched the level
-                                of service and expertise we get here. They’re proactive, not reactive — which is
-                                exactly what we need.”</p>
-                            <div class="space24"></div>
-                            <div class="starts-area">
-                                <img src="assets/img/others/microsoft.png" alt="" class="microsoft">
-                                <ul class="test14-stars">
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="testimonial14-boxarea">
-                            <div class="testi14-auhtor-area">
-                                <div class="img1">
-                                    <img src="assets/img/icons/test14-quito1.svg" alt="" class="test14-quito1">
-                                    <img src="assets/img/testimonial/team2-image3.png" alt=""
-                                        class="team2-image1">
-                                </div>
-                                <div class="tes14-textarea">
-                                    <a href="#">Ricky Smith</a>
-                                    <div class="space12"></div>
-                                    <p>CEO, BrightEdge Media</p>
-                                </div>
-                            </div>
-                            <div class="space24"></div>
-                            <p class="pera">“We’ve work with other IT providers, but none have matched the level
-                                of service and expertise we get here. They’re proactive, not reactive — which is
-                                exactly what we need.”</p>
-                            <div class="space24"></div>
-                            <div class="starts-area">
-                                <img src="assets/img/others/microsoft.png" alt="" class="microsoft">
-                                <ul class="test14-stars">
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                </ul>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    @endif
     <!--===== TESTIMONIAL AREA END =====-->
 
     <!--===== BLOG AREA START =====-->

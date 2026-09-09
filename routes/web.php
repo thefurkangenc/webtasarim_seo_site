@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\About\AboutController;
 use App\Http\Controllers\Contact\ContactController;
 use App\Http\Controllers\Legal\LegalController;
 use App\Http\Controllers\Maintenance\MaintenanceController;
@@ -9,9 +10,7 @@ Route::get('/', function () {
     return view('pages.home.index');
 })->name('anasayfa');
 
-Route::get('/hakkimizda', function () {
-    return view('pages.about.index');
-})->name('hakkimizda');
+Route::get('/hakkimizda', [AboutController::class, 'index'])->name('hakkimizda');
 
 Route::get('/hizmetler', function () {
     return view('pages.services.index');

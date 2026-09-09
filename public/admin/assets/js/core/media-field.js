@@ -1,25 +1,31 @@
 /**
- * <x-admin::form.image> bileşeninin davranışı.
+ * <x-admin::form.image> bileşeninin TEKİL modunun davranışı.
  *
  * Alan, seçilen görseli hemen yükler ve gizli input'a media id'sini yazar;
  * form gönderildiğinde sadece bu id gider. Preset tanımlıysa yüklemeden önce
  * kırpma modalı açılır ve orana kilitlenir. Dosya seçme, kütüphaneden seçme
  * ve sürükle-bırak aynı yükleme akışından geçer.
  *
+ * Bileşene `multiple` verildiğinde alan bu modülü değil core/media-gallery.js'i
+ * kullanır; buradaki tüm olay dinleyicileri `data-media-multiple` taşıyan
+ * alanları görmezden gelir (ikisi de document seviyesinde delegasyon yapar).
+ *
  * Ajax modal içinde açılan formlarda da çalışır: bağlama, olay delegasyonu ile
  * document seviyesinde yapılır, sayfa JS'inin bir şey çağırmasına gerek yoktur.
  */
 
-import { http, HttpError, ValidationError } from './http.js';
+import { http, HttpError } from './http.js';
 import { cropModal } from './cropper.js';
 import { toast } from './toast.js';
 import { confirm } from './confirm.js';
 import { mediaPicker } from './media-picker.js';
+import { presetOf, setBusy, uploadWithCrop } from './media-upload.js';
 
-const UPLOAD_URL = '/admin/media/upload';
-
+/** Çoklu alanlar core/media-gallery.js'e ait; buradaki akışlar onlara dokunmaz. */
 function field(element) {
-    return element.closest('[data-media-field]');
+    const root = element.closest('[data-media-field]');
+
+    return root?.dataset.mediaMultiple ? null : root;
 }
 
 function parts(root) {
@@ -36,20 +42,7 @@ function parts(root) {
         recrop: root.querySelector('[data-media-action="recrop"]'),
         remove: root.querySelector('[data-media-action="remove"]'),
         selectLabel: root.querySelector('[data-media-select-label]'),
-        busy: root.querySelector('[data-media-busy]'),
     };
-}
-
-function preset(root) {
-    const { mediaPreset, mediaWidth, mediaHeight, mediaLabel } = root.dataset;
-
-    return mediaWidth && mediaHeight
-        ? { preset: mediaPreset, width: Number(mediaWidth), height: Number(mediaHeight), label: mediaLabel }
-        : null;
-}
-
-function setBusy(root, busy) {
-    parts(root).busy?.classList.toggle('hidden', ! busy);
 }
 
 /** Alanı verilen medya ile doldurur; null geçilirse temizler. */
@@ -109,60 +102,19 @@ function render(root, media) {
     root.dispatchEvent(new CustomEvent('media:change', { detail: media, bubbles: true }));
 }
 
-async function upload(root, file, crop) {
-    const body = new FormData();
-    body.append('file', file);
-
-    if (crop) {
-        body.append('crop', JSON.stringify(crop));
-    }
-
-    if (root.dataset.mediaPreset) {
-        body.append('preset', root.dataset.mediaPreset);
-    }
-
-    if (root.dataset.mediaFolder) {
-        body.append('folder_id', root.dataset.mediaFolder);
-    }
-
-    setBusy(root, true);
-
-    try {
-        const { data, message } = await http.post(UPLOAD_URL, body);
-        render(root, data);
-        toast.success(message);
-    } catch (error) {
-        if (error instanceof ValidationError) {
-            toast.error(Object.values(error.errors)[0][0]);
-        } else {
-            toast.error(error instanceof HttpError ? error.message : 'Dosya yüklenemedi.');
-        }
-    } finally {
-        setBusy(root, false);
-        parts(root).file.value = '';
-    }
-}
-
 async function onFileSelected(root, file) {
-    const target = preset(root);
+    const media = await uploadWithCrop(root, file);
 
-    // SVG kırpılamaz; preset olsa bile doğrudan yüklenir.
-    if (! target || file.type === 'image/svg+xml' || ! file.type.startsWith('image/')) {
-        return upload(root, file, null);
+    if (media) {
+        render(root, media);
     }
 
-    const crop = await cropModal.open(file, target);
-
-    if (crop) {
-        await upload(root, file, crop);
-    } else {
-        parts(root).file.value = '';
-    }
+    parts(root).file.value = '';
 }
 
 async function onRecrop(root) {
     const id = parts(root).input.value;
-    const target = preset(root);
+    const target = presetOf(root);
     const originalUrl = parts(root).image.dataset.original;
 
     if (! id || ! target || ! originalUrl) {
@@ -194,9 +146,10 @@ async function onRecrop(root) {
 
 document.addEventListener('change', (event) => {
     const fileInput = event.target.closest('[data-media-file]');
+    const root = fileInput ? field(fileInput) : null;
 
-    if (fileInput?.files?.length) {
-        onFileSelected(field(fileInput), fileInput.files[0]);
+    if (root && fileInput.files?.length) {
+        onFileSelected(root, fileInput.files[0]);
     }
 });
 
@@ -209,6 +162,10 @@ document.addEventListener('click', async (event) => {
 
     const root = field(button);
     const action = button.dataset.mediaAction;
+
+    if (! root) {
+        return;
+    }
 
     if (action === 'select') {
         parts(root).file.click();
@@ -283,12 +240,18 @@ document.addEventListener('drop', (event) => {
         return;
     }
 
-    event.preventDefault();
-
+    // Çoklu alana bırakılan dosyaları core/media-gallery.js karşılar.
+    const root = field(drop);
     const file = event.dataTransfer.files[0];
 
+    if (! root) {
+        return;
+    }
+
+    event.preventDefault();
+
     if (file) {
-        onFileSelected(field(drop), file);
+        onFileSelected(root, file);
     }
 });
 

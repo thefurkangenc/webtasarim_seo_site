@@ -23,6 +23,9 @@
 
     <x-admin::form.textarea name="address" label="Adres" :value="$values['address'] ?? null" placeholder="Açık adres" />
 
+    <x-admin::form.textarea name="short_description" label="Kısa Açıklama" :value="$values['short_description'] ?? null"
+        placeholder="Site altbilgisinde (footer) firma logosunun altında görünür, 1-2 cümle yeterli." />
+
     <x-admin::form.map :lat="$values['latitude'] ?? null" :lng="$values['longitude'] ?? null" wrapper="" />
 
     <div

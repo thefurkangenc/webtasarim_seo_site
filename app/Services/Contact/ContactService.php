@@ -5,6 +5,7 @@ namespace App\Services\Contact;
 use App\Mail\Contact\ContactAutoReply;
 use App\Mail\Contact\ContactNotification;
 use App\Models\Contact\ContactSubmission;
+use App\Support\Phone;
 use App\Support\Settings;
 use DomainException;
 use Illuminate\Support\Facades\Log;
@@ -22,13 +23,12 @@ class ContactService
         $lat = $company['latitude'] ?? null;
         $lng = $company['longitude'] ?? null;
         $phone = $company['phone'] ?? null;
-        $digits = $phone ? (preg_replace('/\D+/', '', $phone) ?? '') : '';
 
         return [
             'enabled' => Settings::bool('contact.enabled', true),
             'email' => $company['email'] ?? null,
             'phone' => $phone,
-            'tel_href' => filled($digits) ? 'tel:+'.(str_starts_with($digits, '0') ? '90'.substr($digits, 1) : $digits) : null,
+            'tel_href' => Phone::href($phone),
             'address' => $company['address'] ?? null,
             'heading' => $contact['heading'] ?: 'Bize yazın',
             'intro' => $contact['intro'] ?? '',

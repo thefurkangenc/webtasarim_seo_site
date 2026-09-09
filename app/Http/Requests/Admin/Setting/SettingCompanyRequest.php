@@ -22,6 +22,7 @@ class SettingCompanyRequest extends FormRequest
             'email' => ['nullable', 'email', 'max:150'],
             'fax' => ['nullable', 'string', 'max:50'],
             'address' => ['nullable', 'string', 'max:1000'],
+            'short_description' => ['nullable', 'string', 'max:500'],
             'latitude' => ['nullable', 'numeric', 'between:-90,90', 'required_with:longitude'],
             'longitude' => ['nullable', 'numeric', 'between:-180,180', 'required_with:latitude'],
         ];

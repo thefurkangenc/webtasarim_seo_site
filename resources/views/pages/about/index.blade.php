@@ -45,17 +45,14 @@
                     <div class="heading2 ml-30 md:ml-0 sm:ml-0 md:mt-30 sm:mt-30">
                         <span class="sub-title" data-aos="zoom-in-left" data-aos-duration="900"><img
                                 src="assets/img/icons/span3.svg" alt=""> ABOUT US </span>
-                        <h2 class="text-anime-style-3">Driving Excellence Across Diverse SEOX Industries</h2>
-                        <p class="mt-16" data-aos="fade-left" data-aos-duration="700">Welcome to SEOX, where innovation
-                            meets expertise. We are a dynamic agency dedicated to empowering businesses across a variety of
-                            industries, offering tailored solutions that drive growth, efficiency, and success. With a
-                            proven track record of delivering results, we bring passion, creativity, and cutting-edge
-                            strategies to every project we undertake.</p>
-                        <p class="mt-16" data-aos="fade-left" data-aos-duration="700">We believe in turning visions into
-                            reality. As a versatile agency, we specialize in empowering businesses across diverse
-                            industries, including startups, HR staffing, social media marketing, solar energy, and real
-                            estate. Our team is passionate about crafting innovative strategies that drive growth build
-                            strong brands.</p>
+                        <h2 class="text-anime-style-3">{{ $aboutTitle ?: 'Dijitalde İz Bırakan Çözümler Üretiyoruz' }}</h2>
+                        @if (filled($aboutContent))
+                            <div class="mt-16" data-aos="fade-left" data-aos-duration="700">{!! $aboutContent !!}</div>
+                        @else
+                            <p class="mt-16" data-aos="fade-left" data-aos-duration="700">Web tasarımdan dijital
+                                pazarlamaya, işletmenizin ihtiyaç duyduğu her alanda uzman ekibimizle yanınızdayız.
+                                Modern, hızlı ve etkili çözümlerle markanızı bir adım öne taşıyoruz.</p>
+                        @endif
                         <div class="button mt-30" data-aos="fade-left" data-aos-duration="1000">
                             <a class="theme-btn3" href="contact.html">Contact Us <span class="arrow1"><i
                                         class="fa-solid fa-arrow-right"></i></span><span class="arrow2"><i
@@ -340,6 +337,7 @@
 
     <!--===== TESTIMONIAL AREA START =====-->
 
+    @if ($testimonials->isNotEmpty())
     <div class="tes11 sp">
         <div class="container">
             <div class="row">
@@ -352,119 +350,35 @@
                 </div>
             </div>
             <div class="row mt-30 align-items-center">
-                <div class="col-lg-4">
-                    <div class="tes11-left-side-images mt-30" data-aos="fade-up" data-aos-duration="900">
-                        <div class="image">
-                            <img src="assets/img/testimonial/tes3-big-image.png" alt="">
-                        </div>
-                        <div class="review-box">
-                            <div class="review-image">
-                                <img src="assets/img/testimonial/tes3-reviews.png" alt="">
-                            </div>
-                            <div class="review-starts">
-                                <p>20k Reviews</p>
-                                <div class="stars">
-                                    <ul>
-                                        <li><i class="fa-solid fa-star"></i></li>
-                                        <li><i class="fa-solid fa-star"></i></li>
-                                        <li><i class="fa-solid fa-star"></i></li>
-                                        <li><i class="fa-solid fa-star"></i></li>
-                                        <li><i class="fa-solid fa-star"></i></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-8">
+
+                <div class="col-lg-12">
                     <div class="tes11-slider-all mt-30 _relative" data-aos="fade-up" data-aos-duration="900">
                         <div class="tes11-slider">
-                            <div class="tes11-single-slider-items">
-                                <p>"Working with SEOX Advertising Agency has been a game-changer for our brand. The custom
-                                    water bottles they designed were not only visually appealing but also high-quality and
-                                    practical. We used them during our corporate events, and the response was phenomenal.
-                                    Our clients loved the attention to detail, and many even commented on how these bottles
-                                    reflected the premium nature of our brand. SEOX’s team made the entire process seamless,
-                                    from brainstorming design ideas to ensuring timely delivery. We couldn’t have asked for
-                                    a better partner in promoting our brand."</p>
-                                <div class="tes11-dv-top"></div>
-                                <div class="author-area">
-                                    <div class="author-thumb">
-                                        <img src="assets/img/testimonial/team2-image1.png" alt="">
-                                    </div>
-                                    <div class="author-text">
-                                        <a href="#">Sarah Makiavelly</a>
-                                        <p>Marketing Manager</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="tes11-single-slider-items">
-                                <p>"Working with SEOX Advertising Agency has been a game-changer for our brand. The custom
-                                    water bottles they designed were not only visually appealing but also high-quality and
-                                    practical. We used them during our corporate events, and the response was phenomenal.
-                                    Our clients loved the attention to detail, and many even commented on how these bottles
-                                    reflected the premium nature of our brand. SEOX’s team made the entire process seamless,
-                                    from brainstorming design ideas to ensuring timely delivery. We couldn’t have asked for
-                                    a better partner in promoting our brand."</p>
-                                <div class="tes11-dv-top"></div>
-                                <div class="author-area">
-                                    <div class="author-thumb">
-                                        <img src="assets/img/testimonial/team2-image1.png" alt="">
-                                    </div>
-                                    <div class="author-text">
-                                        <a href="#">Sarah Makiavelly</a>
-                                        <p>Marketing Manager</p>
+                            @foreach ($testimonials as $testimonial)
+                                <div class="tes11-single-slider-items">
+                                    <p>"{{ $testimonial->content }}"</p>
+                                    <div class="tes11-dv-top"></div>
+                                    <div class="author-area">
+                                        <div class="author-thumb">
+                                            <img src="{{ $testimonial->getFirstMedia('photo')?->url('thumb') ?? asset('assets/img/testimonial/team2-image1.png') }}"
+                                                alt="{{ $testimonial->name }}">
+                                        </div>
+                                        <div class="author-text">
+                                            <a href="#">{{ $testimonial->name }}</a>
+                                            @if (filled($testimonial->title))
+                                                <p>{{ $testimonial->title }}</p>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="tes11-single-slider-items">
-                                <p>"Working with SEOX Advertising Agency has been a game-changer for our brand. The custom
-                                    water bottles they designed were not only visually appealing but also high-quality and
-                                    practical. We used them during our corporate events, and the response was phenomenal.
-                                    Our clients loved the attention to detail, and many even commented on how these bottles
-                                    reflected the premium nature of our brand. SEOX’s team made the entire process seamless,
-                                    from brainstorming design ideas to ensuring timely delivery. We couldn’t have asked for
-                                    a better partner in promoting our brand."</p>
-                                <div class="tes11-dv-top"></div>
-                                <div class="author-area">
-                                    <div class="author-thumb">
-                                        <img src="assets/img/testimonial/team2-image2.png" alt="">
-                                    </div>
-                                    <div class="author-text">
-                                        <a href="#">Sarah Makiavelly</a>
-                                        <p>Marketing Manager</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="tes11-single-slider-items">
-                                <p>"Working with SEOX Advertising Agency has been a game-changer for our brand. The custom
-                                    water bottles they designed were not only visually appealing but also high-quality and
-                                    practical. We used them during our corporate events, and the response was phenomenal.
-                                    Our clients loved the attention to detail, and many even commented on how these bottles
-                                    reflected the premium nature of our brand. SEOX’s team made the entire process seamless,
-                                    from brainstorming design ideas to ensuring timely delivery. We couldn’t have asked for
-                                    a better partner in promoting our brand."</p>
-                                <div class="tes11-dv-top"></div>
-                                <div class="author-area">
-                                    <div class="author-thumb">
-                                        <img src="assets/img/testimonial/team2-image2.png" alt="">
-                                    </div>
-                                    <div class="author-text">
-                                        <a href="#">Sarah Makiavelly</a>
-                                        <p>Marketing Manager</p>
-                                    </div>
-                                </div>
-                            </div>
-
+                            @endforeach
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    @endif
 
     <!--===== TESTIMONIAL AREA END =====-->
 
