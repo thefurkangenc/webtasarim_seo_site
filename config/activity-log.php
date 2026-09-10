@@ -74,6 +74,8 @@ return [
         'auth' => ['label' => 'Oturum', 'icon' => 'lock'],
         'security' => ['label' => 'Güvenlik', 'icon' => 'shield'],
         'page' => ['label' => 'Sayfalar', 'icon' => 'description'],
+        'menu' => ['label' => 'Menüler', 'icon' => 'menu'],
+        'redirect' => ['label' => 'Yönlendirmeler', 'icon' => 'alt_route'],
         'blog' => ['label' => 'Blog', 'icon' => 'article'],
         'blog-category' => ['label' => 'Blog Kategorileri', 'icon' => 'category'],
         'service' => ['label' => 'Hizmetler', 'icon' => 'home_repair_service'],

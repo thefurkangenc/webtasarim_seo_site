@@ -126,6 +126,21 @@ return [
         'items' => [
 
             [
+                'title' => 'Menüler',
+                'icon' => 'menu',
+                'route' => 'admin.menu.index',
+                'active' => 'admin.menu.*',
+                'permission' => 'menu.index',
+            ],
+            [
+                'title' => 'Yönlendirmeler',
+                'icon' => 'alt_route',
+                'route' => 'admin.redirect.index',
+                'active' => 'admin.redirect.*',
+                'permission' => 'redirect.index',
+            ],
+
+            [
                 'title' => 'Medya Kütüphanesi',
                 'icon' => 'perm_media',
                 'route' => 'admin.media.index',

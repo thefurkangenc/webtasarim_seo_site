@@ -2,6 +2,8 @@
 
 namespace App\Models\Service;
 
+use App\Contracts\LinksToPublicPage;
+use App\Contracts\RedirectsOnMove;
 use App\Models\Concerns\HasFaqs;
 use App\Models\Concerns\HasMedia;
 use App\Models\Concerns\HasSeo;
@@ -21,7 +23,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * yer tutucular çözülerek yeniden üretilir (bkz. renderFor()).
  */
 #[Fillable(['user_id', 'title', 'slug', 'excerpt', 'content', 'status', 'sort_order'])]
-class Service extends Model
+class Service extends Model implements LinksToPublicPage, RedirectsOnMove
 {
     use HasFaqs, HasMedia, HasSeo, HasSortOrder, HasTags, LogsActivity;
 
@@ -57,6 +59,38 @@ class Service extends Model
     public function statusLabel(): string
     {
         return self::STATUSES[$this->status] ?? $this->status;
+    }
+
+    public function publicUrl(): ?string
+    {
+        return $this->status === self::STATUS_PUBLISHED
+            ? route('hizmetler.show', $this->slug)
+            : null;
+    }
+
+    public function publicLinkLabel(): string
+    {
+        // Menü etiketinde yer tutucu ("{{city}} Web Tasarım") anlamsız olur.
+        return Placeholder::strip($this->title) ?: $this->title;
+    }
+
+    /**
+     * Slug değiştiyse eski → yeni umbrella (bölgesiz) adres. Bölgeli adresler
+     * ({slug}/{bölge}) önek yönlendirmesiyle kapsanır — RedirectService bunu
+     * bir prefix kaydıyla birlikte oluşturur.
+     *
+     * @return array{from: string, to: string}|null
+     */
+    public function redirectableMove(): ?array
+    {
+        if (! $this->wasChanged('slug')) {
+            return null;
+        }
+
+        return [
+            'from' => 'hizmetler/'.$this->getOriginal('slug'),
+            'to' => 'hizmetler/'.$this->slug,
+        ];
     }
 
     /** @return array<string, mixed> */

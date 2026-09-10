@@ -13,7 +13,9 @@ use App\Http\Controllers\Admin\Hero\HeroController;
 use App\Http\Controllers\Admin\Integration\IntegrationController;
 use App\Http\Controllers\Admin\Media\MediaController;
 use App\Http\Controllers\Admin\Media\MediaFolderController;
+use App\Http\Controllers\Admin\Menu\MenuController;
 use App\Http\Controllers\Admin\Page\PageController;
+use App\Http\Controllers\Admin\Redirect\RedirectController;
 use App\Http\Controllers\Admin\Reference\ReferenceController;
 use App\Http\Controllers\Admin\Role\RoleController;
 use App\Http\Controllers\Admin\Service\ServiceController;
@@ -165,6 +167,43 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
         Route::get('{page}/edit', 'edit')->name('edit');
         Route::put('{page}', 'update')->name('update');
         Route::delete('{page}', 'destroy')->name('destroy');
+    });
+
+    // Menü yöneticisi. Konumlar (header, footer sütunları) sabittir; öğe
+    // tekil route'ları menü grubunun DIŞINDA — {menu} joker'ıyla çakışmasın.
+    Route::prefix('menu')->name('menu.')->controller(MenuController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('{menu}', 'edit')->name('edit');
+        Route::get('{menu}/tree', 'tree')->name('tree');
+        Route::put('{menu}', 'updateMenu')->name('update');
+        Route::put('{menu}/tree', 'saveTree')->name('save-tree');
+        Route::post('{menu}/items', 'storeItem')->name('items.store');
+    });
+
+    Route::prefix('menu-item')->name('menu-item.')->controller(MenuController::class)->group(function () {
+        Route::put('{menuItem}', 'updateItem')->name('update');
+        Route::delete('{menuItem}', 'destroyItem')->name('destroy');
+    });
+
+    // Yönlendirme yöneticisi + 404 kayıtları. Sabit segmentler {redirect}
+    // joker'ından ÖNCE tanımlanmalı.
+    Route::prefix('redirect')->name('redirect.')->controller(RedirectController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('datatable', 'datatable')->name('datatable');
+        Route::get('stats', 'stats')->name('stats');
+        Route::get('analyze', 'analyze')->name('analyze');
+        Route::get('export', 'export')->name('export');
+        Route::post('import', 'import')->name('import');
+        Route::get('form/{redirect?}', 'form')->name('form');
+        Route::post('/', 'store')->name('store');
+        Route::put('{redirect}/toggle', 'toggle')->name('toggle');
+        Route::put('{redirect}', 'update')->name('update');
+        Route::delete('{redirect}', 'destroy')->name('destroy');
+    });
+
+    Route::prefix('not-found')->name('not-found.')->controller(RedirectController::class)->group(function () {
+        Route::get('datatable', 'notFoundDatatable')->name('datatable');
+        Route::delete('{notFoundLog}', 'destroyNotFound')->name('destroy');
     });
 
     // Bölge ağacı: liste kırılımlı çalışır, datatable parent_id filtresiyle

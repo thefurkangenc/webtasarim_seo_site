@@ -3,6 +3,10 @@
 namespace App\Providers;
 
 use App\Listeners\LogAuthenticationActivity;
+use App\Models\Menu\Menu;
+use App\Models\Menu\MenuItem;
+use App\Observers\MenuObserver;
+use App\Observers\RedirectObserver;
 use App\Services\ActivityLog\ActivityLogger;
 use App\Services\Setting\SettingService;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -33,6 +37,15 @@ class AppServiceProvider extends ServiceProvider
 
         // <x-admin::form.input /> gibi bileşenler resources/views/admin/components altında.
         Blade::anonymousComponentPath(resource_path('views/admin/components'), 'admin');
+
+        // Menü ya da öğe değişince ön yüz menü önbelleğini temizle.
+        Menu::observe(MenuObserver::class);
+        MenuItem::observe(MenuObserver::class);
+
+        // Adresi değişen kayıtlar için otomatik 301 (Page, Service...).
+        foreach (config('redirects.auto_from', []) as $model) {
+            $model::observe(RedirectObserver::class);
+        }
 
         $this->app->booted(function () {
             $this->app->make(SettingService::class)->applyMailConfig();

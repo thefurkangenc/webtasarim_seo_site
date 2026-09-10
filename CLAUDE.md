@@ -136,6 +136,11 @@ Modüller bunların üzerine kurulur — yeniden yazma, kullan.
 | Giriş | `admin.login` / `admin.logout`, `auth` middleware `routes/admin.php`'de |
 | Roller | `super-admin` (Gate::before ile her izne sahip), `admin`, `editor` |
 | Log kayıtları (denetim) | `App\Models\Concerns\LogsActivity` + `<x-admin::activity-log-button>`, `/admin/activity-log` |
+| Sayfa yöneticisi | `App\Models\Page\Page` + `App\Services\Page\PageService`, `/admin/page` — hiyerarşik, `path` kolonu ön yüz adresini tutar, `/{path}` catch-all (`routes/pages.php`) |
+| Menü yöneticisi | `App\Models\Menu\{Menu,MenuItem}` + `App\Services\Menu\{MenuService,MenuRenderer}`, `/admin/menu` — sabit konumlar (header, footer×2), iç içe sürükle-bırak; ön yüzde `MenuRenderer::render('header')` |
+| Ön yüz bağlanabilir kayıt | `App\Contracts\LinksToPublicPage` — `publicUrl()` + `publicLinkLabel()`. Menü öğesi bir kayda polimorfik bağlanabilsin diye `Page`/`Service`/`Blog` uygular; yeni bir modül menüden seçilebilir olsun istiyorsa bu arayüzü uygular ve `config/menus.php` > `linkables`'a eklenir |
+| Yönlendirme + 404 | `App\Models\Redirect\{Redirect,NotFoundLog}` + `App\Services\Redirect\{RedirectResolver,RedirectService,NotFoundLogger}`, `/admin/redirect`. `NotFoundHttpException` render kancası (`bootstrap/app.php`) ön yüz 404'lerini önce yönlendirmeye çevirir, yoksa `not_found_logs`'a yazar |
+| Otomatik 301 | `App\Contracts\RedirectsOnMove` (`redirectableMove()`) + `App\Observers\RedirectObserver` — `config/redirects.php` > `auto_from` listesindeki model (`Page`, `Service`) adresi değişince eski → yeni 301'i kendiliğinden oluşur, zincirler düzleşir |
 
 Yeni modülün izinlerini `config/permissions.php` içindeki `permissions` dizisine
 ekle, kategorisini `categories`'e yaz ve seeder'ı tekrar çalıştır. Seeder

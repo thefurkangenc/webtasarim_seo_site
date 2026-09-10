@@ -3,6 +3,7 @@
     $headerLogoId = $headerCompany['logo_media_id'] ?? null;
     $headerLogo = $headerLogoId ? \App\Models\Media\Media::query()->find($headerLogoId) : null;
     $headerSocialLinks = app(\App\Services\SocialLink\SocialLinkService::class)->list();
+    $headerMenu = app(\App\Services\Menu\MenuRenderer::class)->render('header');
 @endphp
 
 <header>
@@ -19,22 +20,10 @@
                 </div>
                 <div class="col-lg-7 d-none d-lg-block text-end">
                     <div class="vl-main-menu">
+                        {{-- Öğeler panelden yönetilir: Menüler › Üst Menü.
+                             Mobil menü ayrı kodlanmaz, main.js bu <ul>'yi klonlar. --}}
                         <nav class="vl-mobile-menu-active">
-                            <ul>
-                                <li>
-                                    <a href="{{ route('anasayfa') }}">Ana Sayfa</a>
-
-                                </li>
-
-                                <li><a href="{{ route('hakkimizda') }}">Hakkımızda</a></li>
-
-
-                                <li><a href="{{ route('hizmetler') }}">Hizmetler</a></li>
-
-                                <li><a href="{{ route('blog') }}">Blog</a></li>
-                                <li><a href="{{ route('iletisim') }}">İletişim</a></li>
-
-                            </ul>
+                            @include('layout.partials.menu-nav', ['items' => $headerMenu, 'depth' => 0])
                         </nav>
                     </div>
                 </div>

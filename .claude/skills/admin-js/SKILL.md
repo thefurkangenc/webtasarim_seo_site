@@ -309,6 +309,7 @@ Bu dosya 40-60 satırda bitmelidir. Uzuyorsa ağır iş `core/`'a taşınmalıd�
 | `core/datepicker.js` | `[data-datepicker]` alanlarını Flatpickr'a çevirir (Türkçe, `altInput`). |
 | `core/table.js` `reorder` seçeneği + `reorderHandle()` | `DataTable`'a sürükle-bırak sıralama ekler — bkz. trezo-ui skill'i "Sürükle-bırak sıralama". |
 | `core/activity-log.js` | `historyButton(subjectType, id)` — satır aksiyonlarına "Geçmiş" ikonu ekler; `<x-admin::activity-log-button>` bileşeni bu dosyayı kendiliğinden yükler, sayfa JS'i yalnızca `historyButton` importunu satır şablonuna ekler. |
+| `core/menu-builder.js` | `new MenuBuilder(root, workspace)` — menü yöneticisine özel: iç içe sürükle-bırak ağaç + öğe kartları + ekle/düzenle modalı. Yalnızca `/admin/menu` kullanır. |
 
 ```js
 const output = await aiGenerator.open('blog.content', { defaults: { title } });

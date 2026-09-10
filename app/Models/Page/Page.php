@@ -2,6 +2,8 @@
 
 namespace App\Models\Page;
 
+use App\Contracts\LinksToPublicPage;
+use App\Contracts\RedirectsOnMove;
 use App\Models\Concerns\HasFaqs;
 use App\Models\Concerns\HasMedia;
 use App\Models\Concerns\HasSeo;
@@ -28,7 +30,7 @@ use Illuminate\Support\Carbon;
  * liste ekranında girintili görünüm için ek bir sorgu gerekmez.
  */
 #[Fillable(['parent_id', 'user_id', 'title', 'slug', 'path', 'excerpt', 'content', 'template', 'status', 'sort_order', 'published_at'])]
-class Page extends Model
+class Page extends Model implements LinksToPublicPage, RedirectsOnMove
 {
     use HasFaqs, HasMedia, HasSeo, HasSortOrder, HasTags, LogsActivity;
 
@@ -92,6 +94,32 @@ class Page extends Model
     public function url(): string
     {
         return url($this->path);
+    }
+
+    public function publicUrl(): ?string
+    {
+        return $this->isVisible() ? $this->url() : null;
+    }
+
+    public function publicLinkLabel(): string
+    {
+        return $this->title;
+    }
+
+    /**
+     * Yol değiştiyse eski → yeni. Alt sayfaların yolu da değişir ama her biri
+     * kendi `updated` olayını tetikler, bu yüzden burada yalnızca bu kaydın
+     * kendi yolu ele alınır.
+     *
+     * @return array{from: string, to: string}|null
+     */
+    public function redirectableMove(): ?array
+    {
+        if (! $this->wasChanged('path')) {
+            return null;
+        }
+
+        return ['from' => (string) $this->getOriginal('path'), 'to' => $this->path];
     }
 
     public function statusLabel(): string

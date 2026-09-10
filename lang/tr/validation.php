@@ -316,6 +316,20 @@ return [
         'cover_media_id' => 'kapak görseli',
         'faqs' => 'sıkça sorulan sorular',
         'faqs.*' => 'soru',
+
+        // Menü yöneticisi
+        'link_type' => 'bağlantı tipi',
+        'route_name' => 'hazır bağlantı',
+        'linkable_type' => 'kayıt türü',
+        'linkable_id' => 'kayıt',
+        'target' => 'açılış şekli',
+        'nodes' => 'menü yapısı',
+
+        // Yönlendirme yöneticisi
+        'from_path' => 'kaynak adres',
+        'match_type' => 'eşleşme tipi',
+        'to_url' => 'hedef',
+        'status_code' => 'durum kodu',
     ],
 
 ];

@@ -2,6 +2,7 @@
 
 namespace App\Models\Blog;
 
+use App\Contracts\LinksToPublicPage;
 use App\Models\BlogCategory\BlogCategory;
 use App\Models\Concerns\HasFaqs;
 use App\Models\Concerns\HasMedia;
@@ -17,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'blog_category_id', 'user_id', 'title', 'slug', 'excerpt', 'content',
     'status', 'published_at', 'is_featured',
 ])]
-class Blog extends Model
+class Blog extends Model implements LinksToPublicPage
 {
     use HasFaqs, HasMedia, HasSeo, HasTags, LogsActivity;
 
@@ -54,6 +55,20 @@ class Blog extends Model
     public function statusLabel(): string
     {
         return self::STATUSES[$this->status] ?? $this->status;
+    }
+
+    public function publicUrl(): ?string
+    {
+        // Blog detay route'u şu an {id} taşıyan bir taslak; yazı yayına
+        // girdiyse bağ verilir, detay sayfası tamamlanınca kendiliğinden çalışır.
+        return $this->status === self::STATUS_PUBLISHED
+            ? route('blog.show', $this->id)
+            : null;
+    }
+
+    public function publicLinkLabel(): string
+    {
+        return $this->title;
     }
 
     /** @return array<string, mixed> */

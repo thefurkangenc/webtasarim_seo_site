@@ -3,6 +3,9 @@
     $footerLogoId = $footerCompany['logo_media_id'] ?? null;
     $footerLogo = $footerLogoId ? \App\Models\Media\Media::query()->find($footerLogoId) : null;
     $footerSocialLinks = app(\App\Services\SocialLink\SocialLinkService::class)->list();
+    $footerMenus = app(\App\Services\Menu\MenuRenderer::class);
+    $footerPrimary = $footerMenus->render('footer_primary');
+    $footerSecondary = $footerMenus->render('footer_secondary');
 @endphp
 
 <footer class="vl-footer-area14" style="background-image: url({{ asset('assets/img/bg/footer-bg11.png') }});">
@@ -40,37 +43,47 @@
                         @endif
                     </div>
                 </div>
-                <div class="col-lg-2  col-md-6 col-6">
-                    <div class="vl-footer-widget-black6 mb-50 ml-20 md:ml-30 sm:ml-0">
-                        <h4>Quick Links</h4>
-                        <div class="vl-footer-list">
-                            <ul>
-                                <li><a href="index.html">Home</a></li>
-                                <li><a href="about.html">About Us</a></li>
-                                <li><a href="domain.html">Services</a></li>
-                                <li><a href="blog.html">Blog</a></li>
-                                <li><a href="contact.html">Contact Us</a></li>
-                                <li><a href="testimonial.html">Testimonails</a></li>
-                            </ul>
+                {{-- Footer bağlantı sütunları panelden yönetilir: Menüler ›
+                     Footer 1 / Footer 2. Sütun başlığı da o menünün başlığından gelir. --}}
+                @if ($footerPrimary !== [])
+                    <div class="col-lg-2  col-md-6 col-6">
+                        <div class="vl-footer-widget-black6 mb-50 ml-20 md:ml-30 sm:ml-0">
+                            <h4>{{ $footerMenus->heading('footer_primary') }}</h4>
+                            <div class="vl-footer-list">
+                                <ul>
+                                    @foreach ($footerPrimary as $item)
+                                        <li>
+                                            <a href="{{ $item['url'] }}"
+                                                @if ($item['target'] === '_blank') target="_blank" rel="noopener noreferrer" @endif>
+                                                {{ $item['label'] }}
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
+                @endif
 
-                <div class="col-lg-3 col-md-4 col-6">
-                    <div class="vl-footer-widget-black6 mb-50 ml-70 md:ml-0 sm:ml-0">
-                        <h4>Category List</h4>
-                        <div class="vl-footer-list">
-                            <ul>
-                                <li><a href="#">Digital Marketing</a></li>
-                                <li><a href="#">SEO Marketing</a></li>
-                                <li><a href="#">Startup Agency</a></li>
-                                <li><a href="#">Advertising Agency</a></li>
-                                <li><a href="#">Social Media Agency</a></li>
-                                <li><a href="#">Web Design Agency</a></li>
-                            </ul>
+                @if ($footerSecondary !== [])
+                    <div class="col-lg-3 col-md-4 col-6">
+                        <div class="vl-footer-widget-black6 mb-50 ml-70 md:ml-0 sm:ml-0">
+                            <h4>{{ $footerMenus->heading('footer_secondary') }}</h4>
+                            <div class="vl-footer-list">
+                                <ul>
+                                    @foreach ($footerSecondary as $item)
+                                        <li>
+                                            <a href="{{ $item['url'] }}"
+                                                @if ($item['target'] === '_blank') target="_blank" rel="noopener noreferrer" @endif>
+                                                {{ $item['label'] }}
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
+                @endif
 
                 <div class="col-lg-3 col-md-8 col-sm-6">
                     <div class="vl-footer-contact6 vl-footer-widget-black6 mb-50 sm:ml-0 md:ml-0">

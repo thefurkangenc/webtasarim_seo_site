@@ -2,6 +2,8 @@
 
 use App\Http\Middleware\EnsureSiteIsLive;
 use App\Http\Middleware\PermissionMiddleware as MiddlewarePermissionMiddleware;
+use App\Services\Redirect\NotFoundLogger;
+use App\Services\Redirect\RedirectResolver;
 use App\Support\Activity;
 use App\Support\Consent;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -14,6 +16,7 @@ use Spatie\Permission\Exceptions\UnauthorizedException;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Middleware\RoleMiddleware;
 use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -80,5 +83,35 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($request->expectsJson()) {
                 return response()->json(['success' => false, 'message' => 'Bu işlem için yetkiniz yok.'], 403);
             }
+        });
+
+        /*
+        | Ön yüzde bir adres hiçbir route'a denk gelmediğinde (ya da bir
+        | controller abort(404) attığında): önce yönlendirme yöneticisine
+        | sorulur, eşleşme yoksa 404 kaydına işlenip varsayılan 404'e bırakılır.
+        |
+        | Yalnızca ön yüz GET/HEAD istekleri: panel, API ve JSON istekleri ile
+        | yazma metotları dokunulmadan varsayılan davranışa gider.
+        */
+        $exceptions->render(function (NotFoundHttpException $e, Request $request) {
+            if (! in_array($request->method(), ['GET', 'HEAD'], true)) {
+                return null;
+            }
+
+            if ($request->expectsJson() || $request->is('admin', 'admin/*', 'api/*')) {
+                return null;
+            }
+
+            $result = app(RedirectResolver::class)->resolve($request->path());
+
+            if ($result) {
+                app(RedirectResolver::class)->registerHit($result->redirectId);
+
+                return $result->toResponse();
+            }
+
+            app(NotFoundLogger::class)->record($request);
+
+            return null;
         });
     })->create();

@@ -2446,3 +2446,52 @@ a:focus-visible,
         top: 95px;
     }
 }
+
+/* ============================================================================
+   Menü Yöneticisi ağacı (core/menu-builder.js)
+   Tailwind class'ı uydurmamak için ağaç girintisi/kartlar burada; iç içe
+   sürükle-bırak listelerinin görsel hiyerarşisi utility'lerle temiz çıkmıyor.
+   ========================================================================= */
+
+.menu-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Alt liste: sola bir bağlantı çizgisiyle girinti. Boşken bile bir bırakma
+   hedefi olarak yükseklik korur. */
+.menu-list-nested {
+    margin-top: 8px;
+    margin-inline-start: 22px;
+    padding-inline-start: 14px;
+    border-inline-start: 2px solid var(--ui-hairline);
+    min-height: 4px;
+}
+
+.menu-list-nested:empty {
+    min-height: 0;
+    margin-top: 0;
+}
+
+.menu-node {
+    border-radius: 8px;
+}
+
+.menu-node-head {
+    transition: border-color .15s ease, background-color .15s ease;
+}
+
+.menu-node:hover > .menu-node-head {
+    border-color: var(--color-primary-200);
+}
+
+.menu-node-ghost > .menu-node-head {
+    opacity: .4;
+    border-style: dashed;
+    border-color: var(--color-primary-500);
+}
+
+.menu-drag:active {
+    cursor: grabbing;
+}
