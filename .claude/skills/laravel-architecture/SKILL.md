@@ -249,6 +249,7 @@ Hata mesajları Türkçe yazılır — arayüzde doğrudan input altına basıl�
 
 namespace App\Models\Blog;
 
+use App\Models\Concerns\LogsActivity;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -256,6 +257,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable(['category_id', 'title', 'slug', 'excerpt', 'content', 'image', 'status', 'published_at'])]
 class Blog extends Model
 {
+    use LogsActivity;
+
     /** @return array<string, string> */
     protected function casts(): array
     {
@@ -271,6 +274,9 @@ class Blog extends Model
     }
 }
 ```
+
+`LogsActivity` **her modelde** kullanılır (görsel/SEO/etiket gibi "varsa"
+değildir) — eklenme/düzenlenme/silinme kendiliğinden denetim kaydına yazılır.
 
 Görsel alanı olan modeller `App\Models\Concerns\HasMedia` trait'ini kullanır;
 modelde `image` kolonu açılmaz, bağlantı `mediables` pivotu üzerinden kurulur.
@@ -388,6 +394,7 @@ Kural: serviste `validated()` çıktısındaki her **nullable** alanı `?? null`
 | `App\Models\Concerns\HasSeo` / `HasTags` / `HasMedia` | polymorphic bağlar |
 | `App\Models\Concerns\HasSortOrder` + `App\Services\Concerns\ReordersRecords` | sürükle-bırak sıralama — model otomatik sıra alır, servis `reorder()` alır. `sort_order` formda **yer almaz**, `attributes()`'a eklenmez. |
 | `App\Http\Requests\Admin\ReorderRequest` | tüm modüllerin `reorder` uç noktası bunu kullanır, ayrı Request açılmaz |
+| `App\Models\Concerns\LogsActivity` | denetim kaydı — **her modele eklenir**, "varsa" değil. Model olayı tetiklemeyen işlemler (sıralama, toplu işlem) `App\Support\Activity::record(...)` ile elle loglanır. Ayrıntı: `CLAUDE.md` → "Log Kaydı". |
 
 Create/Update Request'leri: kurallar aynıysa Update, Create'i **extend eder**;
 benzersizlik kuralı `->ignore($this->route('blog'))` ile ekleme sırasında da
@@ -408,3 +415,5 @@ Kod yazmayı bitirince:
 - [ ] Validation mesajları Türkçe
 - [ ] Servis içinde `request()`, `session()`, `redirect()` geçmiyor
 - [ ] Model `Admin/` namespace'i altında değil
+- [ ] Model `LogsActivity` kullanıyor; model olayı tetiklemeyen toplu/sıralama
+      işlemi varsa `Activity::record(...)` ile elle loglanmış

@@ -7,6 +7,7 @@ use App\Models\Concerns\HasMedia;
 use App\Models\Concerns\HasSeo;
 use App\Models\Concerns\HasSortOrder;
 use App\Models\Concerns\HasTags;
+use App\Models\Concerns\LogsActivity;
 use App\Models\ServiceRegion\ServiceRegion;
 use App\Models\User;
 use App\Support\Placeholder;
@@ -22,7 +23,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 #[Fillable(['user_id', 'title', 'slug', 'excerpt', 'content', 'status', 'sort_order'])]
 class Service extends Model
 {
-    use HasFaqs, HasMedia, HasSeo, HasSortOrder, HasTags;
+    use HasFaqs, HasMedia, HasSeo, HasSortOrder, HasTags, LogsActivity;
 
     public const STATUS_DRAFT = 'draft';
 

@@ -1527,6 +1527,9 @@
   .h-\[55px\] {
     height: 55px;
   }
+  .h-\[56px\] {
+    height: 56px;
+  }
   .h-\[59px\] {
     height: 59px;
   }
@@ -1691,6 +1694,12 @@
   }
   .max-h-\[55vh\] {
     max-height: 55vh;
+  }
+  .max-h-\[65vh\] {
+    max-height: 65vh;
+  }
+  .max-h-\[70vh\] {
+    max-height: 70vh;
   }
   .max-h-\[220px\] {
     max-height: 220px;
@@ -1886,6 +1895,9 @@
   }
   .w-\[55px\] {
     width: 55px;
+  }
+  .w-\[56px\] {
+    width: 56px;
   }
   .w-\[59px\] {
     width: 59px;
@@ -2150,6 +2162,9 @@
   }
   .max-w-\[960px\] {
     max-width: 960px;
+  }
+  .max-w-\[1080px\] {
+    max-width: 1080px;
   }
   .max-w-\[1100px\] {
     max-width: 1100px;
@@ -2846,6 +2861,12 @@
   .bg-danger-50 {
     background-color: var(--color-danger-50);
   }
+  .bg-danger-50\/40 {
+    background-color: color-mix(in srgb, #fff2f0 40%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--color-danger-50) 40%, transparent);
+    }
+  }
   .bg-danger-100 {
     background-color: var(--color-danger-100);
   }
@@ -3131,6 +3152,9 @@
   .p-\[25px\] {
     padding: 25px;
   }
+  .\!px-\[14px\] {
+    padding-inline: 14px !important;
+  }
   .\!px-\[20px\] {
     padding-inline: 20px !important;
   }
@@ -3250,6 +3274,9 @@
   }
   .\!py-0 {
     padding-block: 0px !important;
+  }
+  .\!py-\[7px\] {
+    padding-block: 7px !important;
   }
   .py-0 {
     padding-block: 0px;
@@ -3400,6 +3427,9 @@
   }
   .py-\[48px\] {
     padding-block: 48px;
+  }
+  .py-\[50px\] {
+    padding-block: 50px;
   }
   .py-\[60px\] {
     padding-block: 60px;
@@ -3671,6 +3701,9 @@
   }
   .\!text-\[13px\] {
     font-size: 13px !important;
+  }
+  .\!text-\[14px\] {
+    font-size: 14px !important;
   }
   .\!text-\[15px\] {
     font-size: 15px !important;
@@ -4854,6 +4887,9 @@
     }
     .sm\:w-\[240px\] {
       width: 240px;
+    }
+    .sm\:w-\[260px\] {
+      width: 260px;
     }
     .sm\:w-\[265px\] {
       width: 265px;
@@ -6350,6 +6386,9 @@
     }
     .xl\:grid-cols-5 {
       grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+    .xl\:grid-cols-6 {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
     }
     .xl\:gap-\[50px\] {
       gap: 50px;
@@ -8824,6 +8863,12 @@
     background-color: color-mix(in srgb, #3A4252 54%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
       background-color: color-mix(in oklab, var(--color-black) 54%, transparent);
+    }
+  }
+  .dark\:bg-danger-500\/5:where([class=dark], [class=dark] *) {
+    background-color: color-mix(in srgb, #FF4023 5%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--color-danger-500) 5%, transparent);
     }
   }
   .dark\:bg-dark:where([class=dark], [class=dark] *) {

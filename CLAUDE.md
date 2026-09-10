@@ -115,6 +115,7 @@ Modüller bunların üzerine kurulur — yeniden yazma, kullan.
 | JS çekirdeği | `public/admin/assets/js/core/` — http, form, modal, table, toast, confirm, editor, seo-field, tag-input, ai-generator |
 | Giriş | `admin.login` / `admin.logout`, `auth` middleware `routes/admin.php`'de |
 | Roller | `super-admin` (Gate::before ile her izne sahip), `admin`, `editor` |
+| Log kayıtları (denetim) | `App\Models\Concerns\LogsActivity` + `<x-admin::activity-log-button>`, `/admin/activity-log` |
 
 Yeni modülün izinlerini `config/permissions.php` içindeki `permissions` dizisine
 ekle, kategorisini `categories`'e yaz ve seeder'ı tekrar çalıştır. Seeder
@@ -208,6 +209,39 @@ mod değişince editör, içerik korunarak yeniden kurulur.
 Alan adı nokta notasyonuyla verilir (`seo.meta_title`); bileşen HTML `name`
 özniteliğini `seo[meta_title]` yapar, `data-error` yuvası nokta notasyonunda
 kalır — Laravel hataları o anahtarla döndürüyor.
+
+### Log Kaydı (denetim/audit)
+
+**Yeni kurulan her modül bunu alır — atlanmaz.** Modelde tek satır:
+
+```php
+class Blog extends Model { use LogsActivity; }
+```
+
+Bu kadar; ekleme/düzenleme/silme kendiliğinden loglanır (IP, tarayıcı,
+işletim sistemi, cihaz, konum, yapan kullanıcı ve alan bazlı diff dahil).
+İndex sayfasına buton eklenir:
+
+```blade
+<x-admin::activity-log-button module="blog" />
+```
+
+`module` değeri modelin `activityLogName()`'i ile (varsayılan: sınıf adının
+kebab-case hali) eşleşmeli. Satır aksiyonlarına "Geçmiş" ikonu eklemek için
+sayfa JS'inde:
+
+```js
+import { historyButton } from '../../core/activity-log.js';
+// satır şablonunda: ${historyButton('App\\Models\\Blog\\Blog', item.id)}
+```
+
+Model olayı **olmayan** durumlar (sıralama, toplu işlem, ayar kaydetme, giriş/
+çıkış, yetkisiz erişim) için `App\Support\Activity::record(...)` — bu proje
+zaten `ReordersRecords`, `SettingService`, `MediaService` içinde bağlı, yeni
+bir modülde benzer bir toplu/sıralama işlemi varsa aynı kalıp izlenir.
+
+Merkezi liste `/admin/activity-log`. Ayrıntı: `config/activity-log.php`
+(modül/olay etiketleri ve ikonları, maskelenecek alanlar, IP-konum ayarları).
 
 ## Yapay Zeka Modülü
 

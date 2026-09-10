@@ -2,6 +2,7 @@
 
 namespace App\Models\Media;
 
+use App\Models\Concerns\LogsActivity;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -17,6 +18,8 @@ use Illuminate\Support\Facades\Storage;
 ])]
 class Media extends Model
 {
+    use LogsActivity;
+
     /** @return array<string, string> */
     protected function casts(): array
     {

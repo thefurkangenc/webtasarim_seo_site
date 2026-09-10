@@ -20,10 +20,12 @@
 
     {{-- Tekil kayıt: liste ve modal yok, sayfanın kendisi formdur. --}}
     <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
-        <div class="trezo-card-header mb-[20px] md:mb-[25px]">
+        <div class="trezo-card-header mb-[20px] md:mb-[25px] flex items-center justify-between gap-[12px] flex-wrap">
             <div class="trezo-card-title">
                 <h5 class="!mb-0">Ana Sayfa Tanıtım Bölümü</h5>
             </div>
+            {{-- Tekil kayıt olduğu için satır bazlı "Geçmiş" yok; modül logu burada. --}}
+            <x-admin::activity-log-button module="hero" />
         </div>
         <div class="trezo-card-content">
             <form id="hero-form" action="{{ route('admin.hero.update') }}" method="POST">

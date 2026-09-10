@@ -6,6 +6,7 @@ import { AjaxModal } from '../../core/modal.js';
 import { setLoading } from '../../core/form.js';
 import { cell, DataTable } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
+import { historyButton } from '../../core/activity-log.js';
 
 const modal = new AjaxModal();
 
@@ -47,6 +48,7 @@ const table = new DataTable({
         ${cell(`<code class="text-xs">${escapeHtml(item.model)}</code>`)}
         ${cell(item.is_active ? badge('aktif', 'success') : badge('pasif', 'danger'))}
         ${cell(`<div class="flex items-center gap-[9px]">
+            ${historyButton('App\\Models\\Ai\\AiProvider', item.id)}
             <button type="button" data-edit="${item.id}" title="Düzenle" class="text-gray-500 dark:text-gray-400 leading-none transition-all hover:text-primary-500">
                 <i class="material-symbols-outlined !text-md">edit</i>
             </button>

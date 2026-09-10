@@ -5,6 +5,7 @@ namespace App\Services\Setting;
 use App\Models\Media\Media;
 use App\Models\Setting\Setting;
 use App\Services\Integration\IntegrationService;
+use App\Support\Activity;
 use DomainException;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Database\QueryException;
@@ -78,6 +79,9 @@ class SettingService
     /** @param  array<string, mixed>  $values */
     public function putGroup(string $group, array $values): void
     {
+        // Diff için önceki değerler; döngüden ÖNCE okunmalı.
+        $before = $this->getGroup($group);
+
         DB::transaction(function () use ($group, $values) {
             foreach ($values as $key => $value) {
                 Setting::query()->updateOrCreate(
@@ -88,6 +92,45 @@ class SettingService
         });
 
         Cache::forget("settings.{$group}");
+
+        $this->logChanges($group, $before, $values);
+    }
+
+    /**
+     * Ayar grubu için TEK bir log yazar. Setting modeline LogsActivity
+     * eklenmedi: her ayar ayrı satır olduğu için tek kaydetmede onlarca
+     * anlamsız log oluşurdu.
+     *
+     * @param  array<string, mixed>  $before
+     * @param  array<string, mixed>  $after
+     */
+    private function logChanges(string $group, array $before, array $after): void
+    {
+        // Yalnızca gerçekten değişen anahtarlar; dokunulmayanlar loga girmez.
+        $changed = array_keys(array_filter(
+            $after,
+            fn ($value, $key) => ($before[$key] ?? null) !== $value,
+            ARRAY_FILTER_USE_BOTH,
+        ));
+
+        if ($changed === []) {
+            return;
+        }
+
+        $label = config("settings.groups.{$group}.title") ?? $group;
+
+        Activity::record(
+            logName: 'setting',
+            event: 'updated',
+            description: "Site ayarları güncellendi: {$label}",
+            subjectLabel: $label,
+            // sanitize(): SMTP parolası, API anahtarı gibi değerler maskelenir.
+            properties: [
+                'old' => Activity::sanitize(array_intersect_key($before, array_flip($changed))),
+                'new' => Activity::sanitize(array_intersect_key($after, array_flip($changed))),
+            ],
+            changedKeys: $changed,
+        );
     }
 
     /** @param  array<string, mixed>  $data */

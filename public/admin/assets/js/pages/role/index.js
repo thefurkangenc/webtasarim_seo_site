@@ -4,6 +4,7 @@ import { confirm } from '../../core/confirm.js';
 import { escapeHtml, http, HttpError } from '../../core/http.js';
 import { cell, DataTable } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
+import { historyButton } from '../../core/activity-log.js';
 
 const table = new DataTable({
     endpoint: '/admin/role/datatable',
@@ -19,6 +20,7 @@ const table = new DataTable({
         ${cell(item.permissions_count)}
         ${cell(item.users_count)}
         ${cell(`<div class="flex items-center gap-[9px]">
+            ${historyButton('App\\Models\\Role\\Role', item.id)}
             <a href="/admin/role/${item.id}/edit" title="Düzenle" class="text-gray-500 dark:text-gray-400 leading-none transition-all hover:text-primary-500">
                 <i class="material-symbols-outlined !text-md">edit</i>
             </a>

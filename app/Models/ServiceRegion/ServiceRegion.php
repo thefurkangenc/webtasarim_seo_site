@@ -3,6 +3,7 @@
 namespace App\Models\ServiceRegion;
 
 use App\Models\Concerns\HasSortOrder;
+use App\Models\Concerns\LogsActivity;
 use App\Models\Service\Service;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
@@ -19,7 +20,7 @@ use Illuminate\Support\Collection;
 #[Fillable(['parent_id', 'name', 'slug', 'path', 'depth', 'description', 'sort_order', 'is_active'])]
 class ServiceRegion extends Model
 {
-    use HasSortOrder;
+    use HasSortOrder, LogsActivity;
 
     /** @return array<string, string> */
     protected function casts(): array

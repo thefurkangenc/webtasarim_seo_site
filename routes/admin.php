@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ActivityLog\ActivityLogController;
 use App\Http\Controllers\Admin\Ai\AiGenerationController;
 use App\Http\Controllers\Admin\AiPrompt\AiPromptController;
 use App\Http\Controllers\Admin\AiProvider\AiProviderController;
@@ -205,6 +206,17 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
         Route::put('reorder', 'reorder')->name('reorder');
         Route::put('{reference}', 'update')->name('update');
         Route::delete('{reference}', 'destroy')->name('destroy');
+    });
+
+    /*
+    | Denetim kayıtları salt okunurdur: yalnızca listeleme ve detay uçları
+    | vardır. Log oluşturma/düzenleme/silme HTTP üzerinden yapılamaz;
+    | temizlik yalnızca `php artisan activity-log:prune` ile yapılır.
+    */
+    Route::prefix('activity-log')->name('activity-log.')->controller(ActivityLogController::class)->group(function () {
+        Route::get('/', 'index')->name('index')->middleware('permission:activity-log.index');
+        Route::get('datatable', 'datatable')->name('datatable')->middleware('permission:activity-log.index');
+        Route::get('{activityLog}', 'show')->name('show')->middleware('permission:activity-log.index');
     });
 
     Route::prefix('faq')->name('faq.')->controller(FaqController::class)->group(function () {

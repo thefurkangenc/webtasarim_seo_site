@@ -133,6 +133,13 @@ return [
                 'permission' => 'setting.index',
             ],
             [
+                'title' => 'Log Kayıtları',
+                'icon' => 'history',
+                'route' => 'admin.activity-log.index',
+                'active' => 'admin.activity-log.*',
+                'permission' => 'activity-log.index',
+            ],
+            [
                 'title' => 'Yapay Zeka',
                 'icon' => 'smart_toy',
                 'children' => [

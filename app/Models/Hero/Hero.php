@@ -3,11 +3,12 @@
 namespace App\Models\Hero;
 
 use App\Models\Concerns\HasMedia;
+use App\Models\Concerns\LogsActivity;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 
 #[Fillable(['badge', 'title', 'description', 'button_text', 'button_url'])]
 class Hero extends Model
 {
-    use HasMedia;
+    use HasMedia, LogsActivity;
 }

@@ -233,6 +233,32 @@ const output = await aiGenerator.open('hizmet.content', { defaults: { title } })
 
 Butonu `@can('ai.generate')` ile sar.
 
+## 12f. Log kaydı (denetim) — HER MODÜLDE, atlanmaz
+
+1. Modele `use App\Models\Concerns\LogsActivity;` ekle. Modül anahtarı
+   otomatik sınıf adından türer (`BlogCategory` -> `blog-category`); farklı
+   olacaksa `activityLogName()` ezilir (bkz. `Media\MediaFolder` -> `'media'`
+   örneği).
+2. Index sayfasına buton: `<x-admin::activity-log-button module="blog-category" />`
+   ("Yeni Ekle" butonunun solunda, aynı `trezo-card-subtitle` içinde).
+3. Satır aksiyonlarına "Geçmiş" ikonu — sayfa JS'inde:
+   ```js
+   import { historyButton } from '../../core/activity-log.js';
+   // satır şablonunda, edit/delete butonlarının yanına:
+   ${historyButton('App\\Models\\BlogCategory\\BlogCategory', item.id)}
+   ```
+4. Modülde sürükle-bırak sıralama veya toplu işlem varsa (bkz. yukarıdaki
+   sıralama bölümü) — bunlar sorgu kurucusu kullandığı için model olayı
+   TETİKLEMEZ, `LogsActivity` onları göremez. `ReordersRecords` trait'i bunu
+   zaten kendiliğinden loglar; kendi toplu işlemini yazıyorsan
+   `App\Support\Activity::record(...)` ile elle bir özet log ekle (örnek:
+   `MediaService::bulkDelete()`).
+5. Modülün kategorisini `config/activity-log.php`'deki `modules` dizisine
+   ekle (etiket + ikon) — eklenmezse anahtar olduğu gibi görünür, kırılmaz
+   ama arayüzde çirkin durur.
+
+Ayrıntı ve gerekçe: `CLAUDE.md` → "Log Kaydı (denetim/audit)".
+
 ## 13. Doğrula
 
 Tarayıcıda aç ve şunları gerçekten dene — "yaptım" demeden önce:
@@ -247,6 +273,8 @@ Tarayıcıda aç ve şunları gerçekten dene — "yaptım" demeden önce:
 - [ ] Silme onayı çıkıyor ve kayıt siliniyor
 - [ ] Yetkisiz kullanıcı sidebar'da modülü görmüyor ve route'a erişemiyor
 - [ ] Dark mode bozulmamış
+- [ ] "Log Kayıtları" butonu açılıyor, kayıt ekleme/düzenleme/silme orada görünüyor
+- [ ] Satırdaki "Geçmiş" butonu yalnızca o kaydın loglarını gösteriyor
 
 ## Oluşturulan dosyaların özeti
 

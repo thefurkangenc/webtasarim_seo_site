@@ -2,12 +2,21 @@
 
 namespace App\Models\Role;
 
+use App\Models\Concerns\LogsActivity;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Spatie\Permission\Models\Role as SpatieRole;
 
 #[Fillable(['name', 'guard_name', 'label'])]
 class Role extends SpatieRole
 {
+    use LogsActivity;
+
+    /** Log modül anahtarı: bu model 'role' altında toplanır. */
+    public function activityLogName(): string
+    {
+        return 'role';
+    }
+
     public const SUPER_ADMIN = 'super-admin';
 
     /** Panelde seçilebilir korumalar; şu an yalnızca web. */

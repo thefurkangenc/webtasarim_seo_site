@@ -38,6 +38,7 @@
                     </button>
                 @endcan
 
+                    <x-admin::activity-log-button module="testimonial" />
                     @can('testimonial.store')
                     <button type="button" id="testimonial-create"
                         class="inline-flex items-center gap-[6px] py-[9px] px-[20px] bg-primary-500 text-white transition-all hover:bg-primary-400 rounded-md border border-primary-500 hover:border-primary-400">

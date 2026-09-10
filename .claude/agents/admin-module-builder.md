@@ -20,7 +20,10 @@ Yoksa `ls app/Services/` ile mevcut olanlara bak.
 
 ## Sonra çalış
 
-`admin-module` skill'indeki 13 adımı sırayla uygula. Adım atlama.
+`admin-module` skill'indeki adımları sırayla uygula (0'dan Doğrula'ya, ara
+adımlar dahil — görsel/SEO/etiket/AI gibi "varsa" adımları da modül bu
+alanlardan birine sahipse atlamadan). Log kaydı (12f) istisnadır: "varsa"
+değildir, HER modülde uygulanır.
 
 Markup gerektiğinde `trezo-ui-extractor` agent'ına sor — template HTML
 dosyalarını kendin okuma, her biri 2000-3000 satır ve bağlamı boğar.

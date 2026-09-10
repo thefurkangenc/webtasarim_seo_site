@@ -25,6 +25,7 @@ return [
         'hero' => 'Tanıtım Alanı',
         'service' => 'Hizmetler',
         'service-region' => 'Hizmet Bölgeleri',
+        'activity-log' => 'Log Kayıtları',
     ],
 
     'permissions' => [
@@ -174,6 +175,8 @@ return [
         ['name' => 'service-region.reorder', 'label' => 'Hizmet Bölgesi - Sırala', 'category' => 'service-region', 'guard_name' => 'web'],
         ['name' => 'service-region.update', 'label' => 'Hizmet Bölgesi - Güncelle', 'category' => 'service-region', 'guard_name' => 'web'],
         ['name' => 'service-region.destroy', 'label' => 'Hizmet Bölgesi - Sil', 'category' => 'service-region', 'guard_name' => 'web'],
+
+        ['name' => 'activity-log.index', 'label' => 'Log Kayıtları - Görüntüle', 'category' => 'activity-log', 'guard_name' => 'web'],
 
     ],
 

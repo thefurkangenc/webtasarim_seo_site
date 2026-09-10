@@ -4,6 +4,7 @@ import { confirm } from '../../core/confirm.js';
 import { escapeHtml, http, HttpError } from '../../core/http.js';
 import { cell, DataTable } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
+import { historyButton } from '../../core/activity-log.js';
 
 const BADGES = {
     published: 'bg-success-100 dark:bg-[#15203c] text-success-600 dark:text-success-500',
@@ -38,6 +39,7 @@ const table = new DataTable({
             ${item.is_featured ? ' <i class="material-symbols-outlined !text-[16px] text-warning-500 align-middle" title="Öne çıkan">star</i>' : ''}`)}
         ${cell(escapeHtml(item.published_at ?? '—'))}
         ${cell(`<div class="flex items-center gap-[9px]">
+            ${historyButton('App\\Models\\Blog\\Blog', item.id)}
             <a href="/admin/blog/${item.id}/edit" title="Düzenle" class="text-gray-500 dark:text-gray-400 leading-none transition-all hover:text-primary-500">
                 <i class="material-symbols-outlined !text-md">edit</i>
             </a>

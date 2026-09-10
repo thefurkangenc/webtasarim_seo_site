@@ -2,6 +2,7 @@
 
 namespace App\Models\Ai;
 
+use App\Models\Concerns\LogsActivity;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,6 +13,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 ])]
 class AiPrompt extends Model
 {
+    use LogsActivity;
+
+    /** Log modül anahtarı: bu model 'ai' altında toplanır. */
+    public function activityLogName(): string
+    {
+        return 'ai';
+    }
+
     /** @return array<string, string> */
     protected function casts(): array
     {

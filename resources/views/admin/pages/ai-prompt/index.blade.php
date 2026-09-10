@@ -33,6 +33,7 @@
                     <i class="material-symbols-outlined !text-[19px] absolute text-gray-500 ltr:right-[12px] rtl:left-[12px] top-1/2 -translate-y-1/2">search</i>
                 </div>
 
+                <x-admin::activity-log-button module="ai" />
                 @can('ai-prompt.store')
                     <button type="button" id="prompt-create"
                         class="inline-flex items-center gap-[6px] py-[9px] px-[20px] bg-primary-500 text-white transition-all hover:bg-primary-400 rounded-md border border-primary-500 hover:border-primary-400">

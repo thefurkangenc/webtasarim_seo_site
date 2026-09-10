@@ -5,6 +5,7 @@ import { escapeHtml, http, HttpError } from '../../core/http.js';
 import { AjaxModal } from '../../core/modal.js';
 import { cell, DataTable, reorderHandle } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
+import { historyButton } from '../../core/activity-log.js';
 
 const modal = new AjaxModal();
 
@@ -38,6 +39,7 @@ const table = new DataTable({
         ${cell(stars(item.rating))}
         ${cell(escapeHtml(truncate(item.content)))}
         ${cell(`<div class="flex items-center gap-[9px]">
+            ${historyButton('App\\Models\\Testimonial\\Testimonial', item.id)}
             <button type="button" data-edit="${item.id}" title="Düzenle" class="text-gray-500 dark:text-gray-400 leading-none transition-all hover:text-primary-500">
                 <i class="material-symbols-outlined !text-md">edit</i>
             </button>

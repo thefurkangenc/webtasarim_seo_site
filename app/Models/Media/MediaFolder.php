@@ -2,6 +2,7 @@
 
 namespace App\Models\Media;
 
+use App\Models\Concerns\LogsActivity;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -11,6 +12,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[Fillable(['parent_id', 'name', 'sort_order'])]
 class MediaFolder extends Model
 {
+    use LogsActivity;
+
+    /** Log modül anahtarı: bu model kendi adıyla değil 'media' altında toplanır. */
+    public function activityLogName(): string
+    {
+        return 'media';
+    }
+
     public function parent(): BelongsTo
     {
         return $this->belongsTo(self::class, 'parent_id');

@@ -57,6 +57,13 @@ Kurallar: `CLAUDE.md` ve `.claude/skills/` altındaki skill dosyaları.
 - JSON yanıtları sözleşmeye uyuyor mu
 - `config/admin-menu.php` girişi eklenmiş mi
 - İzinler seeder'a eklenmiş mi
+- Model `LogsActivity` kullanıyor mu — yeni kurulan her modülde olmalı,
+  "varsa" değil
+- Modülün model olayı tetiklemeyen bir toplu/sıralama işlemi varsa
+  (`->update()` sorgu kurucusuyla, döngüyle vb.) `Activity::record(...)`
+  ile elle loglanmış mı
+- İndex sayfasında `<x-admin::activity-log-button module="...">` var mı,
+  `module` değeri modelin log anahtarıyla eşleşiyor mu
 
 ## Nasıl raporlarsın
 

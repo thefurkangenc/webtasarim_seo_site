@@ -4,6 +4,7 @@ import { confirm } from '../../core/confirm.js';
 import { escapeHtml, http, HttpError } from '../../core/http.js';
 import { cell, DataTable, reorderHandle } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
+import { historyButton } from '../../core/activity-log.js';
 
 const BADGES = {
     published: 'bg-success-100 dark:bg-[#15203c] text-success-600 dark:text-success-500',
@@ -40,6 +41,7 @@ const table = new DataTable({
         ${cell(`<span class="inline-block py-[3px] px-[10px] rounded-sm text-xs ${BADGES[item.status]}">${escapeHtml(item.status_label)}</span>`)}
         ${cell(escapeHtml(item.created_at ?? '—'))}
         ${cell(`<div class="flex items-center gap-[9px]">
+            ${historyButton('App\\Models\\Service\\Service', item.id)}
             <a href="/admin/service/${item.id}/edit" title="Düzenle" class="text-gray-500 dark:text-gray-400 leading-none transition-all hover:text-primary-500">
                 <i class="material-symbols-outlined !text-md">edit</i>
             </a>

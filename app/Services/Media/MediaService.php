@@ -3,6 +3,7 @@
 namespace App\Services\Media;
 
 use App\Models\Media\Media;
+use App\Support\Activity;
 use DomainException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -141,6 +142,19 @@ class MediaService
         $result = $this->folders->moveMany($folderIds, $targetFolderId);
         $result['moved'] += count($mediaIds);
 
+        // Taşıma sorgu kurucusuyla yapılıyor (Media::whereIn()->update), yani
+        // model olayı tetiklenmiyor — bu özet kayıt tek izidir.
+        Activity::record(
+            logName: 'media',
+            event: 'bulk_move',
+            description: $result['moved'].' öğe başka klasöre taşındı.',
+            properties: ['new' => [
+                'media_ids' => array_values($mediaIds),
+                'folder_ids' => array_values($folderIds),
+                'target_folder_id' => $targetFolderId,
+            ]],
+        );
+
         return $result;
     }
 
@@ -158,6 +172,20 @@ class MediaService
 
         $result = $this->folders->deleteMany($folderIds);
         $result['deleted'] += $deleted;
+
+        // Her dosya kendi 'deleted' kaydını da yazar (LogsActivity) — orada
+        // silinen kaydın son hali durur. Buradaki özet "tek seferde şu kadar
+        // öğe silindi" bilgisini verir; ikisi aynı request_id ile bağlıdır.
+        Activity::record(
+            logName: 'media',
+            event: 'bulk_delete',
+            description: $result['deleted'].' öğe kalıcı olarak silindi.',
+            properties: ['new' => [
+                'media_ids' => array_values($mediaIds),
+                'folder_ids' => array_values($folderIds),
+                'skipped' => $result['skipped'] ?? [],
+            ]],
+        );
 
         return $result;
     }

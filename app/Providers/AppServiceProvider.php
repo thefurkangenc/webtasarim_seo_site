@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
+use App\Listeners\LogAuthenticationActivity;
+use App\Services\ActivityLog\ActivityLogger;
 use App\Services\Setting\SettingService;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
@@ -14,13 +17,19 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //
+        // Singleton: istek bağlamı (user-agent ayrıştırması, IP, request_id)
+        // istek başına bir kez hesaplanıp o istekteki tüm loglarda paylaşılır.
+        $this->app->singleton(ActivityLogger::class);
     }
 
     public function boot(): void
     {
         // super-admin her izne sahiptir; izin listesi senkronlanmaz.
         Gate::before(fn ($user) => $user->hasRole('super-admin') ? true : null);
+
+        // Giriş/çıkış/başarısız giriş denetim kaydına yazılır. Olay keşfine
+        // güvenmek yerine açıkça kaydediliyor.
+        Event::subscribe(LogAuthenticationActivity::class);
 
         // <x-admin::form.input /> gibi bileşenler resources/views/admin/components altında.
         Blade::anonymousComponentPath(resource_path('views/admin/components'), 'admin');

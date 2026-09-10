@@ -2,20 +2,23 @@
 @section('admin.title', 'Medya Kütüphanesi')
 
 @section('content')
-    <div class="mb-[25px] md:flex items-center justify-between">
+    <div class="mb-[25px] md:flex items-center justify-between gap-[15px]">
         <h5 class="!mb-0">Medya Kütüphanesi</h5>
-        <ol class="breadcrumb mt-[12px] md:mt-0">
-            <li class="breadcrumb-item inline-block relative text-sm mx-[11px] ltr:first:ml-0 rtl:first:mr-0 ltr:last:mr-0 rtl:last:ml-0">
-                <a href="{{ route('admin.dashboard') }}"
-                    class="inline-block relative ltr:pl-[22px] rtl:pr-[22px] transition-all hover:text-primary-500">
-                    <i class="material-symbols-outlined absolute ltr:left-0 rtl:right-0 !text-lg -mt-px text-primary-500 top-1/2 -translate-y-1/2">home</i>
-                    Dashboard
-                </a>
-            </li>
-            <li class="breadcrumb-item inline-block relative text-sm mx-[11px] ltr:first:ml-0 rtl:first:mr-0 ltr:last:mr-0 rtl:last:ml-0">
-                Medya
-            </li>
-        </ol>
+        <div class="flex items-center gap-[12px] mt-[12px] md:mt-0">
+            <x-admin::activity-log-button module="media" class="!py-[7px] !px-[14px] text-sm" />
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item inline-block relative text-sm mx-[11px] ltr:first:ml-0 rtl:first:mr-0 ltr:last:mr-0 rtl:last:ml-0">
+                    <a href="{{ route('admin.dashboard') }}"
+                        class="inline-block relative ltr:pl-[22px] rtl:pr-[22px] transition-all hover:text-primary-500">
+                        <i class="material-symbols-outlined absolute ltr:left-0 rtl:right-0 !text-lg -mt-px text-primary-500 top-1/2 -translate-y-1/2">home</i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="breadcrumb-item inline-block relative text-sm mx-[11px] ltr:first:ml-0 rtl:first:mr-0 ltr:last:mr-0 rtl:last:ml-0">
+                    Medya
+                </li>
+            </ol>
+        </div>
     </div>
 
     <div data-media-page class="grid grid-cols-1 lg:grid-cols-4 gap-[25px]">

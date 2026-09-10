@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\EnsureSiteIsLive;
 use App\Http\Middleware\PermissionMiddleware as MiddlewarePermissionMiddleware;
+use App\Support\Activity;
 use App\Support\Consent;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Application;
@@ -60,6 +61,8 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // FormRequest::authorize() false döndüğünde.
         $exceptions->render(function (AuthorizationException $e, Request $request) {
+            Activity::forbidden($request);
+
             if ($request->expectsJson()) {
                 return response()->json(['success' => false, 'message' => 'Bu işlem için yetkiniz yok.'], 403);
             }
@@ -67,6 +70,8 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // permission / role middleware reddettiğinde.
         $exceptions->render(function (UnauthorizedException $e, Request $request) {
+            Activity::forbidden($request);
+
             if ($request->expectsJson()) {
                 return response()->json(['success' => false, 'message' => 'Bu işlem için yetkiniz yok.'], 403);
             }

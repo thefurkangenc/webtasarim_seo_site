@@ -4,13 +4,14 @@ namespace App\Models\Reference;
 
 use App\Models\Concerns\HasMedia;
 use App\Models\Concerns\HasSortOrder;
+use App\Models\Concerns\LogsActivity;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 
 #[Fillable(['name', 'url', 'sort_order'])]
 class Reference extends Model
 {
-    use HasMedia, HasSortOrder;
+    use HasMedia, HasSortOrder, LogsActivity;
 
     /** @return array<string, string> */
     protected function casts(): array
