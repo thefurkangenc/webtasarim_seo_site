@@ -5,6 +5,7 @@ namespace App\Services\Blog;
 use App\Models\Blog\Blog;
 use App\Support\Slug;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class BlogService
@@ -63,6 +64,21 @@ class BlogService
             $blog->seo()->delete();
             $blog->delete();
         });
+    }
+
+    /**
+     * Ön yüzde yayındaki yazılar — ana sayfa teaser'ı bunu kullanır.
+     *
+     * @return Collection<int, Blog>
+     */
+    public function active(?int $limit = null): Collection
+    {
+        return Blog::where('status', Blog::STATUS_PUBLISHED)
+            ->with(['media', 'author:id,name'])
+            ->orderByDesc('is_featured')
+            ->orderByDesc('published_at')
+            ->when($limit, fn ($query, $limit) => $query->limit($limit))
+            ->get();
     }
 
     private function attributes(array $data): array

@@ -1,5 +1,10 @@
 @extends('layout.app')
 @section('title', 'Hizmetler')
+
+@push('css')
+    <link rel="stylesheet" href="{{ asset('assets/css/pages/services/index.css') }}">
+@endpush
+
 @section('content')
     <!--===== HERO AREA START =====-->
 
@@ -26,7 +31,7 @@
 
     <!--=== SERVICE AREA START === -->
 
-    <div class="service14-section sp">
+    <div class="service6 sp sec-bg5">
         <div class="container">
             @if ($services->isEmpty())
                 <div class="row">
@@ -38,25 +43,24 @@
                 <div class="row mt-30">
                     @foreach ($services as $service)
                         @php
-                            // Listede bölge bağlamı yok — yer tutucular kaldırılmış
-                            // genel (şemsiye) haliyle gösterilir.
                             $generic = $service->renderGeneric();
-                            $iconIndex = ($loop->iteration - 1) % 6 + 1;
+                            $cover = $service->getFirstMedia('cover');
                         @endphp
                         <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-duration="900">
-                            <div class="service14-boxarea">
-                                <div class="icons">
-                                    <img src="{{ asset("assets/img/icons/service14-icon{$iconIndex}.svg") }}" alt="">
-                                </div>
-                                <div class="space28"></div>
-                                <div class="content14-area">
-                                    <a href="{{ route('hizmetler.show', $service->slug) }}" class="title">{{ $generic['title'] }}</a>
-                                    <div class="space16"></div>
-                                    <p>{{ $generic['excerpt'] ?: \Illuminate\Support\Str::limit(strip_tags((string) $generic['content']), 120) }}</p>
-                                    <div class="space24"></div>
-                                    <div class="btn-area1">
-                                        <a href="{{ route('hizmetler.show', $service->slug) }}" class="theme-btn27">Detaylı Bilgi</a>
+                            <div class="service6-box mt-30">
+                                @if ($cover)
+                                    <div class="thumb">
+                                        <a href="{{ route('hizmetler.show', $service->slug) }}">
+                                            <img src="{{ $cover->url() }}" alt="{{ $generic['title'] }}">
+                                        </a>
                                     </div>
+                                @endif
+                                <div class="content heading6">
+                                    <h4><a href="{{ route('hizmetler.show', $service->slug) }}">{{ $generic['title'] }}</a></h4>
+                                    <p class="mt-16">{{ $generic['excerpt'] ?: \Illuminate\Support\Str::limit(strip_tags((string) $generic['content']), 120) }}</p>
+                                    <a href="{{ route('hizmetler.show', $service->slug) }}" class="learn">Detaylı Bilgi <span class="arrow1"><i
+                                                class="fa-solid fa-arrow-right"></i></span><span class="arrow2"><i
+                                                class="fa-solid fa-arrow-right"></i></span></a>
                                 </div>
                             </div>
                         </div>

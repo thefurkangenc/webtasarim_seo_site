@@ -1,0 +1,139 @@
+/*
+| Ana sayfa — hero galeri şeridi ve hizmet kartları.
+|
+| Şablonun .hero6 .marquee-text kuralı içeriği translateX(-100%) ile kaydırıyor
+| ve width: 100% veriyor: az görselde şerit ekranı doldurmaz, animasyon başa
+| dönene kadar boşluk kalır. Burada liste Blade tarafında iki kez basılıyor ve
+| şerit kendi genişliğinin yarısı kadar (-50%) kaydırılıyor — ikinci kopya
+| birinciyi tam olarak takip ettiği için akış boşluksuz sürüyor.
+|
+| Seçiciler .hero6 / .service6 ile sınırlı: main.css'e dokunmak gerekmez.
+*/
+
+.hero6 .hero6-bottom-slider .marquee-wrap {
+    height: auto;
+    overflow: hidden;
+}
+
+.hero6 .hero6-bottom-slider .marquee-text {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    margin-top: 0;
+    font-size: inherit;
+    line-height: normal;
+    animation: hero-gallery-marquee 40s linear infinite;
+}
+
+.hero6 .hero6-bottom-slider .marquee-text:hover {
+    animation-play-state: paused;
+}
+
+.hero6 .hero6-bottom-slider .brand-single-box {
+    margin-bottom: 0;
+    bottom: 0;
+    flex-shrink: 0;
+}
+
+.hero6 .hero6-bottom-slider .brand-single-box img {
+    display: block;
+    margin-bottom: 13px;
+}
+
+@keyframes hero-gallery-marquee {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+.service6 .service6-box {
+    padding: 0;
+    overflow: hidden;
+    height: calc(100% - 30px);
+}
+
+.service6 .service6-box .thumb img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 8 / 5;
+    object-fit: cover;
+    display: block;
+}
+
+.service6 .service6-box .content {
+    padding: 24px 32px 32px;
+    margin-top: 0;
+}
+
+.blog8 .vl-blog-10-item {
+    overflow: hidden;
+    height: calc(100% - 30px);
+    box-shadow: 0 10px 28px rgba(12, 7, 35, 0.06);
+}
+
+.blog8 .vl-blog-10-item .vl-blog-10-thumb .image img {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+}
+
+.blog8 .vl-blog-10-item .vl-blog10-meta a {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+    color: #6b6680;
+}
+
+.blog8 .vl-blog-10-item .vl-blog10-meta a img {
+    width: 16px;
+    height: 16px;
+}
+
+.blog8 .vl-blog-10-item .vl-blog-10-thumb .date {
+    display: inline-flex;
+    align-items: center;
+    top: 14px;
+    left: 14px;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.94);
+    color: #0c0723;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    border-radius: 999px;
+    box-shadow: 0 4px 14px rgba(12, 7, 35, 0.12);
+}
+
+.blog8 .vl-blog-10-item .vl-blog-10-thumb .date img {
+    display: none;
+}
+
+.blog8 .vl-blog-10-item .vl-blog-10-content {
+    padding: 18px 22px 22px;
+}
+
+.blog8 .vl-blog-10-item .vl-blog-10-content h5 {
+    margin-top: 8px;
+    margin-bottom: 10px;
+}
+
+.blog8 .vl-blog-10-item .vl-blog-10-content h5 a {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.35;
+    text-transform: none;
+}
+
+.blog8 .vl-blog-10-item .vl-blog-10-content .learn10 {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+    text-transform: none;
+    padding-top: 2px;
+    color: #6b6680;
+}

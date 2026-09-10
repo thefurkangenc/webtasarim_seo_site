@@ -1,0 +1,26 @@
+/*
+| Hizmetler listesi — service6 kartları.
+|
+| Şablon kartı ikon + dolgu için tasarlanmış; görseli kart genişliğine yaymak
+| için padding'i içeriğe taşıyoruz. Seçici .service6 ile sınırlı — main.css'e
+| dokunulmaz.
+*/
+
+.service6 .service6-box {
+    padding: 0;
+    overflow: hidden;
+    height: calc(100% - 30px);
+}
+
+.service6 .service6-box .thumb img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 8 / 5;
+    object-fit: cover;
+    display: block;
+}
+
+.service6 .service6-box .content {
+    padding: 24px 32px 32px;
+    margin-top: 0;
+}
