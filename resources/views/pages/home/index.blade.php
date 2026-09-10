@@ -95,7 +95,7 @@
                 <div class="col-lg-4">
                     <div class="heading1">
                         <span class="sub-title" data-aos="zoom-in-left" data-aos-duration="900"><img
-                                src="assets/img/icons/span1.svg" alt=""> ABOUT US</span>
+                                src="assets/img/icons/span1.svg" alt=""> Hakkımızda </span>
                         <h2 class="text-anime-style-3">{{ $homeAboutTitle ?: 'Dijitalde İz Bırakan Çözümler Üretiyoruz' }}
                         </h2>
                         @if (filled($homeAboutContent))
@@ -172,6 +172,7 @@
                     <div class="heading6 _mt-50">
                         <span class="sub-title">Hizmetlerimiz</span>
                         <h2 class="text-anime-style-3">İşinizi Büyütecek Hizmetler</h2>
+                        <p class="mt-16">Web tasarım, SEO ve dijital pazarlama ile markanızı arama sonuçlarında öne çıkarıyoruz. İhtiyacınıza uygun çözümlerle daha fazla görünürlük, trafik ve müşteri hedefliyoruz.</p>
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -261,7 +262,7 @@
                                 <path
                                     d="M9.99935 1.66699C10.3121 1.66699 10.6205 1.68394 10.9243 1.71783C11.0331 1.72986 11.1385 1.76321 11.2344 1.81596C11.3303 1.86871 11.4148 1.93983 11.4832 2.02526C11.5516 2.11069 11.6025 2.20875 11.633 2.31386C11.6635 2.41896 11.6731 2.52905 11.661 2.63783C11.649 2.7466 11.6156 2.85195 11.5629 2.94784C11.5101 3.04373 11.439 3.12829 11.3536 3.1967C11.2682 3.2651 11.1701 3.31601 11.065 3.34652C10.9599 3.37702 10.8498 3.38653 10.741 3.37449C9.36772 3.22086 7.98062 3.49778 6.77158 4.16693C5.56254 4.83608 4.59131 5.8644 3.99224 7.10966C3.39316 8.35491 3.19585 9.75555 3.42759 11.1178C3.65933 12.4801 4.30867 13.7368 5.2858 14.7139C6.26292 15.691 7.51954 16.3403 8.88183 16.5721C10.2441 16.8038 11.6448 16.6065 12.89 16.0074C14.1353 15.4084 15.1636 14.4371 15.8327 13.2281C16.5019 12.0191 16.7788 10.632 16.6252 9.25866C16.6131 9.14988 16.6227 9.0398 16.6532 8.93469C16.6837 8.82959 16.7346 8.73152 16.803 8.64609C16.9411 8.47356 17.1422 8.36297 17.3618 8.33866C17.5815 8.31435 17.8019 8.3783 17.9744 8.51645C18.0598 8.58486 18.131 8.66942 18.1837 8.76531C18.2365 8.86121 18.2698 8.96655 18.2818 9.07533C18.3152 9.37922 18.3321 9.68755 18.3327 10.0003C18.3327 14.6028 14.6018 18.3337 9.99935 18.3337C5.39685 18.3337 1.66602 14.6028 1.66602 10.0003C1.66602 5.39783 5.39685 1.66699 9.99935 1.66699ZM9.97268 6.56449C10.0276 6.77843 9.99534 7.00542 9.883 7.19558C9.77065 7.38575 9.5874 7.52353 9.37352 7.57866C8.78591 7.73259 8.27438 8.09505 7.93438 8.59842C7.59438 9.10178 7.44914 9.71166 7.52577 10.3142C7.60239 10.9168 7.89564 11.4709 8.3508 11.8732C8.80595 12.2754 9.39192 12.4984 9.99935 12.5003C10.5538 12.5006 11.0925 12.3165 11.5309 11.9771C11.9693 11.6377 12.2824 11.1621 12.421 10.6253C12.4801 10.4156 12.6189 10.2374 12.8078 10.1288C12.9967 10.0202 13.2206 9.98992 13.4315 10.0444C13.6425 10.0989 13.8237 10.2338 13.9364 10.4203C14.049 10.6067 14.0842 10.8299 14.0343 11.042C13.7787 12.0219 13.175 12.8753 12.3361 13.4426C11.4972 14.01 10.4805 14.2525 9.47582 14.1249C8.47115 13.9973 7.5473 13.5083 6.87685 12.7493C6.20641 11.9902 5.83524 11.0131 5.83268 10.0003C5.83254 9.07648 6.13943 8.17879 6.70511 7.44839C7.27079 6.71798 8.06318 6.19629 8.95768 5.96533C9.06367 5.93801 9.174 5.93184 9.28238 5.94717C9.39075 5.96249 9.49504 5.99902 9.5893 6.05466C9.68355 6.1103 9.76592 6.18396 9.8317 6.27144C9.89748 6.35892 9.94539 6.4585 9.97268 6.56449ZM15.4193 1.77283C15.5715 1.83589 15.7015 1.94261 15.793 2.0795C15.8845 2.21639 15.9334 2.37733 15.9335 2.54199V4.06699H17.4577C17.6225 4.06703 17.7836 4.11592 17.9206 4.20749C18.0576 4.29906 18.1644 4.4292 18.2274 4.58145C18.2905 4.7337 18.307 4.90122 18.2748 5.06285C18.2427 5.22448 18.1634 5.37295 18.0469 5.48949L15.0993 8.43366C14.9431 8.58995 14.7312 8.67778 14.5102 8.67783H12.4993L10.976 10.202C10.8196 10.3584 10.6076 10.4462 10.3864 10.4462C10.1653 10.4462 9.95322 10.3584 9.79685 10.202C9.64048 10.0456 9.55264 9.83355 9.55264 9.61241C9.55264 9.39127 9.64048 9.17919 9.79685 9.02283L11.321 7.50033V5.48866C11.3211 5.26766 11.4089 5.05574 11.5652 4.89949L14.511 1.95283C14.6276 1.83621 14.7761 1.75679 14.9377 1.7246C15.0994 1.69241 15.267 1.7089 15.4193 1.77199M14.2668 4.55283L12.9877 5.83366V7.01199H14.166L15.446 5.73283H15.1002C14.8792 5.73283 14.6672 5.64503 14.5109 5.48875C14.3546 5.33247 14.2668 5.12051 14.2668 4.89949V4.55283Z"
                                     fill="#050422"></path>
-                            </svg> Why Choose Us</h5>
+                            </svg> Neden Bizi Seçmelisiniz</h5>
                         <div class="space16"></div>
                         <h2 class="text-anime-style-3">
                             {{ $homeWhyHeading['title'] ?? '' ?: 'Vizyonunuzla Birlikte Büyüyen Akıllı Çözümler' }}</h2>
@@ -270,29 +271,15 @@
                             {{ $homeWhyHeading['description'] ?? '' ?: 'Sadece teknik değil, iş ortağınızız. İhtiyaçlarınızı anlamaya zaman ayırır, hızlı yanıt verir ve işinize özel çözümler üretiriz.' }}
                         </p>
                         <div class="space32"></div>
-                        <div class="choose-flex-area" data-aos="fade-up" data-aos-duration="1100">
-                            <img src="assets/img/others/abotu14-author1.png" alt="">
-                            <div class="text14">
-                                <h4>2K+ Review</h4>
-                                <div class="space10"></div>
-                                <ul>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li>(5.0 Rating)</li>
-                                </ul>
-                            </div>
-                        </div>
+                        
                         @if ($homeWhyChooseUs->isNotEmpty())
-                            <div class="row">
+                            <div class="choose14-reasons">
                                 @foreach ($homeWhyChooseUs as $reason)
-                                    <div class="col-lg-6 col-md-6" data-aos="fade-up"
-                                        data-aos-duration="{{ 900 + $loop->index * 100 }}">
-                                        <div class="choose14-boxarea">
-                                            <a href="#">{{ $reason->title }}</a>
-                                            <div class="space16"></div>
+                                    <div class="choose14-reason">
+                                        <span class="choose14-reason-mark" aria-hidden="true"><i
+                                                class="fa-solid fa-check"></i></span>
+                                        <div class="choose14-reason-text">
+                                            <h4>{{ $reason->title }}</h4>
                                             <p>{{ $reason->description }}</p>
                                         </div>
                                     </div>
@@ -394,11 +381,12 @@
         <div class="blog8 sp bg-cover bg-cover" style="background-image: url(assets/img/bg/sec-bg10.jpg);">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-6 m-auto text-center">
+                    <div class="col-lg-8 m-auto text-center">
                         <div class="heading10">
                             <span class="sub-title" data-aos="zoom-in-left" data-aos-duration="900"><img
                                     src="assets/img/icons/span10.svg" alt=""> Blog</span>
                             <h2 class="text-anime-style-3">Güncel Yazılar ve İçgörüler</h2>
+                            <p class="mt-16">Web tasarım, SEO ve dijital pazarlama üzerine pratik rehberler paylaşıyoruz. Sitenizi arama sonuçlarında güçlendirecek güncel öneriler burada.</p>
                         </div>
                     </div>
                 </div>
@@ -414,7 +402,7 @@
                                 <div class="vl-blog-10-thumb">
                                     @if ($homeBlogCover)
                                         <div class="image-anime image">
-                                            <a href="{{ route('blog.show', $homeBlog->id) }}">
+                                            <a href="{{ $homeBlog->publicUrl() }}">
                                                 <img class="w-full" src="{{ $homeBlogCover->url() }}"
                                                     alt="{{ $homeBlog->title }}">
                                             </a>
@@ -422,7 +410,7 @@
                                     @endif
                                     @if ($homeBlogDate)
                                         <div class="vl-blog10-meta">
-                                            <a href="{{ route('blog.show', $homeBlog->id) }}" class="date"><img
+                                            <a href="{{ $homeBlog->publicUrl() }}" class="date"><img
                                                     src="assets/img/icons/date10.svg" alt="">
                                                 {{ $homeBlogDate->translatedFormat('d M') }}</a>
                                         </div>
@@ -431,14 +419,14 @@
                                 <div class="vl-blog-10-content heading10">
                                     @if ($homeBlog->author)
                                         <div class="vl-blog10-meta">
-                                            <a href="{{ route('blog.show', $homeBlog->id) }}" class="user"><img
+                                            <a href="{{ $homeBlog->publicUrl() }}" class="user"><img
                                                     src="assets/img/icons/user10.svg" alt="">
                                                 {{ $homeBlog->author->name }}</a>
                                         </div>
                                     @endif
                                     <h5 class="mt-16 mb-16"><a
-                                            href="{{ route('blog.show', $homeBlog->id) }}">{{ $homeBlog->title }}</a></h5>
-                                    <a href="{{ route('blog.show', $homeBlog->id) }}" class="learn10">Devamını Oku <span
+                                            href="{{ $homeBlog->publicUrl() }}">{{ $homeBlog->title }}</a></h5>
+                                    <a href="{{ $homeBlog->publicUrl() }}" class="learn10">Devamını Oku <span
                                             class="arrow1"><i class="fa-regular fa-arrow-right"></i></span><span
                                             class="arrow2"><i class="fa-regular fa-arrow-right"></i></span></a>
                                 </div>

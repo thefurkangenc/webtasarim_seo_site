@@ -81,6 +81,33 @@ class BlogService
             ->get();
     }
 
+    /**
+     * Ön yüzde slug ile tekil yazı. Taslak veya eşleşmeyen slug için null döner.
+     */
+    public function findBySlug(string $slug): ?Blog
+    {
+        return Blog::where('slug', $slug)
+            ->where('status', Blog::STATUS_PUBLISHED)
+            ->with(['media', 'author:id,name', 'tags', 'faqs', 'seo.ogMedia'])
+            ->first();
+    }
+
+    /**
+     * Detay sayfasının altındaki "diğer yazılar" — mevcut yazı hariç.
+     *
+     * @return Collection<int, Blog>
+     */
+    public function related(Blog $blog, int $limit = 2): Collection
+    {
+        return Blog::where('status', Blog::STATUS_PUBLISHED)
+            ->where('id', '!=', $blog->id)
+            ->with(['media', 'author:id,name'])
+            ->orderByDesc('is_featured')
+            ->orderByDesc('published_at')
+            ->limit($limit)
+            ->get();
+    }
+
     private function attributes(array $data): array
     {
         $status = $data['status'] ?? Blog::STATUS_DRAFT;

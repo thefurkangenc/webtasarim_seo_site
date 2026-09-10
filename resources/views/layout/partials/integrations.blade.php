@@ -8,7 +8,7 @@
             class="site-fab"
             style="{{ ($widgets['whatsapp']['position'] ?? 'right') === 'left' ? 'left' : 'right' }}: 30px; bottom: {{ 100 + (int) ($widgets['whatsapp']['offset'] ?? 0) }}px;"
             aria-label="WhatsApp ile yazın">
-            <img src="{{ asset('admin/assets/images/icons/integrations/whatsapp.svg') }}" alt="">
+            <img src="{{ asset('admin/assets/images/icons/integrations/whatsapp.gif') }}" alt="">
         </a>
     @endif
 
@@ -17,7 +17,7 @@
             class="site-fab"
             style="{{ ($widgets['phone']['position'] ?? 'right') === 'left' ? 'left' : 'right' }}: 30px; bottom: {{ 100 + (int) ($widgets['phone']['offset'] ?? 0) }}px;"
             aria-label="Telefon ile arayın">
-            <img src="{{ asset('admin/assets/images/icons/integrations/phone.svg') }}" alt="">
+            <img src="{{ asset('admin/assets/images/icons/integrations/phone.gif') }}" alt="">
         </a>
     @endif
 

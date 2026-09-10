@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\About\AboutController;
+use App\Http\Controllers\Blog\BlogController;
 use App\Http\Controllers\Contact\ContactController;
 use App\Http\Controllers\Legal\LegalController;
 use App\Http\Controllers\Maintenance\MaintenanceController;
@@ -24,9 +25,7 @@ Route::get('/blog', function () {
     return view('pages.blog.index');
 })->name('blog');
 
-Route::get('/blog/{id}', function ($id) {
-    return view('pages.blog.show');
-})->name('blog.show');
+Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
 Route::get('/iletisim', [ContactController::class, 'index'])->name('iletisim');
 Route::post('/iletisim', [ContactController::class, 'store'])

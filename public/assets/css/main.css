@@ -63,8 +63,6 @@ CSS LIST
  TYPOGRAPHY AREA CSS
 ::::::::::::::::::::::::::
 */
-@import url("./css2");
-
 body {
     font-size: var(--f-fs-font-16);
     font-family: var(--f-ff-font-1);

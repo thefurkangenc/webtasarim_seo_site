@@ -69,6 +69,66 @@
     margin-top: 0;
 }
 
+.service6 .heading6 p,
+.blog8 .heading10 p {
+    text-transform: none;
+}
+
+.blog8 .heading10 p {
+    max-width: 36em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.choose14-section .choose14-reasons {
+    margin-top: 8px;
+}
+
+.choose14-section .choose14-reason {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px 0;
+    border-top: 1px solid rgba(5, 5, 28, 0.1);
+}
+
+.choose14-section .choose14-reason:last-child {
+    border-bottom: 1px solid rgba(5, 5, 28, 0.1);
+}
+
+.choose14-section .choose14-reason-mark {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    margin-top: 2px;
+    border-radius: 50%;
+    background: var(--vtc-bg-main17, #6F00FF);
+    color: #fff;
+    font-size: 10px;
+    line-height: 1;
+}
+
+.choose14-section .choose14-reason-text h4 {
+    margin: 0 0 4px;
+    color: var(--vtc-text-title3, #05051C);
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.18px;
+}
+
+.choose14-section .choose14-reason-text p {
+    margin: 0;
+    color: #4E4E55;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.55;
+    letter-spacing: -0.32px;
+}
+
 .blog8 .vl-blog-10-item {
     overflow: hidden;
     height: calc(100% - 30px);

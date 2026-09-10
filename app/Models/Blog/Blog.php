@@ -59,10 +59,8 @@ class Blog extends Model implements LinksToPublicPage
 
     public function publicUrl(): ?string
     {
-        // Blog detay route'u şu an {id} taşıyan bir taslak; yazı yayına
-        // girdiyse bağ verilir, detay sayfası tamamlanınca kendiliğinden çalışır.
         return $this->status === self::STATUS_PUBLISHED
-            ? route('blog.show', $this->id)
+            ? route('blog.show', $this->slug)
             : null;
     }
 
