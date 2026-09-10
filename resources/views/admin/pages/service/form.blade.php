@@ -52,17 +52,17 @@
                             </div>
                         </div>
 
-                        <x-admin::form.input name="title" label="Başlık" required :value="$service?->title"
+                        <x-admin::form.input name="title" help="service.title" label="Başlık" required :value="$service?->title"
                             placeholder="Hizmetin başlığı" />
 
-                        <x-admin::form.input name="slug" label="Kısa Ad (slug)" :value="$service?->slug"
+                        <x-admin::form.input name="slug" help="common.slug" label="Kısa Ad (slug)" :value="$service?->slug"
                             placeholder="Boş bırakılırsa başlıktan üretilir" />
 
-                        <x-admin::form.textarea name="excerpt" label="Açıklama" rows="3" :value="$service?->excerpt"
+                        <x-admin::form.textarea name="excerpt" help="service.excerpt" label="Açıklama" rows="3" :value="$service?->excerpt"
                             placeholder="Listelerde ve arama sonuçlarında görünecek kısa açıklama"
                             class="h-[90px]" />
 
-                        <x-admin::form.editor name="content" label="İçerik" :value="$service?->content" :height="560" />
+                        <x-admin::form.editor name="content" help="service.content" label="İçerik" :value="$service?->content" :height="560" />
                     </div>
                 </div>
 
@@ -73,7 +73,7 @@
                         </div>
                     </div>
                     <div class="trezo-card-content">
-                        <x-admin::form.seo :model="$service" path="hizmetler" imageSource="cover_media_id" wrapper="" />
+                        <x-admin::form.seo :model="$service" path="hizmetler" imageSource="cover_media_id" analysisType="service" wrapper="" />
                     </div>
                 </div>
 
@@ -98,7 +98,7 @@
                         </div>
                     </div>
                     <div class="trezo-card-content">
-                        <x-admin::form.select name="status" label="Durum" required
+                        <x-admin::form.select name="status" help="common.status" label="Durum" required
                             :options="\App\Models\Service\Service::STATUSES"
                             :value="$service?->status ?? \App\Models\Service\Service::STATUS_DRAFT"
                             :placeholder="null" />
@@ -123,7 +123,7 @@
                         </div>
                     </div>
                     <div class="trezo-card-content">
-                        <x-admin::form.select name="service_regions" label="Bölgeler" multiple
+                        <x-admin::form.select name="service_regions" help="service.service_regions" label="Bölgeler" multiple
                             :options="$regions" :value="$service?->regions->pluck('id')->all() ?? []" wrapper="" />
 
                         {{-- Kısayollar: il kimlikleri sunucudan gelir, pages/service/form.js okur. --}}
@@ -159,7 +159,7 @@
                         </div>
                     </div>
                     <div class="trezo-card-content">
-                        <x-admin::form.image name="cover_media_id" preset="service.cover"
+                        <x-admin::form.image name="cover_media_id" help="common.cover_media" preset="service.cover"
                             :media="$service?->getFirstMedia('cover')" wrapper="" />
                     </div>
                 </div>

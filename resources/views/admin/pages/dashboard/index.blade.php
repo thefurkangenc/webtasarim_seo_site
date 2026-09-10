@@ -49,6 +49,37 @@
         @endif
     @endcan
 
+    @can('seo.index')
+        @php
+            $seoAvg = $seoOverview['average'] ?? 0;
+            $seoRingClass = $seoAvg <= 40 ? 'text-danger-500' : ($seoAvg <= 70 ? 'text-warning-500' : 'text-success-500');
+        @endphp
+        <a href="{{ route('admin.seo.index') }}"
+            class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md flex items-center gap-[18px] flex-wrap transition-all hover:border-primary-500 border border-transparent">
+            <div class="relative shrink-0 w-[56px] h-[56px]">
+                <svg viewBox="0 0 36 36" class="w-full h-full -rotate-90 text-gray-100 dark:text-[#172036]">
+                    <circle cx="18" cy="18" r="15.9" fill="none" stroke="currentColor" stroke-width="3"></circle>
+                    <circle cx="18" cy="18" r="15.9" fill="none" stroke-width="3" stroke-linecap="round"
+                        stroke-dasharray="{{ $seoOverview['average'] ?? 0 }} 100"
+                        class="{{ $seoRingClass }}" stroke="currentColor"></circle>
+                </svg>
+                <span class="absolute inset-0 flex items-center justify-center text-xs font-bold text-black dark:text-white">{{ $seoOverview['average'] ?? '–' }}</span>
+            </div>
+            <div class="flex-1 min-w-[180px]">
+                <span class="block font-medium text-black dark:text-white">SEO Sağlığı</span>
+                <span class="block text-sm text-gray-500 dark:text-gray-400">
+                    Ortalama skor · {{ $seoOverview['analyzed'] }}/{{ $seoOverview['total'] }} içerik analizli
+                </span>
+            </div>
+            <div class="flex gap-[16px] text-center">
+                <div><span class="block text-lg font-bold text-success-600">{{ $seoOverview['distribution']['good'] }}</span><span class="block text-[11px] text-gray-500 dark:text-gray-400">iyi</span></div>
+                <div><span class="block text-lg font-bold text-warning-600">{{ $seoOverview['distribution']['ok'] }}</span><span class="block text-[11px] text-gray-500 dark:text-gray-400">orta</span></div>
+                <div><span class="block text-lg font-bold text-danger-500">{{ $seoOverview['distribution']['bad'] + $seoOverview['distribution']['none'] }}</span><span class="block text-[11px] text-gray-500 dark:text-gray-400">kötü</span></div>
+            </div>
+            <i class="material-symbols-outlined text-gray-400">arrow_forward</i>
+        </a>
+    @endcan
+
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-[15px]">
         @php
             $shortcuts = [

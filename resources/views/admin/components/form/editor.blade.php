@@ -4,6 +4,7 @@
     'value' => null,
     'height' => 500,
     'required' => false,
+    'help' => null,
     'wrapper' => 'mb-[20px] md:mb-[25px] last:mb-0',
 ])
 
@@ -21,7 +22,7 @@
 
 <div class="{{ $wrapper }}">
     @if ($label)
-        <x-admin::form.label :for="$id" :required="$required">{{ $label }}</x-admin::form.label>
+        <x-admin::form.label :for="$id" :required="$required" :help="$help">{{ $label }}</x-admin::form.label>
     @endif
 
     {{-- core/editor.js bu alanı TinyMCE'ye çevirir; içerik gönderimden önce

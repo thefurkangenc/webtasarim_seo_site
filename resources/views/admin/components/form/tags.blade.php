@@ -4,6 +4,7 @@
     'name' => 'tags',
     'label' => 'Etiketler',
     'hint' => 'Enter ya da virgül ile ekleyin. Olmayan etiket otomatik oluşturulur.',
+    'help' => 'common.tags',
     'wrapper' => 'mb-[20px] md:mb-[25px] last:mb-0',
 ])
 
@@ -20,7 +21,7 @@
 
 <div class="{{ $wrapper }}">
     @if ($label)
-        <x-admin::form.label>{{ $label }}</x-admin::form.label>
+        <x-admin::form.label :help="$help">{{ $label }}</x-admin::form.label>
     @endif
 
     <div data-tag-input data-tag-name="{{ $field }}" data-tag-endpoint="{{ route('admin.tags.search') }}"

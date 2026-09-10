@@ -41,17 +41,17 @@
                     </div>
 
                     <div class="trezo-card-content">
-                        <x-admin::form.input name="title" label="Başlık" required :value="$blog?->title"
+                        <x-admin::form.input name="title" help="blog.title" label="Başlık" required :value="$blog?->title"
                             placeholder="Yazının başlığı" />
 
-                        <x-admin::form.input name="slug" label="Kısa Ad (slug)" :value="$blog?->slug"
+                        <x-admin::form.input name="slug" help="common.slug" label="Kısa Ad (slug)" :value="$blog?->slug"
                             placeholder="Boş bırakılırsa başlıktan üretilir" />
 
-                        <x-admin::form.textarea name="excerpt" label="Özet" rows="3" :value="$blog?->excerpt"
+                        <x-admin::form.textarea name="excerpt" help="common.excerpt" label="Özet" rows="3" :value="$blog?->excerpt"
                             placeholder="Listelerde ve arama sonuçlarında görünecek kısa açıklama"
                             class="h-[90px]" />
 
-                        <x-admin::form.editor name="content" label="İçerik" :value="$blog?->content" :height="560" />
+                        <x-admin::form.editor name="content" help="common.content" label="İçerik" :value="$blog?->content" :height="560" />
                     </div>
                 </div>
 
@@ -87,15 +87,15 @@
                         </div>
                     </div>
                     <div class="trezo-card-content">
-                        <x-admin::form.select name="status" label="Durum" required
+                        <x-admin::form.select name="status" help="common.status" label="Durum" required
                             :options="\App\Models\Blog\Blog::STATUSES"
                             :value="$blog?->status ?? \App\Models\Blog\Blog::STATUS_DRAFT"
                             :placeholder="null" />
 
-                        <x-admin::form.date name="published_at" label="Yayın Tarihi"
+                        <x-admin::form.date name="published_at" help="common.published_at" label="Yayın Tarihi"
                             :value="$blog?->published_at" />
 
-                        <x-admin::form.switch name="is_featured" label="Öne çıkar"
+                        <x-admin::form.switch name="is_featured" help="blog.is_featured" label="Öne çıkar"
                             :checked="$blog?->is_featured ?? false" />
 
                         <div class="trezo-card-footer flex items-center justify-end gap-[12px] -mx-[20px] md:-mx-[25px] px-[20px] md:px-[25px] pt-[20px] md:pt-[25px] mt-[5px] border-t border-gray-100 dark:border-[#172036]">
@@ -118,7 +118,7 @@
                         </div>
                     </div>
                     <div class="trezo-card-content">
-                        <x-admin::form.select name="blog_category_id" label="Kategori"
+                        <x-admin::form.select name="blog_category_id" help="blog.blog_category_id" label="Kategori"
                             :options="$categories->all()" :value="$blog?->blog_category_id"
                             placeholder="Kategorisiz" />
 
@@ -133,7 +133,7 @@
                         </div>
                     </div>
                     <div class="trezo-card-content">
-                        <x-admin::form.image name="cover_media_id" preset="blog.cover"
+                        <x-admin::form.image name="cover_media_id" help="common.cover_media" preset="blog.cover"
                             :media="$blog?->getFirstMedia('cover')" wrapper="" />
                     </div>
                 </div>

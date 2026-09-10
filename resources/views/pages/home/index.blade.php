@@ -11,15 +11,17 @@
         $hero = app(\App\Services\Hero\HeroService::class)->current();
         $heroImages = $hero->getMedia('gallery');
         $heroMarqueeRepeats = $heroImages->isEmpty() ? 1 : (int) ceil(8 / $heroImages->count());
+        $heroBackground = $hero->getFirstMedia('background');
     @endphp
 
-    <div class="hero6" style="background-image: url(assets/img/hero/hero6-bg.jpg);">
+    <div class="hero6" style="background-image: url({{ $heroBackground?->url() ?: asset('assets/img/hero/hero6-bg.jpg') }});">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6">
                     <div class="main-heading6">
-                        <span class="sub-title" data-aos="zoom-in-left" data-aos-duration="900"><img
-                                src="assets/img/icons/span3.svg"
+                        <span class="sub-title" data-aos="zoom-in-left" data-aos-duration="900">
+                            <img style="width: 20px; height: 20px; margin-right: 5px;"
+                                src="{{ asset('assets/img/icons/icon.png') }}"
                                 alt="">{{ $hero->badge ?: 'Her adımda şeffaf raporlama.' }}</span>
                         <h1>{{ $hero->title ?: 'Akıllı SEO ile Daha Fazla Trafik, Müşteri ve Satış' }}</h1>
                         <p class="mt-16">
@@ -59,7 +61,7 @@
 
                                     <div class="marquee-text">
                                         @foreach ([false, true] as $isDuplicate)
-                                            <div class="d-flex align-items-center"
+                                            <div class="d-flex align-items-center" style="gap: 50px;"
                                                 @if ($isDuplicate) aria-hidden="true" @endif>
                                                 @for ($i = 0; $i < $heroMarqueeRepeats; $i++)
                                                     @foreach ($heroImages as $heroImage)
@@ -271,7 +273,7 @@
                             {{ $homeWhyHeading['description'] ?? '' ?: 'Sadece teknik değil, iş ortağınızız. İhtiyaçlarınızı anlamaya zaman ayırır, hızlı yanıt verir ve işinize özel çözümler üretiriz.' }}
                         </p>
                         <div class="space32"></div>
-                        
+
                         @if ($homeWhyChooseUs->isNotEmpty())
                             <div class="choose14-reasons">
                                 @foreach ($homeWhyChooseUs as $reason)

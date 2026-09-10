@@ -4,6 +4,7 @@
     'name' => 'faqs',
     'label' => 'Sıkça Sorulan Sorular',
     'hint' => 'Mevcut sorulardan seçin. Aynı soru birden fazla içeriğe bağlanabilir.',
+    'help' => 'common.faqs',
     'wrapper' => 'mb-[20px] md:mb-[25px] last:mb-0',
 ])
 
@@ -36,7 +37,7 @@
 
 <div class="{{ $wrapper }}">
     @if ($label)
-        <x-admin::form.label>{{ $label }}</x-admin::form.label>
+        <x-admin::form.label :help="$help">{{ $label }}</x-admin::form.label>
     @endif
 
     <div data-faq-field data-faq-name="{{ $field }}" data-faq-endpoint="{{ route('admin.faq.datatable') }}"

@@ -17,18 +17,18 @@
          güvenlik/kolaylık ağı. Düzenlemede taşıma desteklenmiyor, bu yüzden
          yalnızca yeni kayıtta görünür. --}}
     @unless ($region)
-        <x-admin::form.select name="parent_id" label="Üst Bölge"
+        <x-admin::form.select name="parent_id" help="service_region.parent_id" label="Üst Bölge"
             :options="$parentOptions" :value="$parent?->id"
             placeholder="Üst bölge yok — il olarak eklenir" />
     @endunless
 
-    <x-admin::form.input name="name" label="Bölge Adı" required :value="$region?->name"
+    <x-admin::form.input name="name" help="service_region.name" label="Bölge Adı" required :value="$region?->name"
         placeholder="Örn. Şahinbey" />
 
-    <x-admin::form.input name="slug" label="Kısa Ad (slug)" :value="$region?->slug"
+    <x-admin::form.input name="slug" help="service_region.slug" label="Kısa Ad (slug)" :value="$region?->slug"
         placeholder="Boş bırakılırsa addan üretilir" />
 
-    <x-admin::form.textarea name="description" label="Bölgeye Özel Metin" rows="4"
+    <x-admin::form.textarea name="description" help="service_region.description" label="Bölgeye Özel Metin" rows="4"
         :value="$region?->description" class="h-[110px]"
         placeholder="Bu bölgenin hizmet sayfalarına eklenecek özgün metin. Aynı hizmetin farklı bölge sayfaları birbirinin kopyası olmasın diye kullanılır." />
 

@@ -153,6 +153,13 @@ return [
                 'active' => 'admin.analytics.*',
                 'permission' => 'analytics.index',
             ],
+            [
+                'title' => 'SEO Sağlığı',
+                'icon' => 'trending_up',
+                'route' => 'admin.seo.index',
+                'active' => 'admin.seo.*',
+                'permission' => 'seo.index',
+            ],
 
             [
                 'title' => 'Medya Kütüphanesi',

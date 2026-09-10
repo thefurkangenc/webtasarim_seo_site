@@ -19,7 +19,7 @@
             </div>
         </div>
 
-        <x-admin::form.switch name="enabled" label="İletişim formunu göster"
+        <x-admin::form.switch name="enabled" help="contact.enabled" label="İletişim formunu göster"
             :checked="$enabled"
             wrapper="mb-0" />
     </div>
@@ -36,18 +36,18 @@
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-[20px] md:gap-[25px]">
-            <x-admin::form.input name="to_email" type="email" label="Alıcı e-posta"
+            <x-admin::form.input name="to_email" help="contact.to_email" type="email" label="Alıcı e-posta"
                 :value="$values['to_email'] ?? null"
                 placeholder="Boşsa firma e-postası kullanılır"
                 wrapper="" />
 
-            <x-admin::form.input name="cc_email" type="email" label="Bilgi kopyası"
+            <x-admin::form.input name="cc_email" help="contact.cc_email" type="email" label="Bilgi kopyası"
                 :value="$values['cc_email'] ?? null"
                 placeholder="İsteğe bağlı"
                 wrapper="" />
         </div>
 
-        <x-admin::form.input name="subject" label="E-posta konusu" required
+        <x-admin::form.input name="subject" help="contact.subject" label="E-posta konusu" required
             :value="$values['subject'] ?? null"
             wrapper="mb-0 mt-[20px] md:mt-[25px]" />
     </div>
@@ -63,18 +63,18 @@
             </div>
         </div>
 
-        <x-admin::form.input name="heading" label="Form başlığı"
+        <x-admin::form.input name="heading" help="contact.heading" label="Form başlığı"
             :value="$values['heading'] ?? null" />
 
-        <x-admin::form.textarea name="intro" label="Form açıklaması"
+        <x-admin::form.textarea name="intro" help="contact.intro" label="Form açıklaması"
             :value="$values['intro'] ?? null"
             rows="3" />
 
-        <x-admin::form.textarea name="success_message" label="Başarı mesajı" required
+        <x-admin::form.textarea name="success_message" help="contact.success_message" label="Başarı mesajı" required
             :value="$values['success_message'] ?? null"
             rows="2" />
 
-        <x-admin::form.textarea name="error_message" label="Hata mesajı" required
+        <x-admin::form.textarea name="error_message" help="contact.error_message" label="Hata mesajı" required
             :value="$values['error_message'] ?? null"
             rows="2"
             wrapper="mb-0" />
@@ -91,15 +91,15 @@
             </div>
         </div>
 
-        <x-admin::form.switch name="auto_reply_enabled" label="Otomatik yanıt gönder"
+        <x-admin::form.switch name="auto_reply_enabled" help="contact.auto_reply_enabled" label="Otomatik yanıt gönder"
             :checked="$autoReply"
             data-contact-auto-reply />
 
         <div data-auto-reply-fields class="{{ $autoReply ? '' : 'hidden' }}">
-            <x-admin::form.input name="auto_reply_subject" label="Yanıt konusu"
+            <x-admin::form.input name="auto_reply_subject" help="contact.auto_reply_subject" label="Yanıt konusu"
                 :value="$values['auto_reply_subject'] ?? null" />
 
-            <x-admin::form.textarea name="auto_reply_body" label="Yanıt metni"
+            <x-admin::form.textarea name="auto_reply_body" help="contact.auto_reply_body" label="Yanıt metni"
                 :value="$values['auto_reply_body'] ?? null"
                 rows="6"
                 wrapper="mb-0" />
@@ -117,12 +117,12 @@
             </div>
         </div>
 
-        <x-admin::form.switch name="privacy_required" label="Formda onay kutusu iste"
+        <x-admin::form.switch name="privacy_required" help="contact.privacy_required" label="Formda onay kutusu iste"
             :checked="$privacy"
             data-contact-privacy />
 
         <div data-privacy-fields class="{{ $privacy ? '' : 'hidden' }}">
-            <x-admin::form.textarea name="privacy_text" label="Onay metni"
+            <x-admin::form.textarea name="privacy_text" help="contact.privacy_text" label="Onay metni"
                 :value="$values['privacy_text'] ?? null"
                 rows="3"
                 wrapper="mb-0" />

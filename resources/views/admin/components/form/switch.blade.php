@@ -3,6 +3,8 @@
     'label' => null,
     'checked' => false,
     'hint' => null,
+    // config/form-help.php anahtarı — verilirse etiketin yanına (?) yardım ikonu.
+    'help' => null,
     'wrapper' => 'mb-[20px] md:mb-[25px] last:mb-0',
     // `bare`: forma bağlı değil, isim/hidden-input/hata yuvası göndermez —
     // AJAX ile anlık açılıp kapanan salt görsel anahtarlar için (örn.
@@ -22,6 +24,7 @@
         <input type="hidden" name="{{ $field }}" value="0">
     @endunless
 
+    <div class="flex items-center w-fit">
     <label class="flex items-center gap-[10px] cursor-pointer select-none w-fit">
         <span class="relative inline-block">
             <input type="checkbox" @unless ($bare) name="{{ $field }}" id="{{ $id }}" @endunless value="1"
@@ -37,6 +40,8 @@
             <span class="text-black dark:text-white font-medium">{{ $label }}</span>
         @endif
     </label>
+        @if ($help)<x-admin::form.help :topic="$help" />@endif
+    </div>
 
     @if ($hint)
         <span class="text-gray-500 dark:text-gray-400 text-xs mt-[6px] block">{{ $hint }}</span>

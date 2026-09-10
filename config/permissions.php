@@ -22,6 +22,7 @@ return [
         'redirect' => 'Yönlendirmeler',
         'schema' => 'Schema.org',
         'analytics' => 'Analitik (GA4)',
+        'seo' => 'SEO Sağlığı',
         'blog' => 'Blog',
         'testimonial' => 'Müşteri Yorumları',
         'reference' => 'Referanslar',
@@ -152,6 +153,10 @@ return [
         ['name' => 'analytics.data', 'label' => 'Analitik - Özet Veri', 'category' => 'analytics', 'guard_name' => 'web'],
         ['name' => 'analytics.realtime', 'label' => 'Analitik - Canlı Veri', 'category' => 'analytics', 'guard_name' => 'web'],
         ['name' => 'analytics.test', 'label' => 'Analitik - Bağlantı Testi', 'category' => 'analytics', 'guard_name' => 'web'],
+
+        ['name' => 'seo.index', 'label' => 'SEO Sağlığı - Panel', 'category' => 'seo', 'guard_name' => 'web'],
+        ['name' => 'seo.datatable', 'label' => 'SEO Sağlığı - Rapor', 'category' => 'seo', 'guard_name' => 'web'],
+        ['name' => 'seo.rescore', 'label' => 'SEO Sağlığı - Yeniden Puanla', 'category' => 'seo', 'guard_name' => 'web'],
 
         ['name' => 'blog.index', 'label' => 'Blog - Listele', 'category' => 'blog', 'guard_name' => 'web'],
         ['name' => 'blog.datatable', 'label' => 'Blog - Tablo', 'category' => 'blog', 'guard_name' => 'web'],

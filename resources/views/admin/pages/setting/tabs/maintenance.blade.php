@@ -24,7 +24,7 @@
             Bu, Laravel’in <code class="text-xs">artisan down</code> komutu değildir; o komut paneli de kapatır. Bakım sayfası 503 döner.
         </div>
 
-        <x-admin::form.switch name="enabled" label="Bakım modunu aç"
+        <x-admin::form.switch name="enabled" help="maintenance.enabled" label="Bakım modunu aç"
             :checked="$enabled" />
 
         <a href="{{ route('maintenance.preview') }}" target="_blank" rel="noopener noreferrer"
@@ -45,10 +45,10 @@
             </div>
         </div>
 
-        <x-admin::form.input name="title" label="Başlık" required
+        <x-admin::form.input name="title" help="maintenance.title" label="Başlık" required
             :value="$values['title'] ?? null" />
 
-        <x-admin::form.textarea name="message" label="Mesaj" required
+        <x-admin::form.textarea name="message" help="maintenance.message" label="Mesaj" required
             :value="$values['message'] ?? null"
             rows="4"
             wrapper="mb-0" />
@@ -67,12 +67,12 @@
             </div>
         </div>
 
-        <x-admin::form.input name="retry_after" type="number" label="Yeniden deneme (dakika)"
+        <x-admin::form.input name="retry_after" help="maintenance.retry_after" type="number" label="Yeniden deneme (dakika)"
             :value="$values['retry_after'] ?? null"
             min="1" max="10080"
             placeholder="Boş bırakılabilir" />
 
-        <x-admin::form.input name="bypass_secret" label="Önizleme anahtarı"
+        <x-admin::form.input name="bypass_secret" help="maintenance.bypass_secret" label="Önizleme anahtarı"
             :value="$secret"
             placeholder="Örn. gecici-erisim"
             wrapper="mb-0" />

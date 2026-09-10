@@ -74,6 +74,7 @@ class Blog extends Model implements LinksToPublicPage
     {
         return [
             'id' => $this->id,
+            ...$this->seoScorePayload(),
             'title' => $this->title,
             'slug' => $this->slug,
             'status' => $this->status,

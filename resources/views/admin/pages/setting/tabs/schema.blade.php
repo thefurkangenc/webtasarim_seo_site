@@ -31,42 +31,42 @@
         doğrulamak için <a href="{{ route('admin.schema.index') }}" class="text-primary-500 hover:underline">Schema.org doğrulama ekranı</a>.
     </p>
 
-    <x-admin::form.select name="business_type" label="İşletme türü" required
+    <x-admin::form.select name="business_type" label="İşletme türü" required help="schema.business_type"
         :options="$businessTypes" :value="$values['business_type'] ?? 'ProfessionalService'" :placeholder="null" />
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-[20px] md:gap-[25px]">
-        <x-admin::form.input name="founding_year" label="Kuruluş yılı" type="number"
+        <x-admin::form.input name="founding_year" label="Kuruluş yılı" type="number" help="schema.founding_year"
             :value="$values['founding_year'] ?? null" placeholder="Örn. 2015" wrapper="mb-[20px] md:mb-[25px]" />
 
-        <x-admin::form.select name="price_range" label="Fiyat aralığı"
+        <x-admin::form.select name="price_range" label="Fiyat aralığı" help="schema.price_range"
             :options="$priceRanges" :value="$values['price_range'] ?? '₺₺'"
             placeholder="Belirtilmesin" wrapper="mb-[20px] md:mb-[25px]" />
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-[20px] md:gap-[25px]">
-        <x-admin::form.input name="tax_id" label="Vergi / MERSİS no"
+        <x-admin::form.input name="tax_id" label="Vergi / MERSİS no" help="schema.tax_id"
             :value="$values['tax_id'] ?? null" placeholder="Örn. 1234567890" wrapper="mb-[20px] md:mb-[25px]" />
 
-        <x-admin::form.input name="tax_office" label="Vergi dairesi"
+        <x-admin::form.input name="tax_office" label="Vergi dairesi" help="schema.tax_office"
             :value="$values['tax_office'] ?? null" placeholder="Örn. Şahinbey" wrapper="mb-[20px] md:mb-[25px]" />
     </div>
 
-    <x-admin::form.textarea name="area_served" label="Hizmet verilen bölge"
+    <x-admin::form.textarea name="area_served" label="Hizmet verilen bölge" help="schema.area_served"
         :value="$values['area_served'] ?? null"
         placeholder="Tek satır (örn. Türkiye) ya da her satıra bir il"
         class="h-[80px]" />
 
-    <x-admin::form.textarea name="description" label="Kısa tanım (schema description)"
+    <x-admin::form.textarea name="description" label="Kısa tanım (schema description)" help="schema.description"
         :value="$values['description'] ?? null"
         placeholder="Boş bırakılırsa Firma Bilgileri'ndeki kısa açıklama kullanılır"
         class="h-[80px]" />
 
-    <x-admin::form.textarea name="same_as" label="Ek profil adresleri (sameAs)"
+    <x-admin::form.textarea name="same_as" label="Ek profil adresleri (sameAs)" help="schema.same_as"
         :value="$values['same_as'] ?? null"
         placeholder="Her satıra bir URL. Sosyal Medya kayıtları zaten otomatik ekleniyor; buraya yalnızca ek olanları yazın."
         class="h-[80px]" />
 
-    <x-admin::form.input name="search_url" label="Site içi arama adresi (opsiyonel)"
+    <x-admin::form.input name="search_url" label="Site içi arama adresi (opsiyonel)" help="schema.search_url"
         :value="$values['search_url'] ?? null"
         placeholder="Örn. https://site.com/ara?q={query}" />
     <p class="text-xs text-gray-500 dark:text-gray-400 -mt-[14px] mb-[20px] md:mb-[25px]">
@@ -74,7 +74,10 @@
         geçtiği yeri <code>{query}</code> ile işaretleyin. Sitede arama yoksa boş bırakın.
     </p>
 
-    <div class="mb-[10px] text-black dark:text-white font-medium">Çalışma saatleri</div>
+    <div class="mb-[10px] text-black dark:text-white font-medium">
+        Çalışma saatleri
+        <x-admin::form.help topic="schema.opening_hours" />
+    </div>
     <p class="text-xs text-gray-500 dark:text-gray-400 mb-[15px]">
         Yalnızca <strong>ProfessionalService / LocalBusiness</strong> türlerinde yayınlanır.
     </p>

@@ -13,16 +13,16 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-[20px] md:gap-[25px]">
         <div>
-            <x-admin::form.input name="host" label="SMTP sunucusu" required
+            <x-admin::form.input name="host" help="mail.host" label="SMTP sunucusu" required
                 :value="$values['host'] ?? null"
                 placeholder="Örn. smtp.ornek.com" />
 
-            <x-admin::form.input name="username" label="Kullanıcı adı" required
+            <x-admin::form.input name="username" help="mail.username" label="Kullanıcı adı" required
                 :value="$values['username'] ?? null"
                 placeholder="Örn. info@ornek.com"
                 autocomplete="username" />
 
-            <x-admin::form.input name="password" type="password" label="Şifre"
+            <x-admin::form.input name="password" help="mail.password" type="password" label="Şifre"
                 :required="! $hasPassword"
                 autocomplete="new-password"
                 :placeholder="$hasPassword
@@ -30,14 +30,14 @@
                     : 'SMTP şifresi'" />
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-[20px] md:gap-[25px]">
-                <x-admin::form.select name="encryption" label="Şifreleme" required
+                <x-admin::form.select name="encryption" help="mail.encryption" label="Şifreleme" required
                     :value="$values['encryption'] ?? 'tls'"
                     :options="$encryptionOptions"
                     placeholder=""
                     data-mail-encryption
                     wrapper="mb-0" />
 
-                <x-admin::form.input name="port" type="number" label="Port" required
+                <x-admin::form.input name="port" help="mail.port" type="number" label="Port" required
                     :value="$values['port'] ?? 587"
                     min="1" max="65535"
                     data-mail-port
@@ -46,11 +46,11 @@
         </div>
 
         <div>
-            <x-admin::form.input name="from_name" label="Gönderen adı"
+            <x-admin::form.input name="from_name" help="mail.from_name" label="Gönderen adı"
                 :value="$values['from_name'] ?? null"
                 placeholder="Örn. Umay Dijital" />
 
-            <x-admin::form.input name="from_address" label="Gönderen e-posta" required
+            <x-admin::form.input name="from_address" help="mail.from_address" label="Gönderen e-posta" required
                 type="email"
                 :value="$values['from_address'] ?? null"
                 placeholder="Örn. info@ornek.com" />

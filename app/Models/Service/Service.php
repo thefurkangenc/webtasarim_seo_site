@@ -98,6 +98,7 @@ class Service extends Model implements LinksToPublicPage, RedirectsOnMove
     {
         return [
             'id' => $this->id,
+            ...$this->seoScorePayload(),
             'title' => $this->title,
             'slug' => $this->slug,
             'status' => $this->status,
@@ -107,6 +108,27 @@ class Service extends Model implements LinksToPublicPage, RedirectsOnMove
             'thumb' => $this->mediaUrl('cover', 'thumb'),
             'sort_order' => $this->sort_order,
             'created_at' => $this->created_at?->format('d.m.Y H:i'),
+        ];
+    }
+
+    /**
+     * SEO analizi yer tutucusuz (şemsiye) içerik üzerinden yapılır —
+     * "{{city}} Web Tasarım" değil "Web Tasarım".
+     *
+     * @return array<string, string>
+     */
+    public function seoAnalysisInput(): array
+    {
+        $generic = $this->renderGeneric();
+
+        return [
+            'focus_keyword' => (string) ($this->seo?->focus_keyword ?? ''),
+            'title' => (string) ($this->seo?->meta_title ?: $generic['title']),
+            'description' => (string) ($this->seo?->meta_description ?: $generic['excerpt']),
+            'slug' => (string) $this->slug,
+            'content' => (string) $generic['content'],
+            'url_host' => (string) (parse_url((string) config('app.url'), PHP_URL_HOST) ?: ''),
+            'type' => 'service',
         ];
     }
 

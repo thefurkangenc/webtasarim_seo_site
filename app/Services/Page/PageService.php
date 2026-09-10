@@ -24,7 +24,7 @@ class PageService
     public function list(array $filters): LengthAwarePaginator
     {
         return Page::query()
-            ->with('author:id,name')
+            ->with(['author:id,name', 'seo'])
             ->withCount('children')
             ->when($filters['search'] ?? null, fn ($query, $term) => $query->where(
                 fn ($q) => $q->where('title', 'like', "%{$term}%")

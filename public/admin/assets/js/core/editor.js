@@ -77,7 +77,11 @@ function options(textarea) {
             });
 
             // FormData textarea'yı okur; editör her değişimde oraya yazmalı.
-            editor.on('change keyup setcontent undo redo', () => editor.save());
+            // `input` olayı da yayılır — canlı SEO analizi bunu dinliyor.
+            editor.on('change keyup setcontent undo redo', () => {
+                editor.save();
+                editor.targetElm?.dispatchEvent(new Event('input', { bubbles: true }));
+            });
         },
     };
 }

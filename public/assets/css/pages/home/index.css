@@ -38,6 +38,7 @@
 .hero6 .hero6-bottom-slider .brand-single-box img {
     display: block;
     margin-bottom: 13px;
+    height: 40px;
 }
 
 @keyframes hero-gallery-marquee {

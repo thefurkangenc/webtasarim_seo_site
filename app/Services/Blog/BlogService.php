@@ -13,7 +13,7 @@ class BlogService
     public function list(array $filters): LengthAwarePaginator
     {
         return Blog::query()
-            ->with(['category:id,name', 'author:id,name', 'media'])
+            ->with(['category:id,name', 'author:id,name', 'media', 'seo'])
             ->when($filters['search'] ?? null, fn ($query, $term) => $query->where(
                 fn ($q) => $q->where('title', 'like', "%{$term}%")->orWhere('excerpt', 'like', "%{$term}%"),
             ))

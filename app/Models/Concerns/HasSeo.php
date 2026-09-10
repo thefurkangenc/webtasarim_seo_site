@@ -3,7 +3,9 @@
 namespace App\Models\Concerns;
 
 use App\Models\Seo\Seo;
+use App\Services\Seo\SeoAnalyzer;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Support\Str;
 
 /**
  * Modele SEO alanları ekler. Modül tablosuna kolon açılmaz —
@@ -42,9 +44,73 @@ trait HasSeo
             'schema_type' => ($data['schema_type'] ?? null) ?: null,
             'schema_json' => $this->normalizeSchemaJson($data['schema_json'] ?? null),
             'schema_override' => (bool) ($data['schema_override'] ?? false),
+            'focus_keyword' => ($data['focus_keyword'] ?? null) ?: null,
         ]);
 
         $this->unsetRelation('seo');
+        $this->refreshSeoScore();
+    }
+
+    /**
+     * SEO skorunu yeniden hesaplar ve `seo` satırına yazar. syncSeo sonunda
+     * ve gerektiğinde toplu yeniden puanlamada çağrılır.
+     */
+    public function refreshSeoScore(): void
+    {
+        if (! $this->seo()->exists()) {
+            return;
+        }
+
+        $report = app(SeoAnalyzer::class)->analyze($this->seoAnalysisInput());
+
+        $this->seo()->update([
+            'seo_score' => $report['score'],
+            'readability_score' => $report['readability'],
+            'score_checks' => $report['checks'],
+            'analyzed_at' => now(),
+        ]);
+
+        $this->unsetRelation('seo');
+    }
+
+    /**
+     * SeoAnalyzer'a giden içerik. Alan adları farklı ya da içeriği işlenmiş
+     * modeller (yer tutuculu Service gibi) bu metodu ezer.
+     *
+     * @return array<string, string>
+     */
+    public function seoAnalysisInput(): array
+    {
+        $seo = $this->seo;
+
+        return [
+            'focus_keyword' => (string) ($seo?->focus_keyword ?? ''),
+            'title' => (string) ($seo?->meta_title ?: ($this->title ?? $this->name ?? '')),
+            'description' => (string) ($seo?->meta_description ?: ($this->excerpt ?? $this->description ?? '')),
+            'slug' => (string) ($this->slug ?? Str::slug((string) ($this->title ?? $this->name ?? ''))),
+            'content' => (string) ($this->content ?? ''),
+            'url_host' => (string) (parse_url((string) config('app.url'), PHP_URL_HOST) ?: ''),
+            'type' => $this->seoAnalysisType(),
+        ];
+    }
+
+    /** config/seo.php `min_words` anahtarı — varsayılan sınıf adının kebab hali. */
+    public function seoAnalysisType(): string
+    {
+        return Str::kebab(class_basename($this));
+    }
+
+    /**
+     * Liste ekranı rozeti için. toPayload() içinde yayılır.
+     *
+     * @return array{seo_score: int|null, seo_grade: string|null}
+     */
+    public function seoScorePayload(): array
+    {
+        return [
+            'seo_score' => $this->seo?->seo_score,
+            'seo_grade' => $this->seo?->scoreGrade(),
+        ];
     }
 
     /**

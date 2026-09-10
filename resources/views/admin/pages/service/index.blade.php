@@ -92,6 +92,9 @@
                             <th class="font-medium ltr:text-left rtl:text-right px-[20px] py-[11px] bg-gray-50 dark:bg-[#15203c] whitespace-nowrap cursor-pointer relative" data-column="status">
                                 Durum <i class="ri-expand-up-down-fill text-gray-500 dark:text-gray-400"></i>
                             </th>
+                            <th class="font-medium ltr:text-left rtl:text-right px-[20px] py-[11px] bg-gray-50 dark:bg-[#15203c] whitespace-nowrap">
+                                SEO
+                            </th>
                             <th class="font-medium ltr:text-left rtl:text-right px-[20px] py-[11px] bg-gray-50 dark:bg-[#15203c] whitespace-nowrap cursor-pointer relative" data-column="created_at">
                                 Tarih <i class="ri-expand-up-down-fill text-gray-500 dark:text-gray-400"></i>
                             </th>

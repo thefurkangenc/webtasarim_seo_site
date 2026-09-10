@@ -5,6 +5,7 @@ import { escapeHtml, http, HttpError } from '../../core/http.js';
 import { cell, DataTable } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
 import { historyButton } from '../../core/activity-log.js';
+import { scoreBadge } from '../seo/badge.js';
 
 const BADGES = {
     published: 'bg-success-100 dark:bg-[#15203c] text-success-600 dark:text-success-500',
@@ -37,6 +38,7 @@ const table = new DataTable({
         ${cell(escapeHtml(item.author ?? '—'))}
         ${cell(`<span class="inline-block py-[3px] px-[10px] rounded-sm text-xs ${BADGES[item.status]}">${escapeHtml(item.status_label)}</span>
             ${item.is_featured ? ' <i class="material-symbols-outlined !text-[16px] text-warning-500 align-middle" title="Öne çıkan">star</i>' : ''}`)}
+        ${cell(scoreBadge(item.seo_score, item.seo_grade))}
         ${cell(escapeHtml(item.published_at ?? '—'))}
         ${cell(`<div class="flex items-center gap-[9px]">
             ${historyButton('App\\Models\\Blog\\Blog', item.id)}

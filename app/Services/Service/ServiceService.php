@@ -17,7 +17,7 @@ class ServiceService
     public function list(array $filters): LengthAwarePaginator
     {
         return Service::query()
-            ->with(['author:id,name', 'media'])
+            ->with(['author:id,name', 'media', 'seo'])
             ->withCount('regions')
             ->when($filters['search'] ?? null, fn ($query, $term) => $query->where(
                 fn ($q) => $q->where('title', 'like', "%{$term}%")->orWhere('excerpt', 'like', "%{$term}%"),

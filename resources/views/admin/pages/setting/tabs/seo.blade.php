@@ -4,7 +4,7 @@
 
     <x-admin::form.seo :values="$values" :og-media="$media['og_media_id'] ?? null" prefix="" wrapper="">
         <x-slot:before>
-            <x-admin::form.input name="site_name" label="Site adı"
+            <x-admin::form.input name="site_name" label="Site adı" help="seo.site_name"
                 :value="$values['site_name'] ?? null"
                 data-seo-input="site_name"
                 placeholder="Boş bırakılırsa firma adı kullanılır" />

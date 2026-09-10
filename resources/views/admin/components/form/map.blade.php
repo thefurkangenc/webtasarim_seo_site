@@ -5,6 +5,7 @@
     'lat' => null,
     'lng' => null,
     'required' => false,
+    'help' => 'common.map',
     'wrapper' => 'mb-[20px] md:mb-[25px] last:mb-0',
 ])
 
@@ -25,7 +26,7 @@
     data-selected-zoom="{{ $map['selected_zoom'] }}"
 >
     @if ($label)
-        <x-admin::form.label :required="$required">{{ $label }}</x-admin::form.label>
+        <x-admin::form.label :required="$required" :help="$help">{{ $label }}</x-admin::form.label>
     @endif
 
     <p class="text-xs text-gray-500 dark:text-gray-400 mb-[10px]">

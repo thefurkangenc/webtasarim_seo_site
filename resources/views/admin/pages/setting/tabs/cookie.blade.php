@@ -28,7 +28,7 @@
             sayfasında yayınlanır.
         </div>
 
-        <x-admin::form.switch name="enabled" label="Çerez çubuğunu göster"
+        <x-admin::form.switch name="enabled" help="cookie.enabled" label="Çerez çubuğunu göster"
             :checked="$enabled"
             wrapper="mb-0" />
     </div>
@@ -44,24 +44,24 @@
             </div>
         </div>
 
-        <x-admin::form.input name="title" label="Başlık" required
+        <x-admin::form.input name="title" help="cookie.title" label="Başlık" required
             :value="$values['title'] ?? null" />
 
-        <x-admin::form.textarea name="description" label="Açıklama" required
+        <x-admin::form.textarea name="description" help="cookie.description" label="Açıklama" required
             :value="$values['description'] ?? null"
             rows="4" />
 
-        <x-admin::form.input name="policy_label" label="Politika bağlantı metni" required
+        <x-admin::form.input name="policy_label" help="cookie.policy_label" label="Politika bağlantı metni" required
             :value="$values['policy_label'] ?? null" />
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-[20px] md:gap-[25px]">
-            <x-admin::form.input name="accept_label" label="Kabul düğmesi" required
+            <x-admin::form.input name="accept_label" help="cookie.accept_label" label="Kabul düğmesi" required
                 :value="$values['accept_label'] ?? null" wrapper="" />
-            <x-admin::form.input name="reject_label" label="Reddet düğmesi" required
+            <x-admin::form.input name="reject_label" help="cookie.reject_label" label="Reddet düğmesi" required
                 :value="$values['reject_label'] ?? null" wrapper="" />
-            <x-admin::form.input name="customize_label" label="Tercihler düğmesi" required
+            <x-admin::form.input name="customize_label" help="cookie.customize_label" label="Tercihler düğmesi" required
                 :value="$values['customize_label'] ?? null" wrapper="" />
-            <x-admin::form.input name="save_label" label="Kaydet düğmesi" required
+            <x-admin::form.input name="save_label" help="cookie.save_label" label="Kaydet düğmesi" required
                 :value="$values['save_label'] ?? null" wrapper="" />
         </div>
     </div>
@@ -81,30 +81,30 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-[20px] md:gap-[25px]">
             <div>
-                <x-admin::form.input name="necessary_title" label="Zorunlu başlığı" required
+                <x-admin::form.input name="necessary_title" help="cookie.necessary_title" label="Zorunlu başlığı" required
                     :value="$values['necessary_title'] ?? null" />
-                <x-admin::form.textarea name="necessary_description" label="Zorunlu açıklaması" required
+                <x-admin::form.textarea name="necessary_description" help="cookie.necessary_description" label="Zorunlu açıklaması" required
                     :value="$values['necessary_description'] ?? null"
                     rows="3" wrapper="mb-0" />
             </div>
             <div>
-                <x-admin::form.input name="functional_title" label="İşlevsel başlığı" required
+                <x-admin::form.input name="functional_title" help="cookie.functional_title" label="İşlevsel başlığı" required
                     :value="$values['functional_title'] ?? null" />
-                <x-admin::form.textarea name="functional_description" label="İşlevsel açıklaması" required
+                <x-admin::form.textarea name="functional_description" help="cookie.functional_description" label="İşlevsel açıklaması" required
                     :value="$values['functional_description'] ?? null"
                     rows="3" wrapper="mb-0" />
             </div>
             <div>
-                <x-admin::form.input name="analytics_title" label="Analitik başlığı" required
+                <x-admin::form.input name="analytics_title" help="cookie.analytics_title" label="Analitik başlığı" required
                     :value="$values['analytics_title'] ?? null" />
-                <x-admin::form.textarea name="analytics_description" label="Analitik açıklaması" required
+                <x-admin::form.textarea name="analytics_description" help="cookie.analytics_description" label="Analitik açıklaması" required
                     :value="$values['analytics_description'] ?? null"
                     rows="3" wrapper="mb-0" />
             </div>
             <div>
-                <x-admin::form.input name="marketing_title" label="Pazarlama başlığı" required
+                <x-admin::form.input name="marketing_title" help="cookie.marketing_title" label="Pazarlama başlığı" required
                     :value="$values['marketing_title'] ?? null" />
-                <x-admin::form.textarea name="marketing_description" label="Pazarlama açıklaması" required
+                <x-admin::form.textarea name="marketing_description" help="cookie.marketing_description" label="Pazarlama açıklaması" required
                     :value="$values['marketing_description'] ?? null"
                     rows="3" wrapper="mb-0" />
             </div>
@@ -123,10 +123,10 @@
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-[20px] md:gap-[25px]">
-            <x-admin::form.input name="lifetime_days" type="number" label="Geçerlilik (gün)" required
+            <x-admin::form.input name="lifetime_days" help="cookie.lifetime_days" type="number" label="Geçerlilik (gün)" required
                 :value="$values['lifetime_days'] ?? 180"
                 min="1" max="730" wrapper="" />
-            <x-admin::form.input name="version" type="number" label="Politika sürümü" required
+            <x-admin::form.input name="version" help="cookie.version" type="number" label="Politika sürümü" required
                 :value="$values['version'] ?? 1"
                 min="1" max="9999" wrapper="" />
         </div>

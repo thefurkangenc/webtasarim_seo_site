@@ -13,11 +13,11 @@
             </div>
         </div>
 
-        <x-admin::form.input name="about_title" label="Başlık"
+        <x-admin::form.input name="about_title" help="contents.about_title" label="Başlık"
             :value="$values['about_title'] ?? null"
             placeholder="Örn. Hakkımızda" />
 
-        <x-admin::form.editor name="about_content" label="İçerik"
+        <x-admin::form.editor name="about_content" help="contents.about_content" label="İçerik"
             :value="$values['about_content'] ?? null"
             :height="420"
             wrapper="mb-0" />
@@ -34,7 +34,7 @@
             </div>
         </div>
 
-        <x-admin::form.editor name="cookie_content"
+        <x-admin::form.editor name="cookie_content" help="contents.cookie_content"
             :value="$values['cookie_content'] ?? null"
             :height="380"
             wrapper="mb-0" />
@@ -51,7 +51,7 @@
             </div>
         </div>
 
-        <x-admin::form.editor name="kvkk_content"
+        <x-admin::form.editor name="kvkk_content" help="contents.kvkk_content"
             :value="$values['kvkk_content'] ?? null"
             :height="380"
             wrapper="mb-0" />

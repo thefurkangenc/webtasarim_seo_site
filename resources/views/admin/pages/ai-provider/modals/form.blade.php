@@ -18,7 +18,7 @@
     ]);
 @endphp
 <form id="provider-form" data-id="{{ $provider?->id }}">
-    <x-admin::form.select name="driver" label="Servis" required
+    <x-admin::form.select name="driver" help="ai_provider.driver" label="Servis" required
         :value="$provider?->driver"
         :options="$driverOptions"
         data-provider-driver
@@ -29,45 +29,45 @@
         @json($driverDefaults)
     </script>
 
-    <x-admin::form.input name="name" label="Ad" required :value="$provider?->name"
+    <x-admin::form.input name="name" help="ai_provider.name" label="Ad" required :value="$provider?->name"
         placeholder="Örn. ChatGPT - Üretim" />
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-[15px]">
-        <x-admin::form.input name="model" label="Model" required :value="$provider?->model"
+        <x-admin::form.input name="model" help="ai_provider.model" label="Model" required :value="$provider?->model"
             placeholder="gpt-4o-mini" wrapper="mb-[20px] md:mb-[25px]" />
 
-        <x-admin::form.input name="base_url" label="API Adresi" required :value="$provider?->base_url"
+        <x-admin::form.input name="base_url" help="ai_provider.base_url" label="API Adresi" required :value="$provider?->base_url"
             placeholder="https://api.openai.com/v1" wrapper="mb-[20px] md:mb-[25px]" />
     </div>
 
-    <x-admin::form.input name="api_key" type="password" label="API Anahtarı"
+    <x-admin::form.input name="api_key" help="ai_provider.api_key" type="password" label="API Anahtarı"
         autocomplete="new-password"
         :placeholder="$keyPlaceholder"
         data-provider-key />
 
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-[15px]">
-        <x-admin::form.input name="temperature" type="number" label="Sıcaklık" required
+        <x-admin::form.input name="temperature" help="ai_provider.temperature" type="number" label="Sıcaklık" required
             :value="$provider?->temperature ?? 0.7" step="0.1" min="0" max="2"
             wrapper="mb-[20px] md:mb-[25px]" />
 
-        <x-admin::form.input name="max_tokens" type="number" label="Maks. Token" required
+        <x-admin::form.input name="max_tokens" help="ai_provider.max_tokens" type="number" label="Maks. Token" required
             :value="$provider?->max_tokens ?? 4000" min="100" max="32000"
             wrapper="mb-[20px] md:mb-[25px]" />
 
-        <x-admin::form.input name="timeout" type="number" label="Zaman Aşımı (sn)" required
+        <x-admin::form.input name="timeout" help="ai_provider.timeout" type="number" label="Zaman Aşımı (sn)" required
             :value="$provider?->timeout ?? 180" min="10" max="600"
             wrapper="mb-[20px] md:mb-[25px]" />
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-[15px] mb-[20px] md:mb-[25px]">
-        <x-admin::form.switch name="json_mode" label="JSON modu"
+        <x-admin::form.switch name="json_mode" help="ai_provider.json_mode" label="JSON modu"
             :checked="data_get($provider, 'options.json_mode', true)"
             hint="Modelden geçerli JSON istenir." wrapper="" />
 
-        <x-admin::form.switch name="is_active" label="Aktif"
+        <x-admin::form.switch name="is_active" help="ai_provider.is_active" label="Aktif"
             :checked="$provider?->is_active ?? true" wrapper="" />
 
-        <x-admin::form.switch name="is_default" label="Varsayılan"
+        <x-admin::form.switch name="is_default" help="ai_provider.is_default" label="Varsayılan"
             :checked="$provider?->is_default ?? false"
             hint="Şablonda servis seçilmezse bu kullanılır." wrapper="" />
     </div>

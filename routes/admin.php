@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\Redirect\RedirectController;
 use App\Http\Controllers\Admin\Reference\ReferenceController;
 use App\Http\Controllers\Admin\Role\RoleController;
 use App\Http\Controllers\Admin\Schema\SchemaController;
+use App\Http\Controllers\Admin\Seo\SeoHealthController;
 use App\Http\Controllers\Admin\Service\ServiceController;
 use App\Http\Controllers\Admin\ServiceRegion\ServiceRegionController;
 use App\Http\Controllers\Admin\Setting\SettingController;
@@ -224,6 +225,14 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
         Route::get('data', 'data')->name('data');
         Route::get('realtime', 'realtime')->name('realtime');
         Route::post('test', 'test')->name('test');
+    });
+
+    // SEO Sağlığı — tüm içeriğin skor/eksik raporları. Skorlar kayıt
+    // kaydedilirken HasSeo::syncSeo() içinde yazılır.
+    Route::prefix('seo')->name('seo.')->controller(SeoHealthController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('datatable', 'datatable')->name('datatable');
+        Route::post('rescore', 'rescore')->name('rescore');
     });
 
     // Bölge ağacı: liste kırılımlı çalışır, datatable parent_id filtresiyle

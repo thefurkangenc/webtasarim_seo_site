@@ -20,6 +20,7 @@ trait ValidatesSharedFields
             "{$prefix}.meta_title" => ['nullable', 'string', 'max:255'],
             "{$prefix}.meta_description" => ['nullable', 'string', 'max:500'],
             "{$prefix}.meta_keywords" => ['nullable', 'string', 'max:500'],
+            "{$prefix}.focus_keyword" => ['nullable', 'string', 'max:120'],
             "{$prefix}.og_media_id" => ['nullable', 'integer', 'exists:media,id'],
         ];
     }

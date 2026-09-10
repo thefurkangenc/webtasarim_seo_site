@@ -5,6 +5,7 @@
     'value' => null,
     'placeholder' => 'Seçiniz',
     'required' => false,
+    'help' => null,
     'wrapper' => 'mb-[20px] md:mb-[25px] last:mb-0',
     // true verilirse Choices.js uygulanmaz, tarayıcının native select'i kalır.
     'plain' => false,
@@ -28,7 +29,7 @@
 
 <div class="{{ $wrapper }}">
     @if ($label)
-        <x-admin::form.label :for="$id" :required="$required">{{ $label }}</x-admin::form.label>
+        <x-admin::form.label :for="$id" :required="$required" :help="$help">{{ $label }}</x-admin::form.label>
     @endif
 
     {{-- core/select.js bunu Choices.js ile değiştirir; native select DOM'da

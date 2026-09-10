@@ -15,7 +15,7 @@
                 <p class="!mb-0 font-medium text-black dark:text-white">Google</p>
             </div>
 
-            <x-admin::form.input name="ga4_id" label="Google Analytics 4"
+            <x-admin::form.input name="ga4_id" help="tracking.ga4_id" label="Google Analytics 4"
                 :value="$values['ga4_id'] ?? null"
                 placeholder="G-XXXXXXXXXX"
                 maxlength="20"
@@ -27,13 +27,13 @@
                 GTM dolu olduğu için GA4 sitede çalıştırılmaz. Analytics’i Tag Manager içinden ekleyin; sayım ikiye katlanmaz.
             </div>
 
-            <x-admin::form.input name="gtm_id" label="Google Tag Manager"
+            <x-admin::form.input name="gtm_id" help="tracking.gtm_id" label="Google Tag Manager"
                 :value="$values['gtm_id'] ?? null"
                 placeholder="GTM-XXXXXXX"
                 maxlength="20"
                 data-tracking-gtm />
 
-            <x-admin::form.input name="google_site_verification" label="Search Console doğrulama"
+            <x-admin::form.input name="google_site_verification" help="tracking.google_site_verification" label="Search Console doğrulama"
                 :value="$values['google_site_verification'] ?? null"
                 placeholder="google-site-verification içeriği"
                 wrapper="mb-0" />
@@ -47,12 +47,12 @@
                 <p class="!mb-0 font-medium text-black dark:text-white">Microsoft</p>
             </div>
 
-            <x-admin::form.input name="bing_uet_id" label="Bing UET"
+            <x-admin::form.input name="bing_uet_id" help="tracking.bing_uet_id" label="Bing UET"
                 :value="$values['bing_uet_id'] ?? null"
                 placeholder="12345678"
                 maxlength="20" />
 
-            <x-admin::form.input name="bing_verification" label="Bing Webmaster doğrulama"
+            <x-admin::form.input name="bing_verification" help="tracking.bing_verification" label="Bing Webmaster doğrulama"
                 :value="$values['bing_verification'] ?? null"
                 placeholder="msvalidate.01 içeriği"
                 wrapper="mb-0" />
@@ -66,7 +66,7 @@
                 <p class="!mb-0 font-medium text-black dark:text-white">Meta</p>
             </div>
 
-            <x-admin::form.input name="meta_pixel_id" label="Meta Pixel"
+            <x-admin::form.input name="meta_pixel_id" help="tracking.meta_pixel_id" label="Meta Pixel"
                 :value="$values['meta_pixel_id'] ?? null"
                 placeholder="123456789012345"
                 maxlength="20"
@@ -81,12 +81,12 @@
                 <p class="!mb-0 font-medium text-black dark:text-white">Yandex</p>
             </div>
 
-            <x-admin::form.input name="yandex_metrica_id" label="Yandex Metrica"
+            <x-admin::form.input name="yandex_metrica_id" help="tracking.yandex_metrica_id" label="Yandex Metrica"
                 :value="$values['yandex_metrica_id'] ?? null"
                 placeholder="12345678"
                 maxlength="20" />
 
-            <x-admin::form.input name="yandex_verification" label="Yandex Webmaster doğrulama"
+            <x-admin::form.input name="yandex_verification" help="tracking.yandex_verification" label="Yandex Webmaster doğrulama"
                 :value="$values['yandex_verification'] ?? null"
                 placeholder="yandex-verification içeriği"
                 wrapper="mb-0" />
@@ -100,7 +100,7 @@
                 <p class="!mb-0 font-medium text-black dark:text-white">TikTok</p>
             </div>
 
-            <x-admin::form.input name="tiktok_pixel_id" label="TikTok Pixel"
+            <x-admin::form.input name="tiktok_pixel_id" help="tracking.tiktok_pixel_id" label="TikTok Pixel"
                 :value="$values['tiktok_pixel_id'] ?? null"
                 placeholder="CXXXXXXXXXXXXXXX"
                 maxlength="40"
@@ -115,7 +115,7 @@
                 <p class="!mb-0 font-medium text-black dark:text-white">LinkedIn</p>
             </div>
 
-            <x-admin::form.input name="linkedin_partner_id" label="LinkedIn Insight"
+            <x-admin::form.input name="linkedin_partner_id" help="tracking.linkedin_partner_id" label="LinkedIn Insight"
                 :value="$values['linkedin_partner_id'] ?? null"
                 placeholder="123456"
                 maxlength="20"
@@ -136,12 +136,12 @@
             </div>
         </div>
 
-        <x-admin::form.textarea name="head_scripts" label="Sayfa başına eklenecek kod"
+        <x-admin::form.textarea name="head_scripts" help="tracking.head_scripts" label="Sayfa başına eklenecek kod"
             :value="$values['head_scripts'] ?? null"
             placeholder="head içine eklenecek script veya meta etiketleri"
             rows="4" />
 
-        <x-admin::form.textarea name="body_scripts" label="Sayfa gövdesine eklenecek kod"
+        <x-admin::form.textarea name="body_scripts" help="tracking.body_scripts" label="Sayfa gövdesine eklenecek kod"
             :value="$values['body_scripts'] ?? null"
             placeholder="body açılışına eklenecek iframe veya script"
             rows="4"

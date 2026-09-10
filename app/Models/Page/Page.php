@@ -168,6 +168,7 @@ class Page extends Model implements LinksToPublicPage, RedirectsOnMove
     {
         return [
             'id' => $this->id,
+            ...$this->seoScorePayload(),
             'title' => $this->title,
             'slug' => $this->slug,
             'path' => $this->path,

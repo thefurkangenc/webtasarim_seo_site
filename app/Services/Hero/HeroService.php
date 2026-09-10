@@ -30,6 +30,7 @@ class HeroService
                 'button_url' => $data['button_url'] ?? null,
             ]);
 
+            $hero->syncMedia($data['background_media_id'] ?? null, 'background');
             $hero->syncMedia(
                 $data['gallery_media_ids'] ?? [],
                 'gallery',

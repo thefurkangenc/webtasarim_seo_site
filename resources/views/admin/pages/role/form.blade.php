@@ -25,20 +25,20 @@
         <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
             <div class="trezo-card-content">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-[20px] md:gap-[25px]">
-                    <x-admin::form.input name="name" label="Rol Adı" required :value="$role?->name"
+                    <x-admin::form.input name="name" help="role.name" label="Rol Adı" required :value="$role?->name"
                         placeholder="örn. editor" wrapper="mb-0" />
 
-                    <x-admin::form.input name="label" label="Görünen Ad" required :value="$role?->label"
+                    <x-admin::form.input name="label" help="role.label" label="Görünen Ad" required :value="$role?->label"
                         placeholder="örn. Editör" wrapper="mb-0" />
 
-                    <x-admin::form.select name="guard_name" label="Guard" required :options="$guards"
+                    <x-admin::form.select name="guard_name" help="role.guard_name" label="Guard" required :options="$guards"
                         :value="$role?->guard_name ?? 'web'" :placeholder="null" wrapper="mb-0" />
                 </div>
             </div>
         </div>
 
         <div class="mb-[20px] md:mb-[25px]">
-            <h5 class="!mb-[8px]">Yetkiler</h5>
+            <h5 class="!mb-[8px]">Yetkiler <x-admin::form.help topic="role.permissions" /></h5>
             <p class="text-sm text-gray-500 dark:text-gray-400 mb-[15px]">Rolün sahip olacağı yetkileri seçin.</p>
             <x-admin::form.error name="permissions" />
         </div>

@@ -1,16 +1,16 @@
 {{-- AJAX modal gövdesi. Gönderim pages/blog-category/index.js tarafından devralınır. --}}
 <form id="category-form" data-id="{{ $category?->id }}">
-    <x-admin::form.input name="name" label="Kategori Adı" required :value="$category?->name" />
+    <x-admin::form.input name="name" help="blog_category.name" label="Kategori Adı" required :value="$category?->name" />
 
-    <x-admin::form.input name="slug" label="Kısa Ad (slug)" :value="$category?->slug"
+    <x-admin::form.input name="slug" help="blog_category.slug" label="Kısa Ad (slug)" :value="$category?->slug"
         placeholder="Boş bırakılırsa addan üretilir" />
 
-    <x-admin::form.textarea name="description" label="Açıklama" rows="3"
+    <x-admin::form.textarea name="description" help="blog_category.description" label="Açıklama" rows="3"
         :value="$category?->description" class="h-[90px]" />
 
     {{-- Sıra artık formdan girilmez: yeni kayıt otomatik en sona eklenir,
          sırayı değiştirmek için liste sayfasındaki "Sıralama Modu" kullanılır. --}}
-    <x-admin::form.switch name="is_active" label="Aktif" :checked="$category?->is_active ?? true" />
+    <x-admin::form.switch name="is_active" help="common.active" label="Aktif" :checked="$category?->is_active ?? true" />
 
     <details class="mb-[20px] md:mb-[25px] rounded-md border border-gray-100 dark:border-[#172036]">
         <summary class="cursor-pointer select-none px-[15px] py-[12px] font-medium text-black dark:text-white flex items-center gap-[8px]">

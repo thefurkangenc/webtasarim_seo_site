@@ -31,7 +31,7 @@
             <div class="progress-bar"></div>
             <!-- Title Logo in Center with Rotation -->
             <div class="title-logo">
-                <img src="assets/img/logo/preloader-icon1.png" alt="SEO Marketing Logo">
+                <img style="width: 70px; height: 70px;" src="{{ asset('assets/img/icons/icon.png') }}" alt="SEO Marketing Logo">
             </div>
         </div>
     </div>

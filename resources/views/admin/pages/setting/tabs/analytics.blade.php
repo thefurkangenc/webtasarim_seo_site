@@ -7,9 +7,11 @@
 
     <p class="text-sm text-gray-500 dark:text-gray-400 mb-[20px] md:mb-[25px] leading-relaxed">
         Panelin <a href="{{ route('admin.analytics.index') }}" class="text-primary-500 hover:underline">Analitik</a>
-        ekranı, Google Analytics 4 verisini bir <strong>service account</strong> ile çeker (harici paket yok, JWT
-        kendimiz imzalıyoruz). Ön yüzdeki GA4 izleme kodu ayrı — o
-        <a href="{{ route('admin.setting.edit', 'tracking') }}" class="text-primary-500 hover:underline">İzleme Kodları</a>'nda.
+        ekranı, ziyaretçi verinizi doğrudan <strong>Google Analytics 4</strong>'ten çeker. Bunun için Google'dan
+        <strong>bir kez</strong> alacağınız bir kimlik dosyası gerekir; nasıl alınacağı aşağıda adım adım anlatılıyor.
+        Ön yüze eklenen GA4 izleme kodu bundan ayrıdır — o
+        <a href="{{ route('admin.setting.edit', 'tracking') }}" class="text-primary-500 hover:underline">İzleme Kodları</a>
+        sekmesindedir.
     </p>
 
     @if ($connected)
@@ -25,7 +27,7 @@
         </div>
     @endif
 
-    <x-admin::form.input name="property_id" label="GA4 Property ID" required
+    <x-admin::form.input name="property_id" label="GA4 Property ID" required help="analytics.property_id"
         :value="$values['property_id'] ?? null"
         placeholder="Örn. 493819123"
         inputmode="numeric" />
@@ -36,7 +38,8 @@
 
     <div class="mb-[20px] md:mb-[25px]">
         <label class="mb-[10px] text-black dark:text-white font-medium block">
-            Service account JSON {{ $connected ? '(değiştirmek için yeni dosya yükleyin)' : '' }}
+            Google kimlik dosyası (JSON) {{ $connected ? '· değiştirmek için yeni dosya yükleyin' : '' }}
+            <x-admin::form.help topic="analytics.service_account" />
         </label>
         <input type="file" name="service_account" accept="application/json,.json"
             class="block w-full text-sm text-gray-600 dark:text-gray-300 file:mr-[14px] file:py-[9px] file:px-[16px] file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-primary-500 file:text-white hover:file:bg-primary-400 file:cursor-pointer border border-gray-200 dark:border-[#172036] rounded-md p-[8px] bg-white dark:bg-[#0c1427]">
@@ -46,15 +49,77 @@
         </p>
     </div>
 
-    <details class="mb-[20px] md:mb-[25px] rounded-md border border-gray-100 dark:border-[#172036] p-[14px] text-sm">
-        <summary class="cursor-pointer font-medium text-black dark:text-white">Kurulum adımları</summary>
-        <ol class="list-decimal ltr:pl-[18px] rtl:pr-[18px] mt-[10px] space-y-[6px] text-gray-600 dark:text-gray-300">
-            <li>Google Cloud Console &rsaquo; APIs &amp; Services &rsaquo; <strong>Google Analytics Data API</strong>'yi etkinleştirin.</li>
-            <li>IAM &amp; Admin &rsaquo; Service Accounts &rsaquo; yeni bir hesap oluşturun, <strong>JSON anahtar</strong> indirin.</li>
-            <li>Google Analytics &rsaquo; Yönetici &rsaquo; <strong>Mülk Erişim Yönetimi</strong>'nde bu hesabın e-postasını <strong>Görüntüleyici (Viewer)</strong> olarak ekleyin.</li>
-            <li>İndirdiğiniz JSON dosyasını yukarıya yükleyin, property ID'yi girin ve kaydedin.</li>
+    @php
+        $gaSteps = [
+            [
+                'icon' => 'create_new_folder',
+                'title' => 'Google Cloud\'da bir proje oluşturun',
+                'body' => '<a href="https://console.cloud.google.com" target="_blank" rel="noopener">console.cloud.google.com</a> adresine girin. Üstteki proje seçiciden <strong>Yeni Proje</strong> &rsaquo; bir ad verin (örn. <em>Site Analitik</em>) &rsaquo; <strong>Oluştur</strong>. Zaten bir projeniz varsa onu kullanabilirsiniz.',
+            ],
+            [
+                'icon' => 'bolt',
+                'title' => '"Google Analytics Data API"yi etkinleştirin',
+                'body' => 'Sol menü &rsaquo; <strong>API\'ler ve Hizmetler</strong> &rsaquo; <strong>Kitaplık</strong>. Arama kutusuna <code>Google Analytics Data API</code> yazın, çıkan sonuca tıklayıp <strong>Etkinleştir</strong>\'e basın. Etkinleşmesi 1–2 dakika sürebilir.',
+            ],
+            [
+                'icon' => 'person_add',
+                'title' => 'Bir servis hesabı oluşturun',
+                'body' => 'Sol menü &rsaquo; <strong>IAM ve Yönetici</strong> &rsaquo; <strong>Hizmet Hesapları</strong> &rsaquo; <strong>Hizmet hesabı oluştur</strong>. Bir ad verin (örn. <em>analitik-okuyucu</em>), <strong>Oluştur ve devam et</strong> deyin, rol adımını atlayıp <strong>Bitti</strong>\'ye basın. Google size <code>...@...iam.gserviceaccount.com</code> biçiminde bir e-posta üretir.',
+            ],
+            [
+                'icon' => 'key',
+                'title' => 'Kimlik dosyasını (JSON) indirin',
+                'body' => 'Listeden yeni hesabı açın &rsaquo; <strong>Anahtarlar</strong> sekmesi &rsaquo; <strong>Anahtar ekle</strong> &rsaquo; <strong>Yeni anahtar oluştur</strong> &rsaquo; tür olarak <strong>JSON</strong> &rsaquo; <strong>Oluştur</strong>. Dosya bilgisayarınıza iner — <strong>kimseyle paylaşmayın</strong>.',
+            ],
+            [
+                'icon' => 'group_add',
+                'title' => 'Bu hesaba Google Analytics\'te izin verin',
+                'body' => '<a href="https://analytics.google.com" target="_blank" rel="noopener">analytics.google.com</a> &rsaquo; sol altta <strong>Yönetici</strong> &rsaquo; <strong>Mülk</strong> sütununda <strong>Mülk Erişim Yönetimi</strong> &rsaquo; sağ üstteki <strong>+</strong> &rsaquo; <strong>Kullanıcı ekle</strong>. 3. adımdaki e-postayı yapıştırın, rol olarak <strong>Görüntüleyici</strong>\'yi seçin, <strong>Ekle</strong>\'ye basın.',
+            ],
+            [
+                'icon' => 'tag',
+                'title' => 'Mülk kimliğini (Property ID) bulun',
+                'body' => 'Aynı <strong>Yönetici</strong> ekranında <strong>Mülk ayrıntıları</strong>\'na girin. Sağ üstte <strong>MÜLK KİMLİĞİ</strong> altında yazan sayıyı (örn. <code>493819123</code>) kopyalayın.',
+            ],
+            [
+                'icon' => 'cloud_upload',
+                'title' => 'Panele girin ve kaydedin',
+                'body' => 'Yukarıdaki <strong>GA4 Property ID</strong> alanına 6. adımdaki sayıyı yazın, <strong>Google kimlik dosyası</strong> alanına 4. adımda inen dosyayı seçin, <strong>Kaydet</strong>\'e basın. Sonra <strong>Bağlantıyı test et</strong> ile doğrulayın.',
+            ],
+        ];
+    @endphp
+
+    <div class="rounded-md border border-gray-100 dark:border-[#172036] p-[16px] md:p-[20px] mb-[20px] md:mb-[25px]">
+        <div class="flex items-center gap-[8px] mb-[6px]">
+            <i class="material-symbols-outlined !text-[20px] text-primary-500">install_desktop</i>
+            <h6 class="!mb-0 font-semibold text-black dark:text-white">Kurulum — adım adım</h6>
+        </div>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mb-[18px] leading-relaxed">
+            İlk kurulum ~10 dakika sürer ve yalnızca bir kez yapılır. İki Google ekranı arasında gidip geleceksiniz:
+            <strong>Google Cloud Console</strong> (1–4. adımlar) ve <strong>Google Analytics</strong> (5–6. adımlar).
+        </p>
+
+        <ol class="space-y-[16px]">
+            @foreach ($gaSteps as $i => $step)
+                <li class="flex gap-[12px]">
+                    <span class="shrink-0 relative w-[32px] h-[32px] rounded-full bg-primary-50 dark:bg-[#15203c] flex items-center justify-center">
+                        <i class="material-symbols-outlined !text-[18px] text-primary-500">{{ $step['icon'] }}</i>
+                        <span class="absolute -top-[4px] -right-[4px] w-[16px] h-[16px] rounded-full bg-primary-500 text-white text-[10px] font-bold flex items-center justify-center">{{ $i + 1 }}</span>
+                    </span>
+                    <div class="pt-[3px] text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                        <span class="block font-medium text-black dark:text-white mb-[2px]">{{ $step['title'] }}</span>
+                        {!! $step['body'] !!}
+                    </div>
+                </li>
+            @endforeach
         </ol>
-    </details>
+
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-[18px] pt-[14px] border-t border-gray-100 dark:border-[#172036] leading-relaxed">
+            <i class="material-symbols-outlined !text-[15px] align-middle text-gray-400">lightbulb</i>
+            Menü adları Google tarafından ara sıra güncellenir; bir bağlantıyı bulamazsanız o ekranda arama kutusuna
+            adımdaki koyu yazılı ifadeyi yazın.
+        </p>
+    </div>
 
     <div class="trezo-card-footer flex flex-wrap items-center justify-end gap-[12px] -mx-[20px] md:-mx-[25px] px-[20px] md:px-[25px] pt-[20px] md:pt-[25px] mt-[20px] border-t border-gray-100 dark:border-[#172036]">
         <button type="button" id="analytics-test" {{ $connected ? '' : 'disabled' }}

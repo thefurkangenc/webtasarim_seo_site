@@ -6,6 +6,7 @@
     'preset' => null,
     'folder' => null,
     'hint' => null,
+    'help' => null,
     'required' => false,
     // Çoklu (galeri) mod: forma `name[]` id listesi ve `name_cover` kapak id'si
     // gider, davranışı core/media-gallery.js sürer. Çoklu modda nokta notasyonlu
@@ -32,7 +33,7 @@
 
 <div class="{{ $wrapper }}">
     @if ($label)
-        <x-admin::form.label :required="$required">{{ $label }}</x-admin::form.label>
+        <x-admin::form.label :required="$required" :help="$help">{{ $label }}</x-admin::form.label>
     @endif
 
     <div data-media-field

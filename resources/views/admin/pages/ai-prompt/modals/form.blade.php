@@ -1,22 +1,22 @@
 {{-- AJAX modal gövdesi. Gönderim pages/ai-prompt/index.js tarafından devralınır. --}}
 <form id="prompt-form" data-id="{{ $prompt?->id }}">
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-[15px]">
-        <x-admin::form.input name="name" label="Şablon Adı" required :value="$prompt?->name"
+        <x-admin::form.input name="name" help="ai_prompt.name" label="Şablon Adı" required :value="$prompt?->name"
             placeholder="Örn. Detaylı rehber yazısı" wrapper="mb-[20px] md:mb-[25px]" />
 
-        <x-admin::form.input name="key" label="Modül Anahtarı" required :value="$prompt?->key ?? 'blog.content'"
+        <x-admin::form.input name="key" help="ai_prompt.key" label="Modül Anahtarı" required :value="$prompt?->key ?? 'blog.content'"
             placeholder="blog.content" wrapper="mb-[20px] md:mb-[25px]" />
     </div>
 
-    <x-admin::form.select name="ai_provider_id" label="Sağlayıcı"
+    <x-admin::form.select name="ai_provider_id" help="ai_prompt.ai_provider_id" label="Sağlayıcı"
         :value="$prompt?->ai_provider_id" :options="$providers->all()"
         placeholder="Varsayılan sağlayıcıyı kullan" />
 
-    <x-admin::form.textarea name="system_prompt" label="Sistem Prompt" required rows="6"
+    <x-admin::form.textarea name="system_prompt" help="ai_prompt.system_prompt" label="Sistem Prompt" required rows="6"
         :value="$prompt?->system_prompt"
         placeholder="Modelin rolünü ve çıktı biçimini anlatın." class="h-[160px]" />
 
-    <x-admin::form.textarea name="user_prompt" label="Kullanıcı Prompt" required rows="8"
+    <x-admin::form.textarea name="user_prompt" help="ai_prompt.user_prompt" label="Kullanıcı Prompt" required rows="8"
         :value="$prompt?->user_prompt"
         placeholder="Üretim isteğini yazın; @{{keywords}} gibi değişkenler kullanabilirsiniz." class="h-[200px]" />
 
@@ -36,8 +36,8 @@
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-[15px] mb-[20px] md:mb-[25px]">
-        <x-admin::form.switch name="is_active" label="Aktif" :checked="$prompt?->is_active ?? true" wrapper="" />
-        <x-admin::form.switch name="is_default" label="Varsayılan"
+        <x-admin::form.switch name="is_active" help="ai_prompt.is_active" label="Aktif" :checked="$prompt?->is_active ?? true" wrapper="" />
+        <x-admin::form.switch name="is_default" help="ai_prompt.is_default" label="Varsayılan"
             :checked="$prompt?->is_default ?? false"
             hint="Bu anahtar için üretim modalında önce bu seçili gelir." wrapper="" />
     </div>

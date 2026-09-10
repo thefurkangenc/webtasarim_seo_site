@@ -22,7 +22,7 @@
         çoğu kayıtta boş kalır.
     </p>
 
-    <x-admin::form.input :name="$key('schema_type')" label="Ana düğüm türünü değiştir"
+    <x-admin::form.input :name="$key('schema_type')" label="Ana düğüm türünü değiştir" help="schema.record_type"
         :value="$seo?->schema_type"
         placeholder="Boş bırakın (otomatik). Örn: Service, Product, Event, HowTo"
         wrapper="mb-[16px]" />
@@ -32,7 +32,7 @@
     </p>
 
     <div class="mb-[16px]">
-        <x-admin::form.label :for="\App\Support\Field::id($key('schema_json'))">Ek JSON-LD (gelişmiş)</x-admin::form.label>
+        <x-admin::form.label :for="\App\Support\Field::id($key('schema_json'))" help="schema.record_json">Ek JSON-LD (gelişmiş)</x-admin::form.label>
         <textarea name="{{ \App\Support\Field::name($key('schema_json')) }}"
             id="{{ \App\Support\Field::id($key('schema_json')) }}"
             rows="8" spellcheck="false"
@@ -45,7 +45,7 @@
         </p>
     </div>
 
-    <x-admin::form.switch :name="$key('schema_override')" label="Otomatik üretimi kapat"
+    <x-admin::form.switch :name="$key('schema_override')" label="Otomatik üretimi kapat" help="schema.record_override"
         :checked="(bool) ($seo?->schema_override ?? false)"
         hint="Açıksa bu sayfa için WebPage / Service / BlogPosting / SSS / breadcrumb düğümleri üretilmez; yalnızca site geneli Organization + WebSite ve yukarıdaki JSON basılır."
         wrapper="mb-0" />

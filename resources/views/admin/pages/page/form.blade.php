@@ -53,10 +53,10 @@
                     </div>
 
                     <div class="trezo-card-content">
-                        <x-admin::form.input name="title" label="Başlık" required :value="$page?->title"
+                        <x-admin::form.input name="title" help="page.title" label="Başlık" required :value="$page?->title"
                             placeholder="Örn. Kariyer" />
 
-                        <x-admin::form.input name="slug" label="Kısa Ad (slug)" :value="$page?->slug"
+                        <x-admin::form.input name="slug" help="common.slug" label="Kısa Ad (slug)" :value="$page?->slug"
                             placeholder="Boş bırakılırsa başlıktan üretilir" />
 
                         {{-- Canlı adres satırı: üst sayfa ya da kısa ad değiştikçe
@@ -68,11 +68,11 @@
                             </span>
                         </div>
 
-                        <x-admin::form.textarea name="excerpt" label="Özet" rows="3" :value="$page?->excerpt"
+                        <x-admin::form.textarea name="excerpt" help="common.excerpt" label="Özet" rows="3" :value="$page?->excerpt"
                             placeholder="Listelerde ve arama sonuçlarında görünecek kısa açıklama"
                             class="h-[90px]" />
 
-                        <x-admin::form.editor name="content" label="İçerik" :value="$page?->content" :height="600" />
+                        <x-admin::form.editor name="content" help="common.content" label="İçerik" :value="$page?->content" :height="600" />
                     </div>
                 </div>
 
@@ -83,7 +83,7 @@
                         </div>
                     </div>
                     <div class="trezo-card-content">
-                        <x-admin::form.seo :model="$page" :path="$basePath" imageSource="cover_media_id" wrapper="" />
+                        <x-admin::form.seo :model="$page" :path="$basePath" imageSource="cover_media_id" analysisType="page" wrapper="" />
                     </div>
                 </div>
 
@@ -115,7 +115,7 @@
                         @endif
                     </div>
                     <div class="trezo-card-content">
-                        <x-admin::form.select name="status" label="Durum" required
+                        <x-admin::form.select name="status" help="common.status" label="Durum" required
                             :options="\App\Models\Page\Page::STATUSES"
                             :value="$page?->status ?? \App\Models\Page\Page::STATUS_DRAFT"
                             :placeholder="null" />
@@ -123,7 +123,7 @@
                         {{-- placeholder verilmiyor: form.date kendi placeholder'ını
                              (gg.aa.yyyy ss:dd) sabitliyor, ikinci bir değer yinelenen
                              HTML niteliği üretir ve tarayıcı ilkini kullanır. --}}
-                        <x-admin::form.date name="published_at" label="Yayın Tarihi" :value="$page?->published_at" />
+                        <x-admin::form.date name="published_at" help="common.published_at" label="Yayın Tarihi" :value="$page?->published_at" />
 
                         <p class="-mt-[12px] mb-[20px] md:mb-[25px] text-xs text-gray-500 dark:text-gray-400">
                             Boş bırakılırsa sayfa kaydedildiği anda yayınlanır. İleri bir tarih girilirse
@@ -152,10 +152,10 @@
                     <div class="trezo-card-content">
                         {{-- Seçeneklerde sayfanın kendisi ve altındaki her şey yok:
                              bir sayfa kendi torununun çocuğu olamaz. --}}
-                        <x-admin::form.select name="parent_id" label="Üst Sayfa" :options="$parents"
+                        <x-admin::form.select name="parent_id" help="page.parent_id" label="Üst Sayfa" :options="$parents"
                             :value="$page?->parent_id" placeholder="Üst seviye (site kökü)" />
 
-                        <x-admin::form.select name="template" label="Şablon" required :options="$templateOptions"
+                        <x-admin::form.select name="template" help="page.template" label="Şablon" required :options="$templateOptions"
                             :value="$page?->template ?? 'default'" :placeholder="null" wrapper="" />
 
                         <p data-template-hint data-descriptions="{{ json_encode($templateHints) }}"
@@ -181,7 +181,7 @@
                         </div>
                     </div>
                     <div class="trezo-card-content">
-                        <x-admin::form.image name="cover_media_id" preset="page.cover"
+                        <x-admin::form.image name="cover_media_id" help="common.cover_media" preset="page.cover"
                             :media="$page?->getFirstMedia('cover')" wrapper="" />
                     </div>
                 </div>

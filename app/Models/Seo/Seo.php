@@ -14,9 +14,17 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
     'meta_title', 'meta_description', 'meta_keywords', 'canonical_url',
     'robots_index', 'robots_follow', 'og_media_id',
     'schema_type', 'schema_json', 'schema_override',
+    'focus_keyword', 'seo_score', 'readability_score', 'score_checks', 'analyzed_at',
 ])]
 class Seo extends Model
 {
+    /** Skor renk/etiket eşiği — config/seo.php `grade` ile aynı. */
+    public const GRADES = [
+        'bad' => ['label' => 'Kötü', 'color' => 'danger'],
+        'ok' => ['label' => 'İyileştirilebilir', 'color' => 'warning'],
+        'good' => ['label' => 'İyi', 'color' => 'success'],
+    ];
+
     /** @return array<string, string> */
     protected function casts(): array
     {
@@ -25,7 +33,27 @@ class Seo extends Model
             'robots_follow' => 'boolean',
             'schema_json' => 'array',
             'schema_override' => 'boolean',
+            'seo_score' => 'integer',
+            'readability_score' => 'integer',
+            'score_checks' => 'array',
+            'analyzed_at' => 'datetime',
         ];
+    }
+
+    /** Skoru nota çevirir: bad / ok / good. */
+    public function scoreGrade(): ?string
+    {
+        if ($this->seo_score === null) {
+            return null;
+        }
+
+        $grade = config('seo.grade');
+
+        return match (true) {
+            $this->seo_score <= $grade['bad'] => 'bad',
+            $this->seo_score <= $grade['ok'] => 'ok',
+            default => 'good',
+        };
     }
 
     public function seoable(): MorphTo
