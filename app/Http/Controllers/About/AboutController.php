@@ -4,6 +4,7 @@ namespace App\Http\Controllers\About;
 
 use App\Http\Controllers\Controller;
 use App\Services\Testimonial\TestimonialService;
+use App\Support\SchemaContext;
 use App\Support\Settings;
 use Illuminate\View\View;
 
@@ -17,6 +18,7 @@ class AboutController extends Controller
             'aboutTitle' => Settings::get('contents.about_title'),
             'aboutContent' => Settings::get('contents.about_content'),
             'testimonials' => $this->testimonials->active(),
+            'schemaContext' => SchemaContext::about(),
         ]);
     }
 }

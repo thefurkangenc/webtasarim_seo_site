@@ -53,6 +53,7 @@ class PageCreateRequest extends FormRequest
 
             ...$this->tagRules(),
             ...$this->seoRules(),
+            ...$this->schemaRules(),
         ];
     }
 

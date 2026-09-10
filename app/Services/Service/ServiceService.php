@@ -99,6 +99,8 @@ class ServiceService
             ->where('status', Service::STATUS_PUBLISHED)
             ->with([
                 'media',
+                'seo.ogMedia',
+                'faqs',
                 'regions' => fn ($query) => $query->where('is_active', true)->orderBy('sort_order'),
             ])
             ->first();

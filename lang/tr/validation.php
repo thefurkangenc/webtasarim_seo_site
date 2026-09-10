@@ -210,6 +210,9 @@ return [
         'seo.meta_keywords' => 'meta anahtar kelimeler',
         'seo.canonical_url' => 'canonical URL',
         'seo.og_media_id' => 'paylaşım görseli',
+        'seo.schema_type' => 'Schema.org türü',
+        'seo.schema_json' => 'ek JSON-LD',
+        'seo.schema_override' => 'otomatik üretimi kapat',
         'tags' => 'etiketler',
         'tags.*' => 'etiket',
 

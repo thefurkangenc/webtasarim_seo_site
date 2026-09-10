@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 #[Fillable([
     'meta_title', 'meta_description', 'meta_keywords', 'canonical_url',
     'robots_index', 'robots_follow', 'og_media_id',
+    'schema_type', 'schema_json', 'schema_override',
 ])]
 class Seo extends Model
 {
@@ -22,6 +23,8 @@ class Seo extends Model
         return [
             'robots_index' => 'boolean',
             'robots_follow' => 'boolean',
+            'schema_json' => 'array',
+            'schema_override' => 'boolean',
         ];
     }
 

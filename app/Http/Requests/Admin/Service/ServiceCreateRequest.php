@@ -35,6 +35,7 @@ class ServiceCreateRequest extends FormRequest
 
             ...$this->tagRules(),
             ...$this->seoRules(),
+            ...$this->schemaRules(),
         ];
     }
 }

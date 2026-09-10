@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Legal;
 
 use App\Http\Controllers\Controller;
+use App\Support\SchemaContext;
 use App\Support\Settings;
 use Illuminate\View\View;
 
@@ -13,6 +14,7 @@ class LegalController extends Controller
         return view('pages.legal.show', [
             'title' => 'Çerez Politikası',
             'content' => Settings::get('contents.cookie_content'),
+            'schemaContext' => SchemaContext::legal('Çerez Politikası', route('cerez-politikasi')),
         ]);
     }
 
@@ -21,6 +23,7 @@ class LegalController extends Controller
         return view('pages.legal.show', [
             'title' => 'KVKK Aydınlatma Metni',
             'content' => Settings::get('contents.kvkk_content'),
+            'schemaContext' => SchemaContext::legal('KVKK Aydınlatma Metni', route('kvkk')),
         ]);
     }
 }

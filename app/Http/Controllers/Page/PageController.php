@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Page;
 
 use App\Http\Controllers\Controller;
 use App\Services\Page\PageService;
+use App\Support\SchemaContext;
 use Illuminate\View\View;
 
 class PageController extends Controller
@@ -20,6 +21,9 @@ class PageController extends Controller
         $page = $this->service->findByPath($path);
         abort_unless($page, 404);
 
-        return view($page->templateMeta()['view'], $this->service->viewData($page));
+        return view($page->templateMeta()['view'], [
+            ...$this->service->viewData($page),
+            'schemaContext' => SchemaContext::page($page),
+        ]);
     }
 }

@@ -63,6 +63,7 @@
     --tracking-normal: 0em;
     --leading-tight: 1.25;
     --leading-normal: 1.5;
+    --leading-relaxed: 1.625;
     --radius-sm: 6px;
     --radius-md: 10px;
     --radius-lg: 12px;
@@ -2421,8 +2422,14 @@
     margin-block-start: calc(8px * var(--tw-space-y-reverse));
     margin-block-end: calc(8px * calc(1 - var(--tw-space-y-reverse)));
   }
+  .gap-x-\[16px\] {
+    column-gap: 16px;
+  }
   .gap-x-\[25px\] {
     column-gap: 25px;
+  }
+  .gap-y-\[10px\] {
+    row-gap: 10px;
   }
   :where(.divide-y > :not(:last-child)) {
     --tw-divide-y-reverse: 0;
@@ -3174,6 +3181,9 @@
   .p-\[13px\] {
     padding: 13px;
   }
+  .p-\[14px\] {
+    padding: 14px;
+  }
   .p-\[15px\] {
     padding: 15px;
   }
@@ -3675,6 +3685,9 @@
   .align-top {
     vertical-align: top;
   }
+  .font-mono {
+    font-family: var(--font-mono);
+  }
   .\!text-2xl {
     font-size: var(--text-2xl) !important;
     line-height: var(--tw-leading, var(--text-2xl--line-height)) !important;
@@ -3995,6 +4008,10 @@
   .leading-none {
     --tw-leading: 1;
     line-height: 1;
+  }
+  .leading-relaxed {
+    --tw-leading: var(--leading-relaxed);
+    line-height: var(--leading-relaxed);
   }
   .leading-tight {
     --tw-leading: var(--leading-tight);
@@ -4859,6 +4876,9 @@
   .focus\:border-primary-500:focus {
     border-color: var(--color-primary-500);
   }
+  .focus\:ring-primary-500:focus {
+    --tw-ring-color: var(--color-primary-500);
+  }
   .active\:cursor-grabbing:active {
     cursor: grabbing;
   }
@@ -5506,8 +5526,14 @@
     .md\:grid-cols-4 {
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }
+    .md\:flex-row {
+      flex-direction: row;
+    }
     .md\:items-center {
       align-items: center;
+    }
+    .md\:items-end {
+      align-items: flex-end;
     }
     .md\:justify-between {
       justify-content: space-between;
@@ -8968,6 +8994,9 @@
   }
   .dark\:text-danger-500:where([class=dark], [class=dark] *) {
     color: var(--color-danger-500);
+  }
+  .dark\:text-gray-200:where([class=dark], [class=dark] *) {
+    color: var(--color-gray-200);
   }
   .dark\:text-gray-300:where([class=dark], [class=dark] *) {
     color: var(--color-gray-300);

@@ -3,6 +3,7 @@
 
 <head>
     @include('layout.partials.meta')
+    @include('layout.partials.schema')
     @include('layout.partials.tracking', ['placement' => 'head'])
 
     @include('layout.partials.css')

@@ -57,5 +57,8 @@
         @if ($group === 'tracking')
             <script type="module" src="{{ asset('admin/assets/js/pages/setting/tracking.js') }}"></script>
         @endif
+        @if ($group === 'schema')
+            <script type="module" src="{{ asset('admin/assets/js/pages/setting/schema.js') }}"></script>
+        @endif
     @endif
 @endpush

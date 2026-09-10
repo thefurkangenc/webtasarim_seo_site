@@ -10,6 +10,7 @@ use App\Http\Requests\Admin\Setting\SettingContentsRequest;
 use App\Http\Requests\Admin\Setting\SettingCookieRequest;
 use App\Http\Requests\Admin\Setting\SettingMailRequest;
 use App\Http\Requests\Admin\Setting\SettingMaintenanceRequest;
+use App\Http\Requests\Admin\Setting\SettingSchemaRequest;
 use App\Http\Requests\Admin\Setting\SettingSeoRequest;
 use App\Http\Requests\Admin\Setting\SettingTrackingRequest;
 use App\Services\Setting\SettingService;
@@ -39,6 +40,13 @@ class SettingController extends Controller
         $this->service->putGroup('seo', $request->validated());
 
         return $this->success('SEO ayarları kaydedildi.');
+    }
+
+    public function updateSchema(SettingSchemaRequest $request): JsonResponse
+    {
+        $this->service->putGroup('schema', $request->validated());
+
+        return $this->success('Schema.org ayarları kaydedildi.');
     }
 
     public function updateMail(SettingMailRequest $request): JsonResponse

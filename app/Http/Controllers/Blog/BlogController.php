@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Blog;
 
 use App\Http\Controllers\Controller;
 use App\Services\Blog\BlogService;
+use App\Support\SchemaContext;
 use Illuminate\View\View;
 
 class BlogController extends Controller
@@ -18,6 +19,7 @@ class BlogController extends Controller
         return view('pages.blog.show', [
             'blog' => $blog,
             'related' => $this->service->related($blog),
+            'schemaContext' => SchemaContext::blogPosting($blog),
         ]);
     }
 }

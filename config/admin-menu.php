@@ -139,6 +139,13 @@ return [
                 'active' => 'admin.redirect.*',
                 'permission' => 'redirect.index',
             ],
+            [
+                'title' => 'Schema.org',
+                'icon' => 'data_object',
+                'route' => 'admin.schema.index',
+                'active' => 'admin.schema.*',
+                'permission' => 'schema.index',
+            ],
 
             [
                 'title' => 'Medya Kütüphanesi',

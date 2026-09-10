@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\Page\PageController;
 use App\Http\Controllers\Admin\Redirect\RedirectController;
 use App\Http\Controllers\Admin\Reference\ReferenceController;
 use App\Http\Controllers\Admin\Role\RoleController;
+use App\Http\Controllers\Admin\Schema\SchemaController;
 use App\Http\Controllers\Admin\Service\ServiceController;
 use App\Http\Controllers\Admin\ServiceRegion\ServiceRegionController;
 use App\Http\Controllers\Admin\Setting\SettingController;
@@ -53,6 +54,7 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
         Route::get('/', 'edit')->name('index')->defaults('group', 'company');
         Route::put('company', 'updateCompany')->name('company.update');
         Route::put('seo', 'updateSeo')->name('seo.update');
+        Route::put('schema', 'updateSchema')->name('schema.update');
         Route::put('mail', 'updateMail')->name('mail.update');
         Route::post('mail/test', 'testMail')->name('mail.test');
         Route::put('tracking', 'updateTracking')->name('tracking.update');
@@ -204,6 +206,13 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
     Route::prefix('not-found')->name('not-found.')->controller(RedirectController::class)->group(function () {
         Route::get('datatable', 'notFoundDatatable')->name('datatable');
         Route::delete('{notFoundLog}', 'destroyNotFound')->name('destroy');
+    });
+
+    // Schema.org doğrulama ekranı — üretilen JSON-LD'yi gösterir ve denetler.
+    // Ayarlar "Schema.org" sekmesinde (setting.schema.update).
+    Route::prefix('schema')->name('schema.')->controller(SchemaController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('preview', 'preview')->name('preview');
     });
 
     // Bölge ağacı: liste kırılımlı çalışır, datatable parent_id filtresiyle

@@ -39,6 +39,9 @@ trait HasSeo
             'robots_follow' => (bool) ($data['robots_follow'] ?? true),
             // Boş string de null olmalı; form seçim yapılmadığında '' gönderir.
             'og_media_id' => ($data['og_media_id'] ?? null) ?: null,
+            'schema_type' => ($data['schema_type'] ?? null) ?: null,
+            'schema_json' => $this->normalizeSchemaJson($data['schema_json'] ?? null),
+            'schema_override' => (bool) ($data['schema_override'] ?? false),
         ]);
 
         $this->unsetRelation('seo');
@@ -62,6 +65,43 @@ trait HasSeo
             'robots' => $seo?->robots() ?? 'index,follow',
             'image' => $seo?->ogMedia?->url() ?? $fallbacks['image'],
         ];
+    }
+
+    /**
+     * Kayıt bazında Schema.org override ayarları. SchemaGraphBuilder bunu okur.
+     *
+     * @return array{type: string|null, json: array<int|string, mixed>|null, override: bool}
+     */
+    public function schemaOverride(): array
+    {
+        $seo = $this->seo;
+
+        return [
+            'type' => $seo?->schema_type ?: null,
+            'json' => is_array($seo?->schema_json) ? $seo->schema_json : null,
+            'override' => (bool) ($seo?->schema_override ?? false),
+        ];
+    }
+
+    /**
+     * Textarea'dan gelen ham JSON metnini diziye çevirir. Geçersizse null —
+     * FormRequest bunu zaten reddeder, burası ikinci savunma hattıdır.
+     *
+     * @return array<int|string, mixed>|null
+     */
+    protected function normalizeSchemaJson(mixed $value): ?array
+    {
+        if (is_array($value)) {
+            return $value === [] ? null : $value;
+        }
+
+        if (! is_string($value) || trim($value) === '') {
+            return null;
+        }
+
+        $decoded = json_decode($value, true);
+
+        return is_array($decoded) && $decoded !== [] ? $decoded : null;
     }
 
     /**

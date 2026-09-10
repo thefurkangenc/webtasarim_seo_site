@@ -6,10 +6,11 @@ use App\Http\Controllers\Contact\ContactController;
 use App\Http\Controllers\Legal\LegalController;
 use App\Http\Controllers\Maintenance\MaintenanceController;
 use App\Http\Controllers\Service\ServiceController;
+use App\Support\SchemaContext;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('pages.home.index');
+    return view('pages.home.index', ['schemaContext' => SchemaContext::home()]);
 })->name('anasayfa');
 
 Route::get('/hakkimizda', [AboutController::class, 'index'])->name('hakkimizda');
@@ -22,7 +23,7 @@ Route::get('/hizmetler/{slug}', [ServiceController::class, 'show'])->name('hizme
 Route::get('/hizmetler/{slug}/{region}', [ServiceController::class, 'showForRegion'])->name('hizmetler.show-region');
 
 Route::get('/blog', function () {
-    return view('pages.blog.index');
+    return view('pages.blog.index', ['schemaContext' => SchemaContext::collection('Blog', route('blog'))]);
 })->name('blog');
 
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');

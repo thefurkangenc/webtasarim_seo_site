@@ -25,6 +25,10 @@ return [
             'title' => 'SEO',
             'icon' => 'travel_explore',
         ],
+        'schema' => [
+            'title' => 'Schema.org',
+            'icon' => 'data_object',
+        ],
         'mail' => [
             'title' => 'E-Posta',
             'icon' => 'mail',
@@ -56,6 +60,22 @@ return [
     | sonra settings tablosundaki değer geçerli olur.
     */
     'defaults' => [
+        'schema' => [
+            // Google, bir web ajansı için LocalBusiness'ın alt türü olan
+            // ProfessionalService'i önerir. Fiziksel adres/saat yayınlamak
+            // istemeyen kullanıcı "Organization"a çeker.
+            'business_type' => 'ProfessionalService',
+            'founding_year' => '',
+            'tax_id' => '',
+            'tax_office' => '',
+            'price_range' => '₺₺',
+            'area_served' => 'Türkiye',
+            'same_as' => '',
+            'search_url' => '',
+            'description' => '',
+            // Gün gün çalışma saatleri, JSON: {"mon":{"closed":false,"opens":"09:00","closes":"18:00"}, ...}
+            'opening_hours' => '',
+        ],
         'contact' => [
             'enabled' => '1',
             'to_email' => '',

@@ -20,6 +20,7 @@ return [
         'page' => 'Sayfalar',
         'menu' => 'Menüler',
         'redirect' => 'Yönlendirmeler',
+        'schema' => 'Schema.org',
         'blog' => 'Blog',
         'testimonial' => 'Müşteri Yorumları',
         'reference' => 'Referanslar',
@@ -71,6 +72,7 @@ return [
         ['name' => 'setting.edit', 'label' => 'Site Ayarları - Düzenle', 'category' => 'setting', 'guard_name' => 'web'],
         ['name' => 'setting.company.update', 'label' => 'Firma - Güncelle', 'category' => 'setting', 'guard_name' => 'web'],
         ['name' => 'setting.seo.update', 'label' => 'SEO - Güncelle', 'category' => 'setting', 'guard_name' => 'web'],
+        ['name' => 'setting.schema.update', 'label' => 'Schema.org - Güncelle', 'category' => 'setting', 'guard_name' => 'web'],
         ['name' => 'setting.mail.update', 'label' => 'Posta - Güncelle', 'category' => 'setting', 'guard_name' => 'web'],
         ['name' => 'setting.mail.test', 'label' => 'Posta - Test', 'category' => 'setting', 'guard_name' => 'web'],
         ['name' => 'setting.tracking.update', 'label' => 'İzleme - Güncelle', 'category' => 'setting', 'guard_name' => 'web'],
@@ -140,6 +142,9 @@ return [
         ['name' => 'redirect.destroy', 'label' => 'Yönlendirme - Sil', 'category' => 'redirect', 'guard_name' => 'web'],
         ['name' => 'not-found.datatable', 'label' => '404 Kayıtları - Tablo', 'category' => 'redirect', 'guard_name' => 'web'],
         ['name' => 'not-found.destroy', 'label' => '404 Kayıtları - Sil', 'category' => 'redirect', 'guard_name' => 'web'],
+
+        ['name' => 'schema.index', 'label' => 'Schema.org - Doğrulama Ekranı', 'category' => 'schema', 'guard_name' => 'web'],
+        ['name' => 'schema.preview', 'label' => 'Schema.org - Önizle / Denetle', 'category' => 'schema', 'guard_name' => 'web'],
 
         ['name' => 'blog.index', 'label' => 'Blog - Listele', 'category' => 'blog', 'guard_name' => 'web'],
         ['name' => 'blog.datatable', 'label' => 'Blog - Tablo', 'category' => 'blog', 'guard_name' => 'web'],

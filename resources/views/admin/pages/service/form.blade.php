@@ -76,6 +76,17 @@
                         <x-admin::form.seo :model="$service" path="hizmetler" imageSource="cover_media_id" wrapper="" />
                     </div>
                 </div>
+
+                <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
+                    <div class="trezo-card-header mb-[20px] md:mb-[25px]">
+                        <div class="trezo-card-title">
+                            <h5 class="!mb-0">Schema.org</h5>
+                        </div>
+                    </div>
+                    <div class="trezo-card-content">
+                        <x-admin::form.schema :model="$service" wrapper="" />
+                    </div>
+                </div>
             </div>
 
             {{-- Sağ sütun: yayın, bölgeler, etiketler, görsel --}}

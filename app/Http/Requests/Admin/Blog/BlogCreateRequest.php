@@ -31,6 +31,7 @@ class BlogCreateRequest extends FormRequest
 
             ...$this->tagRules(),
             ...$this->seoRules(),
+            ...$this->schemaRules(),
         ];
     }
 }

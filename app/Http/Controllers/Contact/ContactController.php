@@ -6,6 +6,7 @@ use App\Http\Controllers\Concerns\RespondsWithJson;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Contact\ContactSubmitRequest;
 use App\Services\Contact\ContactService;
+use App\Support\SchemaContext;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 
@@ -17,7 +18,10 @@ class ContactController extends Controller
 
     public function index(): View
     {
-        return view('pages.contact.index', $this->service->pageData());
+        return view('pages.contact.index', [
+            ...$this->service->pageData(),
+            'schemaContext' => SchemaContext::contact(),
+        ]);
     }
 
     public function store(ContactSubmitRequest $request): JsonResponse

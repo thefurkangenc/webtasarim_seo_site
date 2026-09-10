@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Service;
 
 use App\Http\Controllers\Controller;
 use App\Services\Service\ServiceService;
+use App\Support\SchemaContext;
 use Illuminate\View\View;
 
 class ServiceController extends Controller
@@ -14,6 +15,7 @@ class ServiceController extends Controller
     {
         return view('pages.services.index', [
             'services' => $this->service->active(),
+            'schemaContext' => SchemaContext::collection('Hizmetler', route('hizmetler')),
         ]);
     }
 
@@ -27,6 +29,7 @@ class ServiceController extends Controller
             'service' => $service,
             'region' => null,
             'rendered' => $service->renderGeneric(),
+            'schemaContext' => SchemaContext::service($service),
         ]);
     }
 
@@ -46,6 +49,7 @@ class ServiceController extends Controller
             'service' => $service,
             'region' => $region,
             'rendered' => $service->renderFor($region),
+            'schemaContext' => SchemaContext::service($service, $region),
         ]);
     }
 }

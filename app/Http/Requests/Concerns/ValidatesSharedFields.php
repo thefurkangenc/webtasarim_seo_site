@@ -24,6 +24,35 @@ trait ValidatesSharedFields
         ];
     }
 
+    /**
+     * <x-admin::form.schema> alanları. seoRules() ile aynı `seo` prefix'i
+     * altında yaşar (seo tablosunda schema_type / schema_json / schema_override
+     * kolonları var).
+     *
+     * @return array<string, array<int, mixed>>
+     */
+    protected function schemaRules(string $prefix = 'seo'): array
+    {
+        return [
+            "{$prefix}.schema_type" => ['nullable', 'string', 'max:40', 'regex:/^[A-Za-z][A-Za-z0-9]*$/'],
+            "{$prefix}.schema_override" => ['nullable', 'boolean'],
+            "{$prefix}.schema_json" => [
+                'nullable', 'string', 'max:20000',
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    if (blank($value)) {
+                        return;
+                    }
+
+                    $decoded = json_decode((string) $value, true);
+
+                    if (json_last_error() !== JSON_ERROR_NONE || ! is_array($decoded)) {
+                        $fail('Geçerli bir JSON girin (bir nesne ya da nesne dizisi).');
+                    }
+                },
+            ],
+        ];
+    }
+
     /** @return array<string, array<int, string>> */
     protected function tagRules(string $key = 'tags'): array
     {
