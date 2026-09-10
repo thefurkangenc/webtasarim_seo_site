@@ -48,6 +48,7 @@ return [
         'social.icon' => ['width' => 256, 'height' => 256, 'label' => 'Sosyal Medya İkonu'],
         'testimonial.photo' => ['width' => 200, 'height' => 200, 'label' => 'Müşteri Yorumu Fotoğrafı'],
         'slider.image' => ['width' => 1920, 'height' => 800, 'label' => 'Slider Görseli'],
+        'hero.gallery' => ['width' => 274, 'height' => 34, 'label' => 'Tanıtım Alanı Görseli'],
         'user.avatar' => ['width' => 300, 'height' => 300, 'label' => 'Profil Fotoğrafı'],
         // Sosyal paylaşım görseli — <x-admin::form.seo> bileşeni kullanır.
         'seo.og' => ['width' => 1200, 'height' => 630, 'label' => 'Paylaşım Görseli'],

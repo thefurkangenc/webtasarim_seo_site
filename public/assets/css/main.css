@@ -58812,7 +58812,7 @@ only screen and (min-width: 768px) and (max-width: 991px),
 
 */
 /*# sourceMappingURL=main.css.map */
-@media (min-width: 1600px) {
+/* @media (min-width: 1600px) {
 
     .container,
     .container-lg,
@@ -58822,4 +58822,4 @@ only screen and (min-width: 768px) and (max-width: 991px),
     .container-xxl {
         max-width: 1620px !important;
     }
-}
+} */

@@ -49,7 +49,8 @@
                         placeholder="Örn. /iletisim veya https://..." wrapper="" />
                 </div>
 
-                <x-admin::form.image name="gallery_media_ids" label="Görseller" multiple :media="$hero->getMedia('gallery')"
+                <x-admin::form.image name="gallery_media_ids" label="Görseller" multiple {{-- preset="hero.gallery" --}}
+                    :media="$hero->getMedia('gallery')"
                     hint="Birden fazla görsel ekleyebilirsiniz; yıldız ile kapak görselini seçin." />
 
                 <div
