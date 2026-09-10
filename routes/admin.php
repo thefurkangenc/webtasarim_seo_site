@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\Hero\HeroController;
 use App\Http\Controllers\Admin\Integration\IntegrationController;
 use App\Http\Controllers\Admin\Media\MediaController;
 use App\Http\Controllers\Admin\Media\MediaFolderController;
+use App\Http\Controllers\Admin\Page\PageController;
 use App\Http\Controllers\Admin\Reference\ReferenceController;
 use App\Http\Controllers\Admin\Role\RoleController;
 use App\Http\Controllers\Admin\Service\ServiceController;
@@ -148,6 +149,22 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
         Route::get('{blog}/edit', 'edit')->name('edit');
         Route::put('{blog}', 'update')->name('update');
         Route::delete('{blog}', 'destroy')->name('destroy');
+    });
+
+    // Sayfa yöneticisi. Ön yüz adresi bir kolonda (`path`) tutulduğu için
+    // burada hiyerarşiye özel bir uç yok; ağaç liste ekranında `path`
+    // sıralamasından çıkar.
+    Route::prefix('page')->name('page.')->controller(PageController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('datatable', 'datatable')->name('datatable');
+        Route::get('create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+        // 'reorder' sabit segmenti {page} joker'ından ÖNCE tanımlanmalı —
+        // aksi halde 'reorder' bir sayfa kimliği sanılır.
+        Route::put('reorder', 'reorder')->name('reorder');
+        Route::get('{page}/edit', 'edit')->name('edit');
+        Route::put('{page}', 'update')->name('update');
+        Route::delete('{page}', 'destroy')->name('destroy');
     });
 
     // Bölge ağacı: liste kırılımlı çalışır, datatable parent_id filtresiyle

@@ -35,6 +35,13 @@ return [
                 'permission' => 'hero.index',
             ],
             [
+                'title' => 'Sayfalar',
+                'icon' => 'description',
+                'route' => 'admin.page.index',
+                'active' => 'admin.page.*',
+                'permission' => 'page.index',
+            ],
+            [
                 'title' => 'Blog',
                 'icon' => 'article',
                 'children' => [

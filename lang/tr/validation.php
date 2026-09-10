@@ -309,6 +309,13 @@ return [
         'lifetime_days' => 'geçerlilik süresi',
         'version' => 'politika sürümü',
         'privacy' => 'aydınlatma onayı',
+
+        // Sayfa yöneticisi
+        'template' => 'şablon',
+        'published_at' => 'yayın tarihi',
+        'cover_media_id' => 'kapak görseli',
+        'faqs' => 'sıkça sorulan sorular',
+        'faqs.*' => 'soru',
     ],
 
 ];

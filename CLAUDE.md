@@ -61,6 +61,26 @@ public/admin/assets/js/pages/blog/index.js
 public/admin/assets/css/pages/blog/index.css   <- SADECE gerçek ihtiyaç varsa; boş dosya açma
 ```
 
+## Route Yükleme Sırası — dikkat
+
+`bootstrap/app.php` route dosyalarını şu sırayla yükler:
+
+```
+1. routes/web.php      (ön yüz)
+2. routes/admin.php    ("admin" öneki, then: kancasında)
+3. routes/pages.php    (dinamik sayfaların catch-all'ı)
+```
+
+Laravel route'ları **kayıt sırasına** göre eşleştirir. `routes/pages.php`
+içindeki `/{path}` her şeyi yakaladığı için en sonda olmak zorundadır —
+`web.php`'nin sonunda durduğunda bile yetmiyor, çünkü admin route'ları ondan
+sonra yükleniyor ve catch-all tüm `/admin` adreslerini yutuyor.
+
+**Yeni bir route grubu eklenirse `bootstrap/app.php`'de `pages.php` satırının
+ÜSTÜNE eklenir.** Ön yüze yeni bir sabit adres eklenince ayrıca
+`App\Support\ReservedPath` onu kendiliğinden rezerve eder (kayıtlı route'ların
+sabit ilk segmentlerini toplar), böylece o adla bir sayfa oluşturulamaz.
+
 ## JSON Sözleşmesi
 
 ```

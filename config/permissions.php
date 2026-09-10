@@ -17,6 +17,7 @@ return [
         'media' => 'Medya',
         'setting' => 'Site Ayarları',
         'ai' => 'Yapay Zeka',
+        'page' => 'Sayfalar',
         'blog' => 'Blog',
         'testimonial' => 'Müşteri Yorumları',
         'reference' => 'Referanslar',
@@ -105,6 +106,15 @@ return [
         ['name' => 'ai.generate.form', 'label' => 'Yapay Zeka Üretim - Form', 'category' => 'ai', 'guard_name' => 'web'],
         ['name' => 'ai.generate.store', 'label' => 'Yapay Zeka Üretim - Kaydet', 'category' => 'ai', 'guard_name' => 'web'],
         ['name' => 'ai.generate.show', 'label' => 'Yapay Zeka Üretim - Görüntüle', 'category' => 'ai', 'guard_name' => 'web'],
+
+        ['name' => 'page.index', 'label' => 'Sayfa - Listele', 'category' => 'page', 'guard_name' => 'web'],
+        ['name' => 'page.datatable', 'label' => 'Sayfa - Tablo', 'category' => 'page', 'guard_name' => 'web'],
+        ['name' => 'page.create', 'label' => 'Sayfa - Ekle', 'category' => 'page', 'guard_name' => 'web'],
+        ['name' => 'page.store', 'label' => 'Sayfa - Kaydet', 'category' => 'page', 'guard_name' => 'web'],
+        ['name' => 'page.reorder', 'label' => 'Sayfa - Sırala', 'category' => 'page', 'guard_name' => 'web'],
+        ['name' => 'page.edit', 'label' => 'Sayfa - Düzenle', 'category' => 'page', 'guard_name' => 'web'],
+        ['name' => 'page.update', 'label' => 'Sayfa - Güncelle', 'category' => 'page', 'guard_name' => 'web'],
+        ['name' => 'page.destroy', 'label' => 'Sayfa - Sil', 'category' => 'page', 'guard_name' => 'web'],
 
         ['name' => 'blog.index', 'label' => 'Blog - Listele', 'category' => 'blog', 'guard_name' => 'web'],
         ['name' => 'blog.datatable', 'label' => 'Blog - Tablo', 'category' => 'blog', 'guard_name' => 'web'],

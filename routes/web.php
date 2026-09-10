@@ -41,3 +41,10 @@ Route::get('/bakim-onizleme', [MaintenanceController::class, 'preview'])
     ->name('maintenance.preview');
 Route::get('/bakim-onizleme/{secret}', [MaintenanceController::class, 'bypass'])
     ->name('maintenance.bypass');
+
+/*
+| Panelden yönetilen dinamik sayfaların catch-all route'u bu dosyada DEĞİL,
+| `routes/pages.php` içindedir — tüm uygulamada en son kaydolması gerekiyor ve
+| bu dosya `bootstrap/app.php` içinde admin route'larından önce yükleniyor.
+| Ayrıntı orada.
+*/

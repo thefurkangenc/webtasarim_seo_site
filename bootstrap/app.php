@@ -25,6 +25,11 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->prefix('admin')
                 ->name('admin.')
                 ->group(base_path('routes/admin.php'));
+
+            // Dinamik sayfaların catch-all'ı: her şeyi yakaladığı için
+            // uygulamanın EN SON route'u olmak zorunda. Yeni bir route grubu
+            // eklenirse bu satırın ÜSTÜNE eklenir.
+            Route::middleware('web')->group(base_path('routes/pages.php'));
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {

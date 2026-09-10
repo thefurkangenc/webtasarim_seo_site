@@ -73,6 +73,7 @@ return [
     'modules' => [
         'auth' => ['label' => 'Oturum', 'icon' => 'lock'],
         'security' => ['label' => 'Güvenlik', 'icon' => 'shield'],
+        'page' => ['label' => 'Sayfalar', 'icon' => 'description'],
         'blog' => ['label' => 'Blog', 'icon' => 'article'],
         'blog-category' => ['label' => 'Blog Kategorileri', 'icon' => 'category'],
         'service' => ['label' => 'Hizmetler', 'icon' => 'home_repair_service'],
