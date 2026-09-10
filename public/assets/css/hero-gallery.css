@@ -1,0 +1,52 @@
+/*
+| Hero6 alt galeri şeridi.
+|
+| Şablonun .hero6 .marquee-text kuralı içeriği translateX(-100%) ile kaydırıyor
+| ve width: 100% veriyor: az görselde şerit ekranı doldurmaz, animasyon başa
+| dönene kadar boşluk kalır. Burada liste Blade tarafında iki kez basılıyor ve
+| şerit kendi genişliğinin yarısı kadar (-50%) kaydırılıyor — ikinci kopya
+| birinciyi tam olarak takip ettiği için akış boşluksuz sürüyor.
+|
+| Seçici .hero6 .hero6-bottom-slider ile başlıyor: main.css'teki genel
+| .hero6 .marquee-text kuralından daha özgül, main.css'e dokunmak gerekmez.
+*/
+
+.hero6 .hero6-bottom-slider .marquee-wrap {
+    height: auto;
+    overflow: hidden;
+}
+
+.hero6 .hero6-bottom-slider .marquee-text {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    margin-top: 0;
+    font-size: inherit;
+    line-height: normal;
+    animation: hero-gallery-marquee 40s linear infinite;
+}
+
+.hero6 .hero6-bottom-slider .marquee-text:hover {
+    animation-play-state: paused;
+}
+
+.hero6 .hero6-bottom-slider .brand-single-box {
+    margin-bottom: 0;
+    bottom: 0;
+    flex-shrink: 0;
+}
+
+.hero6 .hero6-bottom-slider .brand-single-box img {
+    display: block;
+    margin-bottom: 13px;
+}
+
+@keyframes hero-gallery-marquee {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-50%);
+    }
+}

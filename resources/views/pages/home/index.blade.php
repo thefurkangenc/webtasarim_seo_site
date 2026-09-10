@@ -1,11 +1,20 @@
 @extends('layout.app')
 
+@push('css')
+    <link rel="stylesheet" href="{{ asset('assets/css/hero-gallery.css') }}">
+@endpush
+
 @section('content')
     <!--===== HERO AREA START =====-->
 
     @php
         $hero = app(\App\Services\Hero\HeroService::class)->current();
         $heroImages = $hero->getMedia('gallery');
+        // Tek set ekranı doldurmayabilir (3×570px < 1920px). En az 8 slot
+        // olacak kadar tekrarlanır; Blade ayrıca şeridi iki kez basar.
+        $heroMarqueeRepeats = $heroImages->isEmpty()
+            ? 1
+            : (int) ceil(8 / $heroImages->count());
     @endphp
 
     <div class="hero6" style="background-image: url(assets/img/hero/hero6-bg.jpg);">
@@ -48,10 +57,19 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="marquee-wrap">
+                                    
                                     <div class="marquee-text">
-                                        @foreach ($heroImages as $heroImage)
-                                            <div class="brand-single-box">
-                                                <img src="{{ $heroImage->url('medium') }}" alt="{{ $heroImage->alt }}">
+                                        @foreach ([false, true] as $isDuplicate)
+                                            <div class="d-flex align-items-center"
+                                                @if ($isDuplicate) aria-hidden="true" @endif>
+                                                @for ($i = 0; $i < $heroMarqueeRepeats; $i++)
+                                                    @foreach ($heroImages as $heroImage)
+                                                        <div class="brand-single-box">
+                                                            <img src="{{ $heroImage->url() }}"
+                                                                alt="{{ $heroImage->alt }}">
+                                                        </div>
+                                                    @endforeach
+                                                @endfor
                                             </div>
                                         @endforeach
                                     </div>

@@ -8,7 +8,7 @@
 
 <header>
 
-    <div id="vl-header-sticky" class="vl-header-area{{ request()->routeIs('anasayfa') ? '14' : '14' }} header-tranperent">
+    <div id="vl-header-sticky" class="vl-header-area{{ request()->routeIs('anasayfa') ? '6' : '14' }} header-tranperent">
         <div class="container header2-bg">
             <div class="row align-items-center">
                 <div class="col-lg-2 col-md-6 col-6">
