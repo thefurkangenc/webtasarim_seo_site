@@ -41,6 +41,10 @@ return [
             'title' => 'İzleme Kodları',
             'icon' => 'monitoring',
         ],
+        'analytics' => [
+            'title' => 'Analitik (GA4)',
+            'icon' => 'insights',
+        ],
         'cookie' => [
             'title' => 'Çerez Çubuğu',
             'icon' => 'cookie',
@@ -60,6 +64,11 @@ return [
     | sonra settings tablosundaki değer geçerli olur.
     */
     'defaults' => [
+        'analytics' => [
+            'property_id' => '',
+            'client_email' => '',
+            // service_account: şifreli tam JSON — defaults'ta boş, DB'de Crypt ile.
+        ],
         'schema' => [
             // Google, bir web ajansı için LocalBusiness'ın alt türü olan
             // ProfessionalService'i önerir. Fiziksel adres/saat yayınlamak

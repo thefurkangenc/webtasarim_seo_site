@@ -46,6 +46,8 @@
         <script type="module" src="{{ asset('admin/assets/js/pages/setting/social.js') }}"></script>
     @elseif ($group === 'integrations')
         <script type="module" src="{{ asset('admin/assets/js/pages/setting/integration.js') }}"></script>
+    @elseif ($group === 'analytics')
+        <script type="module" src="{{ asset('admin/assets/js/pages/setting/analytics.js') }}"></script>
     @else
         <script type="module" src="{{ asset('admin/assets/js/pages/setting/form.js') }}"></script>
         @if ($group === 'mail')

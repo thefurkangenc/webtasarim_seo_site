@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Setting;
 
 use App\Http\Controllers\Concerns\RespondsWithJson;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Setting\SettingAnalyticsRequest;
 use App\Http\Requests\Admin\Setting\SettingCompanyRequest;
 use App\Http\Requests\Admin\Setting\SettingContactRequest;
 use App\Http\Requests\Admin\Setting\SettingContentsRequest;
@@ -13,6 +14,7 @@ use App\Http\Requests\Admin\Setting\SettingMaintenanceRequest;
 use App\Http\Requests\Admin\Setting\SettingSchemaRequest;
 use App\Http\Requests\Admin\Setting\SettingSeoRequest;
 use App\Http\Requests\Admin\Setting\SettingTrackingRequest;
+use App\Services\Analytics\AnalyticsService;
 use App\Services\Setting\SettingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
@@ -47,6 +49,16 @@ class SettingController extends Controller
         $this->service->putGroup('schema', $request->validated());
 
         return $this->success('Schema.org ayarları kaydedildi.');
+    }
+
+    public function updateAnalytics(SettingAnalyticsRequest $request, AnalyticsService $analytics): JsonResponse
+    {
+        $analytics->saveSettings([
+            'property_id' => $request->validated('property_id'),
+            'service_account' => $request->file('service_account')?->get(),
+        ]);
+
+        return $this->success('Analitik ayarları kaydedildi.');
     }
 
     public function updateMail(SettingMailRequest $request): JsonResponse

@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\ActivityLog\ActivityLogController;
 use App\Http\Controllers\Admin\Ai\AiGenerationController;
 use App\Http\Controllers\Admin\AiPrompt\AiPromptController;
 use App\Http\Controllers\Admin\AiProvider\AiProviderController;
+use App\Http\Controllers\Admin\Analytics\AnalyticsController;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\Blog\BlogController;
 use App\Http\Controllers\Admin\BlogCategory\BlogCategoryController;
@@ -55,6 +56,7 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
         Route::put('company', 'updateCompany')->name('company.update');
         Route::put('seo', 'updateSeo')->name('seo.update');
         Route::put('schema', 'updateSchema')->name('schema.update');
+        Route::post('analytics', 'updateAnalytics')->name('analytics.update');
         Route::put('mail', 'updateMail')->name('mail.update');
         Route::post('mail/test', 'testMail')->name('mail.test');
         Route::put('tracking', 'updateTracking')->name('tracking.update');
@@ -213,6 +215,15 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
     Route::prefix('schema')->name('schema.')->controller(SchemaController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('preview', 'preview')->name('preview');
+    });
+
+    // GA4 panel özeti. Kimlik bilgisi Ayarlar "Analitik" sekmesinde
+    // (setting.analytics.update); veriler burada AJAX ile çekilir.
+    Route::prefix('analytics')->name('analytics.')->controller(AnalyticsController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('data', 'data')->name('data');
+        Route::get('realtime', 'realtime')->name('realtime');
+        Route::post('test', 'test')->name('test');
     });
 
     // Bölge ağacı: liste kırılımlı çalışır, datatable parent_id filtresiyle

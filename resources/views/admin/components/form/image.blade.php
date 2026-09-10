@@ -119,7 +119,7 @@
         <div data-media-actions
             class="{{ $showRecrop ? 'grid-cols-3' : 'grid-cols-2' }} grid gap-[8px] mt-[10px]">
             <button type="button" data-media-action="select"
-                class="inline-flex items-center justify-center gap-[5px] py-[8px] px-[10px] text-xs text-black dark:text-white transition-all rounded-md border border-gray-200 dark:border-[#172036] hover:bg-gray-50 dark:hover:bg-[#15203c]">
+                class="inline-flex items-center justify-center gap-[5px] py-[8px] px-[10px] text-xs text-white transition-all rounded-md bg-primary-500 border border-primary-500 hover:bg-primary-400 hover:border-primary-400">
                 <i class="material-symbols-outlined !text-[16px]">upload</i>
                 <span data-media-select-label>
                     @if ($multiple)
@@ -131,12 +131,12 @@
             </button>
 
             <button type="button" data-media-action="library"
-                class="inline-flex items-center justify-center gap-[5px] py-[8px] px-[10px] text-xs text-black dark:text-white transition-all rounded-md border border-gray-200 dark:border-[#172036] hover:bg-gray-50 dark:hover:bg-[#15203c]">
+                class="inline-flex items-center justify-center gap-[5px] py-[8px] px-[10px] text-xs text-white transition-all rounded-md bg-info-500 border border-info-500 hover:bg-info-400 hover:border-info-400">
                 <i class="material-symbols-outlined !text-[16px]">photo_library</i> Kütüphaneden Seç
             </button>
 
             <button type="button" data-media-action="recrop"
-                class="{{ $showRecrop ? '' : 'hidden' }} flex items-center justify-center gap-[5px] py-[8px] px-[10px] text-xs text-black dark:text-white transition-all rounded-md border border-gray-200 dark:border-[#172036] hover:bg-gray-50 dark:hover:bg-[#15203c]">
+                class="{{ $showRecrop ? '' : 'hidden' }} flex items-center justify-center gap-[5px] py-[8px] px-[10px] text-xs text-black transition-all rounded-md bg-warning-500 border border-warning-500 hover:bg-warning-400 hover:border-warning-400">
                 <i class="material-symbols-outlined !text-[16px]">crop</i> Yeniden Kırp
             </button>
         </div>

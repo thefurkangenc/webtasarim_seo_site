@@ -213,6 +213,8 @@ return [
         'seo.schema_type' => 'Schema.org türü',
         'seo.schema_json' => 'ek JSON-LD',
         'seo.schema_override' => 'otomatik üretimi kapat',
+        'property_id' => 'property ID',
+        'service_account' => 'service account JSON',
         'tags' => 'etiketler',
         'tags.*' => 'etiket',
 

@@ -146,6 +146,13 @@ return [
                 'active' => 'admin.schema.*',
                 'permission' => 'schema.index',
             ],
+            [
+                'title' => 'Analitik',
+                'icon' => 'insights',
+                'route' => 'admin.analytics.index',
+                'active' => 'admin.analytics.*',
+                'permission' => 'analytics.index',
+            ],
 
             [
                 'title' => 'Medya Kütüphanesi',

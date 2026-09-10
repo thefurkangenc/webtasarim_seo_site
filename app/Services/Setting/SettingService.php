@@ -38,6 +38,13 @@ class SettingService
             unset($values['password']);
         }
 
+        if ($group === 'analytics') {
+            // Şifreli service account JSON hiçbir zaman view'e gitmez; yalnızca
+            // "bağlı mı" bilgisi ve gizli olmayan tanımlayıcı e-posta gösterilir.
+            $values['has_service_account'] = filled($values['service_account'] ?? null);
+            unset($values['service_account']);
+        }
+
         $company = $group === 'company' ? $values : $this->getGroup('company');
         $media = $this->resolveMedia($values);
         $companyMedia = $group === 'company' ? $media : $this->resolveMedia($company);
