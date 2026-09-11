@@ -20,6 +20,7 @@ return [
         'page' => 'Sayfalar',
         'menu' => 'Menüler',
         'redirect' => 'Yönlendirmeler',
+        'broken-link' => 'Kırık Linkler',
         'lead' => 'Gelen Talepler',
         'schema' => 'Schema.org',
         'analytics' => 'Analitik (GA4)',
@@ -150,12 +151,21 @@ return [
         ['name' => 'not-found.datatable', 'label' => '404 Kayıtları - Tablo', 'category' => 'redirect', 'guard_name' => 'web'],
         ['name' => 'not-found.destroy', 'label' => '404 Kayıtları - Sil', 'category' => 'redirect', 'guard_name' => 'web'],
 
+        ['name' => 'broken-link.index', 'label' => 'Kırık Link - Görüntüle', 'category' => 'broken-link', 'guard_name' => 'web'],
+        ['name' => 'broken-link.datatable', 'label' => 'Kırık Link - Tablo', 'category' => 'broken-link', 'guard_name' => 'web'],
+        ['name' => 'broken-link.stats', 'label' => 'Kırık Link - Özet', 'category' => 'broken-link', 'guard_name' => 'web'],
+        ['name' => 'broken-link.export', 'label' => 'Kırık Link - Dışa Aktar', 'category' => 'broken-link', 'guard_name' => 'web'],
+        ['name' => 'broken-link.scan', 'label' => 'Kırık Link - Tarama Başlat', 'category' => 'broken-link', 'guard_name' => 'web'],
+        ['name' => 'broken-link.ignore', 'label' => 'Kırık Link - Yok Say', 'category' => 'broken-link', 'guard_name' => 'web'],
+        ['name' => 'broken-link.destroy', 'label' => 'Kırık Link - Sil', 'category' => 'broken-link', 'guard_name' => 'web'],
+
         ['name' => 'schema.index', 'label' => 'Schema.org - Doğrulama Ekranı', 'category' => 'schema', 'guard_name' => 'web'],
         ['name' => 'schema.preview', 'label' => 'Schema.org - Önizle / Denetle', 'category' => 'schema', 'guard_name' => 'web'],
 
         ['name' => 'analytics.index', 'label' => 'Analitik - Panel', 'category' => 'analytics', 'guard_name' => 'web'],
         ['name' => 'analytics.data', 'label' => 'Analitik - Özet Veri', 'category' => 'analytics', 'guard_name' => 'web'],
         ['name' => 'analytics.realtime', 'label' => 'Analitik - Canlı Veri', 'category' => 'analytics', 'guard_name' => 'web'],
+        ['name' => 'analytics.page-views', 'label' => 'Analitik - Liste Görüntülemeleri', 'category' => 'analytics', 'guard_name' => 'web'],
         ['name' => 'analytics.test', 'label' => 'Analitik - Bağlantı Testi', 'category' => 'analytics', 'guard_name' => 'web'],
 
         ['name' => 'lead.index', 'label' => 'Gelen Talepler - Listele', 'category' => 'lead', 'guard_name' => 'web'],

@@ -2162,6 +2162,9 @@
   .max-w-\[325px\] {
     max-width: 325px;
   }
+  .max-w-\[340px\] {
+    max-width: 340px;
+  }
   .max-w-\[360px\] {
     max-width: 360px;
   }
@@ -5037,6 +5040,9 @@
     .hover\:text-success-500:hover {
       color: var(--color-success-500);
     }
+    .hover\:text-warning-500:hover {
+      color: var(--color-warning-500);
+    }
     .hover\:text-white:hover {
       color: var(--color-white);
     }
@@ -5193,6 +5199,9 @@
     }
     .sm\:items-center {
       align-items: center;
+    }
+    .sm\:items-start {
+      align-items: flex-start;
     }
     .sm\:justify-between {
       justify-content: space-between;
@@ -9229,6 +9238,9 @@
   }
   .dark\:text-primary-600:where([class=dark], [class=dark] *) {
     color: var(--color-primary-600);
+  }
+  .dark\:text-secondary-400:where([class=dark], [class=dark] *) {
+    color: var(--color-secondary-400);
   }
   .dark\:text-success-500:where([class=dark], [class=dark] *) {
     color: var(--color-success-500);

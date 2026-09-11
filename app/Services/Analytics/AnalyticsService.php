@@ -2,9 +2,14 @@
 
 namespace App\Services\Analytics;
 
+use App\Models\Blog\Blog;
+use App\Models\Page\Page;
+use App\Models\Service\Service;
 use App\Services\Google\GoogleException;
 use App\Services\Google\GoogleServiceAccount;
 use App\Services\Setting\SettingService;
+use App\Support\UrlPath;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
@@ -18,6 +23,23 @@ use Illuminate\Support\Facades\Crypt;
 class AnalyticsService
 {
     private const RANGES = [7, 28, 90];
+
+    /**
+     * Liste ekranlarında satır başına görüntüleme gösterilebilen modeller:
+     * istemcinin gönderdiği tür anahtarı => model sınıfı.
+     */
+    private const VIEWABLE = [
+        'page' => Page::class,
+        'blog' => Blog::class,
+        'service' => Service::class,
+    ];
+
+    /*
+    | Sayfa bazlı raporda çekilecek en fazla satır. Bölge sayfaları yüzünden
+    | adres sayısı büyüyebilir; sıralama görüntülemeye göre olduğu için
+    | kesilen kuyrukta zaten sıfıra yakın değerler kalır.
+    */
+    private const PAGE_VIEW_LIMIT = 5000;
 
     /** @var array<string, array{0: string, 1: string}> KPI adı => [etiket, biçim] */
     private const KPIS = [
@@ -190,6 +212,93 @@ class AnalyticsService
         });
     }
 
+    /**
+     * Belirtilen kayıtların son N gündeki sayfa görüntülemeleri.
+     *
+     * Liste ekranlarının yanında gösterilir ve o ekranlar GA4'e bağımlı
+     * olmamalıdır: bağlantı yoksa ya da rapor alınamazsa istisna fırlatılmaz,
+     * `available: false` döner ve arayüz kolonu gizler.
+     *
+     * @param  list<int>  $ids
+     * @return array{available: bool, days: int, views: array<int, int>}
+     */
+    public function viewsFor(string $type, array $ids, int $days = 28): array
+    {
+        $days = in_array($days, self::RANGES, true) ? $days : 28;
+        $model = self::VIEWABLE[$type] ?? null;
+        $views = $model ? $this->pageViews($days) : null;
+
+        // Boş harita geçerli bir sonuçtur (hiç trafik yok); yalnızca null
+        // "rapor alınamadı" demektir — ikisi karıştırılırsa sessiz bir dönemde
+        // kolon kendini boş yere kapatır.
+        if ($views === null) {
+            return ['available' => false, 'days' => $days, 'views' => []];
+        }
+
+        $result = [];
+
+        foreach ($model::whereKey($ids)->get() as $record) {
+            // Yayında olmayan kaydın da adresi çözülür (indexNowUrl yayın
+            // durumuna bakmaz): yayından yeni kaldırılmış bir içeriğin geçmiş
+            // trafiği görünmeye devam etmeli.
+            $path = $record->indexNowUrl();
+
+            // Adresi olmayan kayıt (slug'ı boş taslak) ana sayfanın sayısını
+            // devralmasın: normalize("") ile ana sayfa aynı anahtara düşüyor.
+            $result[$record->id] = $path ? ($views[UrlPath::normalize($path)] ?? 0) : 0;
+        }
+
+        return ['available' => true, 'days' => $days, 'views' => $result];
+    }
+
+    /**
+     * Adres => görüntüleme haritası. Tek bir GA4 raporuyla tüm site çekilir,
+     * 30 dk cache'lenir; liste ekranı kaç satır gösterirse göstersin Google'a
+     * giden istek sayısı değişmez.
+     *
+     * @return array<string, int>|null Rapor alınamadıysa null.
+     */
+    private function pageViews(int $days): ?array
+    {
+        $key = "analytics.page_views.{$days}";
+
+        if (is_array($cached = Cache::get($key))) {
+            return $cached;
+        }
+
+        if (! $client = $this->client()) {
+            return null;
+        }
+
+        try {
+            $report = $client->runReport([
+                'dateRanges' => [['startDate' => ($days - 1).'daysAgo', 'endDate' => 'today']],
+                'dimensions' => [['name' => 'pagePath']],
+                'metrics' => [['name' => 'screenPageViews']],
+                'orderBys' => [['metric' => ['metricName' => 'screenPageViews'], 'desc' => true]],
+                'limit' => self::PAGE_VIEW_LIMIT,
+            ]);
+        } catch (GoogleException|ConnectionException) {
+            // Yetki/kota hatası da, Google'a hiç ulaşılamaması da liste ekranını
+            // bozmamalı. Başarısız sonuç cache'lenmez: bağlantı düzelince ilk
+            // istekte sayılar geri gelir.
+            return null;
+        }
+
+        $views = [];
+
+        foreach ($this->dimensionRows($report) as $row) {
+            // GA4 aynı sayfayı sorgu dizesiyle ayrı satırlarda verir
+            // (?utm_source=...); normalleştirip toplamak gerekiyor.
+            $path = UrlPath::normalize($row['dims'][0] ?? '');
+            $views[$path] = ($views[$path] ?? 0) + (int) ($row['metrics'][0] ?? 0);
+        }
+
+        Cache::put($key, $views, now()->addMinutes(30));
+
+        return $views;
+    }
+
     public function client(): ?GoogleAnalyticsClient
     {
         $account = $this->serviceAccount();
@@ -232,6 +341,7 @@ class AnalyticsService
 
         foreach (self::RANGES as $days) {
             Cache::forget("analytics.summary.{$days}");
+            Cache::forget("analytics.page_views.{$days}");
         }
     }
 

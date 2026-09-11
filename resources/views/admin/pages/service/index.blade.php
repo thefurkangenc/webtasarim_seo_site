@@ -95,6 +95,12 @@
                             <th class="font-medium ltr:text-left rtl:text-right px-[20px] py-[11px] bg-gray-50 dark:bg-[#15203c] whitespace-nowrap">
                                 SEO
                             </th>
+                            @can('analytics.page-views')
+                                <th data-views-column title="Google Analytics'e göre son 28 gündeki sayfa görüntülemesi"
+                                    class="font-medium ltr:text-left rtl:text-right px-[20px] py-[11px] bg-gray-50 dark:bg-[#15203c] whitespace-nowrap">
+                                    Görüntüleme
+                                </th>
+                            @endcan
                             <th class="font-medium ltr:text-left rtl:text-right px-[20px] py-[11px] bg-gray-50 dark:bg-[#15203c] whitespace-nowrap cursor-pointer relative" data-column="created_at">
                                 Tarih <i class="ri-expand-up-down-fill text-gray-500 dark:text-gray-400"></i>
                             </th>

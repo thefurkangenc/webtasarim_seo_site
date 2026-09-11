@@ -41,6 +41,8 @@ return Application::configure(basePath: dirname(__DIR__))
     // otomatik tetiklenen kuyruk işi çalışır, günlük zamanlanmış üretim olmaz.
     ->withSchedule(function (Schedule $schedule): void {
         $schedule->command('sitemap:generate')->dailyAt('04:00');
+        // Kırık link taraması: dış adresleri tek tek dener, haftada bir yeter.
+        $schedule->command('broken-links:scan')->weeklyOn(1, '05:00');
     })
     ->withMiddleware(function (Middleware $middleware): void {
         // auth middleware'i misafirleri admin girişine yollar.

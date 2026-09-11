@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\Analytics\AnalyticsController;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\Blog\BlogController;
 use App\Http\Controllers\Admin\BlogCategory\BlogCategoryController;
+use App\Http\Controllers\Admin\BrokenLink\BrokenLinkController;
 use App\Http\Controllers\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\Admin\Faq\FaqController;
 use App\Http\Controllers\Admin\Hero\HeroController;
@@ -215,6 +216,21 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
         Route::delete('{notFoundLog}', 'destroyNotFound')->name('destroy');
     });
 
+    /*
+    | Kırık link denetimi. Tarama kuyrukta çalışır (ScanBrokenLinksJob); bu
+    | uçlar yalnızca sonucu listeler. Sabit segmentler {brokenLink} joker'ından
+    | ÖNCE tanımlanmalı.
+    */
+    Route::prefix('broken-link')->name('broken-link.')->controller(BrokenLinkController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('datatable', 'datatable')->name('datatable');
+        Route::get('stats', 'stats')->name('stats');
+        Route::get('export', 'export')->name('export');
+        Route::post('scan', 'scan')->name('scan');
+        Route::put('{brokenLink}/ignore', 'ignore')->name('ignore');
+        Route::delete('{brokenLink}', 'destroy')->name('destroy');
+    });
+
     // Schema.org doğrulama ekranı — üretilen JSON-LD'yi gösterir ve denetler.
     // Ayarlar "Schema.org" sekmesinde (setting.schema.update).
     Route::prefix('schema')->name('schema.')->controller(SchemaController::class)->group(function () {
@@ -228,6 +244,8 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('data', 'data')->name('data');
         Route::get('realtime', 'realtime')->name('realtime');
+        // İçerik listelerinin yanındaki görüntüleme sayısı.
+        Route::get('page-views', 'pageViews')->name('page-views');
         Route::post('test', 'test')->name('test');
     });
 

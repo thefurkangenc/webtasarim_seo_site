@@ -11,7 +11,10 @@ import { confirm } from '../../core/confirm.js';
 import { escapeHtml, http, HttpError } from '../../core/http.js';
 import { cell, DataTable, reorderHandle } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
+import { pageViews } from '../analytics/views.js';
 import { scoreBadge } from '../seo/badge.js';
+
+const views = pageViews('page');
 
 const BADGES = {
     published: 'bg-success-100 dark:bg-[#15203c] text-success-600 dark:text-success-500',
@@ -80,6 +83,7 @@ const table = new DataTable({
     direction: 'asc',
     perPage: 20,
     empty: 'Henüz sayfa eklenmedi.',
+    onLoaded: (items) => views.fill(items),
     reorder: {
         button: reorderButton,
         endpoint: '/admin/page/reorder',
@@ -93,6 +97,7 @@ const table = new DataTable({
         ${cell(item.children_count || '—')}
         ${cell(statusBadge(item))}
         ${cell(scoreBadge(item.seo_score, item.seo_grade))}
+        ${views.cell(item)}
         ${cell(escapeHtml(item.created_at ?? '—'))}
         ${cell(`<div class="flex items-center gap-[9px]">
             <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener" title="Sitede görüntüle" class="text-gray-500 dark:text-gray-400 leading-none transition-all hover:text-primary-500">

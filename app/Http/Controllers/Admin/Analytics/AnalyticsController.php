@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Analytics;
 
 use App\Http\Controllers\Concerns\RespondsWithJson;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Analytics\PageViewsRequest;
 use App\Services\Analytics\AnalyticsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -32,6 +33,16 @@ class AnalyticsController extends Controller
     public function realtime(): JsonResponse
     {
         return $this->success(data: $this->service->realtime());
+    }
+
+    /** İçerik listelerindeki satır başına görüntüleme sayısı. */
+    public function pageViews(PageViewsRequest $request): JsonResponse
+    {
+        return $this->success(data: $this->service->viewsFor(
+            $request->string('type')->toString(),
+            $request->ids(),
+            $request->days(),
+        ));
     }
 
     public function test(): JsonResponse

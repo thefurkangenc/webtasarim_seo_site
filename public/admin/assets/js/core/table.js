@@ -35,6 +35,7 @@ export class DataTable {
      *   direction?: 'asc'|'desc',
      *   empty?: string,
      *   reorder?: { button: HTMLElement, endpoint: string },
+     *   onLoaded?: (items: object[]) => void,
      * }} options
      */
     constructor(options) {
@@ -194,6 +195,7 @@ export class DataTable {
             const { data } = await http.get(this.options.endpoint, { ...scope, per_page: 1000, sort: 'sort_order', direction: 'asc' });
 
             this.body.innerHTML = (data ?? []).map((item, index) => this.options.row(item, index)).join('');
+            this.options.onLoaded?.(data ?? []);
         } catch (error) {
             toast.error(error instanceof HttpError ? error.message : 'Liste yüklenemedi.');
         }
@@ -268,6 +270,10 @@ export class DataTable {
             this.body.innerHTML = data.map((item, index) => this.options.row(item, index)).join('');
             this.renderPagination(meta);
             this.markSortedColumn();
+
+            // Satırlar basıldıktan sonra çalışan işler (ör. görüntüleme
+            // sayılarının ayrı bir istekle doldurulması) için.
+            this.options.onLoaded?.(data);
         } catch (error) {
             this.setMessage(
                 error instanceof HttpError ? error.message : 'Liste yüklenemedi.',

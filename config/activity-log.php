@@ -76,6 +76,7 @@ return [
         'page' => ['label' => 'Sayfalar', 'icon' => 'description'],
         'menu' => ['label' => 'Menüler', 'icon' => 'menu'],
         'redirect' => ['label' => 'Yönlendirmeler', 'icon' => 'alt_route'],
+        'broken-link' => ['label' => 'Kırık Linkler', 'icon' => 'link_off'],
         'blog' => ['label' => 'Blog', 'icon' => 'article'],
         'blog-category' => ['label' => 'Blog Kategorileri', 'icon' => 'category'],
         'service' => ['label' => 'Hizmetler', 'icon' => 'home_repair_service'],
@@ -119,6 +120,7 @@ return [
         'replied' => ['label' => 'Yanıtlandı', 'icon' => 'reply', 'color' => 'success', 'severity' => 'info'],
         'bulk_update' => ['label' => 'Toplu Güncelleme', 'icon' => 'edit_note', 'color' => 'secondary', 'severity' => 'notice'],
         'notified' => ['label' => 'Bildirildi', 'icon' => 'bolt', 'color' => 'info', 'severity' => 'info'],
+        'scan' => ['label' => 'Tarama', 'icon' => 'radar', 'color' => 'info', 'severity' => 'info'],
         'failed' => ['label' => 'Başarısız', 'icon' => 'error', 'color' => 'danger', 'severity' => 'warning'],
     ],
 

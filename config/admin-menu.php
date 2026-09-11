@@ -147,6 +147,13 @@ return [
                 'permission' => 'redirect.index',
             ],
             [
+                'title' => 'Kırık Linkler',
+                'icon' => 'link_off',
+                'route' => 'admin.broken-link.index',
+                'active' => 'admin.broken-link.*',
+                'permission' => 'broken-link.index',
+            ],
+            [
                 'title' => 'Schema.org',
                 'icon' => 'data_object',
                 'route' => 'admin.schema.index',
