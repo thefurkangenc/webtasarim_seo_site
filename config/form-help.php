@@ -1542,4 +1542,118 @@ return [
                 HTML,
         ],
     ],
+
+    'announcement' => [
+        'title' => [
+            'title' => 'Yönetim adı',
+            'body' => '<p>Yalnızca panelde görünür. Ziyaretçi bu adı görmez; şeritteki metin ayrı alandır.</p>',
+        ],
+        'message' => [
+            'title' => 'Şerit metni',
+            'body' => '<p>Sitenin en üstünde görünen kısa cümle. Tek satır tutun; uzun metin dar ekranda kırpılır.</p>',
+        ],
+        'button_label' => [
+            'title' => 'Buton yazısı',
+            'body' => '<p>İsteğe bağlı. Boş bırakırsanız şeritte yalnızca metin ve kapatma çıkar.</p>',
+        ],
+        'button_url' => [
+            'title' => 'Buton adresi',
+            'body' => '<p>Buton yazısı doldurulduysa zorunludur. Kendi siteniz için <code>/iletisim</code>, dış link için tam adres.</p>',
+        ],
+        'tone' => [
+            'title' => 'Renk',
+            'body' => '<p>Şeridin arka plan rengi. Acil duyurular için turuncu, sakin duyurular için mavi veya koyu.</p>',
+        ],
+        'is_active' => [
+            'title' => 'Yayında',
+            'body' => '<p>Kapalıysa zaman aralığı dolu olsa bile sitede görünmez.</p>',
+        ],
+        'starts_at' => [
+            'title' => 'Başlangıç',
+            'body' => '<p>Boşsa hemen yayınlanır. İleri bir tarih verirseniz o saate kadar bekler.</p>',
+        ],
+        'ends_at' => [
+            'title' => 'Bitiş',
+            'body' => '<p>Boşsa süresiz kalır. Bitiş saati gelince kendiliğinden kaybolur.</p>',
+        ],
+        'audience' => [
+            'title' => 'Kim görsün',
+            'body' => '<p><strong>Tüm site</strong> her sayfada, <strong>yalnızca anasayfa</strong> sadece girişte, <strong>seçili</strong> işaretlediğiniz sayfa/yazı/hizmetlerde görünür.</p>',
+        ],
+        'page_ids' => [
+            'title' => 'Sayfalar',
+            'body' => '<p>“Seçili sayfa ve yazılar” hedefinde bu sayfalarda görünür.</p>',
+        ],
+        'blog_ids' => [
+            'title' => 'Blog yazıları',
+            'body' => '<p>Seçilen yazıların detay sayfalarında görünür. Blog listesi değil, tekil yazı.</p>',
+        ],
+        'service_ids' => [
+            'title' => 'Hizmetler',
+            'body' => '<p>Seçilen hizmet sayfalarında (bölge sayfaları dahil) görünür.</p>',
+        ],
+    ],
+
+    'popup' => [
+        'title' => [
+            'title' => 'Yönetim adı',
+            'body' => '<p>Yalnızca panelde görünür. Ziyaretçinin gördüğü başlık ayrı alandır.</p>',
+        ],
+        'heading' => [
+            'title' => 'Başlık',
+            'body' => '<p>Pencerenin büyük başlığı. Boş bırakırsanız yönetim adı kullanılır.</p>',
+        ],
+        'body' => [
+            'title' => 'Metin',
+            'body' => '<p>Kısa açıklama. Uzun kampanya metinleri yerine bir cümle + buton daha iyi çalışır.</p>',
+        ],
+        'image_media_id' => [
+            'title' => 'Görsel',
+            'body' => '<p>İsteğe bağlı. Yatay bir görsel pencereyi doldurur; yoksa yalnızca yazı çıkar.</p>',
+        ],
+        'button_label' => [
+            'title' => 'Buton yazısı',
+            'body' => '<p>İsteğe bağlı eylem çağrısı. Bülten formu açıksa buton formun üstünde durur.</p>',
+        ],
+        'button_url' => [
+            'title' => 'Buton adresi',
+            'body' => '<p>Buton yazısı doldurulduysa zorunludur.</p>',
+        ],
+        'delay_seconds' => [
+            'title' => 'Gecikme',
+            'body' => '<p>Sayfa açıldıktan kaç saniye sonra pencere çıksın. 0 = hemen. Çok kısa süre sinir bozar; 2–4 saniye yeter.</p>',
+        ],
+        'collect_email' => [
+            'title' => 'E-posta topla',
+            'body' => '<p>Açıksa pencerede bülten formu çıkar. Kayıtlar Bülten Aboneleri listesine düşer.</p>',
+        ],
+        'is_active' => [
+            'title' => 'Yayında',
+            'body' => '<p>Kapalıysa sitede görünmez.</p>',
+        ],
+        'starts_at' => [
+            'title' => 'Başlangıç',
+            'body' => '<p>Boşsa hemen yayınlanır.</p>',
+        ],
+        'ends_at' => [
+            'title' => 'Bitiş',
+            'body' => '<p>Boşsa süresiz kalır.</p>',
+        ],
+        'audience' => [
+            'title' => 'Kim görsün',
+            'body' => '<p>Şeritle aynı kural: tüm site, yalnızca anasayfa veya seçili sayfa/yazı/hizmet.</p>',
+        ],
+        'page_ids' => [
+            'title' => 'Sayfalar',
+            'body' => '<p>Seçili hedefte bu sayfalarda görünür.</p>',
+        ],
+        'blog_ids' => [
+            'title' => 'Blog yazıları',
+            'body' => '<p>Seçilen yazıların detayında görünür.</p>',
+        ],
+        'service_ids' => [
+            'title' => 'Hizmetler',
+            'body' => '<p>Seçilen hizmet sayfalarında görünür.</p>',
+        ],
+    ],
 ];

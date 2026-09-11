@@ -26,5 +26,7 @@
     <script src="{{ asset('assets/js/cookie-banner.js') }}"></script>
 @endif
 
+<script src="{{ asset('assets/js/notices.js') }}"></script>
+
 @stack('scripts')
 

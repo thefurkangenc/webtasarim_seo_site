@@ -1,0 +1,37 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('popups', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->string('heading')->nullable();
+            $table->text('body')->nullable();
+            $table->string('button_label', 80)->nullable();
+            $table->string('button_url', 500)->nullable();
+            $table->boolean('collect_email')->default(false);
+            $table->unsignedTinyInteger('delay_seconds')->default(2);
+            $table->boolean('is_active')->default(true);
+            $table->timestamp('starts_at')->nullable();
+            $table->timestamp('ends_at')->nullable();
+            $table->string('audience', 20)->default('all');
+            $table->json('page_ids')->nullable();
+            $table->json('blog_ids')->nullable();
+            $table->json('service_ids')->nullable();
+            $table->timestamps();
+
+            $table->index(['is_active', 'starts_at', 'ends_at']);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('popups');
+    }
+};

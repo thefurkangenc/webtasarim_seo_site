@@ -29,6 +29,7 @@
  @if (\App\Support\Settings::bool('cookie.enabled'))
      <link rel="stylesheet" href="{{ asset('assets/css/cookie-banner.css') }}">
  @endif
+ <link rel="stylesheet" href="{{ asset('assets/css/notices.css') }}">
 
  @stack('css')
 

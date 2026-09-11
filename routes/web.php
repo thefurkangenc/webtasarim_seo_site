@@ -9,6 +9,7 @@ use App\Http\Controllers\Maintenance\MaintenanceController;
 use App\Http\Controllers\Service\ServiceController;
 use App\Http\Controllers\Sitemap\RobotsController;
 use App\Http\Controllers\Sitemap\SitemapController;
+use App\Http\Controllers\Subscriber\SubscriberController;
 use App\Support\SchemaContext;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +34,13 @@ Route::get('/iletisim', [ContactController::class, 'index'])->name('iletisim');
 Route::post('/iletisim', [ContactController::class, 'store'])
     ->middleware('throttle:contact')
     ->name('iletisim.store');
+
+Route::post('/bulten', [SubscriberController::class, 'store'])
+    ->middleware('throttle:newsletter')
+    ->name('bulten.store');
+Route::get('/bulten/ayril/{token}', [SubscriberController::class, 'unsubscribe'])
+    ->where('token', '[A-Za-z0-9]{32,64}')
+    ->name('bulten.unsubscribe');
 
 Route::get('/cerez-politikasi', [LegalController::class, 'cookie'])->name('cerez-politikasi');
 Route::get('/kvkk', [LegalController::class, 'kvkk'])->name('kvkk');

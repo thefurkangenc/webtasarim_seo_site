@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\Ai\AiGenerationController;
 use App\Http\Controllers\Admin\AiPrompt\AiPromptController;
 use App\Http\Controllers\Admin\AiProvider\AiProviderController;
 use App\Http\Controllers\Admin\Analytics\AnalyticsController;
+use App\Http\Controllers\Admin\Announcement\AnnouncementController;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\Blog\BlogController;
 use App\Http\Controllers\Admin\BlogCategory\BlogCategoryController;
@@ -21,6 +22,7 @@ use App\Http\Controllers\Admin\Media\MediaController;
 use App\Http\Controllers\Admin\Media\MediaFolderController;
 use App\Http\Controllers\Admin\Menu\MenuController;
 use App\Http\Controllers\Admin\Page\PageController;
+use App\Http\Controllers\Admin\Popup\PopupController;
 use App\Http\Controllers\Admin\Redirect\RedirectController;
 use App\Http\Controllers\Admin\Reference\ReferenceController;
 use App\Http\Controllers\Admin\Revision\RevisionController;
@@ -33,6 +35,7 @@ use App\Http\Controllers\Admin\ServiceRegion\ServiceRegionController;
 use App\Http\Controllers\Admin\Setting\SettingController;
 use App\Http\Controllers\Admin\Sitemap\SitemapController;
 use App\Http\Controllers\Admin\SocialLink\SocialLinkController;
+use App\Http\Controllers\Admin\Subscriber\SubscriberController;
 use App\Http\Controllers\Admin\Tag\TagController;
 use App\Http\Controllers\Admin\Testimonial\TestimonialController;
 use App\Http\Controllers\Admin\WhyChooseUs\WhyChooseUsController;
@@ -256,6 +259,31 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
         Route::get('datatable', 'datatable')->name('datatable');
         Route::get('{revision}', 'show')->name('show');
         Route::post('{revision}/restore', 'restore')->name('restore');
+    });
+
+    Route::prefix('announcement')->name('announcement.')->controller(AnnouncementController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('datatable', 'datatable')->name('datatable');
+        Route::get('form/{announcement?}', 'form')->name('form');
+        Route::post('/', 'store')->name('store');
+        Route::put('{announcement}', 'update')->name('update');
+        Route::delete('{announcement}', 'destroy')->name('destroy');
+    });
+
+    Route::prefix('popup')->name('popup.')->controller(PopupController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('datatable', 'datatable')->name('datatable');
+        Route::get('form/{popup?}', 'form')->name('form');
+        Route::post('/', 'store')->name('store');
+        Route::put('{popup}', 'update')->name('update');
+        Route::delete('{popup}', 'destroy')->name('destroy');
+    });
+
+    Route::prefix('subscriber')->name('subscriber.')->controller(SubscriberController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('datatable', 'datatable')->name('datatable');
+        Route::get('export', 'export')->name('export');
+        Route::delete('{subscriber}', 'destroy')->name('destroy');
     });
 
     /*

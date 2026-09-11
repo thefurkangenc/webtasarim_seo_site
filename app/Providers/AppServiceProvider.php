@@ -80,5 +80,14 @@ class AppServiceProvider extends ServiceProvider
                 ], 429);
             });
         });
+
+        RateLimiter::for('newsletter', function (Request $request) {
+            return Limit::perMinute(5)->by($request->ip())->response(function () {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Çok fazla deneme yaptınız. Lütfen bir dakika bekleyin.',
+                ], 429);
+            });
+        });
     }
 }

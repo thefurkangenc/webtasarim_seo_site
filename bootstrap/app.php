@@ -52,6 +52,7 @@ return Application::configure(basePath: dirname(__DIR__))
         */
         $schedule->command('health:check')->hourly();
         $schedule->command('health:check --notify')->dailyAt(config('health.notify.time', '08:30'));
+        $schedule->command('report:weekly')->weeklyOn(1, '08:30');
 
         /*
         | "Cron en son ne zaman çalıştı" sorusunun cevabı. Cron durursa bu

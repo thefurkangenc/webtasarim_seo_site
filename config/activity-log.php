@@ -97,6 +97,11 @@ return [
         'tag' => ['label' => 'Etiketler', 'icon' => 'sell'],
         'indexnow' => ['label' => 'Hızlı İndeksleme', 'icon' => 'bolt'],
         'health' => ['label' => 'Sistem Sağlığı', 'icon' => 'monitor_heart'],
+        'revision' => ['label' => 'Revizyonlar', 'icon' => 'settings_backup_restore'],
+        'announcement' => ['label' => 'Duyuru Şeridi', 'icon' => 'campaign'],
+        'popup' => ['label' => 'Açılır Pencereler', 'icon' => 'web_asset'],
+        'subscriber' => ['label' => 'Bülten Aboneleri', 'icon' => 'mail'],
+        'report' => ['label' => 'Haftalık Rapor', 'icon' => 'summarize'],
     ],
 
     /*

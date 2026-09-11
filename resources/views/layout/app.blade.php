@@ -39,6 +39,8 @@
 
     <!--=====PRELOADER END=======-->
 
+    @include('layout.partials.notices')
+
     <!--=====HEADER START=======-->
     @include('layout.partials.header')
 

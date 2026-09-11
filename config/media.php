@@ -50,6 +50,7 @@ return [
         'slider.image' => ['width' => 1920, 'height' => 800, 'label' => 'Slider Görseli'],
         'hero.gallery' => ['width' => 274, 'height' => 40, 'label' => 'Tanıtım Alanı Görseli'],
         'hero.background' => ['width' => 2160, 'height' => 1193, 'label' => 'Tanıtım Alanı Arka Planı'],
+        'popup.image' => ['width' => 800, 'height' => 450, 'label' => 'Açılır Pencere Görseli'],
         'user.avatar' => ['width' => 300, 'height' => 300, 'label' => 'Profil Fotoğrafı'],
         // Sosyal paylaşım görseli — <x-admin::form.seo> bileşeni kullanır.
         'seo.og' => ['width' => 1200, 'height' => 630, 'label' => 'Paylaşım Görseli'],

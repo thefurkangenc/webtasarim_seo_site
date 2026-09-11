@@ -41,6 +41,11 @@
                                 @endforeach
                             </div>
                         @endif
+                        <div class="vl-footer-text heading6 mt-30">
+                            <h4>Bülten</h4>
+                            <p class="mt-16 mb-16">Kampanya ve duyurulardan haberdar olun.</p>
+                            @include('layout.partials.subscribe-form', ['source' => 'footer'])
+                        </div>
                     </div>
                 </div>
                 {{-- Footer bağlantı sütunları panelden yönetilir: Menüler ›

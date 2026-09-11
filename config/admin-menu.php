@@ -199,6 +199,27 @@ return [
             ],
 
             [
+                'title' => 'Duyuru Şeridi',
+                'icon' => 'campaign',
+                'route' => 'admin.announcement.index',
+                'active' => 'admin.announcement.*',
+                'permission' => 'announcement.index',
+            ],
+            [
+                'title' => 'Açılır Pencereler',
+                'icon' => 'web_asset',
+                'route' => 'admin.popup.index',
+                'active' => 'admin.popup.*',
+                'permission' => 'popup.index',
+            ],
+            [
+                'title' => 'Bülten Aboneleri',
+                'icon' => 'forward_to_inbox',
+                'route' => 'admin.subscriber.index',
+                'active' => 'admin.subscriber.*',
+                'permission' => 'subscriber.index',
+            ],
+            [
                 'title' => 'Medya Kütüphanesi',
                 'icon' => 'perm_media',
                 'route' => 'admin.media.index',
