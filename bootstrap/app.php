@@ -7,6 +7,7 @@ use App\Services\Redirect\RedirectResolver;
 use App\Support\Activity;
 use App\Support\Consent;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -35,6 +36,12 @@ return Application::configure(basePath: dirname(__DIR__))
             Route::middleware('web')->group(base_path('routes/pages.php'));
         },
     )
+    // Sunucuda `* * * * * php artisan schedule:run` cron'u kurulu olmalı —
+    // onsuz yalnızca "Şimdi Yeniden Oluştur" butonu ve içerik kaydedince
+    // otomatik tetiklenen kuyruk işi çalışır, günlük zamanlanmış üretim olmaz.
+    ->withSchedule(function (Schedule $schedule): void {
+        $schedule->command('sitemap:generate')->dailyAt('04:00');
+    })
     ->withMiddleware(function (Middleware $middleware): void {
         // auth middleware'i misafirleri admin girişine yollar.
         $middleware->redirectGuestsTo(fn () => route('admin.login'));

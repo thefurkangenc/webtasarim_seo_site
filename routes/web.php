@@ -3,9 +3,12 @@
 use App\Http\Controllers\About\AboutController;
 use App\Http\Controllers\Blog\BlogController;
 use App\Http\Controllers\Contact\ContactController;
+use App\Http\Controllers\IndexNow\IndexNowController;
 use App\Http\Controllers\Legal\LegalController;
 use App\Http\Controllers\Maintenance\MaintenanceController;
 use App\Http\Controllers\Service\ServiceController;
+use App\Http\Controllers\Sitemap\RobotsController;
+use App\Http\Controllers\Sitemap\SitemapController;
 use App\Support\SchemaContext;
 use Illuminate\Support\Facades\Route;
 
@@ -41,6 +44,18 @@ Route::get('/bakim-onizleme', [MaintenanceController::class, 'preview'])
     ->name('maintenance.preview');
 Route::get('/bakim-onizleme/{secret}', [MaintenanceController::class, 'bypass'])
     ->name('maintenance.bypass');
+
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap.index');
+Route::get('/sitemap-{name}.xml', [SitemapController::class, 'file'])
+    ->where('name', '[a-z0-9-]+')
+    ->name('sitemap.file');
+
+Route::get('/robots.txt', [RobotsController::class, 'index'])->name('robots');
+
+// IndexNow anahtar dosyası — protokol bunu sitenin kökünde bekler.
+Route::get('/{key}.txt', [IndexNowController::class, 'key'])
+    ->where('key', '[A-Za-z0-9-]{8,128}')
+    ->name('indexnow.key');
 
 /*
 | Panelden yönetilen dinamik sayfaların catch-all route'u bu dosyada DEĞİL,

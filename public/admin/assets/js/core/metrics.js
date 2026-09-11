@@ -1,5 +1,6 @@
 /**
- * GA4 metrik biçimlendirme — Analitik sayfası ve Dashboard özet kartı ortak kullanır.
+ * Metrik biçimlendirme ve ApexCharts tema ayarları — Analitik (GA4),
+ * Search Console ve Dashboard özet kartı ortak kullanır.
  */
 
 const nf = new Intl.NumberFormat('tr-TR');
@@ -14,8 +15,13 @@ export function formatMetric(value, format) {
         return m > 0 ? `${m}d ${s}sn` : `${s}sn`;
     }
 
+    if (format === 'decimal') {
+        // Ortalama sıra gibi küçük ondalıklı değerler.
+        return n.toFixed(1).replace('.', ',');
+    }
+
     if (format === 'rate') {
-        // GA4 bounceRate 0..1 arası oran döndürür.
+        // GA4 bounceRate ve Search Console ctr 0..1 arası oran döndürür.
         return `%${(n * 100).toFixed(1).replace('.', ',')}`;
     }
 

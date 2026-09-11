@@ -390,6 +390,160 @@ return [
 
     /*
     |----------------------------------------------------------------------
+    | Site haritası — /admin/sitemap
+    |----------------------------------------------------------------------
+    */
+    /*
+    |----------------------------------------------------------------------
+    | Search Console
+    |----------------------------------------------------------------------
+    */
+    'search_console' => [
+
+        'site_url' => [
+            'title' => 'Search Console site adresi',
+            'body' => <<<'HTML'
+                <p>Google Search Console'da sitenizi eklediğinizde ona bir <strong>mülk</strong> adı verilir. Panelin hangi mülkün verisini okuyacağını buradan söylüyorsunuz. İki biçim olabilir:</p>
+                <ul>
+                    <li><code>sc-domain:siteniz.com</code> — “Alan adı” mülkü. <strong>www'lu, www'suz, http, https</strong> hepsini birlikte kapsar; tavsiye edilen budur.</li>
+                    <li><code>https://siteniz.com/</code> — “URL öneki” mülkü. Yalnızca tam olarak bu adresi kapsar; sondaki eğik çizgiyi atlamayın.</li>
+                </ul>
+                <p>Elle yazmak yerine <strong>“Mülkleri listele”</strong> butonuna basın — Google hesabının eriştiği mülkleri getirir, tıklayıp seçersiniz. Liste boş geliyorsa, yukarıdaki 3. adımı (panelin e-posta adresini Search Console'a kullanıcı olarak ekleme) henüz tamamlamamışsınız demektir.</p>
+                HTML,
+        ],
+
+        'queries' => [
+            'title' => 'Hangi aramalarda çıkıyorsunuz',
+            'body' => <<<'HTML'
+                <p>İnsanların Google'a yazdığı kelimeler ve sitenizin o aramalardaki performansı:</p>
+                <ul>
+                    <li><strong>Gösterim</strong> — sonuç listesinde kaç kez göründünüz.</li>
+                    <li><strong>Tıklama</strong> — kaç kişi gerçekten sitenize girdi.</li>
+                    <li><strong>Oran</strong> — gösterimlerin yüzde kaçı tıklamaya dönüştü.</li>
+                    <li><strong>Sıra</strong> — o aramada ortalama kaçıncı sıradaydınız (küçük olması iyidir; 1 en üst).</li>
+                </ul>
+                <p>Nasıl okunur: <strong>gösterimi yüksek ama tıklaması düşük</strong> bir arama, o sayfanın başlık ve açıklamasının yeterince çekici olmadığını gösterir — sayfanın SEO başlığını gözden geçirin. <strong>Sırası 8-20 arası</strong> olanlar ise en kârlı iş: küçük iyileştirmelerle ilk sayfaya çıkabilecek adaylardır.</p>
+                <p>Veriler Google'dan gelir ve yaklaşık 2 gün gecikmelidir; dünün verisi henüz görünmeyebilir.</p>
+                HTML,
+        ],
+
+        'sitemaps' => [
+            'title' => 'Site haritaları',
+            'body' => <<<'HTML'
+                <p>Site haritanızı Google'a bir kez bildirmeniz yeterlidir; sonrasında Google onu düzenli olarak kendisi okur ve yeni sayfalarınızı daha çabuk keşfeder.</p>
+                <p>Tablodaki sütunlar: <strong>Bildirilen adres</strong>, haritada kaç adres olduğunu; <strong>Son okuma</strong>, Google'ın dosyayı en son ne zaman indirdiğini gösterir. “Sorun yok” yazıyorsa yapacak bir şey kalmamıştır.</p>
+                <p>Hata görürseniz genellikle sebebi, haritadaki bir adresin açılmaması ya da engellenmiş olmasıdır. İçeriklerinizi düzelttikten sonra Site Haritası ekranından yeniden oluşturup buradan tekrar gönderebilirsiniz.</p>
+                HTML,
+        ],
+
+        'inspect' => [
+            'title' => 'URL denetimi',
+            'body' => <<<'HTML'
+                <p>Tek bir sayfanın Google'daki durumunu sorar: <strong>indekslendi mi, ne zaman tarandı, bir engel var mı.</strong> Yeni yayınladığınız bir sayfanın Google'a girip girmediğini öğrenmenin en hızlı yolu budur.</p>
+                <p>Sadece yol yazabilirsiniz (<code>/hakkimizda</code>); sistem tam adrese çevirir.</p>
+                <p>Sık görülen yanıtlar:</p>
+                <ul>
+                    <li><strong>Gönderildi ve indekslendi</strong> — her şey yolunda, sayfa aramada çıkabilir.</li>
+                    <li><strong>Keşfedildi, henüz indekslenmedi</strong> — Google sayfayı biliyor ama sıraya almış. Beklemek gerekir, acele etmeye gerek yok.</li>
+                    <li><strong>Google bu adresi hiç görmemiş</strong> — site haritasını gönderdiğinizden emin olun; yeni sayfalar için birkaç gün normaldir.</li>
+                    <li><strong>“İndekslenmesin” etiketiyle dışlandı</strong> — o sayfanın SEO bölümündeki arama motoru ayarı kapalı demektir; isteyerek yaptıysanız sorun yok.</li>
+                </ul>
+                <p>Google'ın günlük denetim hakkı sınırlıdır, bu yüzden aynı adresin sonucu 1 saat boyunca hafızada tutulur.</p>
+                HTML,
+        ],
+    ],
+
+    /*
+    |----------------------------------------------------------------------
+    | Hızlı İndeksleme (IndexNow)
+    |----------------------------------------------------------------------
+    */
+    'indexnow' => [
+
+        'enabled' => [
+            'title' => 'IndexNow açık',
+            'body' => <<<'HTML'
+                <p>Açık olduğunda panel, değişen adresleri arama motorlarına anında bildirir. Normal şartlarda motorun sitenizi kendi kendine yeniden taraması günler sürebilir; bu bildirimle süre saatlere (bazen dakikalara) iner.</p>
+                <p>Ücretsiz, kota yok ve SEO açısından bir riski yok — özel bir sebep yoksa açık bırakın.</p>
+                <p><strong>Google bu protokolü desteklemez.</strong> Bildirimi Bing, Yandex ve diğer katılımcı motorlar alır. Google tarafı için Search Console ekranından site haritanızı bildirmeniz gerekir; ikisi birlikte çalışır.</p>
+                HTML,
+        ],
+
+        'auto_submit' => [
+            'title' => 'İçerik kaydedilince kendiliğinden bildir',
+            'body' => <<<'HTML'
+                <p>Açıkken bir sayfa, blog yazısı ya da hizmet kaydettiğinizde o adres kendiliğinden bildirilir — ayrıca bir şey yapmanız gerekmez.</p>
+                <p><strong>Yayından çıkardığınız ya da sildiğiniz</strong> adresler de bildirilir. Bu kasıtlıdır: motor adresi yeniden tarar, sayfanın artık olmadığını görür ve arama sonuçlarından düşürür. Yoksa silinmiş bir sayfa haftalarca sonuçlarda kalabilir.</p>
+                <p>Bildirim kuyrukta çalışır, yani kaydetme işlemi arama motorunun yanıtını beklemez. Kuyruk işçisi (<code>queue:work</code>) çalışmıyorsa bildirimler o açılana kadar bekler.</p>
+                <p>Kapatırsanız bildirim tamamen durmaz — bu sayfadan elle gönderebilirsiniz.</p>
+                HTML,
+        ],
+
+        'key' => [
+            'title' => 'Doğrulama anahtarı',
+            'body' => <<<'HTML'
+                <p>Arama motorunun "bu bildirimi gerçekten site sahibi mi gönderdi?" sorusunu yanıtlayan rastgele bir koddur. Motor, sitenizin kökünde <code>anahtar.txt</code> adresini açar ve içinde aynı kodu görürse bildirimi kabul eder.</p>
+                <p>Bu dosyayı sunucuya elle koymanız gerekmiyor — panel onu anahtardan üreterek kendisi sunuyor. "Anahtar dosyasını aç" bağlantısıyla kontrol edebilirsiniz; tarayıcıda sadece kodu görmeniz normaldir.</p>
+                <p><strong>Anahtarı yenilemek</strong> yalnızca kodun başkasının eline geçtiğini düşünüyorsanız gerekir. Yenileyince eski kod geçersiz olur, yeni kod sonraki bildirimde kendiliğinden doğrulanır; başka bir işlem yapmanıza gerek kalmaz.</p>
+                HTML,
+        ],
+
+        'manual' => [
+            'title' => 'Elle bildirim',
+            'body' => <<<'HTML'
+                <p>Belirli adresleri hemen bildirmek için kullanılır. Her satıra bir adres yazın; yalnızca yol yazmanız yeterlidir (<code>/hakkimizda</code>), tam adrese kendiliğinden çevrilir.</p>
+                <p>Ne zaman işe yarar: kuyruk işçisi kapalıyken yapılan bir değişiklikten sonra, ya da panel dışında yaptığınız bir güncellemeden sonra.</p>
+                <p><strong>"Tüm adresleri bildir"</strong> butonu site haritasındaki bütün adresleri gönderir. Bunu yalnızca siteyi ilk kez yayına aldığınızda ya da büyük bir adres değişikliği sonrasında kullanın — her gün tekrarlamanın faydası yoktur, aşırı kullanımda motorlar bildirimleri geçici olarak sınırlayabilir.</p>
+                <p>Not: bildirdiğiniz adres, sitenin kendi alan adında olmak zorundadır; başka alan adına ait satırlar sessizce atlanır (protokol bunu şart koşuyor).</p>
+                HTML,
+        ],
+    ],
+
+    'sitemap' => [
+
+        'sources' => [
+            'title' => 'Kaynaklar',
+            'body' => <<<'HTML'
+                <p>Site haritasına (sitemap.xml) hangi adres gruplarının gireceğini seçer. Kapatılan bir kaynağın adresleri sitemap'ten hemen çıkarılır — sayfalar yine yayında kalır, sadece Google'a bu listeden bildirilmez.</p>
+                <p>Kapalı bırakmak için bir sebep yoksa hepsini açık tutun; Google daha çok sayfanızı hızlıca bulur.</p>
+                HTML,
+        ],
+
+        'excluded_urls' => [
+            'title' => 'Hariç tutulan adresler',
+            'body' => <<<'HTML'
+                <p>Yayında olsa da site haritasına <strong>girmesini istemediğiniz</strong> adresler. Her satıra bir adres yazın — tam adres (<code>https://siteniz.com/kampanya</code>) ya da yalnızca yol (<code>/kampanya</code>) kabul edilir.</p>
+                <p>Örnek kullanım: kısa süreliğine yayınladığınız bir kampanya sayfası, test amaçlı bir sayfa, ya da başka bir yolla (ör. doğrudan bağlantıyla) paylaştığınız ama aramada çıkmasını istemediğiniz bir sayfa.</p>
+                HTML,
+        ],
+
+        'extra_urls' => [
+            'title' => 'Ek adresler',
+            'body' => <<<'HTML'
+                <p>Sistemin kendiliğinden bulamadığı ama site haritasına eklemek istediğiniz adresler. Her satıra bir <strong>tam adres</strong> yazın (<code>https://siteniz.com/...</code>).</p>
+                <p>Örnek: panelde yönetilmeyen özel bir açılış sayfası, dışarıdan bağlanan bir PDF/katalog adresi.</p>
+                HTML,
+        ],
+
+        'robots_txt' => [
+            'title' => 'robots.txt',
+            'body' => <<<'HTML'
+                <p><strong>robots.txt</strong>, arama motoru robotlarının sitenize girdiğinde ilk okuduğu küçük metin dosyasıdır. “Şuraya girebilirsin, şuraya girme” demenin standart yoludur.</p>
+                <p>Satırların anlamı:</p>
+                <ul>
+                    <li><code>User-agent: *</code> — aşağıdaki kurallar <strong>tüm</strong> robotlar için geçerli.</li>
+                    <li><code>Disallow: /admin</code> — bu adres ve altındakiler taranmasın (yönetim paneli aramada çıkmasın).</li>
+                    <li><code>Allow: /ornek</code> — kapatılmış bir bölümün içinde tek bir adrese izin verir.</li>
+                </ul>
+                <p>Site haritası satırını <strong>siz yazmayın</strong> — sistem, sitenin o anki adresini kullanarak çıktının sonuna kendiliğinden ekliyor.</p>
+                <p><strong>Dikkat:</strong> burada bir adresi kapatmak onu gizlemez, sadece taranmasını engeller. Bir sayfanın aramada <em>çıkmamasını</em> istiyorsanız doğru yer bu değil; o sayfanın SEO bölümündeki arama motoru ayarıdır.</p>
+                <p>Ne yaptığınızdan emin değilseniz varsayılan içeriği olduğu gibi bırakın — çoğu site için yeterlidir. Yanlış bir <code>Disallow: /</code> satırı sitenizin tamamını aramadan düşürebilir.</p>
+                HTML,
+        ],
+    ],
+
+    /*
+    |----------------------------------------------------------------------
     | Blog yazısı formu
     |----------------------------------------------------------------------
     */

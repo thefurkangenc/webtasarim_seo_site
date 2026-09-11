@@ -2,6 +2,8 @@
 
 namespace App\Services\Analytics;
 
+use App\Services\Google\GoogleException;
+use App\Services\Google\GoogleServiceAccount;
 use App\Services\Setting\SettingService;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -54,8 +56,7 @@ class AnalyticsService
         $newKey = filled($data['service_account'] ?? null);
 
         if ($newKey) {
-            $parsed = $this->parseServiceAccount((string) $data['service_account']);
-            $payload['client_email'] = $parsed['client_email'];
+            $payload['client_email'] = GoogleServiceAccount::fromJson((string) $data['service_account'])->clientEmail;
             $payload['service_account'] = Crypt::encryptString((string) $data['service_account']);
         }
 
@@ -82,7 +83,7 @@ class AnalyticsService
             $this->flush();
 
             return ['ok' => true, 'message' => "Bağlantı başarılı — son 7 günde {$users} aktif kullanıcı."];
-        } catch (AnalyticsException $e) {
+        } catch (GoogleException $e) {
             return ['ok' => false, 'message' => $e->getMessage()];
         }
     }
@@ -191,20 +192,33 @@ class AnalyticsService
 
     public function client(): ?GoogleAnalyticsClient
     {
-        $encrypted = $this->settings->get('analytics', 'service_account');
+        $account = $this->serviceAccount();
         $propertyId = $this->settings->get('analytics', 'property_id');
 
-        if (blank($encrypted) || blank($propertyId)) {
+        if (! $account || blank($propertyId)) {
+            return null;
+        }
+
+        return new GoogleAnalyticsClient($account, (string) $propertyId);
+    }
+
+    /**
+     * Kayıtlı service account kimliği — Search Console gibi diğer Google
+     * servisleri de aynı JSON'u kullanır, kullanıcı ikinci kez girmez.
+     */
+    public function serviceAccount(): ?GoogleServiceAccount
+    {
+        $encrypted = $this->settings->get('analytics', 'service_account');
+
+        if (blank($encrypted)) {
             return null;
         }
 
         try {
-            $sa = $this->parseServiceAccount(Crypt::decryptString($encrypted));
+            return GoogleServiceAccount::fromJson(Crypt::decryptString($encrypted));
         } catch (\Throwable) {
             return null;
         }
-
-        return new GoogleAnalyticsClient($sa['client_email'], $sa['private_key'], $sa['token_uri'], (string) $propertyId);
     }
 
     private function requireClient(): GoogleAnalyticsClient
@@ -219,24 +233,6 @@ class AnalyticsService
         foreach (self::RANGES as $days) {
             Cache::forget("analytics.summary.{$days}");
         }
-    }
-
-    /**
-     * @return array{client_email: string, private_key: string, token_uri: string}
-     */
-    private function parseServiceAccount(string $json): array
-    {
-        $data = json_decode($json, true);
-
-        if (! is_array($data) || blank($data['client_email'] ?? null) || blank($data['private_key'] ?? null)) {
-            throw new AnalyticsException('Geçerli bir service account JSON dosyası değil (client_email / private_key eksik).');
-        }
-
-        return [
-            'client_email' => (string) $data['client_email'],
-            'private_key' => (string) $data['private_key'],
-            'token_uri' => (string) ($data['token_uri'] ?? 'https://oauth2.googleapis.com/token'),
-        ];
     }
 
     /**

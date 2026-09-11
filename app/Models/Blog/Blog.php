@@ -3,6 +3,7 @@
 namespace App\Models\Blog;
 
 use App\Contracts\LinksToPublicPage;
+use App\Contracts\SubmitsToIndexNow;
 use App\Models\BlogCategory\BlogCategory;
 use App\Models\Concerns\HasFaqs;
 use App\Models\Concerns\HasMedia;
@@ -18,7 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'blog_category_id', 'user_id', 'title', 'slug', 'excerpt', 'content',
     'status', 'published_at', 'is_featured',
 ])]
-class Blog extends Model implements LinksToPublicPage
+class Blog extends Model implements LinksToPublicPage, SubmitsToIndexNow
 {
     use HasFaqs, HasMedia, HasSeo, HasTags, LogsActivity;
 
@@ -62,6 +63,11 @@ class Blog extends Model implements LinksToPublicPage
         return $this->status === self::STATUS_PUBLISHED
             ? route('blog.show', $this->slug)
             : null;
+    }
+
+    public function indexNowUrl(): ?string
+    {
+        return filled($this->slug) ? route('blog.show', $this->slug) : null;
     }
 
     public function publicLinkLabel(): string

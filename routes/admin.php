@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\BlogCategory\BlogCategoryController;
 use App\Http\Controllers\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\Admin\Faq\FaqController;
 use App\Http\Controllers\Admin\Hero\HeroController;
+use App\Http\Controllers\Admin\IndexNow\IndexNowController;
 use App\Http\Controllers\Admin\Integration\IntegrationController;
 use App\Http\Controllers\Admin\Media\MediaController;
 use App\Http\Controllers\Admin\Media\MediaFolderController;
@@ -20,10 +21,12 @@ use App\Http\Controllers\Admin\Redirect\RedirectController;
 use App\Http\Controllers\Admin\Reference\ReferenceController;
 use App\Http\Controllers\Admin\Role\RoleController;
 use App\Http\Controllers\Admin\Schema\SchemaController;
+use App\Http\Controllers\Admin\SearchConsole\SearchConsoleController;
 use App\Http\Controllers\Admin\Seo\SeoHealthController;
 use App\Http\Controllers\Admin\Service\ServiceController;
 use App\Http\Controllers\Admin\ServiceRegion\ServiceRegionController;
 use App\Http\Controllers\Admin\Setting\SettingController;
+use App\Http\Controllers\Admin\Sitemap\SitemapController;
 use App\Http\Controllers\Admin\SocialLink\SocialLinkController;
 use App\Http\Controllers\Admin\Tag\TagController;
 use App\Http\Controllers\Admin\Testimonial\TestimonialController;
@@ -233,6 +236,41 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('datatable', 'datatable')->name('datatable');
         Route::post('rescore', 'rescore')->name('rescore');
+    });
+
+    // Site haritası (sitemap.xml) — kaynak aç/kapa, hariç tutulan/ek adresler.
+    // Gerçek üretim GenerateSitemapJob'da; bu uç nokta kuyruğa atar.
+    /*
+    | Search Console — GA4 ile aynı service account JSON'unu kullanır, ek bir
+    | kimlik bilgisi istemez. Tek kendine ait ayarı hangi mülkün okunacağıdır.
+    */
+    Route::prefix('search-console')->name('search-console.')->controller(SearchConsoleController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::put('/', 'update')->name('update');
+        Route::get('sites', 'sites')->name('sites');
+        Route::get('performance', 'performance')->name('performance');
+        Route::get('sitemaps', 'sitemaps')->name('sitemaps');
+        Route::post('sitemaps', 'submit')->name('submit');
+        Route::post('inspect', 'inspect')->name('inspect');
+        Route::post('test', 'test')->name('test');
+    });
+
+    /*
+    | IndexNow — içerik değişince Bing/Yandex gibi motorlara anında haber verir.
+    | Google bu protokolü desteklemiyor; Google tarafı Search Console'dan yürür.
+    */
+    Route::prefix('indexnow')->name('indexnow.')->controller(IndexNowController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::put('/', 'update')->name('update');
+        Route::post('submit', 'submit')->name('submit');
+        Route::post('submit-all', 'submitAll')->name('submit-all');
+        Route::post('key', 'regenerateKey')->name('regenerate-key');
+    });
+
+    Route::prefix('sitemap')->name('sitemap.')->controller(SitemapController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::put('/', 'update')->name('update');
+        Route::post('generate', 'generate')->name('generate');
     });
 
     // Bölge ağacı: liste kırılımlı çalışır, datatable parent_id filtresiyle

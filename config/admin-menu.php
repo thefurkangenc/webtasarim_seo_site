@@ -160,6 +160,27 @@ return [
                 'active' => 'admin.seo.*',
                 'permission' => 'seo.index',
             ],
+            [
+                'title' => 'Site Haritası',
+                'icon' => 'lan',
+                'route' => 'admin.sitemap.index',
+                'active' => 'admin.sitemap.*',
+                'permission' => 'sitemap.index',
+            ],
+            [
+                'title' => 'Hızlı İndeksleme',
+                'icon' => 'bolt',
+                'route' => 'admin.indexnow.index',
+                'active' => 'admin.indexnow.*',
+                'permission' => 'indexnow.index',
+            ],
+            [
+                'title' => 'Search Console',
+                'icon' => 'travel_explore',
+                'route' => 'admin.search-console.index',
+                'active' => 'admin.search-console.*',
+                'permission' => 'search-console.index',
+            ],
 
             [
                 'title' => 'Medya Kütüphanesi',

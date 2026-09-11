@@ -4,6 +4,7 @@ namespace App\Models\Page;
 
 use App\Contracts\LinksToPublicPage;
 use App\Contracts\RedirectsOnMove;
+use App\Contracts\SubmitsToIndexNow;
 use App\Models\Concerns\HasFaqs;
 use App\Models\Concerns\HasMedia;
 use App\Models\Concerns\HasSeo;
@@ -30,7 +31,7 @@ use Illuminate\Support\Carbon;
  * liste ekranında girintili görünüm için ek bir sorgu gerekmez.
  */
 #[Fillable(['parent_id', 'user_id', 'title', 'slug', 'path', 'excerpt', 'content', 'template', 'status', 'sort_order', 'published_at'])]
-class Page extends Model implements LinksToPublicPage, RedirectsOnMove
+class Page extends Model implements LinksToPublicPage, RedirectsOnMove, SubmitsToIndexNow
 {
     use HasFaqs, HasMedia, HasSeo, HasSortOrder, HasTags, LogsActivity;
 
@@ -99,6 +100,11 @@ class Page extends Model implements LinksToPublicPage, RedirectsOnMove
     public function publicUrl(): ?string
     {
         return $this->isVisible() ? $this->url() : null;
+    }
+
+    public function indexNowUrl(): ?string
+    {
+        return filled($this->path) ? $this->url() : null;
     }
 
     public function publicLinkLabel(): string

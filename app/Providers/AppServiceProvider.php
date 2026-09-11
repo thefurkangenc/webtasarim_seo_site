@@ -5,8 +5,10 @@ namespace App\Providers;
 use App\Listeners\LogAuthenticationActivity;
 use App\Models\Menu\Menu;
 use App\Models\Menu\MenuItem;
+use App\Observers\IndexNowObserver;
 use App\Observers\MenuObserver;
 use App\Observers\RedirectObserver;
+use App\Observers\SitemapObserver;
 use App\Services\ActivityLog\ActivityLogger;
 use App\Services\Setting\SettingService;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -45,6 +47,16 @@ class AppServiceProvider extends ServiceProvider
         // Adresi değişen kayıtlar için otomatik 301 (Page, Service...).
         foreach (config('redirects.auto_from', []) as $model) {
             $model::observe(RedirectObserver::class);
+        }
+
+        // İçerik değişince site haritasını (sitemap.xml) yeniden üret.
+        foreach (config('sitemap.observed_models', []) as $model) {
+            $model::observe(SitemapObserver::class);
+        }
+
+        // İçerik değişince adresini IndexNow ile arama motorlarına bildir.
+        foreach (config('indexnow.observed_models', []) as $model) {
+            $model::observe(IndexNowObserver::class);
         }
 
         $this->app->booted(function () {

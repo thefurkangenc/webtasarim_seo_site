@@ -4,7 +4,7 @@
  */
 
 import { escapeHtml, http } from '../../core/http.js';
-import { apexBase, changeBadge, compact, formatMetric } from '../analytics/format.js';
+import { apexBase, changeBadge, compact, formatMetric } from '../../core/metrics.js';
 
 const root = document.querySelector('[data-dashboard-analytics]');
 

@@ -93,6 +93,7 @@ return [
         'contact' => ['label' => 'İletişim Formu', 'icon' => 'inbox'],
         'ai' => ['label' => 'Yapay Zeka', 'icon' => 'smart_toy'],
         'tag' => ['label' => 'Etiketler', 'icon' => 'sell'],
+        'indexnow' => ['label' => 'Hızlı İndeksleme', 'icon' => 'bolt'],
     ],
 
     /*
@@ -114,6 +115,8 @@ return [
         'password_changed' => ['label' => 'Parola Değişti', 'icon' => 'key', 'color' => 'warning', 'severity' => 'warning'],
         'forbidden' => ['label' => 'Yetkisiz Erişim', 'icon' => 'gpp_maybe', 'color' => 'danger', 'severity' => 'critical'],
         'submitted' => ['label' => 'Form Gönderimi', 'icon' => 'send', 'color' => 'info', 'severity' => 'info'],
+        'notified' => ['label' => 'Bildirildi', 'icon' => 'bolt', 'color' => 'info', 'severity' => 'info'],
+        'failed' => ['label' => 'Başarısız', 'icon' => 'error', 'color' => 'danger', 'severity' => 'warning'],
     ],
 
     /*

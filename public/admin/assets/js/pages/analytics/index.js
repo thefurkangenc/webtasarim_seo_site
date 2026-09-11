@@ -6,7 +6,7 @@
 
 import { escapeHtml, http, HttpError } from '../../core/http.js';
 import { toast } from '../../core/toast.js';
-import { apexBase, changeBadge, compact, formatMetric } from './format.js';
+import { apexBase, changeBadge, compact, formatMetric } from '../../core/metrics.js';
 
 const root = document.querySelector('[data-analytics]');
 

@@ -23,6 +23,9 @@ return [
         'schema' => 'Schema.org',
         'analytics' => 'Analitik (GA4)',
         'seo' => 'SEO Sağlığı',
+        'search-console' => 'Search Console',
+        'sitemap' => 'Site Haritası',
+        'indexnow' => 'Hızlı İndeksleme (IndexNow)',
         'blog' => 'Blog',
         'testimonial' => 'Müşteri Yorumları',
         'reference' => 'Referanslar',
@@ -154,6 +157,21 @@ return [
         ['name' => 'analytics.realtime', 'label' => 'Analitik - Canlı Veri', 'category' => 'analytics', 'guard_name' => 'web'],
         ['name' => 'analytics.test', 'label' => 'Analitik - Bağlantı Testi', 'category' => 'analytics', 'guard_name' => 'web'],
 
+        ['name' => 'indexnow.index', 'label' => 'Hızlı İndeksleme - Panel', 'category' => 'indexnow', 'guard_name' => 'web'],
+        ['name' => 'indexnow.update', 'label' => 'Hızlı İndeksleme - Ayarları Güncelle', 'category' => 'indexnow', 'guard_name' => 'web'],
+        ['name' => 'indexnow.submit', 'label' => 'Hızlı İndeksleme - Adres Bildir', 'category' => 'indexnow', 'guard_name' => 'web'],
+        ['name' => 'indexnow.submit-all', 'label' => 'Hızlı İndeksleme - Tüm Adresleri Bildir', 'category' => 'indexnow', 'guard_name' => 'web'],
+        ['name' => 'indexnow.regenerate-key', 'label' => 'Hızlı İndeksleme - Anahtarı Yenile', 'category' => 'indexnow', 'guard_name' => 'web'],
+
+        ['name' => 'search-console.index', 'label' => 'Search Console - Panel', 'category' => 'search-console', 'guard_name' => 'web'],
+        ['name' => 'search-console.update', 'label' => 'Search Console - Ayarları Güncelle', 'category' => 'search-console', 'guard_name' => 'web'],
+        ['name' => 'search-console.sites', 'label' => 'Search Console - Mülkleri Listele', 'category' => 'search-console', 'guard_name' => 'web'],
+        ['name' => 'search-console.performance', 'label' => 'Search Console - Arama Performansı', 'category' => 'search-console', 'guard_name' => 'web'],
+        ['name' => 'search-console.sitemaps', 'label' => 'Search Console - Site Haritaları', 'category' => 'search-console', 'guard_name' => 'web'],
+        ['name' => 'search-console.submit', 'label' => 'Search Console - Site Haritası Gönder', 'category' => 'search-console', 'guard_name' => 'web'],
+        ['name' => 'search-console.inspect', 'label' => 'Search Console - URL Denetimi', 'category' => 'search-console', 'guard_name' => 'web'],
+        ['name' => 'search-console.test', 'label' => 'Search Console - Bağlantı Testi', 'category' => 'search-console', 'guard_name' => 'web'],
+
         ['name' => 'seo.index', 'label' => 'SEO Sağlığı - Panel', 'category' => 'seo', 'guard_name' => 'web'],
         ['name' => 'seo.datatable', 'label' => 'SEO Sağlığı - Rapor', 'category' => 'seo', 'guard_name' => 'web'],
         ['name' => 'seo.rescore', 'label' => 'SEO Sağlığı - Yeniden Puanla', 'category' => 'seo', 'guard_name' => 'web'],
@@ -229,6 +247,10 @@ return [
         ['name' => 'service-region.destroy', 'label' => 'Hizmet Bölgesi - Sil', 'category' => 'service-region', 'guard_name' => 'web'],
 
         ['name' => 'activity-log.index', 'label' => 'Log Kayıtları - Görüntüle', 'category' => 'activity-log', 'guard_name' => 'web'],
+
+        ['name' => 'sitemap.index', 'label' => 'Site Haritası - Görüntüle', 'category' => 'sitemap', 'guard_name' => 'web'],
+        ['name' => 'sitemap.update', 'label' => 'Site Haritası - Ayarları Güncelle', 'category' => 'sitemap', 'guard_name' => 'web'],
+        ['name' => 'sitemap.generate', 'label' => 'Site Haritası - Yeniden Oluştur', 'category' => 'sitemap', 'guard_name' => 'web'],
 
     ],
 

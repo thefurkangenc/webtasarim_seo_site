@@ -4,6 +4,7 @@ namespace App\Models\Service;
 
 use App\Contracts\LinksToPublicPage;
 use App\Contracts\RedirectsOnMove;
+use App\Contracts\SubmitsToIndexNow;
 use App\Models\Concerns\HasFaqs;
 use App\Models\Concerns\HasMedia;
 use App\Models\Concerns\HasSeo;
@@ -23,7 +24,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * yer tutucular çözülerek yeniden üretilir (bkz. renderFor()).
  */
 #[Fillable(['user_id', 'title', 'slug', 'excerpt', 'content', 'status', 'sort_order'])]
-class Service extends Model implements LinksToPublicPage, RedirectsOnMove
+class Service extends Model implements LinksToPublicPage, RedirectsOnMove, SubmitsToIndexNow
 {
     use HasFaqs, HasMedia, HasSeo, HasSortOrder, HasTags, LogsActivity;
 
@@ -66,6 +67,11 @@ class Service extends Model implements LinksToPublicPage, RedirectsOnMove
         return $this->status === self::STATUS_PUBLISHED
             ? route('hizmetler.show', $this->slug)
             : null;
+    }
+
+    public function indexNowUrl(): ?string
+    {
+        return filled($this->slug) ? route('hizmetler.show', $this->slug) : null;
     }
 
     public function publicLinkLabel(): string
