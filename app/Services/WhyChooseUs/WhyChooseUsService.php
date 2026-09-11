@@ -50,6 +50,7 @@ class WhyChooseUsService
     public function active(): Collection
     {
         return WhyChooseUs::query()
+            ->where('is_active', true)
             ->orderBy('sort_order')
             ->get();
     }
@@ -60,6 +61,7 @@ class WhyChooseUsService
         return [
             'title' => $data['title'],
             'description' => $data['description'],
+            'is_active' => (bool) ($data['is_active'] ?? true),
         ];
     }
 

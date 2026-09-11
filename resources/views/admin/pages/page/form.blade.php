@@ -31,6 +31,12 @@
         </ol>
     </div>
 
+    @if ($page)
+        <div class="mb-[20px] flex items-center justify-end">
+            <x-admin::revision-button :model="$page" />
+        </div>
+    @endif
+
     <form id="page-form" data-id="{{ $page?->id }}"
         data-host="{{ rtrim(config('app.url'), '/') }}"
         data-parent-paths="{{ json_encode($parentPaths) }}">

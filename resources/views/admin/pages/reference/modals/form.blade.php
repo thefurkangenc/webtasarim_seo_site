@@ -13,5 +13,8 @@
     {{-- Sıra formdan girilmez: yeni kayıt otomatik en sona eklenir,
          sırayı değiştirmek için liste sayfasındaki "Sıralama Modu" kullanılır. --}}
 
+    <x-admin::form.switch name="is_active" help="reference.is_active" label="Yayında"
+        :checked="$reference?->is_active ?? true" />
+
     <x-admin::form.actions :submit="$reference ? 'Güncelle' : 'Ekle'" />
 </form>

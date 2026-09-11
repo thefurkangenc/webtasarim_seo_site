@@ -7,6 +7,7 @@ use App\Contracts\SubmitsToIndexNow;
 use App\Models\BlogCategory\BlogCategory;
 use App\Models\Concerns\HasFaqs;
 use App\Models\Concerns\HasMedia;
+use App\Models\Concerns\HasRevisions;
 use App\Models\Concerns\HasSeo;
 use App\Models\Concerns\HasTags;
 use App\Models\Concerns\LogsActivity;
@@ -21,7 +22,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 ])]
 class Blog extends Model implements LinksToPublicPage, SubmitsToIndexNow
 {
-    use HasFaqs, HasMedia, HasSeo, HasTags, LogsActivity;
+    use HasFaqs, HasMedia, HasRevisions, HasSeo, HasTags, LogsActivity;
 
     public const STATUS_DRAFT = 'draft';
 

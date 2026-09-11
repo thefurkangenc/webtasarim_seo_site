@@ -18,5 +18,8 @@
     {{-- Sıra artık formdan girilmez: yeni kayıt otomatik en sona eklenir,
          sırayı değiştirmek için liste sayfasındaki "Sıralama Modu" kullanılır. --}}
 
+    <x-admin::form.switch name="is_active" help="testimonial.is_active" label="Yayında"
+        :checked="$testimonial?->is_active ?? true" />
+
     <x-admin::form.actions :submit="$testimonial ? 'Güncelle' : 'Ekle'" />
 </form>

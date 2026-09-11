@@ -50,6 +50,7 @@ class FaqService
     public function active(): Collection
     {
         return Faq::query()
+            ->where('is_active', true)
             ->orderBy('sort_order')
             ->get();
     }
@@ -60,6 +61,7 @@ class FaqService
         return [
             'question' => $data['question'],
             'answer' => $data['answer'],
+            'is_active' => (bool) ($data['is_active'] ?? true),
         ];
     }
 

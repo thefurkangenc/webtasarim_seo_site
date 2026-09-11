@@ -21,6 +21,7 @@ return [
         'menu' => 'Menüler',
         'redirect' => 'Yönlendirmeler',
         'broken-link' => 'Kırık Linkler',
+        'revision' => 'Revizyonlar',
         'health' => 'Sistem Sağlığı',
         'lead' => 'Gelen Talepler',
         'schema' => 'Schema.org',
@@ -128,6 +129,7 @@ return [
         ['name' => 'page.edit', 'label' => 'Sayfa - Düzenle', 'category' => 'page', 'guard_name' => 'web'],
         ['name' => 'page.update', 'label' => 'Sayfa - Güncelle', 'category' => 'page', 'guard_name' => 'web'],
         ['name' => 'page.destroy', 'label' => 'Sayfa - Sil', 'category' => 'page', 'guard_name' => 'web'],
+        ['name' => 'page.bulk', 'label' => 'Sayfa - Toplu İşlem', 'category' => 'page', 'guard_name' => 'web'],
 
         ['name' => 'menu.index', 'label' => 'Menü - Görüntüle', 'category' => 'menu', 'guard_name' => 'web'],
         ['name' => 'menu.edit', 'label' => 'Menü - Düzenleyici', 'category' => 'menu', 'guard_name' => 'web'],
@@ -159,6 +161,11 @@ return [
         ['name' => 'broken-link.scan', 'label' => 'Kırık Link - Tarama Başlat', 'category' => 'broken-link', 'guard_name' => 'web'],
         ['name' => 'broken-link.ignore', 'label' => 'Kırık Link - Yok Say', 'category' => 'broken-link', 'guard_name' => 'web'],
         ['name' => 'broken-link.destroy', 'label' => 'Kırık Link - Sil', 'category' => 'broken-link', 'guard_name' => 'web'],
+
+        ['name' => 'revision.index', 'label' => 'Revizyonlar - Listele', 'category' => 'revision', 'guard_name' => 'web'],
+        ['name' => 'revision.datatable', 'label' => 'Revizyonlar - Tablo', 'category' => 'revision', 'guard_name' => 'web'],
+        ['name' => 'revision.show', 'label' => 'Revizyonlar - Karşılaştır', 'category' => 'revision', 'guard_name' => 'web'],
+        ['name' => 'revision.restore', 'label' => 'Revizyonlar - Geri Yükle', 'category' => 'revision', 'guard_name' => 'web'],
 
         ['name' => 'health.index', 'label' => 'Sistem Sağlığı - Panel', 'category' => 'health', 'guard_name' => 'web'],
         ['name' => 'health.data', 'label' => 'Sistem Sağlığı - Rapor / Yeniden Tara', 'category' => 'health', 'guard_name' => 'web'],
@@ -214,6 +221,7 @@ return [
         ['name' => 'blog.edit', 'label' => 'Blog - Düzenle', 'category' => 'blog', 'guard_name' => 'web'],
         ['name' => 'blog.update', 'label' => 'Blog - Güncelle', 'category' => 'blog', 'guard_name' => 'web'],
         ['name' => 'blog.destroy', 'label' => 'Blog - Sil', 'category' => 'blog', 'guard_name' => 'web'],
+        ['name' => 'blog.bulk', 'label' => 'Blog - Toplu İşlem', 'category' => 'blog', 'guard_name' => 'web'],
 
         ['name' => 'blog-category.index', 'label' => 'Blog Kategori - Listele', 'category' => 'blog', 'guard_name' => 'web'],
         ['name' => 'blog-category.datatable', 'label' => 'Blog Kategori - Tablo', 'category' => 'blog', 'guard_name' => 'web'],
@@ -230,6 +238,7 @@ return [
         ['name' => 'testimonial.reorder', 'label' => 'Müşteri Yorumu - Sırala', 'category' => 'testimonial', 'guard_name' => 'web'],
         ['name' => 'testimonial.update', 'label' => 'Müşteri Yorumu - Güncelle', 'category' => 'testimonial', 'guard_name' => 'web'],
         ['name' => 'testimonial.destroy', 'label' => 'Müşteri Yorumu - Sil', 'category' => 'testimonial', 'guard_name' => 'web'],
+        ['name' => 'testimonial.bulk', 'label' => 'Müşteri Yorumu - Toplu İşlem', 'category' => 'testimonial', 'guard_name' => 'web'],
 
         ['name' => 'reference.index', 'label' => 'Referans - Listele', 'category' => 'reference', 'guard_name' => 'web'],
         ['name' => 'reference.datatable', 'label' => 'Referans - Tablo', 'category' => 'reference', 'guard_name' => 'web'],
@@ -238,6 +247,7 @@ return [
         ['name' => 'reference.reorder', 'label' => 'Referans - Sırala', 'category' => 'reference', 'guard_name' => 'web'],
         ['name' => 'reference.update', 'label' => 'Referans - Güncelle', 'category' => 'reference', 'guard_name' => 'web'],
         ['name' => 'reference.destroy', 'label' => 'Referans - Sil', 'category' => 'reference', 'guard_name' => 'web'],
+        ['name' => 'reference.bulk', 'label' => 'Referans - Toplu İşlem', 'category' => 'reference', 'guard_name' => 'web'],
 
         ['name' => 'faq.index', 'label' => 'SSS - Listele', 'category' => 'faq', 'guard_name' => 'web'],
         ['name' => 'faq.datatable', 'label' => 'SSS - Tablo', 'category' => 'faq', 'guard_name' => 'web'],
@@ -246,6 +256,7 @@ return [
         ['name' => 'faq.reorder', 'label' => 'SSS - Sırala', 'category' => 'faq', 'guard_name' => 'web'],
         ['name' => 'faq.update', 'label' => 'SSS - Güncelle', 'category' => 'faq', 'guard_name' => 'web'],
         ['name' => 'faq.destroy', 'label' => 'SSS - Sil', 'category' => 'faq', 'guard_name' => 'web'],
+        ['name' => 'faq.bulk', 'label' => 'SSS - Toplu İşlem', 'category' => 'faq', 'guard_name' => 'web'],
 
         ['name' => 'why-choose-us.index', 'label' => 'Neden Biz - Listele', 'category' => 'why-choose-us', 'guard_name' => 'web'],
         ['name' => 'why-choose-us.datatable', 'label' => 'Neden Biz - Tablo', 'category' => 'why-choose-us', 'guard_name' => 'web'],
@@ -255,6 +266,7 @@ return [
         ['name' => 'why-choose-us.heading', 'label' => 'Neden Biz - Başlık', 'category' => 'why-choose-us', 'guard_name' => 'web'],
         ['name' => 'why-choose-us.update', 'label' => 'Neden Biz - Güncelle', 'category' => 'why-choose-us', 'guard_name' => 'web'],
         ['name' => 'why-choose-us.destroy', 'label' => 'Neden Biz - Sil', 'category' => 'why-choose-us', 'guard_name' => 'web'],
+        ['name' => 'why-choose-us.bulk', 'label' => 'Neden Biz - Toplu İşlem', 'category' => 'why-choose-us', 'guard_name' => 'web'],
 
         ['name' => 'hero.index', 'label' => 'Tanıtım Alanı - Listele', 'category' => 'hero', 'guard_name' => 'web'],
         ['name' => 'hero.update', 'label' => 'Tanıtım Alanı - Güncelle', 'category' => 'hero', 'guard_name' => 'web'],
@@ -267,6 +279,7 @@ return [
         ['name' => 'service.edit', 'label' => 'Hizmet - Düzenle', 'category' => 'service', 'guard_name' => 'web'],
         ['name' => 'service.update', 'label' => 'Hizmet - Güncelle', 'category' => 'service', 'guard_name' => 'web'],
         ['name' => 'service.destroy', 'label' => 'Hizmet - Sil', 'category' => 'service', 'guard_name' => 'web'],
+        ['name' => 'service.bulk', 'label' => 'Hizmet - Toplu İşlem', 'category' => 'service', 'guard_name' => 'web'],
 
         ['name' => 'service-region.index', 'label' => 'Hizmet Bölgesi - Listele', 'category' => 'service-region', 'guard_name' => 'web'],
         ['name' => 'service-region.datatable', 'label' => 'Hizmet Bölgesi - Tablo', 'category' => 'service-region', 'guard_name' => 'web'],

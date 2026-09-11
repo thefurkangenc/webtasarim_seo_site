@@ -7,5 +7,8 @@
     {{-- Sıra artık formdan girilmez: yeni kayıt otomatik en sona eklenir,
          sırayı değiştirmek için liste sayfasındaki "Sıralama Modu" kullanılır. --}}
 
+    <x-admin::form.switch name="is_active" help="why_choose_us.is_active" label="Yayında"
+        :checked="$whyChooseUs?->is_active ?? true" />
+
     <x-admin::form.actions :submit="$whyChooseUs ? 'Güncelle' : 'Ekle'" />
 </form>

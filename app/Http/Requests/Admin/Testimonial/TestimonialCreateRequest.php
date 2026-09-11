@@ -16,6 +16,7 @@ class TestimonialCreateRequest extends FormRequest
             'content' => ['required', 'string'],
             'rating' => ['required', 'integer', Rule::in([1, 2, 3, 4, 5])],
             'photo_media_id' => ['nullable', 'integer', 'exists:media,id'],
+            'is_active' => ['nullable', 'boolean'],
         ];
     }
 }

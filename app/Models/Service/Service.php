@@ -7,6 +7,7 @@ use App\Contracts\RedirectsOnMove;
 use App\Contracts\SubmitsToIndexNow;
 use App\Models\Concerns\HasFaqs;
 use App\Models\Concerns\HasMedia;
+use App\Models\Concerns\HasRevisions;
 use App\Models\Concerns\HasSeo;
 use App\Models\Concerns\HasSortOrder;
 use App\Models\Concerns\HasTags;
@@ -26,7 +27,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 #[Fillable(['user_id', 'title', 'slug', 'excerpt', 'content', 'status', 'sort_order'])]
 class Service extends Model implements LinksToPublicPage, RedirectsOnMove, SubmitsToIndexNow
 {
-    use HasFaqs, HasMedia, HasSeo, HasSortOrder, HasTags, LogsActivity;
+    use HasFaqs, HasMedia, HasRevisions, HasSeo, HasSortOrder, HasTags, LogsActivity;
 
     public const STATUS_DRAFT = 'draft';
 
@@ -60,6 +61,18 @@ class Service extends Model implements LinksToPublicPage, RedirectsOnMove, Submi
     public function statusLabel(): string
     {
         return self::STATUSES[$this->status] ?? $this->status;
+    }
+
+    /** Revizyona hizmetin bölge bağları da girer. */
+    protected function revisionExtra(): array
+    {
+        return ['regions' => $this->regions()->pluck('service_regions.id')->all()];
+    }
+
+    /** @param array<string, mixed> $extra */
+    protected function revisionExtraPayload(array $extra): array
+    {
+        return ['service_regions' => $extra['regions'] ?? []];
     }
 
     public function publicUrl(): ?string

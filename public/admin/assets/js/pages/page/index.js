@@ -7,6 +7,8 @@
  */
 
 import { historyButton } from '../../core/activity-log.js';
+import { bindBulk, bulkCell } from '../../core/bulk.js';
+import { revisionButton } from '../../core/revisions.js';
 import { confirm } from '../../core/confirm.js';
 import { escapeHtml, http, HttpError } from '../../core/http.js';
 import { cell, DataTable, reorderHandle } from '../../core/table.js';
@@ -70,6 +72,12 @@ const titleCell = (item) => `<div class="flex items-start gap-[8px]" style="padd
     </div>
 </div>`;
 
+const selection = bindBulk({
+    module: 'page',
+    body: document.getElementById('page-table-body'),
+    onDone: () => table.reload(),
+});
+
 const table = new DataTable({
     endpoint: '/admin/page/datatable',
     body: document.getElementById('page-table-body'),
@@ -90,7 +98,9 @@ const table = new DataTable({
         // Sıra seviye içinde tekil; yalnızca seviye filtresi taşınır.
         withFilters: ['parent_id'],
     },
+    onLoaded: () => selection.sync(),
     row: (item) => `<tr data-id="${item.id}">
+        ${bulkCell(item)}
         ${reorderHandle()}
         ${cell(titleCell(item))}
         ${cell(`<span class="text-sm">${escapeHtml(item.template_label)}</span>`)}
@@ -104,6 +114,7 @@ const table = new DataTable({
                 <i class="material-symbols-outlined !text-md">open_in_new</i>
             </a>
             ${historyButton('App\\Models\\Page\\Page', item.id)}
+            ${revisionButton('App\\Models\\Page\\Page', item.id)}
             <a href="/admin/page/${item.id}/edit" title="Düzenle" class="text-gray-500 dark:text-gray-400 leading-none transition-all hover:text-primary-500">
                 <i class="material-symbols-outlined !text-md">edit</i>
             </a>

@@ -64,6 +64,7 @@ class TestimonialService
     public function active(): Collection
     {
         return Testimonial::query()
+            ->where('is_active', true)
             ->with('media')
             ->orderBy('sort_order')
             ->get();
@@ -77,6 +78,7 @@ class TestimonialService
             'title' => $data['title'] ?? null,
             'content' => $data['content'],
             'rating' => $data['rating'] ?? 5,
+            'is_active' => (bool) ($data['is_active'] ?? true),
         ];
     }
 

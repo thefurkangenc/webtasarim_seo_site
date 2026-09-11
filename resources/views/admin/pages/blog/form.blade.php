@@ -21,6 +21,12 @@
         </ol>
     </div>
 
+    @if ($blog)
+        <div class="mb-[20px] flex items-center justify-end">
+            <x-admin::revision-button :model="$blog" />
+        </div>
+    @endif
+
     <form id="blog-form" data-id="{{ $blog?->id }}">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-[25px]">
 

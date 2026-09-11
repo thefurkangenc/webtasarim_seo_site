@@ -12,6 +12,7 @@ class WhyChooseUsCreateRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:150'],
             'description' => ['required', 'string'],
+            'is_active' => ['nullable', 'boolean'],
         ];
     }
 }

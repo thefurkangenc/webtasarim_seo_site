@@ -213,6 +213,13 @@ return [
                 'permission' => 'setting.index',
             ],
             [
+                'title' => 'Revizyonlar',
+                'icon' => 'settings_backup_restore',
+                'route' => 'admin.revision.index',
+                'active' => 'admin.revision.*',
+                'permission' => 'revision.index',
+            ],
+            [
                 'title' => 'Sistem Sağlığı',
                 'icon' => 'monitor_heart',
                 'route' => 'admin.health.index',

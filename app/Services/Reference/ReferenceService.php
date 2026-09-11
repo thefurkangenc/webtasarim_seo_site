@@ -60,6 +60,7 @@ class ReferenceService
     public function active(): Collection
     {
         return Reference::query()
+            ->where('is_active', true)
             ->with('media')
             ->orderBy('sort_order')
             ->get();
@@ -71,6 +72,7 @@ class ReferenceService
         return [
             'name' => $data['name'],
             'url' => $data['url'] ?? null,
+            'is_active' => (bool) ($data['is_active'] ?? true),
         ];
     }
 

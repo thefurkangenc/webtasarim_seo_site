@@ -50,10 +50,16 @@
         </div>
 
         <div class="trezo-card-content">
+            <x-admin::bulk-bar module="faq" />
+
             <div class="table-responsive overflow-x-auto">
                 <table class="w-full">
                     <thead class="text-black dark:text-white">
                         <tr>
+                            <th class="font-medium ltr:text-left rtl:text-right px-[20px] py-[11px] bg-gray-50 dark:bg-[#15203c] whitespace-nowrap w-[46px] first:rounded-tl-md">
+                                <input type="checkbox" data-bulk-all title="Tümünü seç"
+                                    class="w-[15px] h-[15px] align-middle cursor-pointer accent-primary-500">
+                            </th>
                             {{-- Sıralama modunda görünür; core/table.js açar/kapar. --}}
                             <th data-reorder-column
                                 class="hidden font-medium px-[20px] py-[11px] bg-gray-50 dark:bg-[#15203c] whitespace-nowrap w-[36px] first:rounded-tl-md">
@@ -63,6 +69,9 @@
                             </th>
                             <th class="font-medium ltr:text-left rtl:text-right px-[20px] py-[11px] bg-gray-50 dark:bg-[#15203c] whitespace-nowrap">
                                 Cevap
+                            </th>
+                            <th class="font-medium ltr:text-left rtl:text-right px-[20px] py-[11px] bg-gray-50 dark:bg-[#15203c] whitespace-nowrap">
+                                Durum
                             </th>
                             <th class="font-medium ltr:text-left rtl:text-right px-[20px] py-[11px] bg-gray-50 dark:bg-[#15203c] whitespace-nowrap last:rounded-tr-md">
                                 İşlemler

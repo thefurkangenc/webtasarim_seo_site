@@ -13,6 +13,7 @@ class ReferenceCreateRequest extends FormRequest
             'name' => ['required', 'string', 'max:150'],
             'url' => ['nullable', 'url', 'max:255'],
             'logo_media_id' => ['required', 'integer', 'exists:media,id'],
+            'is_active' => ['nullable', 'boolean'],
         ];
     }
 

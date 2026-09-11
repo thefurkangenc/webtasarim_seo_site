@@ -21,6 +21,12 @@
         </ol>
     </div>
 
+    @if ($service)
+        <div class="mb-[20px] flex items-center justify-end">
+            <x-admin::revision-button :model="$service" />
+        </div>
+    @endif
+
     <form id="service-form" data-id="{{ $service?->id }}">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-[25px]">
 

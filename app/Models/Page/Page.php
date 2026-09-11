@@ -7,6 +7,7 @@ use App\Contracts\RedirectsOnMove;
 use App\Contracts\SubmitsToIndexNow;
 use App\Models\Concerns\HasFaqs;
 use App\Models\Concerns\HasMedia;
+use App\Models\Concerns\HasRevisions;
 use App\Models\Concerns\HasSeo;
 use App\Models\Concerns\HasSortOrder;
 use App\Models\Concerns\HasTags;
@@ -33,7 +34,7 @@ use Illuminate\Support\Carbon;
 #[Fillable(['parent_id', 'user_id', 'title', 'slug', 'path', 'excerpt', 'content', 'template', 'status', 'sort_order', 'published_at'])]
 class Page extends Model implements LinksToPublicPage, RedirectsOnMove, SubmitsToIndexNow
 {
-    use HasFaqs, HasMedia, HasSeo, HasSortOrder, HasTags, LogsActivity;
+    use HasFaqs, HasMedia, HasRevisions, HasSeo, HasSortOrder, HasTags, LogsActivity;
 
     public const STATUS_DRAFT = 'draft';
 

@@ -126,6 +126,7 @@ return [
         'job_retry' => ['label' => 'İş Yeniden Denendi', 'icon' => 'restart_alt', 'color' => 'info', 'severity' => 'notice'],
         'job_delete' => ['label' => 'İş Kaydı Silindi', 'icon' => 'delete_sweep', 'color' => 'danger', 'severity' => 'notice'],
         'alert' => ['label' => 'Uyarı Gönderildi', 'icon' => 'crisis_alert', 'color' => 'warning', 'severity' => 'warning'],
+        'restored' => ['label' => 'Eski Sürüme Dönüldü', 'icon' => 'settings_backup_restore', 'color' => 'orange', 'severity' => 'notice'],
     ],
 
     /*

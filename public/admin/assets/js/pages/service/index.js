@@ -5,6 +5,8 @@ import { escapeHtml, http, HttpError } from '../../core/http.js';
 import { cell, DataTable, reorderHandle } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
 import { historyButton } from '../../core/activity-log.js';
+import { bindBulk, bulkCell } from '../../core/bulk.js';
+import { revisionButton } from '../../core/revisions.js';
 import { pageViews } from '../analytics/views.js';
 import { scoreBadge } from '../seo/badge.js';
 
@@ -18,6 +20,12 @@ const BADGES = {
 const thumb = (item) => item.thumb
     ? `<img src="${escapeHtml(item.thumb)}" alt="" class="w-[44px] h-[34px] rounded-md object-cover shrink-0">`
     : '<span class="w-[44px] h-[34px] rounded-md bg-gray-50 dark:bg-[#15203c] flex items-center justify-center shrink-0"><i class="material-symbols-outlined !text-[18px] text-gray-400">image</i></span>';
+
+const selection = bindBulk({
+    module: 'service',
+    body: document.getElementById('service-table-body'),
+    onDone: () => table.reload(),
+});
 
 const table = new DataTable({
     endpoint: '/admin/service/datatable',
@@ -35,7 +43,9 @@ const table = new DataTable({
         button: document.getElementById('service-reorder'),
         endpoint: '/admin/service/reorder',
     },
+    onLoaded: () => selection.sync(),
     row: (item) => `<tr data-id="${item.id}">
+        ${bulkCell(item)}
         ${reorderHandle()}
         ${cell(thumb(item))}
         ${cell(`<div class="min-w-0">
@@ -49,6 +59,7 @@ const table = new DataTable({
         ${cell(escapeHtml(item.created_at ?? '—'))}
         ${cell(`<div class="flex items-center gap-[9px]">
             ${historyButton('App\\Models\\Service\\Service', item.id)}
+            ${revisionButton('App\\Models\\Service\\Service', item.id)}
             <a href="/admin/service/${item.id}/edit" title="Düzenle" class="text-gray-500 dark:text-gray-400 leading-none transition-all hover:text-primary-500">
                 <i class="material-symbols-outlined !text-md">edit</i>
             </a>

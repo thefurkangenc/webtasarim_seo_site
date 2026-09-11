@@ -58,10 +58,16 @@
         </div>
 
         <div class="trezo-card-content">
+            <x-admin::bulk-bar module="blog" />
+
             <div class="table-responsive overflow-x-auto">
                 <table class="w-full">
                     <thead class="text-black dark:text-white">
                         <tr>
+                            <th class="font-medium ltr:text-left rtl:text-right px-[20px] py-[11px] bg-gray-50 dark:bg-[#15203c] whitespace-nowrap w-[46px] first:rounded-tl-md">
+                                <input type="checkbox" data-bulk-all title="Tümünü seç"
+                                    class="w-[15px] h-[15px] align-middle cursor-pointer accent-primary-500">
+                            </th>
                             <th class="font-medium ltr:text-left rtl:text-right px-[20px] py-[11px] bg-gray-50 dark:bg-[#15203c] whitespace-nowrap first:rounded-tl-md cursor-pointer relative" data-column="title">
                                 Başlık <i class="ri-expand-up-down-fill text-gray-500 dark:text-gray-400"></i>
                             </th>

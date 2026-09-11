@@ -1360,6 +1360,10 @@ return [
     |----------------------------------------------------------------------
     */
     'faq' => [
+        'is_active' => [
+            'title' => 'Yayında',
+            'body' => '<p>Kapatırsanız soru sitede görünmez ama panelde durur. Mevsimlik ya da artık geçerli olmayan soruları silmek yerine kapatın.</p>',
+        ],
         'question' => [
             'title' => 'Soru',
             'body' => <<<'HTML'
@@ -1376,6 +1380,10 @@ return [
     ],
 
     'reference' => [
+        'is_active' => [
+            'title' => 'Yayında',
+            'body' => '<p>Kapatırsanız logo “Referanslarımız” bölümünde görünmez. Sözleşmesi biten firmaları silmek yerine kapatabilirsiniz.</p>',
+        ],
         'logo_media_id' => [
             'title' => 'Firma logosu',
             'body' => <<<'HTML'
@@ -1394,6 +1402,10 @@ return [
     ],
 
     'testimonial' => [
+        'is_active' => [
+            'title' => 'Yayında',
+            'body' => '<p>Kapatırsanız yorum sitede görünmez. Kaldırılmasını isteyen müşterinin yorumunu silmek yerine kapatın.</p>',
+        ],
         'photo_media_id' => [
             'title' => 'Fotoğraf',
             'body' => '<p>Yorumu yapan kişinin fotoğrafı. Gerçek bir yüz güveni artırır. Yoksa baş harfleri gösterilir.</p>',
@@ -1420,6 +1432,10 @@ return [
     ],
 
     'why_choose_us' => [
+        'is_active' => [
+            'title' => 'Yayında',
+            'body' => '<p>Kapatırsanız bu madde sitede görünmez. Kampanya dönemine özel maddeleri böyle saklayabilirsiniz.</p>',
+        ],
         'title' => [
             'title' => 'Başlık',
             'body' => '<p>Bir avantajınızı özetleyen kısa başlık — örn. “7/24 Destek” ya da “Zamanında Teslim”.</p>',

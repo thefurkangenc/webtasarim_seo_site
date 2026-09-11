@@ -6,6 +6,8 @@ import { AjaxModal } from '../../core/modal.js';
 import { cell, DataTable, reorderHandle } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
 import { historyButton } from '../../core/activity-log.js';
+import { bindBulk, bulkCell } from '../../core/bulk.js';
+import { revisionButton } from '../../core/revisions.js';
 
 const modal = new AjaxModal();
 
@@ -20,6 +22,12 @@ const avatar = (item) => item.photo
 const truncate = (text, length = 80) =>
     text.length > length ? `${text.slice(0, length)}…` : text;
 
+const selection = bindBulk({
+    module: 'testimonial',
+    body: document.getElementById('testimonial-table-body'),
+    onDone: () => table.reload(),
+});
+
 const table = new DataTable({
     endpoint: '/admin/testimonial/datatable',
     body: document.getElementById('testimonial-table-body'),
@@ -31,15 +39,21 @@ const table = new DataTable({
         button: document.getElementById('testimonial-reorder'),
         endpoint: '/admin/testimonial/reorder',
     },
+    onLoaded: () => selection.sync(),
     row: (item) => `<tr data-id="${item.id}">
+        ${bulkCell(item)}
         ${reorderHandle()}
         ${cell(avatar(item))}
         ${cell(`<span class="font-medium">${escapeHtml(item.name)}</span>`)}
         ${cell(item.title ? escapeHtml(item.title) : '<span class="text-gray-500 dark:text-gray-400">—</span>')}
         ${cell(stars(item.rating))}
         ${cell(escapeHtml(truncate(item.content)))}
+        ${cell(item.is_active
+            ? '<span class="inline-block py-[3px] px-[10px] rounded-sm text-xs bg-success-100 dark:bg-[#15203c] text-success-600 dark:text-success-500">Yayında</span>'
+            : '<span class="inline-block py-[3px] px-[10px] rounded-sm text-xs bg-gray-100 dark:bg-[#15203c] text-gray-600 dark:text-gray-400">Gizli</span>')}
         ${cell(`<div class="flex items-center gap-[9px]">
             ${historyButton('App\\Models\\Testimonial\\Testimonial', item.id)}
+            ${revisionButton('App\\Models\\Testimonial\\Testimonial', item.id)}
             <button type="button" data-edit="${item.id}" title="Düzenle" class="text-gray-500 dark:text-gray-400 leading-none transition-all hover:text-primary-500">
                 <i class="material-symbols-outlined !text-md">edit</i>
             </button>

@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\Blog\BlogController;
 use App\Http\Controllers\Admin\BlogCategory\BlogCategoryController;
 use App\Http\Controllers\Admin\BrokenLink\BrokenLinkController;
+use App\Http\Controllers\Admin\Bulk\BulkController;
 use App\Http\Controllers\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\Admin\Faq\FaqController;
 use App\Http\Controllers\Admin\Health\HealthController;
@@ -22,6 +23,7 @@ use App\Http\Controllers\Admin\Menu\MenuController;
 use App\Http\Controllers\Admin\Page\PageController;
 use App\Http\Controllers\Admin\Redirect\RedirectController;
 use App\Http\Controllers\Admin\Reference\ReferenceController;
+use App\Http\Controllers\Admin\Revision\RevisionController;
 use App\Http\Controllers\Admin\Role\RoleController;
 use App\Http\Controllers\Admin\Schema\SchemaController;
 use App\Http\Controllers\Admin\SearchConsole\SearchConsoleController;
@@ -230,6 +232,30 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
         Route::post('scan', 'scan')->name('scan');
         Route::put('{brokenLink}/ignore', 'ignore')->name('ignore');
         Route::delete('{brokenLink}', 'destroy')->name('destroy');
+    });
+
+    /*
+    | Toplu işlemler. Tek controller, modül başına tek satır: adres modülün
+    | kendi ön ekinde kaldığı için izin de kendi adıyla denetlenir
+    | (admin.blog.bulk -> blog.bulk). Hangi modülde hangi işlemin olduğu
+    | config/bulk-actions.php'de yazar.
+    */
+    foreach (array_keys(config('bulk-actions.modules')) as $bulkModule) {
+        Route::post("{$bulkModule}/bulk", [BulkController::class, 'run'])
+            ->name("{$bulkModule}.bulk")
+            ->defaults('module', $bulkModule);
+    }
+
+    /*
+    | Revizyon geçmişi. Salt okunur listeleme + tek yazma ucu: geri yükleme.
+    | Revizyonlar elle oluşturulmaz/silinmez; kayıt her değiştiğinde
+    | kendiliğinden düşer, kayıt başına son N tanesi tutulur.
+    */
+    Route::prefix('revision')->name('revision.')->controller(RevisionController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('datatable', 'datatable')->name('datatable');
+        Route::get('{revision}', 'show')->name('show');
+        Route::post('{revision}/restore', 'restore')->name('restore');
     });
 
     /*
