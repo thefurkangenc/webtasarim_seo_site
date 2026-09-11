@@ -423,3 +423,54 @@ if (root) {
     loadPerformance();
     loadSitemaps();
 }
+
+/* ------------------------------------------------- kurulum adımları yardımcıları */
+
+// Kurulum bittiğinde adımlar yer kaplamasın; tercih hatırlanır.
+const stepsToggle = document.querySelector('[data-steps-toggle]');
+const stepsBody = document.querySelector('[data-steps-body]');
+
+if (stepsToggle && stepsBody) {
+    const paint = (collapsed) => {
+        stepsBody.hidden = collapsed;
+        stepsToggle.querySelector('[data-steps-toggle-text]').textContent = collapsed ? 'Adımları göster' : 'Adımları gizle';
+        stepsToggle.querySelector('i').textContent = collapsed ? 'unfold_more' : 'unfold_less';
+    };
+
+    let collapsed = false;
+
+    try {
+        collapsed = localStorage.getItem('admin.sc.steps') === 'closed';
+    } catch {
+        // gizli sekme
+    }
+
+    paint(collapsed);
+
+    stepsToggle.addEventListener('click', () => {
+        collapsed = ! collapsed;
+        paint(collapsed);
+
+        try {
+            localStorage.setItem('admin.sc.steps', collapsed ? 'closed' : 'open');
+        } catch {
+            // gizli sekme
+        }
+    });
+}
+
+// Service account e-postası uzun ve elle yazılamaz; tek tuşla panoya kopyalanır.
+document.querySelector('[data-copy-button]')?.addEventListener('click', async (event) => {
+    const value = document.querySelector('[data-copy-value]')?.textContent?.trim();
+
+    if (! value) {
+        return;
+    }
+
+    try {
+        await navigator.clipboard.writeText(value);
+        toast.success('E-posta adresi kopyalandı.');
+    } catch {
+        toast.error('Kopyalanamadı — adresi elle seçip kopyalayın.');
+    }
+});

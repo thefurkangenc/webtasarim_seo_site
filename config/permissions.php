@@ -217,7 +217,6 @@ return [
         ['name' => 'lead.destroy', 'label' => 'Gelen Talepler - Sil', 'category' => 'lead', 'guard_name' => 'web'],
         ['name' => 'lead.restore', 'label' => 'Gelen Talepler - Geri Al', 'category' => 'lead', 'guard_name' => 'web'],
 
-        ['name' => 'indexnow.index', 'label' => 'Hızlı İndeksleme - Panel', 'category' => 'indexnow', 'guard_name' => 'web'],
         ['name' => 'indexnow.update', 'label' => 'Hızlı İndeksleme - Ayarları Güncelle', 'category' => 'indexnow', 'guard_name' => 'web'],
         ['name' => 'indexnow.submit', 'label' => 'Hızlı İndeksleme - Adres Bildir', 'category' => 'indexnow', 'guard_name' => 'web'],
         ['name' => 'indexnow.submit-all', 'label' => 'Hızlı İndeksleme - Tüm Adresleri Bildir', 'category' => 'indexnow', 'guard_name' => 'web'],

@@ -11,6 +11,7 @@ use App\Observers\MenuObserver;
 use App\Observers\RedirectObserver;
 use App\Observers\SitemapObserver;
 use App\Services\ActivityLog\ActivityLogger;
+use App\Services\Revision\RevisionService;
 use App\Services\Setting\SettingService;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -19,6 +20,7 @@ use Illuminate\Queue\Events\Looping;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
@@ -67,6 +69,14 @@ class AppServiceProvider extends ServiceProvider
         | boşta dönerken de tetiklenir — iş yokken de "ayaktayım" der.
         */
         Event::listen([Looping::class, JobProcessed::class], RecordQueueHeartbeat::class);
+
+        /*
+        | Revizyon tekilleştirmesi "aynı istekte bir kez" mantığıyla çalışır.
+        | Kuyruk işçisi tek bir PHP süreci olarak saatlerce yaşadığı için
+        | koruma her işin başında sıfırlanmalı — yoksa işçi ayakta olduğu
+        | sürece ilk kaydetmeden sonraki değişiklikler geçmişe düşmez.
+        */
+        Queue::looping(fn () => RevisionService::flushCaptured());
 
         $this->app->booted(function () {
             $this->app->make(SettingService::class)->applyMailConfig();

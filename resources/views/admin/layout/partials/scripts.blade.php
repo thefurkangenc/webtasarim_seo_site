@@ -26,5 +26,6 @@
 
 {{-- Form label'larındaki (?) yardım ikonu — olay delegasyonu, sayfa JS'i gerektirmez. --}}
 <script type="module" src="{{ asset('admin/assets/js/core/help-popover.js') }}"></script>
+<script type="module" src="{{ asset('admin/assets/js/core/sidebar-scroll.js') }}"></script>
 
 @stack('admin.scripts')

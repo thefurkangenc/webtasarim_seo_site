@@ -46,7 +46,6 @@
     $logoId = \App\Support\Settings::get('company.logo_media_id');
     $favicon = $logoId ? \App\Models\Media\Media::query()->find($logoId)?->url('medium') : null;
     $focusKeyword = $model ? $seo?->focus_keyword : ($values['focus_keyword'] ?? null);
-    $analysis = $analysis && $model !== null;
 @endphp
 
 @if ($analysis)

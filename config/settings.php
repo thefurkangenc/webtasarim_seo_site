@@ -8,54 +8,90 @@
 
 return [
 
+    /*
+    | Sekmeler bu başlıklar altında toplanır — 12 sekmelik düz liste
+    | "hangi ayar neredeydi" sorusunu doğuruyordu.
+    */
+    'sections' => [
+        'identity' => ['title' => 'Site Kimliği', 'icon' => 'badge'],
+        'search' => ['title' => 'Arama Motorları', 'icon' => 'travel_explore'],
+        'contact' => ['title' => 'İletişim', 'icon' => 'forward_to_inbox'],
+        'visitor' => ['title' => 'Ziyaretçi Deneyimi', 'icon' => 'diversity_3'],
+        'system' => ['title' => 'Sistem', 'icon' => 'tune'],
+    ],
+
     'groups' => [
         'company' => [
             'title' => 'Firma Bilgileri',
             'icon' => 'apartment',
+            'section' => 'identity',
+            'description' => 'Firma adı, logo, adres, telefon — sitenin her yerinde kullanılan temel bilgiler.',
         ],
         'contents' => [
             'title' => 'İçerikler',
             'icon' => 'article',
+            'section' => 'identity',
+            'description' => 'Ön yüzdeki sabit bölümlerin başlık ve açıklama metinleri.',
         ],
         'social' => [
             'title' => 'Sosyal Medya',
             'icon' => 'share',
+            'section' => 'identity',
+            'description' => 'Header ve footer’da görünen sosyal medya hesapları.',
         ],
         'seo' => [
             'title' => 'SEO',
             'icon' => 'travel_explore',
+            'section' => 'search',
+            'description' => 'Sayfaların kendi SEO’su boş kaldığında kullanılacak site geneli varsayılanlar.',
         ],
         'schema' => [
             'title' => 'Schema.org',
             'icon' => 'data_object',
+            'section' => 'search',
+            'description' => 'Google’a firmanızın ne tür bir işletme olduğunu anlatan yapısal veri.',
         ],
         'mail' => [
             'title' => 'E-Posta',
             'icon' => 'mail',
+            'section' => 'contact',
+            'description' => 'Sitenin e-posta gönderirken kullanacağı SMTP hesabı.',
         ],
         'contact' => [
             'title' => 'İletişim Formu',
             'icon' => 'inbox',
+            'section' => 'contact',
+            'description' => 'İletişim formunun davranışı, bildirim adresi ve otomatik yanıt.',
         ],
         'tracking' => [
             'title' => 'İzleme Kodları',
             'icon' => 'monitoring',
+            'section' => 'search',
+            'description' => 'Google, Meta, Yandex gibi servislerin ölçüm ve doğrulama kodları.',
         ],
         'analytics' => [
             'title' => 'Analitik (GA4)',
             'icon' => 'insights',
+            'section' => 'search',
+            'description' => 'Ziyaretçi raporlarının panele gelmesi için Google Analytics bağlantısı.',
         ],
         'cookie' => [
             'title' => 'Çerez Çubuğu',
             'icon' => 'cookie',
+            'section' => 'visitor',
+            'description' => 'Ziyaretçiye gösterilen çerez onayı çubuğu ve metinleri.',
         ],
         'integrations' => [
             'title' => 'Entegrasyonlar',
             'icon' => 'extension',
+            'section' => 'visitor',
+            'description' => 'WhatsApp, canlı destek, arama butonu gibi sitede görünen eklentiler.',
         ],
         'maintenance' => [
             'title' => 'Bakım Modu',
             'icon' => 'construction',
+            'section' => 'system',
+            'description' => 'Siteyi geçici olarak ziyarete kapatma.',
         ],
     ],
 

@@ -366,8 +366,8 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
     | IndexNow — içerik değişince Bing/Yandex gibi motorlara anında haber verir.
     | Google bu protokolü desteklemiyor; Google tarafı Search Console'dan yürür.
     */
+    // Arayüzü Site Haritası sayfasının bir sekmesi; kendi index route'u yok.
     Route::prefix('indexnow')->name('indexnow.')->controller(IndexNowController::class)->group(function () {
-        Route::get('/', 'index')->name('index');
         Route::put('/', 'update')->name('update');
         Route::post('submit', 'submit')->name('submit');
         Route::post('submit-all', 'submitAll')->name('submit-all');

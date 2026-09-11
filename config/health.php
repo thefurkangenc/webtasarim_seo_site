@@ -10,6 +10,46 @@
 
 return [
 
+    /*
+    | Kontroller panelde bu gruplar altında toplanır. `keys` listesinde
+    | geçmeyen bir kontrol "other" grubuna düşer — yeni bir kontrol eklenince
+    | panel bozulmaz, sadece en alta gider.
+    */
+    'groups' => [
+        'queue' => [
+            'label' => 'Kuyruk ve Zamanlanmış Görevler',
+            'icon' => 'conveyor_belt',
+            'description' => 'Arka planda çalışan işler: yapay zeka üretimi, site haritası, e-posta gönderimi, link taraması. Buradaki bir sorun “kaydettim ama hiçbir şey olmadı” şikâyetinin en yaygın sebebidir.',
+            'keys' => ['queue_worker', 'failed_jobs', 'cron'],
+        ],
+        'server' => [
+            'label' => 'Sunucu',
+            'icon' => 'dns',
+            'description' => 'Sitenin üzerinde çalıştığı makine: disk alanı, veritabanı bağlantısı ve dosya yazma izinleri.',
+            'keys' => ['disk', 'database', 'writable'],
+        ],
+        'security' => [
+            'label' => 'Güvenlik ve Ortam',
+            'icon' => 'encrypted',
+            'description' => 'Ziyaretçinin gördüğü güvenlik: SSL sertifikası ve sitenin canlı ortam ayarlarında olup olmadığı.',
+            'keys' => ['ssl', 'debug'],
+        ],
+        'services' => [
+            'label' => 'Dış Servisler',
+            'icon' => 'cloud_sync',
+            'description' => 'Siteye bağladığınız dış hizmetler. Kurulu olmayanlar hata sayılmaz, soluk görünür.',
+            // Google kontrolleri kapsam başına ayrı anahtar üretir (google_*);
+            // önek eşleşmesi için sonu yıldızlı yazılır.
+            'keys' => ['smtp', 'google', 'google_*'],
+        ],
+        'other' => [
+            'label' => 'Diğer',
+            'icon' => 'more_horiz',
+            'description' => 'Gruplandırılmamış kontroller.',
+            'keys' => [],
+        ],
+    ],
+
     // Rapor bu süreden eskiyse panel açılırken kendiliğinden yenilenir.
     'cache_minutes' => 15,
 

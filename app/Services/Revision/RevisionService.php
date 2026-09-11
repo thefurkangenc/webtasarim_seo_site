@@ -27,6 +27,17 @@ class RevisionService
      */
     private static array $captured = [];
 
+    /**
+     * Koruma isteğin ömrüyle sınırlıdır. Web isteğinde süreç zaten biter, ama
+     * `queue:work` gibi UZUN YAŞAYAN süreçlerde temizlenmezse ilk kaydetmeden
+     * sonra o kaydın hiçbir değişikliği geçmişe yazılmaz. Bu yüzden her
+     * kuyruk işinden önce sıfırlanır (AppServiceProvider'da bağlı).
+     */
+    public static function flushCaptured(): void
+    {
+        self::$captured = [];
+    }
+
     /** Kaydın değişmeden önceki halini saklar. */
     public function capture(Model $model): void
     {

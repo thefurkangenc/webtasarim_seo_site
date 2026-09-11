@@ -2,7 +2,10 @@
     @csrf
     @method('PUT')
 
-    <x-admin::form.seo :values="$values" :og-media="$media['og_media_id'] ?? null" prefix="" wrapper="">
+    {{-- Site geneli varsayılanlar bir içerik kaydına bağlı değil: odak kelime
+         ve canlı skor paneli burada anlamsız, kapatılır. --}}
+    <x-admin::form.seo :values="$values" :og-media="$media['og_media_id'] ?? null" prefix=""
+        :analysis="false" wrapper="">
         <x-slot:before>
             <x-admin::form.input name="site_name" label="Site adı" help="seo.site_name"
                 :value="$values['site_name'] ?? null"

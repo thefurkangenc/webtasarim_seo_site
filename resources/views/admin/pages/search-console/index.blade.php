@@ -35,55 +35,209 @@
             </a>
         </div>
     @else
+        {{-- Bu sayfa ne, Entegrasyonlar'dan farkı ne --}}
+        <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
+            <div class="trezo-card-content">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-[15px]">
+                    <div class="lg:col-span-2 flex items-start gap-[12px] p-[16px] rounded-md bg-primary-50 dark:bg-[#15203c]">
+                        <span class="shrink-0 w-[36px] h-[36px] rounded-full bg-primary-500 text-white flex items-center justify-center">
+                            <i class="material-symbols-outlined !text-[19px]">travel_explore</i>
+                        </span>
+                        <div class="text-xs text-gray-600 dark:text-gray-300 leading-[1.75]">
+                            <strong class="block text-sm text-black dark:text-white mb-[4px]">Bu sayfa ne gösterir?</strong>
+                            Google'ın <strong>sizin siteniz hakkındaki kendi verisini</strong> buraya getirir:
+                            insanlar Google'a ne yazdığında karşılarına çıktığınızı, kaç kişinin gördüğünü,
+                            kaçının tıkladığını ve kaçıncı sırada olduğunuzu. Ayrıca site haritanızı Google'a
+                            bildirir ve tek bir sayfanın Google'a girip girmediğini sorar.
+                            <span class="block mt-[6px]">
+                                Kısacası: <strong>“Google beni nasıl görüyor?”</strong> sorusunun cevabı.
+                                Sitenizde hiçbir şey değiştirmez, sadece okur.
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-[12px] p-[16px] rounded-md bg-gray-50 dark:bg-[#15203c]">
+                        <span class="shrink-0 w-[36px] h-[36px] rounded-full bg-gray-400 text-white flex items-center justify-center">
+                            <i class="material-symbols-outlined !text-[19px]">extension</i>
+                        </span>
+                        <div class="text-xs text-gray-600 dark:text-gray-300 leading-[1.75]">
+                            <strong class="block text-sm text-black dark:text-white mb-[4px]">Entegrasyonlar'dan farkı</strong>
+                            <a href="{{ route('admin.setting.edit', 'integrations') }}" class="text-primary-500 hover:underline">Ayarlar → Entegrasyonlar</a>
+                            sayfası <strong>ziyaretçinin sitede gördüğü</strong> eklentileri yönetir:
+                            WhatsApp balonu, canlı destek, arama butonu, harita.
+                            Burası ise ziyaretçiye hiçbir şey göstermez —
+                            <strong>siteye gelmeden önceki</strong> aşamayı, Google aramasını raporlar.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-[10px] mt-[16px]">
+                    @foreach ([
+                        ['query_stats', 'Hangi aramalarda çıkıyorsunuz'],
+                        ['ads_click', 'Tıklama / gösterim / sıra'],
+                        ['lan', 'Site haritasını Google\'a bildir'],
+                        ['plagiarism', 'Bu sayfa indekslendi mi?'],
+                    ] as [$icon, $label])
+                        <span class="inline-flex items-center gap-[5px] text-[11px] text-gray-500 dark:text-gray-400 py-[5px] px-[10px] rounded-md border border-gray-100 dark:border-[#172036]">
+                            <i class="material-symbols-outlined !text-[15px] text-primary-500">{{ $icon }}</i> {{ $label }}
+                        </span>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+
+        {{-- Kurulum: tek seferlik, adım adım --}}
         @php
             $steps = [
-                ['icon' => 'add_home_work', 'title' => 'Siteyi Search Console’a ekleyin', 'body' => 'search.google.com/search-console adresine girin, “Mülk ekle” deyin. “Alan adı” (tüm alt alanları kapsar) ya da “URL öneki” seçebilirsiniz.'],
-                ['icon' => 'verified', 'title' => 'Site sahipliğini doğrulayın', 'body' => 'En kolay yol HTML etiketi: Google’ın verdiği doğrulama kodunu <strong>Ayarlar → Takip Kodları</strong> ekranındaki “Google site doğrulama” alanına yapıştırın, kaydedin, sonra Google’da “Doğrula”ya basın.'],
-                ['icon' => 'person_add', 'title' => 'Panelin hesabını kullanıcı olarak ekleyin', 'body' => 'Search Console → <strong>Ayarlar → Kullanıcılar ve izinler → Kullanıcı ekle</strong>. Aşağıda yazan e-posta adresini ekleyin ve izni <strong>“Tam”</strong> seçin. “Tam” olmazsa site haritası gönderemezsiniz.'],
-                ['icon' => 'api', 'title' => 'Search Console API’sini açın', 'body' => 'Google Cloud Console’da, Analitik için kullandığınız projede “Google Search Console API”yi aratıp <strong>Etkinleştir</strong>’e basın.'],
-                ['icon' => 'link', 'title' => 'Site adresini buraya yazın', 'body' => 'Aşağıdaki alana mülk adresini yazın ya da “Mülkleri listele” ile hesabın erişebildiklerini getirip seçin. Sonra “Bağlantıyı test et”.'],
+                [
+                    'icon' => 'add_home_work',
+                    'title' => 'Siteyi Search Console\'a ekleyin',
+                    'time' => '2 dk',
+                    'body' => 'Google hesabınızla <strong>search.google.com/search-console</strong> adresine girin. Sol üstteki kutudan <strong>“Mülk ekle”</strong>yi seçin.',
+                    'list' => [
+                        'İki seçenek çıkar: <strong>“Alan adı”</strong> ve <strong>“URL öneki”</strong>.',
+                        '<strong>“Alan adı”</strong> önerilir — www\'lu, www\'suz ve https hepsini birden kapsar.',
+                        'Alan adınızı başında https:// olmadan yazın: <code>siteniz.com</code>',
+                    ],
+                ],
+                [
+                    'icon' => 'verified',
+                    'title' => 'Sitenin sizin olduğunu kanıtlayın',
+                    'time' => '5 dk',
+                    'body' => 'Google, mülkü eklediğinizde sahipliği doğrulamanızı ister. Yöntem, önceki adımda hangisini seçtiğinize göre değişir:',
+                    'list' => [
+                        '<strong>“Alan adı”</strong> seçtiyseniz: Google bir <strong>TXT kaydı</strong> verir. Bunu alan adınızı aldığınız firmanın (GoDaddy, Natro, Cloudflare…) DNS ayarlarına eklemeniz gerekir. Yayılması birkaç dakika ile birkaç saat sürebilir.',
+                        '<strong>“URL öneki”</strong> seçtiyseniz: en kolay yol <strong>HTML etiketi</strong>. Google\'ın verdiği <code>content="..."</code> içindeki kodu kopyalayın, <a href="'.route('admin.setting.edit', 'tracking').'" class="text-primary-500 hover:underline">Ayarlar → Takip Kodları</a> ekranındaki <strong>“Google site doğrulama”</strong> alanına yapıştırıp kaydedin, sonra Google\'da <strong>“Doğrula”</strong>ya basın.',
+                    ],
+                ],
+                [
+                    'icon' => 'person_add',
+                    'title' => 'Panelin hesabını yetkilendirin',
+                    'time' => '2 dk',
+                    'body' => 'Panel, verilerinizi okuyabilmek için Search Console\'da bir kullanıcı gibi görünmeli. Aşağıdaki e-posta adresini oraya ekleyin:',
+                    'list' => [
+                        'Search Console\'da <strong>Ayarlar → Kullanıcılar ve izinler</strong> yolunu izleyin.',
+                        'Sağ üstten <strong>“Kullanıcı ekle”</strong>.',
+                        'Aşağıdaki e-posta adresini yapıştırın, izni <strong>“Tam”</strong> seçin.',
+                        '<strong>“Tam”</strong> yerine “Kısıtlı” seçerseniz veriler gelir ama site haritası gönderemezsiniz.',
+                    ],
+                ],
+                [
+                    'icon' => 'api',
+                    'title' => 'Google tarafında API\'yi açın',
+                    'time' => '2 dk',
+                    'body' => 'Bu, Google\'ın “bu veriyi dışarıya vermeye izin veriyorum” anahtarıdır. Analitik için kullandığınız <strong>aynı</strong> Google Cloud projesinde yapılır.',
+                    'list' => [
+                        '<strong>console.cloud.google.com</strong> adresine girin.',
+                        'Üstteki proje seçiciden Analitik için kullandığınız projeyi seçin.',
+                        'Arama kutusuna <strong>“Google Search Console API”</strong> yazın, çıkan sonuca tıklayın.',
+                        'Mavi <strong>“Etkinleştir”</strong> butonuna basın. Açılması birkaç dakika sürebilir.',
+                    ],
+                ],
+                [
+                    'icon' => 'link',
+                    'title' => 'Burada mülkü seçin ve test edin',
+                    'time' => '1 dk',
+                    'body' => 'Son adım bu sayfada. Aşağıdaki <strong>Bağlantı</strong> bölümünden:',
+                    'list' => [
+                        '<strong>“Mülkleri listele”</strong>ye basın — hesabın eriştiği mülkler gelir.',
+                        'Çıkan listeden sitenizi tıklayın, sonra <strong>Kaydet</strong>.',
+                        '<strong>“Bağlantıyı test et”</strong> ile doğrulayın.',
+                        'Liste boş geliyorsa 3. adım (kullanıcı ekleme) ya da 4. adım (API açma) eksiktir.',
+                    ],
+                ],
             ];
         @endphp
 
         <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
-            <div class="trezo-card-header mb-[20px]">
-                <div class="trezo-card-title"><h5 class="!mb-0">Kurulum adımları</h5></div>
+            <div class="trezo-card-header mb-[20px] flex items-start justify-between gap-[12px] flex-wrap">
+                <div class="trezo-card-title">
+                    <h5 class="!mb-0">Kurulum — bir kez yapılır</h5>
+                    <span class="block text-xs text-gray-500 dark:text-gray-400 mt-[4px]">
+                        Toplam yaklaşık 10 dakika. Adımların çoğu Google tarafında, sadece sonuncusu bu sayfada.
+                    </span>
+                </div>
+                <button type="button" data-steps-toggle
+                    class="inline-flex items-center gap-[6px] py-[7px] px-[14px] text-xs text-black dark:text-white transition-all rounded-md border border-gray-200 dark:border-[#172036] hover:bg-gray-50 dark:hover:bg-[#15203c]">
+                    <i class="material-symbols-outlined !text-[16px]">unfold_less</i>
+                    <span data-steps-toggle-text>Adımları gizle</span>
+                </button>
             </div>
-            <div class="trezo-card-content">
-                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-[15px]">
-                    @foreach ($steps as $index => $step)
-                        <div class="flex gap-[12px] p-[14px] rounded-md bg-gray-50 dark:bg-[#15203c]">
-                            <span class="shrink-0 w-[32px] h-[32px] rounded-full bg-primary-500 text-white flex items-center justify-center">
-                                <i class="material-symbols-outlined !text-[18px]">{{ $step['icon'] }}</i>
+
+            <div class="trezo-card-content" data-steps-body>
+                {{-- Kopyalanacak değerler önce: kullanıcı adımları okurken elinin altında olsun. --}}
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-[12px] mb-[20px]">
+                    <div class="p-[14px] rounded-md border border-primary-200 dark:border-[#172036] bg-primary-50 dark:bg-[#15203c]">
+                        <span class="block text-xs text-gray-500 dark:text-gray-400 mb-[6px]">
+                            3. adımda eklenecek e-posta adresi
+                        </span>
+                        <div class="flex items-center gap-[8px]">
+                            <code class="text-xs text-black dark:text-white break-all flex-1" data-copy-value>{{ $clientEmail ?? '—' }}</code>
+                            @if ($clientEmail)
+                                <button type="button" data-copy-button title="Kopyala"
+                                    class="shrink-0 text-primary-500 hover:text-primary-400 transition-all">
+                                    <i class="material-symbols-outlined !text-[18px]">content_copy</i>
+                                </button>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="p-[14px] rounded-md border border-gray-100 dark:border-[#172036]">
+                        <span class="block text-xs text-gray-500 dark:text-gray-400 mb-[6px]">2. adım · site doğrulama kodu</span>
+                        @if ($verificationReady)
+                            <span class="inline-flex items-center gap-[4px] text-xs text-success-600">
+                                <i class="material-symbols-outlined !text-[15px]">check_circle</i>
+                                Girilmiş — “Alan adı” mülkü kullanıyorsanız buna gerek yok
                             </span>
-                            <div>
-                                <span class="block text-sm font-medium text-black dark:text-white mb-[4px]">
-                                    {{ $index + 1 }}. {{ $step['title'] }}
+                        @else
+                            <a href="{{ route('admin.setting.edit', 'tracking') }}"
+                                class="inline-flex items-center gap-[4px] text-xs text-primary-500 hover:underline">
+                                <i class="material-symbols-outlined !text-[15px]">edit</i>
+                                Henüz girilmedi — Takip Kodları ekranına git
+                            </a>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="space-y-[12px]">
+                    @foreach ($steps as $index => $step)
+                        <div class="flex gap-[14px] p-[16px] rounded-md border border-gray-100 dark:border-[#172036]">
+                            <div class="shrink-0 flex flex-col items-center gap-[6px]">
+                                <span class="w-[34px] h-[34px] rounded-full bg-primary-500 text-white flex items-center justify-center font-bold text-sm">
+                                    {{ $index + 1 }}
                                 </span>
-                                <span class="block text-xs text-gray-500 dark:text-gray-400 leading-[1.6]">{!! $step['body'] !!}</span>
+                                @unless ($loop->last)
+                                    <span class="flex-1 w-px bg-gray-100 dark:bg-[#172036]"></span>
+                                @endunless
+                            </div>
+                            <div class="min-w-0 pb-[2px]">
+                                <div class="flex items-center gap-[8px] flex-wrap mb-[6px]">
+                                    <i class="material-symbols-outlined !text-[18px] text-primary-500">{{ $step['icon'] }}</i>
+                                    <span class="text-sm font-medium text-black dark:text-white">{{ $step['title'] }}</span>
+                                    <span class="text-[10px] font-medium py-[1px] px-[7px] rounded-sm text-gray-500 bg-gray-100 dark:bg-[#15203c] dark:text-gray-400">
+                                        ~{{ $step['time'] }}
+                                    </span>
+                                </div>
+                                <span class="block text-xs text-gray-500 dark:text-gray-400 leading-[1.7] mb-[8px]">{!! $step['body'] !!}</span>
+                                <ul class="space-y-[5px]">
+                                    @foreach ($step['list'] as $line)
+                                        <li class="flex items-start gap-[7px] text-xs text-gray-500 dark:text-gray-400 leading-[1.7]">
+                                            <i class="material-symbols-outlined !text-[14px] text-gray-400 shrink-0 mt-[3px]">chevron_right</i>
+                                            <span>{!! $line !!}</span>
+                                        </li>
+                                    @endforeach
+                                </ul>
                             </div>
                         </div>
                     @endforeach
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-[12px] mt-[18px]">
-                    <div class="p-[14px] rounded-md border border-gray-100 dark:border-[#172036]">
-                        <span class="block text-xs text-gray-500 dark:text-gray-400 mb-[4px]">Search Console’a eklenecek e-posta</span>
-                        <code class="text-xs text-black dark:text-white break-all">{{ $clientEmail ?? '—' }}</code>
-                    </div>
-                    <div class="p-[14px] rounded-md border border-gray-100 dark:border-[#172036]">
-                        <span class="block text-xs text-gray-500 dark:text-gray-400 mb-[4px]">Site doğrulama kodu</span>
-                        @if ($verificationReady)
-                            <span class="inline-flex items-center gap-[4px] text-xs text-success-600">
-                                <i class="material-symbols-outlined !text-[15px]">check_circle</i> Girilmiş
-                            </span>
-                        @else
-                            <a href="{{ route('admin.setting.edit', 'tracking') }}"
-                                class="inline-flex items-center gap-[4px] text-xs text-primary-500 hover:underline">
-                                <i class="material-symbols-outlined !text-[15px]">edit</i> Henüz girilmedi — Takip Kodları’na git
-                            </a>
-                        @endif
-                    </div>
+                <div class="flex items-start gap-[8px] mt-[18px] p-[12px] rounded-md bg-gray-50 dark:bg-[#15203c] text-xs text-gray-500 dark:text-gray-400">
+                    <i class="material-symbols-outlined !text-[16px] shrink-0 text-primary-500">info</i>
+                    <span>
+                        <strong>Veri hemen gelmeyebilir.</strong> Search Console yeni eklenen bir mülk için
+                        veri toplamaya o andan itibaren başlar ve raporlar yaklaşık 2 gün gecikmelidir.
+                        İlk birkaç gün tablolar boş görünürse bu normaldir.
+                    </span>
                 </div>
             </div>
         </div>

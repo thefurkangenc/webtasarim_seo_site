@@ -22,7 +22,11 @@ class IntegrationService
                 'title' => $meta['title'],
                 'description' => $meta['description'],
                 'icon' => $meta['icon'],
+                'placement' => $meta['placement'] ?? null,
                 'enabled' => (bool) ($values['enabled'] ?? false),
+                // Bilgileri eksikse entegrasyon açık olsa da ön yüzde görünmez
+                // (frontend() aynı kontrolü yapıyor) — panel bunu uyarı olarak gösterir.
+                'ready' => $this->ready($key, $values),
                 'values' => $values,
             ];
         }

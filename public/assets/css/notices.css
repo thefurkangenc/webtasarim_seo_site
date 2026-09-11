@@ -1,48 +1,117 @@
+/*
+ * Duyuru şeridi, açılır pencere (popup) ve bülten formu.
+ *
+ * Şerit sayfanın en üstünde SABİT durur; header (hem saydam-absolute hem
+ * sticky-fixed hali) onunla çakışmasın diye `--site-bar-h` kadar aşağı
+ * itilir. Yüksekliği JS ölçer — metin iki satıra taştığında da doğru kalır.
+ */
+
+:root {
+    --site-bar-h: 0px;
+}
+
+/* ============================================================ DUYURU ŞERİDİ */
+
 .site-bar {
-    position: relative;
-    z-index: 40;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1001;
     color: #fff;
+    transform: translateY(-100%);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.12) inset;
 }
 
 .site-bar[hidden] {
     display: none;
 }
 
-.site-bar--primary { background: #155fff; }
-.site-bar--warning { background: #c2410c; }
-.site-bar--dark { background: #0b1220; }
+.site-bar.is-open {
+    transform: translateY(0);
+}
+
+/* Renk tonları: panelden seçilen "tone" değerine karşılık gelir. */
+.site-bar--primary { background: linear-gradient(90deg, #155fff 0%, #4d86ff 100%); }
+.site-bar--warning { background: linear-gradient(90deg, #b4460b 0%, #e2690f 100%); }
+.site-bar--dark    { background: linear-gradient(90deg, #0b1220 0%, #1f2a44 100%); }
+.site-bar--success { background: linear-gradient(90deg, #067647 0%, #10a25f 100%); }
 
 .site-bar__inner {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 16px;
-    padding: 10px 16px;
+    gap: 14px;
+    padding: 11px 44px 11px 16px;
     text-align: center;
     font-size: 14px;
     line-height: 1.5;
+    position: relative;
 }
 
-.site-bar__message { margin: 0; }
+.site-bar__message {
+    margin: 0;
+    font-weight: 500;
+}
 
 .site-bar__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     color: #fff;
     font-weight: 600;
-    text-decoration: underline;
+    font-size: 13px;
+    text-decoration: none;
     white-space: nowrap;
+    padding: 5px 14px;
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.site-bar__link:hover {
+    background: rgba(255, 255, 255, 0.26);
+    color: #fff;
+    transform: translateY(-1px);
 }
 
 .site-bar__close {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
     appearance: none;
     background: transparent;
     border: 0;
     color: inherit;
     cursor: pointer;
-    padding: 4px 8px;
-    font-size: 18px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    font-size: 20px;
     line-height: 1;
-    opacity: 0.85;
+    opacity: 0.75;
+    transition: background 0.2s ease, opacity 0.2s ease;
 }
+
+.site-bar__close:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.18);
+}
+
+/* Şerit açıkken sayfa ve header aşağı kayar — böylece çakışma olmaz. */
+html.has-site-bar body {
+    padding-top: var(--site-bar-h);
+}
+
+html.has-site-bar .header-tranperent,
+html.has-site-bar .header-sticky {
+    top: var(--site-bar-h);
+}
+
+/* ========================================================= AÇILIR PENCERE */
 
 .site-popup {
     position: fixed;
@@ -61,81 +130,180 @@
 .site-popup__backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(11, 18, 32, 0.55);
+    background: rgba(9, 14, 28, 0.62);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.site-popup.is-open .site-popup__backdrop {
+    opacity: 1;
 }
 
 .site-popup__card {
     position: relative;
     z-index: 1;
     width: 100%;
-    max-width: 480px;
+    max-width: 460px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
     background: #fff;
-    border-radius: 12px;
-    padding: 28px 24px 24px;
-    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.28);
+    border-radius: 18px;
+    box-shadow: 0 30px 70px rgba(9, 14, 28, 0.35);
+    opacity: 0;
+    transform: translateY(18px) scale(0.94);
+    transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.site-popup.is-open .site-popup__card {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* Görsel kartın üst köşelerine oturur, ayrı bir blok gibi durmaz. */
+.site-popup__image {
+    display: block;
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+    border-radius: 18px 18px 0 0;
+}
+
+.site-popup__content {
+    padding: 26px 26px 24px;
+}
+
+.site-popup__card--with-image .site-popup__content {
+    padding-top: 22px;
 }
 
 .site-popup__close {
     position: absolute;
-    top: 10px;
+    top: 12px;
     right: 12px;
+    z-index: 2;
     appearance: none;
-    background: transparent;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
     border: 0;
-    font-size: 22px;
-    line-height: 1;
     cursor: pointer;
-    color: #6b7280;
+    font-size: 22px;
+    line-height: 32px;
+    text-align: center;
+    color: #1f2937;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 10px rgba(9, 14, 28, 0.18);
+    transition: background 0.2s ease, transform 0.2s ease;
 }
 
-.site-popup__image {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    margin-bottom: 16px;
+.site-popup__close:hover {
+    background: #fff;
+    transform: rotate(90deg);
 }
 
 .site-popup__heading {
-    margin: 0 0 8px;
-    font-size: 22px;
+    margin: 0 0 10px;
+    font-size: 23px;
+    line-height: 1.3;
+    font-weight: 700;
+    color: #0b1220;
 }
 
 .site-popup__body {
-    margin: 0 0 16px;
+    margin: 0 0 18px;
     font-size: 15px;
-    line-height: 1.6;
-    color: #4b5563;
+    line-height: 1.65;
+    color: #55607a;
 }
 
+/* Tek başına duran çağrı butonu tam genişlik: kartta ortalanmış görünür. */
 .site-popup__cta {
-    display: inline-flex;
-    margin-bottom: 12px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 0;
 }
+
+.site-popup__cta + .site-subscribe {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid #eef1f6;
+}
+
+/* ============================================================ BÜLTEN FORMU */
 
 .site-subscribe__alert {
     margin: 0 0 12px;
-    padding: 10px 12px;
-    border-radius: 6px;
+    padding: 10px 13px;
+    border-radius: 10px;
     font-size: 13px;
+    line-height: 1.5;
 }
 
 .site-subscribe__alert[hidden] { display: none; }
 .site-subscribe__alert.is-success { background: #ecfdf3; color: #067647; }
 .site-subscribe__alert.is-error { background: #fef3f2; color: #b42318; }
 
+/*
+ * Girdi ve buton tek bir hap (pill) içinde birleşik durur — ayrı ayrı
+ * duran kutu + buton ikilisi dar kartlarda dağınık görünüyordu.
+ */
 .site-subscribe__row {
     display: flex;
-    gap: 8px;
+    align-items: center;
+    gap: 0;
     margin-bottom: 10px;
+    background: #fff;
+    border: 1px solid #e1e6ef;
+    border-radius: 100px;
+    padding: 4px 4px 4px 6px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.site-subscribe__row:focus-within {
+    border-color: #155fff;
+    box-shadow: 0 0 0 3px rgba(21, 95, 255, 0.12);
 }
 
 .site-subscribe__row input[type="email"] {
     flex: 1;
     min-width: 0;
-    height: 44px;
-    border: 1px solid #e5e7eb;
-    border-radius: 6px;
+    height: 42px;
+    border: 0;
+    background: transparent;
     padding: 0 12px;
+    font-size: 14px;
+    color: #0b1220;
+    outline: 0;
+}
+
+.site-subscribe__row input[type="email"]::placeholder {
+    color: #98a2b3;
+}
+
+.site-subscribe__row button {
+    flex: 0 0 auto;
+    height: 42px;
+    padding: 0 22px;
+    border-radius: 100px;
+    white-space: nowrap;
+    font-size: 14px;
+}
+
+/* theme-btn3 tema dosyasında ok ikonu/animasyon taşıyor; burada sadeleşir. */
+.site-subscribe__row .theme-btn3 {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+}
+
+.site-subscribe__row button[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .site-subscribe__privacy {
@@ -143,9 +311,15 @@
     align-items: flex-start;
     gap: 8px;
     font-size: 12px;
-    line-height: 1.5;
+    line-height: 1.55;
     color: #6b7280;
-    margin: 0 0 8px;
+    margin: 0 0 4px;
+    cursor: pointer;
+}
+
+.site-subscribe__privacy input {
+    margin-top: 2px;
+    flex: 0 0 auto;
 }
 
 .site-subscribe__error {
@@ -164,10 +338,18 @@
     overflow: hidden;
 }
 
-.vl-footer-widget-black6 .site-subscribe__row input[type="email"] {
+/* Koyu zeminli footer bölümünde form kendi rengine uyar. */
+.vl-footer-widget-black6 .site-subscribe__row {
     background: rgba(255, 255, 255, 0.08);
-    color: #fff;
     border-color: rgba(255, 255, 255, 0.2);
+}
+
+.vl-footer-widget-black6 .site-subscribe__row input[type="email"] {
+    color: #fff;
+}
+
+.vl-footer-widget-black6 .site-subscribe__row input[type="email"]::placeholder {
+    color: rgba(255, 255, 255, 0.55);
 }
 
 .vl-footer-widget-black6 .site-subscribe__privacy {
@@ -178,7 +360,63 @@
     color: #fff;
 }
 
+/* ==================================================================== MOBİL */
+
 @media (max-width: 575px) {
-    .site-bar__inner { flex-wrap: wrap; }
-    .site-subscribe__row { flex-direction: column; }
+    .site-bar__inner {
+        flex-wrap: wrap;
+        gap: 8px;
+        font-size: 13px;
+        padding: 10px 40px 10px 14px;
+    }
+
+    .site-popup__card {
+        max-width: 100%;
+        border-radius: 16px;
+    }
+
+    .site-popup__image {
+        height: 150px;
+        border-radius: 16px 16px 0 0;
+    }
+
+    .site-popup__content {
+        padding: 22px 20px 20px;
+    }
+
+    .site-popup__heading {
+        font-size: 20px;
+    }
+
+    /* Dar ekranda hap düzeni sıkışıyor; alt alta ama yuvarlak kalıyor. */
+    .site-subscribe__row {
+        flex-direction: column;
+        gap: 8px;
+        border-radius: 14px;
+        padding: 8px;
+        background: transparent;
+        border-color: transparent;
+        box-shadow: none;
+    }
+
+    .site-subscribe__row input[type="email"] {
+        width: 100%;
+        border: 1px solid #e1e6ef;
+        border-radius: 100px;
+        background: #fff;
+        padding: 0 16px;
+    }
+
+    .site-subscribe__row button {
+        width: 100%;
+    }
+}
+
+/* Hareketi azaltma tercihine saygı. */
+@media (prefers-reduced-motion: reduce) {
+    .site-bar,
+    .site-popup__backdrop,
+    .site-popup__card {
+        transition: none;
+    }
 }

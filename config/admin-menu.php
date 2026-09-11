@@ -184,13 +184,6 @@ return [
                 'permission' => 'sitemap.index',
             ],
             [
-                'title' => 'Hızlı İndeksleme',
-                'icon' => 'bolt',
-                'route' => 'admin.indexnow.index',
-                'active' => 'admin.indexnow.*',
-                'permission' => 'indexnow.index',
-            ],
-            [
                 'title' => 'Search Console',
                 'icon' => 'travel_explore',
                 'route' => 'admin.search-console.index',

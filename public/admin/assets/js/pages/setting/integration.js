@@ -41,20 +41,39 @@ function applyCard(data) {
 
     const toggle = card.querySelector('[data-integration-toggle]');
     const badge = card.querySelector('[data-integration-badge]');
-    const edit = card.querySelector('[data-integration-edit-wrap]');
+    const warning = card.querySelector('[data-integration-warning]');
+    const editButton = card.querySelector('[data-integration-edit]');
+
+    // Üç durum: yayında (açık + bilgiler tam), bilgi eksik, kapalı.
+    const live = Boolean(data.enabled) && Boolean(data.ready);
+    const incomplete = Boolean(data.enabled) && ! data.ready;
 
     if (toggle) {
         toggle.checked = Boolean(data.enabled);
     }
 
     if (badge) {
-        badge.className = data.enabled
-            ? 'px-[8px] py-[3px] inline-block rounded-sm font-medium text-xs bg-success-100 dark:bg-[#15203c] text-success-600'
-            : 'px-[8px] py-[3px] inline-block rounded-sm font-medium text-xs bg-danger-100 dark:bg-[#15203c] text-danger-500';
-        badge.textContent = data.enabled ? 'Aktif' : 'Pasif';
+        const tone = live
+            ? 'bg-success-100 dark:bg-[#15203c] text-success-600'
+            : incomplete
+                ? 'bg-warning-100 dark:bg-[#15203c] text-warning-600'
+                : 'bg-gray-100 dark:bg-[#15203c] text-gray-500 dark:text-gray-400';
+
+        badge.className = `px-[8px] py-[2px] inline-block rounded-sm font-medium text-[10px] ${tone}`;
+        badge.textContent = live ? 'Yayında' : incomplete ? 'Bilgi eksik' : 'Kapalı';
     }
 
-    edit?.classList.toggle('hidden', ! data.enabled);
+    warning?.classList.toggle('hidden', ! incomplete);
+
+    if (editButton) {
+        editButton.lastChild.textContent = data.ready ? ' Ayarları düzenle' : ' Ayarla';
+    }
+
+    // Kartın kenarlığı da durumu yansıtır.
+    card.className = card.className.replace(
+        /border-(success-200|warning-300|gray-100)/,
+        live ? 'border-success-200' : incomplete ? 'border-warning-300' : 'border-gray-100',
+    );
 }
 
 async function openModal(key, title) {

@@ -84,12 +84,19 @@ class SitemapService
             ->filter(fn (string $key) => filter_var($data["source_{$key}"] ?? false, FILTER_VALIDATE_BOOLEAN))
             ->implode(',');
 
-        $this->settings->putGroup('sitemap', [
+        $payload = [
             'sources' => $sources,
             'excluded_urls' => $data['excluded_urls'] ?? '',
             'extra_urls' => $data['extra_urls'] ?? '',
-            'robots_txt' => $data['robots_txt'] ?? '',
-        ]);
+        ];
+
+        // robots.txt aynı formda ama ayrı bir sekmede: alan gönderilmediyse
+        // dokunulmaz, aksi halde kaydeden her istek onu varsayılana düşürürdü.
+        if (array_key_exists('robots_txt', $data)) {
+            $payload['robots_txt'] = $data['robots_txt'] ?? '';
+        }
+
+        $this->settings->putGroup('sitemap', $payload);
 
         $this->regenerate();
     }

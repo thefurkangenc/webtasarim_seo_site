@@ -8,18 +8,16 @@ use App\Http\Requests\Admin\IndexNow\IndexNowSubmitRequest;
 use App\Http\Requests\Admin\IndexNow\IndexNowUpdateRequest;
 use App\Services\IndexNow\IndexNowService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\View\View;
 
+/**
+ * IndexNow işlemleri. Kendi sayfası YOKTUR — arayüzü Site Haritası
+ * ekranının "Hızlı İndeksleme" sekmesidir (admin.sitemap.index).
+ */
 class IndexNowController extends Controller
 {
     use RespondsWithJson;
 
     public function __construct(private readonly IndexNowService $service) {}
-
-    public function index(): View
-    {
-        return view('admin.pages.indexnow.index', $this->service->formData());
-    }
 
     public function update(IndexNowUpdateRequest $request): JsonResponse
     {

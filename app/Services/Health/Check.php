@@ -47,6 +47,21 @@ class Check
         return new self($key, $label, 'skipped', $message, $hint, $meta);
     }
 
+    /** Kontrolün panelde hangi başlık altında görüneceği (config/health.php > groups). */
+    private function group(): string
+    {
+        foreach (config('health.groups', []) as $key => $meta) {
+            foreach ($meta['keys'] ?? [] as $pattern) {
+                // "google_*" gibi önekler: aynı ailenin tüm kontrolleri tek grupta.
+                if ($pattern === $this->key || (str_ends_with($pattern, '*') && str_starts_with($this->key, rtrim($pattern, '*')))) {
+                    return $key;
+                }
+            }
+        }
+
+        return 'other';
+    }
+
     /** @return array<string, mixed> */
     public function toArray(): array
     {
@@ -58,6 +73,7 @@ class Check
             'hint' => $this->hint,
             'meta' => $this->meta,
             'order' => config('health.statuses.'.$this->status.'.order', 9),
+            'group' => $this->group(),
         ];
     }
 }

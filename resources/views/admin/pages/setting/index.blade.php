@@ -28,9 +28,19 @@
 
         <div class="lg:col-span-3">
             <div class="trezo-card bg-white dark:bg-[#0c1427] p-[20px] md:p-[25px] rounded-md">
-                <div class="trezo-card-header mb-[20px] md:mb-[25px]">
-                    <div class="trezo-card-title">
-                        <h5 class="!mb-0">{{ $groups[$group]['title'] }}</h5>
+                <div class="trezo-card-header mb-[20px] md:mb-[25px] pb-[15px] border-b border-gray-100 dark:border-[#172036]">
+                    <div class="trezo-card-title flex items-start gap-[12px]">
+                        <span class="shrink-0 w-[38px] h-[38px] rounded-[11px] bg-primary-50 dark:bg-[#15203c] text-primary-500 flex items-center justify-center">
+                            <i class="material-symbols-outlined !text-[20px]">{{ $groups[$group]['icon'] }}</i>
+                        </span>
+                        <div class="min-w-0">
+                            <h5 class="!mb-[2px]">{{ $groups[$group]['title'] }}</h5>
+                            @if (! empty($groups[$group]['description']))
+                                <span class="block text-xs text-gray-500 dark:text-gray-400 leading-[1.6]">
+                                    {{ $groups[$group]['description'] }}
+                                </span>
+                            @endif
+                        </div>
                     </div>
                 </div>
                 <div class="trezo-card-content">

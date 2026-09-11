@@ -42,6 +42,43 @@
         @endforeach
     </div>
 
+    {{-- Bu sayfa ile Yönlendirmeler sayfasının işi karışmasın diye kısa bir ayrım. --}}
+    <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
+        <div class="trezo-card-content grid grid-cols-1 lg:grid-cols-2 gap-[15px]">
+            <div class="flex items-start gap-[12px] p-[16px] rounded-md bg-primary-50 dark:bg-[#15203c]">
+                <span class="shrink-0 w-[36px] h-[36px] rounded-full bg-primary-500 text-white flex items-center justify-center">
+                    <i class="material-symbols-outlined !text-[19px]">link_off</i>
+                </span>
+                <div class="text-xs text-gray-600 dark:text-gray-300 leading-[1.7]">
+                    <strong class="block text-sm text-black dark:text-white mb-[4px]">Bu sayfa: kırık linkleri <em>bulur</em></strong>
+                    Kendi içeriklerinizin <strong>içine yazdığınız</strong> bağlantıları ve görselleri tarar.
+                    “Blog yazısındaki şu link tıklanınca hiçbir yere gitmiyor”, “bu görsel silinmiş”,
+                    “menüdeki adres artık yok” gibi sorunları <strong>ziyaretçi karşılaşmadan önce</strong> yakalar.
+                    Kaynak: sayfa/blog/hizmet içerikleri, menü öğeleri, tanıtım alanı butonu.
+                </div>
+            </div>
+
+            <div class="flex items-start gap-[12px] p-[16px] rounded-md bg-gray-50 dark:bg-[#15203c]">
+                <span class="shrink-0 w-[36px] h-[36px] rounded-full bg-gray-400 text-white flex items-center justify-center">
+                    <i class="material-symbols-outlined !text-[19px]">alt_route</i>
+                </span>
+                <div class="text-xs text-gray-600 dark:text-gray-300 leading-[1.7]">
+                    <strong class="block text-sm text-black dark:text-white mb-[4px]">
+                        <a href="{{ route('admin.redirect.index') }}" class="hover:text-primary-500 transition-all">Yönlendirmeler sayfası</a>:
+                        kırık adresleri <em>onarır</em>
+                    </strong>
+                    Orası, <strong>dışarıdan</strong> gelen (Google sonucundaki eski bir adres, başka sitenin verdiği link)
+                    ziyaretçiyi doğru sayfaya taşır. Yani burası “benim yazdığım link bozuk”, orası
+                    “ziyaretçi olmayan bir adrese geldi”.
+                    <span class="block mt-[6px] text-primary-500">
+                        İkisi birleşir: burada kendi sitemize ait kırık bir adres bulunduğunda satırdaki
+                        <strong>Yönlendir</strong> butonu, o adres için tek tuşla bir 301 yönlendirmesi oluşturur.
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md"
         data-broken-link
         data-scan-endpoint="{{ route('admin.broken-link.scan') }}">
