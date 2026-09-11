@@ -87,6 +87,24 @@ return [
                 ],
             ],
             [
+                'title' => 'Neler Yaptık',
+                'icon' => 'workspaces',
+                'children' => [
+                    [
+                        'title' => 'Projeler',
+                        'route' => 'admin.project.index',
+                        'active' => 'admin.project.*',
+                        'permission' => 'project.index',
+                    ],
+                    [
+                        'title' => 'Proje Kategorileri',
+                        'route' => 'admin.project-category.index',
+                        'active' => 'admin.project-category.*',
+                        'permission' => 'project-category.index',
+                    ],
+                ],
+            ],
+            [
                 'title' => 'Müşteri Yorumları',
                 'icon' => 'reviews',
                 'route' => 'admin.testimonial.index',

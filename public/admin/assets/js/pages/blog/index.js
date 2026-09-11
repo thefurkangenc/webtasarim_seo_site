@@ -37,8 +37,12 @@ const table = new DataTable({
     },
     sort: 'created_at',
     empty: 'Henüz yazı eklenmedi.',
-    onLoaded: (items) => views.fill(items),
-    onLoaded: () => selection.sync(),
+    // Tek kanca: aynı nesnede iki kez yazılırsa ikincisi birincisini ezer ve
+    // görüntüleme kolonu sessizce hiç dolmaz (yaşanan hata buydu).
+    onLoaded: (items) => {
+        views.fill(items);
+        selection.sync();
+    },
     row: (item) => `<tr>
         ${bulkCell(item)}
         ${cell(`<div class="flex items-center gap-[10px]">

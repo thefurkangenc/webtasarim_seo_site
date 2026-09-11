@@ -4,6 +4,7 @@ use App\Models\Blog\Blog;
 use App\Models\Hero\Hero;
 use App\Models\Menu\MenuItem;
 use App\Models\Page\Page;
+use App\Models\Project\Project;
 use App\Models\Service\Service;
 
 /*
@@ -54,6 +55,7 @@ return [
         Page::class => 'Sayfa',
         Blog::class => 'Blog Yazısı',
         Service::class => 'Hizmet',
+        Project::class => 'Proje (Neler Yaptık)',
         MenuItem::class => 'Menü Öğesi',
         Hero::class => 'Tanıtım Alanı',
     ],

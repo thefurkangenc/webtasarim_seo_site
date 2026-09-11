@@ -22,12 +22,17 @@ use App\Http\Controllers\Admin\Media\MediaController;
 use App\Http\Controllers\Admin\Media\MediaFolderController;
 use App\Http\Controllers\Admin\Menu\MenuController;
 use App\Http\Controllers\Admin\Page\PageController;
+use App\Http\Controllers\Admin\Notification\NotificationController;
 use App\Http\Controllers\Admin\Popup\PopupController;
+use App\Http\Controllers\Admin\Profile\ProfileController;
+use App\Http\Controllers\Admin\Project\ProjectController;
+use App\Http\Controllers\Admin\ProjectCategory\ProjectCategoryController;
 use App\Http\Controllers\Admin\Redirect\RedirectController;
 use App\Http\Controllers\Admin\Reference\ReferenceController;
 use App\Http\Controllers\Admin\Revision\RevisionController;
 use App\Http\Controllers\Admin\Role\RoleController;
 use App\Http\Controllers\Admin\Schema\SchemaController;
+use App\Http\Controllers\Admin\Search\GlobalSearchController;
 use App\Http\Controllers\Admin\SearchConsole\SearchConsoleController;
 use App\Http\Controllers\Admin\Seo\SeoHealthController;
 use App\Http\Controllers\Admin\Service\ServiceController;
@@ -57,10 +62,32 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware(['auth', 'permission_middleware'])->group(function () {
+    /*
+    | Yetki istemeyen uçlar: her oturum sahibinin erişmesi gerekenler.
+    |
+    | Profil kendi hesabıdır (controller route parametresi almaz, her zaman
+    | auth()->user() üzerinde çalışır). Global arama ve bildirimler yetki
+    | filtresini SERVİS İÇİNDE uygular — kullanıcının izni olmadığı modülün
+    | kaydı sonuçlara hiç girmez.
+    */
     Route::withoutMiddleware('permission_middleware')->group(function () {
         Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('tags/search', [TagController::class, 'search'])->name('tags.search');
+
+        Route::prefix('profile')->name('profile.')->controller(ProfileController::class)->group(function () {
+            Route::get('/', 'edit')->name('edit');
+            Route::put('/', 'update')->name('update');
+            Route::put('password', 'updatePassword')->name('password');
+        });
+
+        Route::get('search', GlobalSearchController::class)->name('search');
+
+        Route::prefix('notification')->name('notification.')->controller(NotificationController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('read', 'read')->name('read');
+            Route::post('read-all', 'readAll')->name('read-all');
+        });
     });
 
     Route::prefix('setting')->name('setting.')->controller(SettingController::class)->group(function () {
@@ -406,6 +433,34 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
         Route::get('{service}/edit', 'edit')->name('edit');
         Route::put('{service}', 'update')->name('update');
         Route::delete('{service}', 'destroy')->name('destroy');
+    });
+
+    /*
+    | Neler Yaptık (projeler / vaka çalışmaları). Kategori bloğu proje
+    | bloğundan ÖNCE gelir ki 'project-category' öneki 'project/{project}'
+    | joker'ı tarafından yutulmasın.
+    */
+    Route::prefix('project-category')->name('project-category.')->controller(ProjectCategoryController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('datatable', 'datatable')->name('datatable');
+        Route::get('form/{category?}', 'form')->name('form');
+        Route::post('/', 'store')->name('store');
+        // 'reorder' sabit segmenti {category} joker'ından ÖNCE tanımlanmalı.
+        Route::put('reorder', 'reorder')->name('reorder');
+        Route::put('{category}', 'update')->name('update');
+        Route::delete('{category}', 'destroy')->name('destroy');
+    });
+
+    Route::prefix('project')->name('project.')->controller(ProjectController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('datatable', 'datatable')->name('datatable');
+        Route::get('create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+        // 'reorder' sabit segmenti {project} joker'ından ÖNCE tanımlanmalı.
+        Route::put('reorder', 'reorder')->name('reorder');
+        Route::get('{project}/edit', 'edit')->name('edit');
+        Route::put('{project}', 'update')->name('update');
+        Route::delete('{project}', 'destroy')->name('destroy');
     });
 
     // Tekil kayıt modülü: liste, ekleme ve silme yok — tek form.

@@ -91,14 +91,18 @@ const table = new DataTable({
     direction: 'asc',
     perPage: 20,
     empty: 'Henüz sayfa eklenmedi.',
-    onLoaded: (items) => views.fill(items),
     reorder: {
         button: reorderButton,
         endpoint: '/admin/page/reorder',
         // Sıra seviye içinde tekil; yalnızca seviye filtresi taşınır.
         withFilters: ['parent_id'],
     },
-    onLoaded: () => selection.sync(),
+    // Tek kanca: aynı nesnede iki kez yazılırsa ikincisi birincisini ezer ve
+    // görüntüleme kolonu sessizce hiç dolmaz (yaşanan hata buydu).
+    onLoaded: (items) => {
+        views.fill(items);
+        selection.sync();
+    },
     row: (item) => `<tr data-id="${item.id}">
         ${bulkCell(item)}
         ${reorderHandle()}

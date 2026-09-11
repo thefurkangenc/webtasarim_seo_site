@@ -370,8 +370,11 @@ class MediaService
             throw new DomainException("'{$extension}' uzantılı dosyalar yüklenemez.");
         }
 
-        if ($file->getSize() > config('media.max_size') * 1024) {
-            throw new DomainException('Dosya boyutu '.config('media.max_size') / 1024 .' MB sınırını aşıyor.');
+        // Video sınırı görselden ayrıdır; uzantıya özel bir değer varsa o geçer.
+        $limit = (int) (config('media.max_size_by_extension', [])[$extension] ?? config('media.max_size'));
+
+        if ($file->getSize() > $limit * 1024) {
+            throw new DomainException('Dosya boyutu '.round($limit / 1024, 1).' MB sınırını aşıyor.');
         }
     }
 

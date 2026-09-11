@@ -38,12 +38,16 @@ const table = new DataTable({
     sort: 'sort_order',
     direction: 'asc',
     empty: 'Henüz hizmet eklenmedi.',
-    onLoaded: (items) => views.fill(items),
     reorder: {
         button: document.getElementById('service-reorder'),
         endpoint: '/admin/service/reorder',
     },
-    onLoaded: () => selection.sync(),
+    // Tek kanca: aynı nesnede iki kez yazılırsa ikincisi birincisini ezer ve
+    // görüntüleme kolonu sessizce hiç dolmaz (yaşanan hata buydu).
+    onLoaded: (items) => {
+        views.fill(items);
+        selection.sync();
+    },
     row: (item) => `<tr data-id="${item.id}">
         ${bulkCell(item)}
         ${reorderHandle()}

@@ -654,6 +654,126 @@ return [
 
     /*
     |----------------------------------------------------------------------
+    | Neler Yaptık (proje / vaka çalışması) formu
+    |----------------------------------------------------------------------
+    */
+    'project' => [
+        'title' => [
+            'title' => 'Proje başlığı',
+            'body' => <<<'HTML'
+                <p>Projenin adı. Müşteri adını başlığa koymak genelde iyi fikirdir: “Akdeniz Yapı Kurumsal Web Sitesi” gibi. İnsanlar arama yaparken marka adını yazar.</p>
+                <p>Sadece “Web Sitesi” gibi genel bir başlık, onlarca projeniz olduğunda hangisinin hangisi olduğunu anlaşılmaz kılar.</p>
+                HTML,
+        ],
+        'excerpt' => [
+            'title' => 'Kısa açıklama',
+            'body' => <<<'HTML'
+                <p>Proje listesindeki kartta ve arama sonuçlarında görünen 1-2 cümle. “Ne yaptık ve ne işe yaradı” sorusunu cevaplasın.</p>
+                <p>İyi örnek: “12 şubeli inşaat firmasına bölge bazlı hizmet sayfaları kurduk; organik trafik 4 ayda ikiye katlandı.”</p>
+                HTML,
+        ],
+        'content' => [
+            'title' => 'Proje anlatımı',
+            'body' => <<<'HTML'
+                <p>Vaka çalışmasının gövdesi. En ikna edici sıra şudur:</p>
+                <ol>
+                    <li><strong>Sorun</strong> — müşteri hangi dertle geldi?</li>
+                    <li><strong>Yaptığımız</strong> — hangi adımları attık?</li>
+                    <li><strong>Sonuç</strong> — ne değişti?</li>
+                </ol>
+                <p>Ölçülebilir sonuçları ayrıca “Sonuçlar” bölümüne de yazın; orası sayfada öne çıkan rakam kutularını üretir.</p>
+                HTML,
+        ],
+        'project_category_id' => [
+            'title' => 'Kategori',
+            'body' => <<<'HTML'
+                <p>Projenin türü: “Kurumsal Web Sitesi”, “E-Ticaret”, “SEO Çalışması” gibi. Ön yüzdeki filtre bu kategorilere göre çalışır.</p>
+                <p>Kategori listesini <strong>Neler Yaptık → Proje Kategorileri</strong> ekranından yönetirsiniz.</p>
+                HTML,
+        ],
+        'services' => [
+            'title' => 'Bağlı hizmetler',
+            'body' => <<<'HTML'
+                <p>Bu projede hangi hizmetlerinizi verdiniz? Seçtiğiniz hizmetin sayfasında “bu hizmette yaptığımız işler” olarak bu proje görünebilir.</p>
+                <p>İşe yarayan tarafı şu: ziyaretçi hizmeti okuyup “peki gerçekten yapmışlar mı?” diye düşündüğü anda kanıtı önünde olur. Arama motorları için de iki sayfa birbirine bağlanmış olur.</p>
+                HTML,
+        ],
+        'client_name' => [
+            'title' => 'Müşteri / marka',
+            'body' => <<<'HTML'
+                <p>İşi yaptığınız firmanın adı. Künye kutusunda görünür.</p>
+                <p>Müşteri adının paylaşılmasını istemiyorsa boş bırakın ya da “Bir inşaat firması” gibi yazın — gizlilik sözü verdiğiniz bir işte marka adı yazmak ciddi bir sorun olur.</p>
+                HTML,
+        ],
+        'sector' => [
+            'title' => 'Sektör',
+            'body' => <<<'HTML'
+                <p>Müşterinin faaliyet alanı: “İnşaat”, “Sağlık”, “Lojistik”. Benzer sektörden gelen ziyaretçi “bizim işi biliyorlar” diye düşünür.</p>
+                HTML,
+        ],
+        'project_url' => [
+            'title' => 'Yayındaki adres',
+            'body' => <<<'HTML'
+                <p>Projenin canlı adresi. Künyede “Siteyi gör” bağlantısı olarak çıkar.</p>
+                <p><code>https://</code> ile başlayacak şekilde tam yazın. Site kapandıysa burayı boşaltın — kırık link denetimi zaten uyarır.</p>
+                HTML,
+        ],
+        'dates' => [
+            'title' => 'Proje tarihleri',
+            'body' => <<<'HTML'
+                <p>Başlangıç ve bitiş. Künyede gün değil <strong>ay ve yıl</strong> gösterilir (“Mart 2026”) — bir projede günün bilgi değeri yok.</p>
+                <p>Süre alanını ayrıca yazabilirsiniz (“6 hafta”); tarihlerden otomatik hesaplanmaz, çünkü arada bekleme/onay süreleri olabilir ve gerçek emek süresini siz bilirsiniz.</p>
+                HTML,
+        ],
+        'technologies' => [
+            'title' => 'Kullanılan teknolojiler',
+            'body' => <<<'HTML'
+                <p>Projede kullandığınız araçlar ve kapsam maddeleri: “Laravel”, “WordPress”, “SEO danışmanlığı”, “Logo tasarımı”…</p>
+                <p>Etiketlerden farkı: etiketler tüm site için ortak bir sözlüktür ve ön yüz filtresinde kullanılır; bu alan ise sadece bu projenin künyesinde görünen serbest bir listedir.</p>
+                HTML,
+        ],
+        'results' => [
+            'title' => 'Sonuçlar',
+            'body' => <<<'HTML'
+                <p>Projenin ölçülebilir çıktıları. Her satır sayfada bir rakam kutusu olur.</p>
+                <ul>
+                    <li><strong>Ölçüm</strong> — neyi ölçtünüz: “Organik trafik”</li>
+                    <li><strong>Değer</strong> — rakam: “+%140” ya da “3.2 sn”</li>
+                    <li><strong>Yön</strong> — arttı mı azaldı mı</li>
+                </ul>
+                <p>Yön “azalış” olması kötü demek değildir: “Sayfa açılma süresi · 4,1 sn → azalış” iyi bir sonuçtur. Ok yönü sadece ne olduğunu gösterir.</p>
+                <p>Elinizde rakam yoksa boş bırakın. Uydurma rakam, ilk sorulduğunda güveni tamamen bitirir.</p>
+                HTML,
+        ],
+        'video_url' => [
+            'title' => 'Video',
+            'body' => <<<'HTML'
+                <p>İki seçenek var ve ikisi birlikte kullanılmaz:</p>
+                <ul>
+                    <li><strong>Bağlantı</strong> — YouTube/Vimeo adresi. Önerilen yol: sunucunuzun bant genişliğini harcamaz, mobilde sorunsuz oynar.</li>
+                    <li><strong>Yüklenen dosya</strong> — kendi sunucunuzda duran mp4. Reklamsız ve tamamen size ait, ama büyük dosya sayfayı yavaşlatır.</li>
+                </ul>
+                <p>Sekmeyi değiştirdiğinizde diğer alan temizlenir — sayfada hangisinin oynayacağı belirsiz kalmasın diye.</p>
+                HTML,
+        ],
+        'testimonial_id' => [
+            'title' => 'Müşteri yorumu',
+            'body' => <<<'HTML'
+                <p>Bu projeye ait müşteri yorumunu bağlar; proje sayfasında o yorum görünür.</p>
+                <p>Listede göremediğiniz bir yorumu önce <strong>Müşteri Yorumları</strong> ekranından eklemeniz gerekir. Yorumun kendisi burada düzenlenmez, sadece seçilir — aynı yorum başka yerlerde de kullanılıyor olabilir.</p>
+                HTML,
+        ],
+        'is_featured' => [
+            'title' => 'Öne çıkan proje',
+            'body' => <<<'HTML'
+                <p>İşaretlenen projeler listelerin en başında görünür; ana sayfadaki seçki de önce bunlardan beslenir.</p>
+                <p>Hepsini öne çıkarırsanız hiçbiri öne çıkmaz — en güçlü 3-6 işi işaretlemek yeterli.</p>
+                HTML,
+        ],
+    ],
+
+    /*
+    |----------------------------------------------------------------------
     | Sayfa formu
     |----------------------------------------------------------------------
     */

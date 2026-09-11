@@ -25,7 +25,21 @@ return [
     */
     'quota' => 5 * 1024 * 1024 * 1024, // 5 GB
     'max_size' => 8192, // KB
-    'accepts' => ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'],
+    'accepts' => ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg', 'mp4', 'webm'],
+
+    /*
+    | Uzantı bazlı boyut sınırı (KB) — `max_size`'ı ezer. Video bir görselden
+    | kat kat büyüktür; ortak sınır ya videoyu imkansız kılar ya da görseller
+    | için fazla gevşek olur.
+    |
+    | DİKKAT: Buradaki sayı PHP'nin `upload_max_filesize` ve `post_max_size`
+    | değerlerinden büyükse istek Laravel'e hiç ulaşmaz — sunucuda o ikisi de
+    | yükseltilmelidir, yoksa kullanıcı boş bir hata görür.
+    */
+    'max_size_by_extension' => [
+        'mp4' => 65536,  // 64 MB
+        'webm' => 65536,
+    ],
 
     /*
     | Her işlenmiş görselden otomatik türetilen boyutlar.
@@ -45,6 +59,8 @@ return [
         'page.cover' => ['width' => 1920, 'height' => 600, 'label' => 'Sayfa Üst Görseli'],
         'service.icon' => ['width' => 256, 'height' => 256, 'label' => 'Hizmet İkonu'],
         'service.cover' => ['width' => 800, 'height' => 500, 'label' => 'Hizmet Kapak Görseli'],
+        'project.cover' => ['width' => 1200, 'height' => 750, 'label' => 'Proje Kapak Görseli'],
+        'project.gallery' => ['width' => 1600, 'height' => 1000, 'label' => 'Proje Galeri Görseli'],
         'social.icon' => ['width' => 256, 'height' => 256, 'label' => 'Sosyal Medya İkonu'],
         'testimonial.photo' => ['width' => 200, 'height' => 200, 'label' => 'Müşteri Yorumu Fotoğrafı'],
         'slider.image' => ['width' => 1920, 'height' => 800, 'label' => 'Slider Görseli'],

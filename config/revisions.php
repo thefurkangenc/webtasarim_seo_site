@@ -3,6 +3,7 @@
 use App\Models\Blog\Blog;
 use App\Models\Faq\Faq;
 use App\Models\Page\Page;
+use App\Models\Project\Project;
 use App\Models\Reference\Reference;
 use App\Models\Service\Service;
 use App\Models\Testimonial\Testimonial;
@@ -10,6 +11,7 @@ use App\Models\WhyChooseUs\WhyChooseUs;
 use App\Services\Blog\BlogService;
 use App\Services\Faq\FaqService;
 use App\Services\Page\PageService;
+use App\Services\Project\ProjectService;
 use App\Services\Reference\ReferenceService;
 use App\Services\Service\ServiceService;
 use App\Services\Testimonial\TestimonialService;
@@ -66,6 +68,13 @@ return [
             'service' => ServiceService::class,
             'edit_route' => 'admin.service.edit',
         ],
+        'project' => [
+            'class' => Project::class,
+            'label' => 'Neler Yaptık',
+            'icon' => 'workspaces',
+            'service' => ProjectService::class,
+            'edit_route' => 'admin.project.edit',
+        ],
         'faq' => [
             'class' => Faq::class,
             'label' => 'Sıkça Sorulan Sorular',
@@ -117,6 +126,18 @@ return [
         'is_featured' => 'Öne çıkan',
         'parent_id' => 'Üst sayfa',
         'blog_category_id' => 'Kategori',
+        'project_category_id' => 'Kategori',
+        'testimonial_id' => 'Müşteri yorumu',
+        'client_name' => 'Müşteri',
+        'sector' => 'Sektör',
+        'project_url' => 'Yayındaki adres',
+        'started_at' => 'Başlangıç tarihi',
+        'completed_at' => 'Bitiş tarihi',
+        'duration' => 'Süre',
+        'technologies' => 'Kullanılan teknolojiler',
+        'results' => 'Sonuçlar',
+        'video_url' => 'Video adresi',
+        'services' => 'Bağlı hizmetler',
         'user_id' => 'Yazar',
         'rating' => 'Puan',
         'url' => 'Adres',
@@ -138,6 +159,7 @@ return [
         'media.logo' => 'Logo',
         'media.photo' => 'Fotoğraf',
         'media.gallery' => 'Galeri',
+        'media.video' => 'Video dosyası',
     ],
 
     // Karşılaştırmada uzun metinler bu uzunlukta kırpılır.

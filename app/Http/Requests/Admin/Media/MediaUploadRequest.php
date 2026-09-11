@@ -19,11 +19,25 @@ class MediaUploadRequest extends FormRequest
         }
     }
 
+    /**
+     * Buradaki üst sınır yalnızca kaba bir elektir: gerçek sınır uzantıya göre
+     * değişir (video daha büyük olabilir) ve MediaService::guard() içinde tek
+     * yerde uygulanır. Burada en gevşek değer kullanılır, yoksa izin verilen
+     * bir video doğrulamada daha erken reddedilirdi.
+     */
+    private function sizeLimit(): int
+    {
+        return max(
+            (int) config('media.max_size'),
+            ...array_map('intval', array_values(config('media.max_size_by_extension', []))),
+        );
+    }
+
     /** @return array<string, mixed> */
     public function rules(): array
     {
         return [
-            'file' => ['required', 'file', 'max:'.config('media.max_size')],
+            'file' => ['required', 'file', 'max:'.$this->sizeLimit()],
             'folder_id' => ['nullable', 'integer', 'exists:media_folders,id'],
             'preset' => ['nullable', 'string', 'max:100'],
             'alt' => ['nullable', 'string', 'max:255'],
@@ -45,7 +59,7 @@ class MediaUploadRequest extends FormRequest
     {
         return [
             'file.required' => 'Yüklenecek dosyayı seçin.',
-            'file.max' => 'Dosya boyutu en fazla '.(config('media.max_size') / 1024).' MB olabilir.',
+            'file.max' => 'Dosya boyutu en fazla '.round($this->sizeLimit() / 1024, 1).' MB olabilir.',
             'folder_id.exists' => 'Seçilen klasör bulunamadı.',
         ];
     }

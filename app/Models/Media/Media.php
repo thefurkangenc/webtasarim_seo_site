@@ -71,6 +71,16 @@ class Media extends Model
         return str_starts_with($this->mime_type, 'image/');
     }
 
+    /**
+     * Video dosyaları işlenmeden saklanır: küçük boyut (thumb/medium) üretilmez,
+     * bu yüzden onları `<img>` içine koyan her yer önce bunu sormak zorundadır —
+     * aksi halde kırık görsel ikonu basar.
+     */
+    public function isVideo(): bool
+    {
+        return str_starts_with($this->mime_type, 'video/');
+    }
+
     /** SVG kırpılamaz ve dönüştürülemez; olduğu gibi saklanır. */
     public function isCroppable(): bool
     {
@@ -117,6 +127,7 @@ class Media extends Model
             'width' => $this->width,
             'height' => $this->height,
             'is_image' => $this->isImage(),
+            'is_video' => $this->isVideo(),
             'is_croppable' => $this->isCroppable(),
             'preset' => $this->preset,
             'can_recrop' => (bool) $this->original_path,

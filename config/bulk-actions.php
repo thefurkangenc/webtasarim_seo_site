@@ -4,6 +4,8 @@ use App\Models\Blog\Blog;
 use App\Models\BlogCategory\BlogCategory;
 use App\Models\Faq\Faq;
 use App\Models\Page\Page;
+use App\Models\Project\Project;
+use App\Models\ProjectCategory\ProjectCategory;
 use App\Models\Reference\Reference;
 use App\Models\Service\Service;
 use App\Models\Testimonial\Testimonial;
@@ -11,6 +13,7 @@ use App\Models\WhyChooseUs\WhyChooseUs;
 use App\Services\Blog\BlogService;
 use App\Services\Faq\FaqService;
 use App\Services\Page\PageService;
+use App\Services\Project\ProjectService;
 use App\Services\Reference\ReferenceService;
 use App\Services\Service\ServiceService;
 use App\Services\Testimonial\TestimonialService;
@@ -124,6 +127,60 @@ return [
                     'icon' => 'drafts',
                     'type' => 'update',
                     'values' => ['status' => Service::STATUS_DRAFT],
+                ],
+                'delete' => [
+                    'label' => 'Sil',
+                    'icon' => 'delete',
+                    'type' => 'delete',
+                    'danger' => true,
+                ],
+            ],
+        ],
+
+        'project' => [
+            'model' => Project::class,
+            'service' => ProjectService::class,
+            'noun' => 'proje',
+            'actions' => [
+                'publish' => [
+                    'label' => 'Yayınla',
+                    'icon' => 'publish',
+                    'type' => 'update',
+                    'values' => ['status' => Project::STATUS_PUBLISHED],
+                ],
+                'draft' => [
+                    'label' => 'Taslağa al',
+                    'icon' => 'drafts',
+                    'type' => 'update',
+                    'values' => ['status' => Project::STATUS_DRAFT],
+                ],
+                'feature' => [
+                    'label' => 'Öne çıkar',
+                    'icon' => 'star',
+                    'type' => 'update',
+                    'values' => ['is_featured' => true],
+                ],
+                'unfeature' => [
+                    'label' => 'Öne çıkarmayı kaldır',
+                    'icon' => 'star_border',
+                    'type' => 'update',
+                    'values' => ['is_featured' => false],
+                ],
+                'category' => [
+                    'label' => 'Kategori ata',
+                    'icon' => 'category',
+                    'type' => 'update',
+                    'field' => 'project_category_id',
+                    'input' => 'select',
+                    'placeholder' => 'Kategori seçin',
+                    'options_from' => [ProjectCategory::class, 'name'],
+                ],
+                'tags' => [
+                    'label' => 'Etiket ekle',
+                    'icon' => 'sell',
+                    'type' => 'tags',
+                    'input' => 'text',
+                    'placeholder' => 'Etiketler (virgülle)',
                 ],
                 'delete' => [
                     'label' => 'Sil',

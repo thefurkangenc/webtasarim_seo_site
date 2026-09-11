@@ -7,6 +7,7 @@ use App\Models\Concerns\LogsActivity;
 use App\Models\Hero\Hero;
 use App\Models\Menu\MenuItem;
 use App\Models\Page\Page;
+use App\Models\Project\Project;
 use App\Models\Service\Service;
 use App\Support\UrlPath;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -35,6 +36,7 @@ class BrokenLink extends Model
         Page::class => 'admin.page.edit',
         Blog::class => 'admin.blog.edit',
         Service::class => 'admin.service.edit',
+        Project::class => 'admin.project.edit',
         MenuItem::class => 'admin.menu.index',
         Hero::class => 'admin.hero.index',
     ];

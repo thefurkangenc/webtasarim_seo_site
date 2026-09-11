@@ -22,6 +22,9 @@ return [
         'default' => 300,
         'page' => 250,
         'service' => 200,
+        // Vaka çalışmasının ikna gücü metin uzunluğundan çok künye, görsel ve
+        // sonuç bloklarından gelir — eşik bilinçli olarak daha düşük.
+        'project' => 200,
     ],
 
     // Bir paragraf bu kelime sayısını aşarsa "uzun paragraf".

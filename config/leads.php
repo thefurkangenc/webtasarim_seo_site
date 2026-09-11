@@ -11,11 +11,16 @@ return [
     | Durumlar. Anahtar veritabanına yazılır (İngilizce), etiket arayüzde
     | görünür. `color` panelin Tailwind paletinden bir renk ailesi.
     */
+    /*
+    | `color` Tailwind renk ailesidir (sınıf adı üretmek için), `chart` ise
+    | ApexCharts'a verilen ham hex — grafik kütüphanesi Tailwind sınıfı
+    | okuyamaz, iki gösterim bu yüzden ayrı duruyor.
+    */
     'statuses' => [
-        'new' => ['label' => 'Yeni', 'color' => 'primary', 'icon' => 'mark_email_unread'],
-        'in_progress' => ['label' => 'İşlemde', 'color' => 'warning', 'icon' => 'hourglass_top'],
-        'done' => ['label' => 'Tamamlandı', 'color' => 'success', 'icon' => 'task_alt'],
-        'spam' => ['label' => 'Spam', 'color' => 'danger', 'icon' => 'report'],
+        'new' => ['label' => 'Yeni', 'color' => 'primary', 'chart' => '#605dff', 'icon' => 'mark_email_unread'],
+        'in_progress' => ['label' => 'İşlemde', 'color' => 'warning', 'chart' => '#ffb264', 'icon' => 'hourglass_top'],
+        'done' => ['label' => 'Tamamlandı', 'color' => 'success', 'chart' => '#37d80a', 'icon' => 'task_alt'],
+        'spam' => ['label' => 'Spam', 'color' => 'danger', 'chart' => '#ee3e5d', 'icon' => 'report'],
     ],
 
     /*

@@ -41,6 +41,7 @@ return [
         'hero' => 'Tanıtım Alanı',
         'service' => 'Hizmetler',
         'service-region' => 'Hizmet Bölgeleri',
+        'project' => 'Neler Yaptık',
         'activity-log' => 'Log Kayıtları',
     ],
 
@@ -301,6 +302,24 @@ return [
         ['name' => 'service.update', 'label' => 'Hizmet - Güncelle', 'category' => 'service', 'guard_name' => 'web'],
         ['name' => 'service.destroy', 'label' => 'Hizmet - Sil', 'category' => 'service', 'guard_name' => 'web'],
         ['name' => 'service.bulk', 'label' => 'Hizmet - Toplu İşlem', 'category' => 'service', 'guard_name' => 'web'],
+
+        ['name' => 'project.index', 'label' => 'Neler Yaptık - Listele', 'category' => 'project', 'guard_name' => 'web'],
+        ['name' => 'project.datatable', 'label' => 'Neler Yaptık - Tablo', 'category' => 'project', 'guard_name' => 'web'],
+        ['name' => 'project.create', 'label' => 'Neler Yaptık - Ekle', 'category' => 'project', 'guard_name' => 'web'],
+        ['name' => 'project.store', 'label' => 'Neler Yaptık - Kaydet', 'category' => 'project', 'guard_name' => 'web'],
+        ['name' => 'project.reorder', 'label' => 'Neler Yaptık - Sırala', 'category' => 'project', 'guard_name' => 'web'],
+        ['name' => 'project.edit', 'label' => 'Neler Yaptık - Düzenle', 'category' => 'project', 'guard_name' => 'web'],
+        ['name' => 'project.update', 'label' => 'Neler Yaptık - Güncelle', 'category' => 'project', 'guard_name' => 'web'],
+        ['name' => 'project.destroy', 'label' => 'Neler Yaptık - Sil', 'category' => 'project', 'guard_name' => 'web'],
+        ['name' => 'project.bulk', 'label' => 'Neler Yaptık - Toplu İşlem', 'category' => 'project', 'guard_name' => 'web'],
+
+        ['name' => 'project-category.index', 'label' => 'Proje Kategori - Listele', 'category' => 'project', 'guard_name' => 'web'],
+        ['name' => 'project-category.datatable', 'label' => 'Proje Kategori - Tablo', 'category' => 'project', 'guard_name' => 'web'],
+        ['name' => 'project-category.form', 'label' => 'Proje Kategori - Form', 'category' => 'project', 'guard_name' => 'web'],
+        ['name' => 'project-category.store', 'label' => 'Proje Kategori - Kaydet', 'category' => 'project', 'guard_name' => 'web'],
+        ['name' => 'project-category.reorder', 'label' => 'Proje Kategori - Sırala', 'category' => 'project', 'guard_name' => 'web'],
+        ['name' => 'project-category.update', 'label' => 'Proje Kategori - Güncelle', 'category' => 'project', 'guard_name' => 'web'],
+        ['name' => 'project-category.destroy', 'label' => 'Proje Kategori - Sil', 'category' => 'project', 'guard_name' => 'web'],
 
         ['name' => 'service-region.index', 'label' => 'Hizmet Bölgesi - Listele', 'category' => 'service-region', 'guard_name' => 'web'],
         ['name' => 'service-region.datatable', 'label' => 'Hizmet Bölgesi - Tablo', 'category' => 'service-region', 'guard_name' => 'web'],

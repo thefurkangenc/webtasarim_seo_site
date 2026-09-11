@@ -1,11 +1,15 @@
 /**
- * <x-admin::form.tags> davranışı.
+ * <x-admin::form.tags> ve <x-admin::form.chips> davranışı.
  *
- * Etiketler gizli input olarak tutulur (name="tags[]"), böylece form normal
+ * Değerler gizli input olarak tutulur (name="tags[]"), böylece form normal
  * FormData ile gönderilir; ayrı bir serileştirme gerekmez.
  *
- * Enter ya da virgül etiketi ekler; boş alanda Backspace sonuncuyu siler.
- * Öneriler /admin/tags/search'ten gelir, yazarken aranır.
+ * Enter ya da virgül değeri ekler; boş alanda Backspace sonuncuyu siler.
+ *
+ * İki kip aynı sınıfla çalışır; fark yalnızca önerilerdedir:
+ *   data-tag-endpoint VAR  -> etiket kipi, yazarken /admin/tags/search'e sorar
+ *   data-tag-endpoint YOK  -> serbest liste kipi (teknolojiler gibi), öneri yok
+ * Uzunluk sınırı data-tag-max ile alan başına değiştirilebilir.
  */
 
 import { escapeHtml, http } from './http.js';
@@ -16,7 +20,8 @@ class TagInput {
     constructor(root) {
         this.root = root;
         this.name = root.dataset.tagName;
-        this.endpoint = root.dataset.tagEndpoint;
+        this.endpoint = root.dataset.tagEndpoint || null;
+        this.maxLength = Number(root.dataset.tagMax) || MAX_LENGTH;
         this.chips = root.querySelector('[data-tag-chips]');
         this.field = root.querySelector('[data-tag-field]');
         this.suggestions = root.querySelector('[data-tag-suggestions]');
@@ -54,7 +59,7 @@ class TagInput {
             this.add(this.field.value);
         });
 
-        this.suggestions.addEventListener('mousedown', (event) => {
+        this.suggestions?.addEventListener('mousedown', (event) => {
             const option = event.target.closest('[data-tag-option]');
 
             if (option) {
@@ -85,7 +90,7 @@ class TagInput {
     }
 
     add(value) {
-        const name = value.trim().replace(/\s+/g, ' ').slice(0, MAX_LENGTH);
+        const name = value.trim().replace(/\s+/g, ' ').slice(0, this.maxLength);
 
         this.field.value = '';
         this.hideSuggestions();
@@ -105,6 +110,11 @@ class TagInput {
     }
 
     scheduleSearch() {
+        // Serbest liste kipinde önerilecek bir havuz yok.
+        if (! this.endpoint) {
+            return;
+        }
+
         clearTimeout(this.searchTimer);
 
         const term = this.field.value.trim();
@@ -144,6 +154,10 @@ class TagInput {
     }
 
     hideSuggestions() {
+        if (! this.suggestions) {
+            return;
+        }
+
         this.suggestions.classList.add('hidden');
         this.suggestions.innerHTML = '';
     }

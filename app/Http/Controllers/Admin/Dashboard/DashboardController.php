@@ -4,28 +4,25 @@ namespace App\Http\Controllers\Admin\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Services\Analytics\AnalyticsService;
-use App\Services\Health\HealthService;
-use App\Services\Lead\LeadService;
-use App\Services\Seo\SeoHealthService;
+use App\Services\Dashboard\DashboardService;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function index(
-        AnalyticsService $analytics,
-        SeoHealthService $seo,
-        LeadService $leads,
-        HealthService $health,
-    ): View {
-        $leadStats = $leads->stats();
-
+    public function index(DashboardService $dashboard, AnalyticsService $analytics): View
+    {
         return view('admin.pages.dashboard.index', [
+            // GA4 ağa çıkar; sayfa onu beklemez, yalnızca bağlı mı diye sorar.
             'analyticsReady' => $analytics->configured(),
-            'seoOverview' => $seo->overview(),
-            'leadUnread' => $leadStats['unread'],
-            'leadToday' => $leadStats['today'],
-            // Yalnızca cache'teki rapor; dashboard uğruna kontrol çalıştırılmaz.
-            'healthReport' => $health->cached(),
+            'alerts' => $dashboard->alerts(),
+            'counters' => $dashboard->counters(),
+            'content' => $dashboard->content(),
+            'media' => $dashboard->media(),
+            'recentLeads' => $dashboard->recentLeads(),
+            'activity' => $dashboard->recentActivity(),
+            'seoWeakest' => $dashboard->seoWeakest(),
+            'production' => $dashboard->productionTrend(),
+            'leadStatuses' => $dashboard->leadStatuses(),
         ]);
     }
 }

@@ -8,6 +8,7 @@ use App\Models\BrokenLink\BrokenLink;
 use App\Models\Hero\Hero;
 use App\Models\Menu\MenuItem;
 use App\Models\Page\Page;
+use App\Models\Project\Project;
 use App\Models\Service\Service;
 use App\Support\Activity;
 use App\Support\Placeholder;
@@ -32,6 +33,7 @@ class BrokenLinkService
         [Page::class, 'content'],
         [Blog::class, 'content'],
         [Service::class, 'content'],
+        [Project::class, 'content'],
     ];
 
     public function __construct(

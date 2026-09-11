@@ -32,4 +32,35 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Header ve profil ekranındaki avatar. Yüklenmiş bir görsel yoksa null
+     * döner; çağıran taraf o zaman baş harflerden oluşan bir daire basar —
+     * şablondan kalan sabit "admin.png" artık kullanılmıyor.
+     */
+    public function avatarUrl(?string $conversion = 'thumb'): ?string
+    {
+        return $this->getFirstMedia('avatar')?->url($conversion);
+    }
+
+    /** Avatar yoksa gösterilecek baş harfler: "İbrahim Oğlakcı" -> "İO". */
+    public function initials(): string
+    {
+        return collect(preg_split('/\s+/u', trim($this->name)))
+            ->filter()
+            ->take(2)
+            ->map(fn (string $part) => mb_strtoupper(mb_substr($part, 0, 1)))
+            ->join('');
+    }
+
+    /**
+     * Rollerin okunabilir adı. `roles.label` doldurulmuşsa o, değilse rolün
+     * teknik adı kullanılır; birden çok rol varsa virgülle birleşir.
+     */
+    public function roleLabel(): string
+    {
+        return $this->roles
+            ->map(fn ($role) => $role->label ?: $role->name)
+            ->join(', ') ?: 'Kullanıcı';
+    }
 }
