@@ -96,6 +96,7 @@ return [
         'ai' => ['label' => 'Yapay Zeka', 'icon' => 'smart_toy'],
         'tag' => ['label' => 'Etiketler', 'icon' => 'sell'],
         'indexnow' => ['label' => 'Hızlı İndeksleme', 'icon' => 'bolt'],
+        'health' => ['label' => 'Sistem Sağlığı', 'icon' => 'monitor_heart'],
     ],
 
     /*
@@ -122,6 +123,9 @@ return [
         'notified' => ['label' => 'Bildirildi', 'icon' => 'bolt', 'color' => 'info', 'severity' => 'info'],
         'scan' => ['label' => 'Tarama', 'icon' => 'radar', 'color' => 'info', 'severity' => 'info'],
         'failed' => ['label' => 'Başarısız', 'icon' => 'error', 'color' => 'danger', 'severity' => 'warning'],
+        'job_retry' => ['label' => 'İş Yeniden Denendi', 'icon' => 'restart_alt', 'color' => 'info', 'severity' => 'notice'],
+        'job_delete' => ['label' => 'İş Kaydı Silindi', 'icon' => 'delete_sweep', 'color' => 'danger', 'severity' => 'notice'],
+        'alert' => ['label' => 'Uyarı Gönderildi', 'icon' => 'crisis_alert', 'color' => 'warning', 'severity' => 'warning'],
     ],
 
     /*

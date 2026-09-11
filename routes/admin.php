@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\BlogCategory\BlogCategoryController;
 use App\Http\Controllers\Admin\BrokenLink\BrokenLinkController;
 use App\Http\Controllers\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\Admin\Faq\FaqController;
+use App\Http\Controllers\Admin\Health\HealthController;
 use App\Http\Controllers\Admin\Hero\HeroController;
 use App\Http\Controllers\Admin\IndexNow\IndexNowController;
 use App\Http\Controllers\Admin\Integration\IntegrationController;
@@ -229,6 +230,20 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
         Route::post('scan', 'scan')->name('scan');
         Route::put('{brokenLink}/ignore', 'ignore')->name('ignore');
         Route::delete('{brokenLink}', 'destroy')->name('destroy');
+    });
+
+    /*
+    | Sistem sağlığı. Kuyruk işçisi, başarısız işler, disk, SSL, cron ve
+    | dış servis bağlantıları. 'failed' sabit segmenti {uuid} joker'ından
+    | ÖNCE tanımlanmalı — aksi halde bir iş kimliği sanılır.
+    */
+    Route::prefix('health')->name('health.')->controller(HealthController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('data', 'data')->name('data');
+        Route::post('retry-all', 'retryAll')->name('retry-all');
+        Route::post('{uuid}/retry', 'retry')->name('retry');
+        Route::delete('failed', 'flush')->name('flush');
+        Route::delete('{uuid}', 'forget')->name('forget');
     });
 
     // Schema.org doğrulama ekranı — üretilen JSON-LD'yi gösterir ve denetler.

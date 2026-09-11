@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Listeners\LogAuthenticationActivity;
+use App\Listeners\RecordQueueHeartbeat;
 use App\Models\Menu\Menu;
 use App\Models\Menu\MenuItem;
 use App\Observers\IndexNowObserver;
@@ -13,6 +14,8 @@ use App\Services\ActivityLog\ActivityLogger;
 use App\Services\Setting\SettingService;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Queue\Events\JobProcessed;
+use Illuminate\Queue\Events\Looping;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
@@ -58,6 +61,12 @@ class AppServiceProvider extends ServiceProvider
         foreach (config('indexnow.observed_models', []) as $model) {
             $model::observe(IndexNowObserver::class);
         }
+
+        /*
+        | Kuyruk işçisinin sağlık paneline bıraktığı sinyal. Looping işçi
+        | boşta dönerken de tetiklenir — iş yokken de "ayaktayım" der.
+        */
+        Event::listen([Looping::class, JobProcessed::class], RecordQueueHeartbeat::class);
 
         $this->app->booted(function () {
             $this->app->make(SettingService::class)->applyMailConfig();

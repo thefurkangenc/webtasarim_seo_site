@@ -7,6 +7,38 @@
         <p class="text-sm text-gray-500 dark:text-gray-400">Sitenin güncel trafik özeti aşağıda.</p>
     </div>
 
+    {{-- Sistem sorunluysa en üstte uyarı; her şey yolundaysa kart hiç çıkmaz. --}}
+    @can('health.index')
+        @if ($healthReport && $healthReport['status'] !== 'ok')
+            @php
+                // Sınıf adları tam yazılı — Tailwind taraması statiktir.
+                $healthCritical = $healthReport['counts']['critical'];
+                $healthChip = $healthCritical > 0
+                    ? 'bg-danger-100 dark:bg-[#15203c] text-danger-500'
+                    : 'bg-warning-100 dark:bg-[#15203c] text-warning-600';
+            @endphp
+            <a href="{{ route('admin.health.index') }}"
+                class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md flex items-center gap-[16px] flex-wrap border {{ $healthCritical > 0 ? 'border-danger-500' : 'border-warning-500' }}">
+                <span class="shrink-0 w-[46px] h-[46px] rounded-full flex items-center justify-center {{ $healthChip }}">
+                    <i class="material-symbols-outlined !text-[24px]">{{ $healthCritical > 0 ? 'error' : 'warning' }}</i>
+                </span>
+                <div class="flex-1 min-w-[180px]">
+                    <h6 class="!mb-[2px] text-black dark:text-white">
+                        @if ($healthCritical > 0)
+                            Sistemde {{ $healthCritical }} kritik sorun var
+                        @else
+                            Sistemde {{ $healthReport['counts']['warning'] }} uyarı var
+                        @endif
+                    </h6>
+                    <span class="block text-xs text-gray-500 dark:text-gray-400">
+                        {{ collect($healthReport['checks'])->whereIn('status', ['critical', 'warning'])->pluck('label')->join(', ') }}
+                    </span>
+                </div>
+                <i class="material-symbols-outlined text-gray-400">chevron_right</i>
+            </a>
+        @endif
+    @endcan
+
     @can('analytics.data')
         @if ($analyticsReady)
             <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md"

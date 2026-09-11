@@ -43,6 +43,7 @@
                                 <span class="title leading-none">
                                     {{ $item['title'] }}
                                 </span>
+                                @include('admin.layout.partials.menu-badge', ['badge' => $item['badge'] ?? null])
                             </a>
                         @else
                             <button type="button"
@@ -54,6 +55,7 @@
                                 <span class="title leading-none">
                                     {{ $item['title'] }}
                                 </span>
+                                @include('admin.layout.partials.menu-badge', ['badge' => $item['badge'] ?? null])
                             </button>
                             <div class="accordion-collapse @unless ($active) hidden @endunless"
                                 @if ($active) style="display: block;" @endif>

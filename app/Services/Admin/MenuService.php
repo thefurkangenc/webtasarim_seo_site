@@ -2,6 +2,7 @@
 
 namespace App\Services\Admin;
 
+use App\Contracts\ProvidesMenuBadge;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -71,9 +72,27 @@ class MenuService
                 }
             }
 
+            if (isset($item['badge'])) {
+                $item['badge'] = $this->badge($item['badge']);
+            }
+
             $allowed[] = $item;
         }
 
         return $allowed;
+    }
+
+    /**
+     * Öğedeki `badge` bir sınıf adıdır (config cache'lenebilsin diye closure
+     * değil). Sınıf ProvidesMenuBadge uygular ve rozet yoksa null döner.
+     *
+     * @param  class-string  $provider
+     * @return array{count: int, status: string}|null
+     */
+    private function badge(string $provider): ?array
+    {
+        $instance = app($provider);
+
+        return $instance instanceof ProvidesMenuBadge ? $instance->menuBadge() : null;
     }
 }

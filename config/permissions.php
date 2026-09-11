@@ -21,6 +21,7 @@ return [
         'menu' => 'Menüler',
         'redirect' => 'Yönlendirmeler',
         'broken-link' => 'Kırık Linkler',
+        'health' => 'Sistem Sağlığı',
         'lead' => 'Gelen Talepler',
         'schema' => 'Schema.org',
         'analytics' => 'Analitik (GA4)',
@@ -158,6 +159,13 @@ return [
         ['name' => 'broken-link.scan', 'label' => 'Kırık Link - Tarama Başlat', 'category' => 'broken-link', 'guard_name' => 'web'],
         ['name' => 'broken-link.ignore', 'label' => 'Kırık Link - Yok Say', 'category' => 'broken-link', 'guard_name' => 'web'],
         ['name' => 'broken-link.destroy', 'label' => 'Kırık Link - Sil', 'category' => 'broken-link', 'guard_name' => 'web'],
+
+        ['name' => 'health.index', 'label' => 'Sistem Sağlığı - Panel', 'category' => 'health', 'guard_name' => 'web'],
+        ['name' => 'health.data', 'label' => 'Sistem Sağlığı - Rapor / Yeniden Tara', 'category' => 'health', 'guard_name' => 'web'],
+        ['name' => 'health.retry', 'label' => 'Sistem Sağlığı - Başarısız İşi Yeniden Dene', 'category' => 'health', 'guard_name' => 'web'],
+        ['name' => 'health.retry-all', 'label' => 'Sistem Sağlığı - Tümünü Yeniden Dene', 'category' => 'health', 'guard_name' => 'web'],
+        ['name' => 'health.forget', 'label' => 'Sistem Sağlığı - Başarısız İş Kaydını Sil', 'category' => 'health', 'guard_name' => 'web'],
+        ['name' => 'health.flush', 'label' => 'Sistem Sağlığı - Başarısız İş Listesini Temizle', 'category' => 'health', 'guard_name' => 'web'],
 
         ['name' => 'schema.index', 'label' => 'Schema.org - Doğrulama Ekranı', 'category' => 'schema', 'guard_name' => 'web'],
         ['name' => 'schema.preview', 'label' => 'Schema.org - Önizle / Denetle', 'category' => 'schema', 'guard_name' => 'web'],

@@ -44,7 +44,7 @@
                 <div class="col-lg-6">
                     <div class="heading2 ml-30 md:ml-0 sm:ml-0 md:mt-30 sm:mt-30">
                         <span class="sub-title" data-aos="zoom-in-left" data-aos-duration="900"><img
-                                src="assets/img/icons/span3.svg" alt=""> ABOUT US </span>
+                                src="assets/img/icons/span3.svg" alt=""> Hakkımızda </span>
                         <h2 class="text-anime-style-3">{{ $aboutTitle ?: 'Dijitalde İz Bırakan Çözümler Üretiyoruz' }}</h2>
                         @if (filled($aboutContent))
                             <div class="mt-16" data-aos="fade-left" data-aos-duration="700">{!! $aboutContent !!}</div>
@@ -54,7 +54,7 @@
                                 Modern, hızlı ve etkili çözümlerle markanızı bir adım öne taşıyoruz.</p>
                         @endif
                         <div class="button mt-30" data-aos="fade-left" data-aos-duration="1000">
-                            <a class="theme-btn3" href="contact.html">Contact Us <span class="arrow1"><i
+                            <a class="theme-btn3" href="contact.html">İletişime Geç <span class="arrow1"><i
                                         class="fa-solid fa-arrow-right"></i></span><span class="arrow2"><i
                                         class="fa-solid fa-arrow-right"></i></span></a>
                         </div>

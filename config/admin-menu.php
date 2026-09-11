@@ -1,5 +1,7 @@
 <?php
 
+use App\Services\Health\HealthService;
+
 /*
 | Admin sidebar menüsü. sidebar.blade.php bu dosyadan üretilir, elle düzenlenmez.
 |
@@ -209,6 +211,15 @@ return [
                 'route' => 'admin.setting.index',
                 'active' => 'admin.setting.*',
                 'permission' => 'setting.index',
+            ],
+            [
+                'title' => 'Sistem Sağlığı',
+                'icon' => 'monitor_heart',
+                'route' => 'admin.health.index',
+                'active' => 'admin.health.*',
+                'permission' => 'health.index',
+                // Kritik/uyarı sayısını rozet olarak basar (cache'ten okur).
+                'badge' => HealthService::class,
             ],
             [
                 'title' => 'Log Kayıtları',

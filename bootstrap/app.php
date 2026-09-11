@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\EnsureSiteIsLive;
 use App\Http\Middleware\PermissionMiddleware as MiddlewarePermissionMiddleware;
+use App\Services\Health\SystemHealth;
 use App\Services\Redirect\NotFoundLogger;
 use App\Services\Redirect\RedirectResolver;
 use App\Support\Activity;
@@ -12,6 +13,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 use Spatie\Permission\Middleware\PermissionMiddleware;
@@ -43,6 +45,21 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->command('sitemap:generate')->dailyAt('04:00');
         // Kırık link taraması: dış adresleri tek tek dener, haftada bir yeter.
         $schedule->command('broken-links:scan')->weeklyOn(1, '05:00');
+
+        /*
+        | Sistem sağlığı. Rapor cache'te durur; sidebar rozeti ve dashboard
+        | kartı yalnızca onu okur, bu yüzden düzenli tazelenmesi gerekir.
+        */
+        $schedule->command('health:check')->hourly();
+        $schedule->command('health:check --notify')->dailyAt(config('health.notify.time', '08:30'));
+
+        /*
+        | "Cron en son ne zaman çalıştı" sorusunun cevabı. Cron durursa bu
+        | sinyal de durur ve sağlık paneli bunu kritik olarak gösterir.
+        */
+        $schedule->call(fn () => Cache::forever(SystemHealth::CRON_KEY, now()->toIso8601String()))
+            ->everyMinute()
+            ->name('health-cron-heartbeat');
     })
     ->withMiddleware(function (Middleware $middleware): void {
         // auth middleware'i misafirleri admin girişine yollar.
