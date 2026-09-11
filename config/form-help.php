@@ -455,6 +455,52 @@ return [
 
     /*
     |----------------------------------------------------------------------
+    | Gelen talepler
+    |----------------------------------------------------------------------
+    */
+    'lead' => [
+
+        'status' => [
+            'title' => 'Durum',
+            'body' => <<<'HTML'
+                <p>Talebin hangi aşamada olduğunu gösterir. Ekipteki herkes aynı listeye baktığı için bu alan “bu mesajla kim ne yaptı” sorusunun cevabıdır.</p>
+                <ul>
+                    <li><strong>Yeni</strong> — henüz kimse ilgilenmedi.</li>
+                    <li><strong>İşlemde</strong> — biri ilgileniyor, süreç devam ediyor. Panelden e-posta yanıtı gönderdiğinizde durum kendiliğinden buraya geçer.</li>
+                    <li><strong>Tamamlandı</strong> — iş kapandı, yapılacak bir şey kalmadı.</li>
+                    <li><strong>Spam</strong> — istenmeyen/otomatik mesaj. Silmek yerine bunu seçmek daha iyidir: kayıt durur, listeyi kirletmez.</li>
+                </ul>
+                HTML,
+        ],
+
+        'assigned_to' => [
+            'title' => 'İlgilenen kişi',
+            'body' => <<<'HTML'
+                <p>Talebi kimin takip ettiğini belirtir. Birden fazla kişi panele giriyorsa aynı mesaja iki kişinin ayrı ayrı yanıt vermesini engeller.</p>
+                <p>Listede panele girişi olan kullanıcılar görünür. Kimseyi seçmek zorunda değilsiniz; boş bıraktığınızda talep “atanmamış” olarak listelenir ve üstteki filtreden bunları tek tuşla görebilirsiniz.</p>
+                HTML,
+        ],
+
+        'note' => [
+            'title' => 'İç not',
+            'body' => <<<'HTML'
+                <p>Ekip içi not alanı. <strong>Müşteriye kesinlikle gönderilmez</strong>, yalnızca panelde görünür.</p>
+                <p>Örnek kullanım: “Telefonla görüşüldü, fiyat teklifi hazırlanacak.” / “Bütçesi uygun değil, takip edilmeyecek.” Listede not içeren taleplerin yanında küçük bir not simgesi çıkar.</p>
+                HTML,
+        ],
+
+        'reply' => [
+            'title' => 'E-posta ile yanıtla',
+            'body' => <<<'HTML'
+                <p>Talebi gönderen kişiye panelden doğrudan e-posta yazmanızı sağlar — e-posta programınızı açmanız gerekmez. Yanıtın altına kişinin size gönderdiği mesaj da eklenir, böylece neyi yanıtladığınız karşı tarafta da belli olur.</p>
+                <p>Yanıt, <strong>Ayarlar → Posta</strong> bölümünde tanımladığınız gönderici hesap üzerinden gider. Orada bir SMTP bilgisi girilmemişse e-posta gönderilemez ve uyarı alırsınız.</p>
+                <p>Gönderim sonrası talep “yanıtlandı” olarak işaretlenir, durumu “Yeni” ise “İşlemde”ye geçer ve işlem log kayıtlarına yazılır. Yanıt metni panelde saklanmaz — kaydını tutmak isterseniz iç nota kısa bir özet yazın.</p>
+                HTML,
+        ],
+    ],
+
+    /*
+    |----------------------------------------------------------------------
     | Hızlı İndeksleme (IndexNow)
     |----------------------------------------------------------------------
     */

@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\Faq\FaqController;
 use App\Http\Controllers\Admin\Hero\HeroController;
 use App\Http\Controllers\Admin\IndexNow\IndexNowController;
 use App\Http\Controllers\Admin\Integration\IntegrationController;
+use App\Http\Controllers\Admin\Lead\LeadController;
 use App\Http\Controllers\Admin\Media\MediaController;
 use App\Http\Controllers\Admin\Media\MediaFolderController;
 use App\Http\Controllers\Admin\Menu\MenuController;
@@ -253,6 +254,25 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
         Route::post('sitemaps', 'submit')->name('submit');
         Route::post('inspect', 'inspect')->name('inspect');
         Route::post('test', 'test')->name('test');
+    });
+
+    /*
+    | Gelen talepler — iletişim formundan (ileride açılır pencere/teklif
+    | formlarından) düşen mesajların gelen kutusu.
+    */
+    Route::prefix('lead')->name('lead.')->controller(LeadController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('datatable', 'datatable')->name('datatable');
+        Route::get('stats', 'stats')->name('stats');
+        Route::get('export', 'export')->name('export');
+        // Sabit segmentler {lead} joker'ından ÖNCE tanımlanır.
+        Route::post('bulk', 'bulk')->name('bulk');
+        Route::post('{lead}/restore', 'restore')->name('restore');
+        Route::get('{lead}', 'show')->name('show');
+        Route::put('{lead}', 'update')->name('update');
+        Route::post('{lead}/reply', 'reply')->name('reply');
+        Route::post('{lead}/read', 'toggleRead')->name('read');
+        Route::delete('{lead}', 'destroy')->name('destroy');
     });
 
     /*

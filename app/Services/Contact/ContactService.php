@@ -4,7 +4,7 @@ namespace App\Services\Contact;
 
 use App\Mail\Contact\ContactAutoReply;
 use App\Mail\Contact\ContactNotification;
-use App\Models\Contact\ContactSubmission;
+use App\Models\Lead\Lead;
 use App\Support\Phone;
 use App\Support\Settings;
 use DomainException;
@@ -47,7 +47,7 @@ class ContactService
     /**
      * @param  array<string, mixed>  $data
      */
-    public function submit(array $data, ?string $ip, ?string $userAgent): string
+    public function submit(array $data, ?string $ip, ?string $userAgent, ?string $pageUrl = null): string
     {
         if (! Settings::bool('contact.enabled', true)) {
             throw new DomainException('İletişim formu şu anda kapalıdır.');
@@ -57,13 +57,15 @@ class ContactService
             return $this->successMessage();
         }
 
-        $submission = ContactSubmission::query()->create([
+        $submission = Lead::query()->create([
+            'source' => 'contact',
             'name' => $data['name'],
             'email' => $data['email'],
             'phone' => $data['phone'] ?? null,
             'message' => $data['message'],
             'ip_address' => $ip,
             'user_agent' => $userAgent !== null ? mb_substr($userAgent, 0, 512) : null,
+            'page_url' => $pageUrl !== null ? mb_substr($pageUrl, 0, 500) : null,
         ]);
 
         $this->deliver($submission);
@@ -76,7 +78,7 @@ class ContactService
         return (string) (Settings::merged('contact')['success_message'] ?: 'Mesajınız alındı.');
     }
 
-    private function deliver(ContactSubmission $submission): void
+    private function deliver(Lead $submission): void
     {
         $contact = Settings::merged('contact');
         $to = filled($contact['to_email'] ?? null)
@@ -124,7 +126,7 @@ class ContactService
         }
     }
 
-    private function interpolate(string $template, ContactSubmission $submission): string
+    private function interpolate(string $template, Lead $submission): string
     {
         return strtr($template, [
             '{name}' => $submission->name,

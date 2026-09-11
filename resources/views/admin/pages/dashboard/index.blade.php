@@ -49,6 +49,29 @@
         @endif
     @endcan
 
+    @can('lead.index')
+        {{-- Okunmamış talep varsa göze çarpan bir uyarı; yoksa sade bir özet. --}}
+        <a href="{{ route('admin.lead.index') }}"
+            class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md flex items-center gap-[16px] flex-wrap transition-all border {{ $leadUnread > 0 ? 'border-primary-500' : 'border-transparent hover:border-primary-500' }}">
+            <span class="shrink-0 w-[46px] h-[46px] rounded-full flex items-center justify-center {{ $leadUnread > 0 ? 'bg-primary-500 text-white' : 'bg-gray-100 dark:bg-[#15203c] text-gray-500 dark:text-gray-400' }}">
+                <i class="material-symbols-outlined !text-[24px]">{{ $leadUnread > 0 ? 'mark_email_unread' : 'inbox' }}</i>
+            </span>
+            <div class="flex-1 min-w-[180px]">
+                <h6 class="!mb-[2px] text-black dark:text-white">
+                    @if ($leadUnread > 0)
+                        {{ $leadUnread }} okunmamış talep
+                    @else
+                        Gelen talepler
+                    @endif
+                </h6>
+                <span class="block text-xs text-gray-500 dark:text-gray-400">
+                    Bugün {{ $leadToday }} yeni mesaj · siteden gelen tüm talepler burada
+                </span>
+            </div>
+            <i class="material-symbols-outlined text-gray-400">chevron_right</i>
+        </a>
+    @endcan
+
     @can('seo.index')
         @php
             $seoAvg = $seoOverview['average'] ?? 0;

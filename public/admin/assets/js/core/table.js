@@ -232,7 +232,12 @@ export class DataTable {
         const params = { ...this.state };
 
         Object.entries(this.filters).forEach(([name, element]) => {
-            params[name] = element.value;
+            // Checkbox'ta `.value` işaretli olmasa bile "on" döner; ham haliyle
+            // gönderilirse filtre hep açıkmış gibi davranır ve sunucu tarafı
+            // doğrulaması ("0/1 olmalı") patlar. İşaretsiz = boş, yani gönderilmez.
+            params[name] = element.type === 'checkbox'
+                ? (element.checked ? (element.value === 'on' ? '1' : element.value) : '')
+                : element.value;
         });
 
         return params;

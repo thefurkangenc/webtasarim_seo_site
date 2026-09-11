@@ -30,6 +30,8 @@ class ContactController extends Controller
             $request->validated(),
             $request->ip(),
             $request->userAgent(),
+            // Hangi sayfadan gönderildiği — panelde talebin bağlamını gösterir.
+            $request->headers->get('referer'),
         ));
     }
 }

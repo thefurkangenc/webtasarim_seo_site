@@ -2,7 +2,7 @@
 
 namespace App\Mail\Contact;
 
-use App\Models\Contact\ContactSubmission;
+use App\Models\Lead\Lead;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
@@ -11,7 +11,7 @@ use Illuminate\Mail\Mailables\Envelope;
 class ContactNotification extends Mailable
 {
     public function __construct(
-        public ContactSubmission $submission,
+        public Lead $submission,
         public string $subjectLine,
     ) {}
 

@@ -28,6 +28,13 @@ return [
                 'route' => 'admin.dashboard',
             ],
             [
+                'title' => 'Gelen Talepler',
+                'icon' => 'inbox',
+                'route' => 'admin.lead.index',
+                'active' => 'admin.lead.*',
+                'permission' => 'lead.index',
+            ],
+            [
                 'title' => 'Tanıtım Alanı',
                 'icon' => 'wallpaper',
                 'route' => 'admin.hero.index',

@@ -20,8 +20,6 @@ Route::get('/hakkimizda', [AboutController::class, 'index'])->name('hakkimizda')
 
 Route::get('/hizmetler', [ServiceController::class, 'index'])->name('hizmetler');
 
-// Bölgesiz (şemsiye) sayfa ve bölgeli sayfa segment sayısı farklı olduğu
-// için çakışmaz — Laravel URI'yi segment sayısına göre eşleştirir.
 Route::get('/hizmetler/{slug}', [ServiceController::class, 'show'])->name('hizmetler.show');
 Route::get('/hizmetler/{slug}/{region}', [ServiceController::class, 'showForRegion'])->name('hizmetler.show-region');
 
@@ -52,14 +50,6 @@ Route::get('/sitemap-{name}.xml', [SitemapController::class, 'file'])
 
 Route::get('/robots.txt', [RobotsController::class, 'index'])->name('robots');
 
-// IndexNow anahtar dosyası — protokol bunu sitenin kökünde bekler.
 Route::get('/{key}.txt', [IndexNowController::class, 'key'])
     ->where('key', '[A-Za-z0-9-]{8,128}')
     ->name('indexnow.key');
-
-/*
-| Panelden yönetilen dinamik sayfaların catch-all route'u bu dosyada DEĞİL,
-| `routes/pages.php` içindedir — tüm uygulamada en son kaydolması gerekiyor ve
-| bu dosya `bootstrap/app.php` içinde admin route'larından önce yükleniyor.
-| Ayrıntı orada.
-*/
