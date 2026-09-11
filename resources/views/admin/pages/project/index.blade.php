@@ -43,14 +43,35 @@
     </div>
 
     <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
-        <div class="trezo-card-header mb-[20px] md:mb-[25px] sm:flex sm:items-center sm:justify-between">
-            <div class="trezo-card-title">
-                <h5 class="!mb-0">Projeler</h5>
-                <span class="text-xs text-gray-500 dark:text-gray-400">
-                    Sıralama, ön yüzdeki görünme sırasıdır — öne çıkanlar her zaman önce gelir.
-                </span>
+        <div class="trezo-card-header mb-[20px] md:mb-[25px]">
+            <div class="sm:flex sm:items-start sm:justify-between gap-[15px]">
+                <div class="trezo-card-title">
+                    <h5 class="!mb-0">Projeler</h5>
+                    <span class="text-xs text-gray-500 dark:text-gray-400">
+                        Sıralama, ön yüzdeki görünme sırasıdır — öne çıkanlar her zaman önce gelir.
+                    </span>
+                </div>
+                <div class="trezo-card-subtitle mt-[15px] sm:mt-0 flex items-center gap-[10px] flex-wrap shrink-0">
+                    @can('project.reorder')
+                        <button type="button" id="project-reorder"
+                            class="inline-flex items-center gap-[6px] py-[9px] px-[18px] text-black dark:text-white transition-all rounded-md border border-gray-200 dark:border-[#172036] hover:bg-gray-50 dark:hover:bg-[#15203c]">
+                            <i class="material-symbols-outlined !text-[19px]">drag_indicator</i>
+                            Sıralama Modu
+                        </button>
+                    @endcan
+
+                    <x-admin::activity-log-button module="project" />
+                    @can('project.create')
+                        <a href="{{ route('admin.project.create') }}"
+                            class="inline-flex items-center gap-[6px] py-[9px] px-[20px] bg-primary-500 text-white transition-all hover:bg-primary-400 rounded-md border border-primary-500 hover:border-primary-400">
+                            <i class="material-symbols-outlined !text-[19px]">add</i>
+                            Yeni Proje
+                        </a>
+                    @endcan
+                </div>
             </div>
-            <div class="trezo-card-subtitle mt-[15px] sm:mt-0 flex items-center gap-[10px] flex-wrap">
+
+            <div class="flex items-center gap-[10px] flex-wrap mt-[15px] md:mt-[20px]">
                 <div class="relative grow max-w-[240px]">
                     <input type="text" id="project-search" placeholder="Proje, müşteri, sektör ara..."
                         class="bg-gray-50 border border-gray-50 h-[40px] rounded-md w-full block text-black ltr:pl-[13px] rtl:pr-[13px] ltr:pr-[38px] rtl:pl-[38px] placeholder:text-gray-500 outline-0 dark:bg-[#15203c] dark:text-white dark:border-[#15203c] dark:placeholder:text-gray-400">
@@ -78,23 +99,6 @@
                         class="w-[15px] h-[15px] align-middle cursor-pointer accent-primary-500">
                     Sadece öne çıkanlar
                 </label>
-
-                @can('project.reorder')
-                    <button type="button" id="project-reorder"
-                        class="inline-flex items-center gap-[6px] py-[9px] px-[18px] text-black dark:text-white transition-all rounded-md border border-gray-200 dark:border-[#172036] hover:bg-gray-50 dark:hover:bg-[#15203c]">
-                        <i class="material-symbols-outlined !text-[19px]">drag_indicator</i>
-                        Sıralama Modu
-                    </button>
-                @endcan
-
-                <x-admin::activity-log-button module="project" />
-                @can('project.create')
-                    <a href="{{ route('admin.project.create') }}"
-                        class="inline-flex items-center gap-[6px] py-[9px] px-[20px] bg-primary-500 text-white transition-all hover:bg-primary-400 rounded-md border border-primary-500 hover:border-primary-400">
-                        <i class="material-symbols-outlined !text-[19px]">add</i>
-                        Yeni Proje
-                    </a>
-                @endcan
             </div>
         </div>
 
