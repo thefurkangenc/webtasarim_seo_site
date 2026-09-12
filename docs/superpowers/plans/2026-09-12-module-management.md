@@ -372,12 +372,12 @@ class ModuleRegistry
 {
     public function isActive(string $key): bool
     {
-        return $this->state()->get($key)['is_active'] ?? true;
+        return $this->state()[$key]['is_active'] ?? true;
     }
 
     public function label(string $key): string
     {
-        $name = $this->state()->get($key)['name'] ?? null;
+        $name = $this->state()[$key]['name'] ?? null;
 
         return filled($name) ? $name : config("modules.definitions.{$key}.label", $key);
     }
@@ -392,8 +392,8 @@ class ModuleRegistry
             'label' => $definition['label'],
             'icon' => $definition['icon'],
             'description' => $definition['description'],
-            'name' => $state->get($key)['name'] ?? null,
-            'is_active' => $state->get($key)['is_active'] ?? true,
+            'name' => $state[$key]['name'] ?? null,
+            'is_active' => $state[$key]['is_active'] ?? true,
         ]);
     }
 
@@ -402,14 +402,25 @@ class ModuleRegistry
         Cache::forget('modules.state');
     }
 
-    /** @return Collection<string, array{name: ?string, is_active: bool}> */
-    private function state(): Collection
+    /**
+     * DİKKAT: Collection değil düz array döner ve cache'lenir. Bu projenin
+     * database cache sürücüsü `serialize` config'i varsayılan `false`
+     * olduğu için DatabaseStore::unserialize() her nesneyi
+     * `allowed_classes => false` ile açar — cache'lenen HER Collection/obje
+     * okunduğunda sessizce `__PHP_Incomplete_Class`'a döner (TypeError'a
+     * kadar gider). Aynı kısıt yüzünden SettingService::getGroup() de
+     * `->all()` ile düz array döndürüyor — aynı kurala uyulur.
+     *
+     * @return array<string, array{name: ?string, is_active: bool}>
+     */
+    private function state(): array
     {
         return Cache::rememberForever('modules.state', fn () => Module::query()
             ->get(['key', 'name', 'is_active'])
             ->mapWithKeys(fn (Module $module) => [
                 $module->key => ['name' => $module->name, 'is_active' => $module->is_active],
-            ]));
+            ])
+            ->all());
     }
 }
 ```
@@ -434,39 +445,54 @@ class MediaPresetRegistry
 {
     public function get(string $key): ?array
     {
-        return $this->all()->get($key);
+        return $this->state()[$key] ?? null;
     }
 
     /** @return Collection<string, array{width: int, height: int, label: string}> */
     public function all(): Collection
     {
-        return Cache::rememberForever('media.presets', function () {
-            $rows = MediaPreset::query()->get(['key', 'width', 'height', 'label']);
-
-            if ($rows->isEmpty()) {
-                return collect(config('media.presets', []));
-            }
-
-            return $rows->mapWithKeys(fn (MediaPreset $preset) => [
-                $preset->key => ['width' => $preset->width, 'height' => $preset->height, 'label' => $preset->label],
-            ]);
-        });
+        return collect($this->state());
     }
 
     public function flush(): void
     {
         Cache::forget('media.presets');
     }
+
+    /**
+     * Database cache sürücüsü nesne cache'lemeyi reddeder (bkz.
+     * ModuleRegistry::state() yorumu) — Collection değil düz array cache'lenir.
+     *
+     * @return array<string, array{width: int, height: int, label: string}>
+     */
+    private function state(): array
+    {
+        return Cache::rememberForever('media.presets', function () {
+            $rows = MediaPreset::query()->get(['key', 'width', 'height', 'label']);
+
+            if ($rows->isEmpty()) {
+                return config('media.presets', []);
+            }
+
+            return $rows->mapWithKeys(fn (MediaPreset $preset) => [
+                $preset->key => ['width' => $preset->width, 'height' => $preset->height, 'label' => $preset->label],
+            ])->all();
+        });
+    }
 }
 ```
 
-- [ ] **Step 3: Tinker ile doğrula**
+- [ ] **Step 3: Tinker ile doğrula (ayrı satırlar halinde — aynı process içinde iki kez okuma yapıldığını kanıtlamak için)**
 
 Run:
 ```
-php artisan tinker --execute="dump(app(App\Support\ModuleRegistry::class)->isActive('blog'), app(App\Support\ModuleRegistry::class)->label('blog'), app(App\Support\MediaPresetRegistry::class)->get('blog.cover'));"
+php artisan tinker --execute="
+dump(app(App\Support\ModuleRegistry::class)->isActive('blog'));
+dump(app(App\Support\ModuleRegistry::class)->label('blog'));
+dump(app(App\Support\MediaPresetRegistry::class)->get('blog.cover'));
+"
 ```
-Expected: `true, "Blog", ['width' => 1200, 'height' => 630, 'label' => 'Blog Kapak Görseli']`
+Expected: `true`, `"Blog"`, `['width' => 1200, 'height' => 630, 'label' => 'Blog Kapak Görseli']`
 
 - [ ] **Step 4: `config/permissions.php`'ye `module` kategorisi ve izinlerini ekle**
 
