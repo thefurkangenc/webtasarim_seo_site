@@ -253,9 +253,7 @@ class MediaService
             }
         }
 
-        // Dizi erişimi bilinçli: preset anahtarları nokta içerir ('blog.cover'),
-        // config() bunu iç içe dizi sanıp bulamaz.
-        $size = $preset ? (config('media.presets', [])[$preset] ?? null) : null;
+        $size = $preset ? app(\App\Support\MediaPresetRegistry::class)->get($preset) : null;
 
         if ($size) {
             // cover, çıktının tam olarak preset boyutunda olmasını garanti eder.

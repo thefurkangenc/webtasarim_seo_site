@@ -16,9 +16,7 @@
 ])
 
 @php
-    // Preset anahtarları nokta içerir ('blog.cover'), config() nokta notasyonunu
-    // iç içe dizi sanacağı için doğrudan dizi erişimi kullanılıyor.
-    $size = $preset ? (config('media.presets', [])[$preset] ?? null) : null;
+    $size = $preset ? app(\App\Support\MediaPresetRegistry::class)->get($preset) : null;
     $accepts = collect(config('media.accepts'))->map(fn ($e) => ".{$e}")->implode(',');
     $field = \App\Support\Field::name($name);
 
