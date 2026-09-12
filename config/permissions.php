@@ -19,6 +19,7 @@ return [
         'ai' => 'Yapay Zeka',
         'page' => 'Sayfalar',
         'menu' => 'Menüler',
+        'module' => 'Modül Yönetimi',
         'redirect' => 'Yönlendirmeler',
         'broken-link' => 'Kırık Linkler',
         'revision' => 'Revizyonlar',
@@ -147,6 +148,9 @@ return [
         ['name' => 'menu.items.store', 'label' => 'Menü - Öğe Ekle', 'category' => 'menu', 'guard_name' => 'web'],
         ['name' => 'menu-item.update', 'label' => 'Menü - Öğe Güncelle', 'category' => 'menu', 'guard_name' => 'web'],
         ['name' => 'menu-item.destroy', 'label' => 'Menü - Öğe Sil', 'category' => 'menu', 'guard_name' => 'web'],
+
+        ['name' => 'module.index', 'label' => 'Modül Yönetimi - Görüntüle', 'category' => 'module', 'guard_name' => 'web'],
+        ['name' => 'module.update', 'label' => 'Modül Yönetimi - Güncelle', 'category' => 'module', 'guard_name' => 'web'],
 
         ['name' => 'redirect.index', 'label' => 'Yönlendirme - Görüntüle', 'category' => 'redirect', 'guard_name' => 'web'],
         ['name' => 'redirect.datatable', 'label' => 'Yönlendirme - Tablo', 'category' => 'redirect', 'guard_name' => 'web'],

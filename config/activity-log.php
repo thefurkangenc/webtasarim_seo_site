@@ -93,6 +93,7 @@ return [
         'user' => ['label' => 'Kullanıcılar', 'icon' => 'group'],
         'role' => ['label' => 'Roller ve İzinler', 'icon' => 'admin_panel_settings'],
         'setting' => ['label' => 'Site Ayarları', 'icon' => 'settings'],
+        'module' => ['label' => 'Modül Yönetimi', 'icon' => 'widgets'],
         'contact' => ['label' => 'İletişim Formu', 'icon' => 'inbox'],
         'lead' => ['label' => 'Gelen Talepler', 'icon' => 'forward_to_inbox'],
         'ai' => ['label' => 'Yapay Zeka', 'icon' => 'smart_toy'],
