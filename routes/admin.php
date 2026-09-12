@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\Lead\LeadController;
 use App\Http\Controllers\Admin\Media\MediaController;
 use App\Http\Controllers\Admin\Media\MediaFolderController;
 use App\Http\Controllers\Admin\Menu\MenuController;
+use App\Http\Controllers\Admin\Module\ModuleController;
 use App\Http\Controllers\Admin\Page\PageController;
 use App\Http\Controllers\Admin\Notification\NotificationController;
 use App\Http\Controllers\Admin\Popup\PopupController;
@@ -88,6 +89,11 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
             Route::post('read', 'read')->name('read');
             Route::post('read-all', 'readAll')->name('read-all');
         });
+    });
+
+    Route::prefix('module')->name('module.')->controller(ModuleController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::put('/', 'update')->name('update');
     });
 
     Route::prefix('setting')->name('setting.')->controller(SettingController::class)->group(function () {

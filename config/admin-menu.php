@@ -160,6 +160,13 @@ return [
                 'permission' => 'menu.index',
             ],
             [
+                'title' => 'Modül Yönetimi',
+                'icon' => 'widgets',
+                'route' => 'admin.module.index',
+                'active' => 'admin.module.*',
+                'permission' => 'module.index',
+            ],
+            [
                 'title' => 'Yönlendirmeler',
                 'icon' => 'alt_route',
                 'route' => 'admin.redirect.index',
