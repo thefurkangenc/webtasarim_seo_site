@@ -347,3 +347,4 @@ vendor/bin/pint              # kod formatı
 - Test yazılmayacak (proje sahibinin kararı).
 - Çok dil desteği kurulmayacak — tek dil Türkçe.
 - Modüller **talep edilmeden** kurulmayacak; teker teker, sırayla ilerlenir.
+- Yeni bir şey yaparken plan yazma sadece soruların varsa sor yoksa direkt uygulamaya başla.
