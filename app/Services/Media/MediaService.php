@@ -4,6 +4,7 @@ namespace App\Services\Media;
 
 use App\Models\Media\Media;
 use App\Support\Activity;
+use App\Support\MediaPresetRegistry;
 use DomainException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -253,7 +254,7 @@ class MediaService
             }
         }
 
-        $size = $preset ? app(\App\Support\MediaPresetRegistry::class)->get($preset) : null;
+        $size = $preset ? app(MediaPresetRegistry::class)->get($preset) : null;
 
         if ($size) {
             // cover, çıktının tam olarak preset boyutunda olmasını garanti eder.
