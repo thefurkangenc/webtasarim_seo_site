@@ -3,6 +3,7 @@
 namespace App\Services\Admin;
 
 use App\Contracts\ProvidesMenuBadge;
+use App\Support\ModuleRegistry;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -58,9 +59,14 @@ class MenuService
     private function filter(array $items): array
     {
         $allowed = [];
+        $modules = app(ModuleRegistry::class);
 
         foreach ($items as $item) {
             if (isset($item['permission']) && ! Auth::user()?->can($item['permission'])) {
+                continue;
+            }
+
+            if (isset($item['module']) && ! $modules->isActive($item['module'])) {
                 continue;
             }
 
@@ -70,6 +76,10 @@ class MenuService
                 if ($item['children'] === []) {
                     continue;
                 }
+            }
+
+            if (isset($item['module'])) {
+                $item['title'] = $modules->label($item['module']);
             }
 
             if (isset($item['badge'])) {

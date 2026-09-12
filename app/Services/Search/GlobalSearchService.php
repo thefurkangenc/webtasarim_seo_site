@@ -3,6 +3,7 @@
 namespace App\Services\Search;
 
 use App\Models\User;
+use App\Support\ModuleRegistry;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,6 +19,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class GlobalSearchService
 {
+    public function __construct(private readonly ModuleRegistry $modules) {}
+
     /**
      * @return array{term: string, total: int, groups: list<array<string, mixed>>}
      */
@@ -37,6 +40,10 @@ class GlobalSearchService
 
         foreach (config('global-search.sources', []) as $key => $source) {
             if (! $this->allows($user, $source['permission'] ?? null)) {
+                continue;
+            }
+
+            if (! $this->modules->isActive($key)) {
                 continue;
             }
 

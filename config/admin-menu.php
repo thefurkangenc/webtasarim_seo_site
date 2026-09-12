@@ -35,6 +35,7 @@ return [
                 'route' => 'admin.lead.index',
                 'active' => 'admin.lead.*',
                 'permission' => 'lead.index',
+                'module' => 'lead',
             ],
             [
                 'title' => 'Tanıtım Alanı',
@@ -42,6 +43,7 @@ return [
                 'route' => 'admin.hero.index',
                 'active' => 'admin.hero.*',
                 'permission' => 'hero.index',
+                'module' => 'hero',
             ],
             [
                 'title' => 'Sayfalar',
@@ -49,10 +51,12 @@ return [
                 'route' => 'admin.page.index',
                 'active' => 'admin.page.*',
                 'permission' => 'page.index',
+                'module' => 'page',
             ],
             [
                 'title' => 'Blog',
                 'icon' => 'article',
+                'module' => 'blog',
                 'children' => [
                     [
                         'title' => 'Yazılar',
@@ -71,6 +75,7 @@ return [
             [
                 'title' => 'Hizmetler',
                 'icon' => 'design_services',
+                'module' => 'service',
                 'children' => [
                     [
                         'title' => 'Hizmetler',
@@ -89,6 +94,7 @@ return [
             [
                 'title' => 'Neler Yaptık',
                 'icon' => 'workspaces',
+                'module' => 'project',
                 'children' => [
                     [
                         'title' => 'Projeler',
@@ -110,6 +116,7 @@ return [
                 'route' => 'admin.testimonial.index',
                 'active' => 'admin.testimonial.*',
                 'permission' => 'testimonial.index',
+                'module' => 'testimonial',
             ],
             [
                 'title' => 'Referanslar',
@@ -117,6 +124,7 @@ return [
                 'route' => 'admin.reference.index',
                 'active' => 'admin.reference.*',
                 'permission' => 'reference.index',
+                'module' => 'reference',
             ],
             [
                 'title' => 'Sıkça Sorulan Sorular',
@@ -124,6 +132,7 @@ return [
                 'route' => 'admin.faq.index',
                 'active' => 'admin.faq.*',
                 'permission' => 'faq.index',
+                'module' => 'faq',
             ],
             [
                 'title' => 'Neden Biz',
@@ -131,6 +140,7 @@ return [
                 'route' => 'admin.why-choose-us.index',
                 'active' => 'admin.why-choose-us.*',
                 'permission' => 'why-choose-us.index',
+                'module' => 'why-choose-us',
             ],
         ],
     ],
@@ -222,6 +232,7 @@ return [
                 'route' => 'admin.announcement.index',
                 'active' => 'admin.announcement.*',
                 'permission' => 'announcement.index',
+                'module' => 'announcement',
             ],
             [
                 'title' => 'Açılır Pencereler',
@@ -229,6 +240,7 @@ return [
                 'route' => 'admin.popup.index',
                 'active' => 'admin.popup.*',
                 'permission' => 'popup.index',
+                'module' => 'popup',
             ],
             [
                 'title' => 'Bülten Aboneleri',
@@ -236,6 +248,7 @@ return [
                 'route' => 'admin.subscriber.index',
                 'active' => 'admin.subscriber.*',
                 'permission' => 'subscriber.index',
+                'module' => 'subscriber',
             ],
             [
                 'title' => 'Medya Kütüphanesi',

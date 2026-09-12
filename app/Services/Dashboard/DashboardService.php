@@ -17,6 +17,7 @@ use App\Models\Subscriber\Subscriber;
 use App\Models\Testimonial\Testimonial;
 use App\Services\Health\HealthService;
 use App\Services\Seo\SeoHealthService;
+use App\Support\ModuleRegistry;
 
 /**
  * Dashboard'un GA4 DIŞINDAKİ tüm verisi.
@@ -31,6 +32,7 @@ class DashboardService
     public function __construct(
         private readonly HealthService $health,
         private readonly SeoHealthService $seo,
+        private readonly ModuleRegistry $modules,
     ) {}
 
     /**
@@ -193,14 +195,17 @@ class DashboardService
      */
     public function content(): array
     {
-        return [
-            $this->contentRow('Sayfalar', 'description', Page::class, 'page.index', route('admin.page.index'), 'status', Page::STATUS_PUBLISHED),
-            $this->contentRow('Blog Yazıları', 'article', Blog::class, 'blog.index', route('admin.blog.index'), 'status', Blog::STATUS_PUBLISHED),
-            $this->contentRow('Hizmetler', 'design_services', Service::class, 'service.index', route('admin.service.index'), 'status', Service::STATUS_PUBLISHED),
-            $this->contentRow('Neler Yaptık', 'workspaces', Project::class, 'project.index', route('admin.project.index'), 'status', Project::STATUS_PUBLISHED),
-            $this->contentRow('Müşteri Yorumları', 'reviews', Testimonial::class, 'testimonial.index', route('admin.testimonial.index'), 'is_active', true),
-            $this->contentRow('Sıkça Sorulan Sorular', 'quiz', Faq::class, 'faq.index', route('admin.faq.index'), 'is_active', true),
-        ];
+        return collect([
+            $this->contentRow('Sayfalar', 'description', Page::class, 'page.index', route('admin.page.index'), 'status', Page::STATUS_PUBLISHED, 'page'),
+            $this->contentRow('Blog Yazıları', 'article', Blog::class, 'blog.index', route('admin.blog.index'), 'status', Blog::STATUS_PUBLISHED, 'blog'),
+            $this->contentRow('Hizmetler', 'design_services', Service::class, 'service.index', route('admin.service.index'), 'status', Service::STATUS_PUBLISHED, 'service'),
+            $this->contentRow('Neler Yaptık', 'workspaces', Project::class, 'project.index', route('admin.project.index'), 'status', Project::STATUS_PUBLISHED, 'project'),
+            $this->contentRow('Müşteri Yorumları', 'reviews', Testimonial::class, 'testimonial.index', route('admin.testimonial.index'), 'is_active', true, 'testimonial'),
+            $this->contentRow('Sıkça Sorulan Sorular', 'quiz', Faq::class, 'faq.index', route('admin.faq.index'), 'is_active', true, 'faq'),
+        ])
+            ->filter(fn (array $row) => $this->modules->isActive($row['module']))
+            ->values()
+            ->all();
     }
 
     /** Medya kütüphanesi özeti — dosya sayısı ve kaplanan alan. */
@@ -364,6 +369,7 @@ class DashboardService
         string $route,
         string $column,
         mixed $liveValue,
+        string $module,
     ): array {
         return [
             'label' => $label,
@@ -372,6 +378,7 @@ class DashboardService
             'live' => $model::where($column, $liveValue)->count(),
             'permission' => $permission,
             'route' => $route,
+            'module' => $module,
         ];
     }
 
