@@ -174,7 +174,7 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
         Route::get('generate/{generation}', 'show')->name('generate.show');
     });
 
-    Route::prefix('blog-category')->name('blog-category.')->controller(BlogCategoryController::class)->group(function () {
+    Route::middleware('module.active:blog')->prefix('blog-category')->name('blog-category.')->controller(BlogCategoryController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('datatable', 'datatable')->name('datatable');
         Route::get('form/{category?}', 'form')->name('form');
@@ -186,7 +186,7 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
         Route::delete('{category}', 'destroy')->name('destroy');
     });
 
-    Route::prefix('blog')->name('blog.')->controller(BlogController::class)->group(function () {
+    Route::middleware('module.active:blog')->prefix('blog')->name('blog.')->controller(BlogController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('datatable', 'datatable')->name('datatable');
         Route::get('create', 'create')->name('create');
@@ -199,7 +199,7 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
     // Sayfa yöneticisi. Ön yüz adresi bir kolonda (`path`) tutulduğu için
     // burada hiyerarşiye özel bir uç yok; ağaç liste ekranında `path`
     // sıralamasından çıkar.
-    Route::prefix('page')->name('page.')->controller(PageController::class)->group(function () {
+    Route::middleware('module.active:page')->prefix('page')->name('page.')->controller(PageController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('datatable', 'datatable')->name('datatable');
         Route::get('create', 'create')->name('create');
@@ -288,7 +288,7 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
         Route::post('{revision}/restore', 'restore')->name('restore');
     });
 
-    Route::prefix('announcement')->name('announcement.')->controller(AnnouncementController::class)->group(function () {
+    Route::middleware('module.active:announcement')->prefix('announcement')->name('announcement.')->controller(AnnouncementController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('datatable', 'datatable')->name('datatable');
         Route::get('form/{announcement?}', 'form')->name('form');
@@ -297,7 +297,7 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
         Route::delete('{announcement}', 'destroy')->name('destroy');
     });
 
-    Route::prefix('popup')->name('popup.')->controller(PopupController::class)->group(function () {
+    Route::middleware('module.active:popup')->prefix('popup')->name('popup.')->controller(PopupController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('datatable', 'datatable')->name('datatable');
         Route::get('form/{popup?}', 'form')->name('form');
@@ -306,7 +306,7 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
         Route::delete('{popup}', 'destroy')->name('destroy');
     });
 
-    Route::prefix('subscriber')->name('subscriber.')->controller(SubscriberController::class)->group(function () {
+    Route::middleware('module.active:subscriber')->prefix('subscriber')->name('subscriber.')->controller(SubscriberController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('datatable', 'datatable')->name('datatable');
         Route::get('export', 'export')->name('export');
@@ -374,7 +374,7 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
     | Gelen talepler — iletişim formundan (ileride açılır pencere/teklif
     | formlarından) düşen mesajların gelen kutusu.
     */
-    Route::prefix('lead')->name('lead.')->controller(LeadController::class)->group(function () {
+    Route::middleware('module.active:lead')->prefix('lead')->name('lead.')->controller(LeadController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('datatable', 'datatable')->name('datatable');
         Route::get('stats', 'stats')->name('stats');
@@ -409,7 +409,7 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
 
     // Bölge ağacı: liste kırılımlı çalışır, datatable parent_id filtresiyle
     // yalnızca o seviyeyi döndürür.
-    Route::prefix('service-region')->name('service-region.')->controller(ServiceRegionController::class)->group(function () {
+    Route::middleware('module.active:service')->prefix('service-region')->name('service-region.')->controller(ServiceRegionController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('datatable', 'datatable')->name('datatable');
         // Kırılım başlığı için kökten seçili bölgeye kadarki zincir.
@@ -423,7 +423,7 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
         Route::delete('{region}', 'destroy')->name('destroy');
     });
 
-    Route::prefix('service')->name('service.')->controller(ServiceController::class)->group(function () {
+    Route::middleware('module.active:service')->prefix('service')->name('service.')->controller(ServiceController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('datatable', 'datatable')->name('datatable');
         Route::get('create', 'create')->name('create');
@@ -440,7 +440,7 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
     | bloğundan ÖNCE gelir ki 'project-category' öneki 'project/{project}'
     | joker'ı tarafından yutulmasın.
     */
-    Route::prefix('project-category')->name('project-category.')->controller(ProjectCategoryController::class)->group(function () {
+    Route::middleware('module.active:project')->prefix('project-category')->name('project-category.')->controller(ProjectCategoryController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('datatable', 'datatable')->name('datatable');
         Route::get('form/{category?}', 'form')->name('form');
@@ -451,7 +451,7 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
         Route::delete('{category}', 'destroy')->name('destroy');
     });
 
-    Route::prefix('project')->name('project.')->controller(ProjectController::class)->group(function () {
+    Route::middleware('module.active:project')->prefix('project')->name('project.')->controller(ProjectController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('datatable', 'datatable')->name('datatable');
         Route::get('create', 'create')->name('create');
@@ -464,12 +464,12 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
     });
 
     // Tekil kayıt modülü: liste, ekleme ve silme yok — tek form.
-    Route::prefix('hero')->name('hero.')->controller(HeroController::class)->group(function () {
+    Route::middleware('module.active:hero')->prefix('hero')->name('hero.')->controller(HeroController::class)->group(function () {
         Route::get('/', 'edit')->name('index');
         Route::put('/', 'update')->name('update');
     });
 
-    Route::prefix('testimonial')->name('testimonial.')->controller(TestimonialController::class)->group(function () {
+    Route::middleware('module.active:testimonial')->prefix('testimonial')->name('testimonial.')->controller(TestimonialController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('datatable', 'datatable')->name('datatable');
         Route::get('form/{testimonial?}', 'form')->name('form');
@@ -481,7 +481,7 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
         Route::delete('{testimonial}', 'destroy')->name('destroy');
     });
 
-    Route::prefix('reference')->name('reference.')->controller(ReferenceController::class)->group(function () {
+    Route::middleware('module.active:reference')->prefix('reference')->name('reference.')->controller(ReferenceController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('datatable', 'datatable')->name('datatable');
         Route::get('form/{reference?}', 'form')->name('form');
@@ -504,7 +504,7 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
         Route::get('{activityLog}', 'show')->name('show')->middleware('permission:activity-log.index');
     });
 
-    Route::prefix('faq')->name('faq.')->controller(FaqController::class)->group(function () {
+    Route::middleware('module.active:faq')->prefix('faq')->name('faq.')->controller(FaqController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('datatable', 'datatable')->name('datatable');
         Route::get('form/{faq?}', 'form')->name('form');
@@ -526,7 +526,7 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
         Route::delete('{role}', 'destroy')->name('destroy');
     });
 
-    Route::prefix('why-choose-us')->name('why-choose-us.')->controller(WhyChooseUsController::class)->group(function () {
+    Route::middleware('module.active:why-choose-us')->prefix('why-choose-us')->name('why-choose-us.')->controller(WhyChooseUsController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('datatable', 'datatable')->name('datatable');
         Route::get('form/{why_choose_us?}', 'form')->name('form');

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureModuleIsActive;
 use App\Http\Middleware\EnsureSiteIsLive;
 use App\Http\Middleware\PermissionMiddleware as MiddlewarePermissionMiddleware;
 use App\Services\Health\SystemHealth;
@@ -80,6 +81,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'permission' => PermissionMiddleware::class,
             'role_or_permission' => RoleOrPermissionMiddleware::class,
             'permission_middleware' => MiddlewarePermissionMiddleware::class,
+            'module.active' => EnsureModuleIsActive::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
