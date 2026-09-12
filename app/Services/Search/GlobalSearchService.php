@@ -111,12 +111,17 @@ class GlobalSearchService
         $needle = mb_strtolower($term, 'UTF-8');
 
         $items = collect(config('global-search.screens', []))
+            ->map(fn (array $screen) => $screen + ['url' => route($screen['route'])])
+            ->concat($this->settingScreens())
             ->filter(fn (array $screen) => $this->allows($user, $screen['permission'] ?? null))
-            ->filter(fn (array $screen) => str_contains(mb_strtolower($screen['label'].' '.$screen['keywords'], 'UTF-8'), $needle))
+            ->filter(fn (array $screen) => str_contains(
+                mb_strtolower($screen['label'].' '.($screen['keywords'] ?? ''), 'UTF-8'),
+                $needle,
+            ))
             ->map(fn (array $screen) => [
                 'title' => $screen['label'],
-                'subtitle' => '',
-                'url' => route($screen['route']),
+                'subtitle' => $screen['subtitle'] ?? '',
+                'url' => $screen['url'],
             ])
             ->values()
             ->all();
@@ -129,6 +134,28 @@ class GlobalSearchService
                 'icon' => 'dashboard',
                 'items' => $items,
             ]];
+    }
+
+    /**
+     * Ayar sekmeleri. Elle yazılmaz: `config/settings.php` > groups zaten her
+     * sekmenin başlığını ve açıklamasını taşıyor, arama onları okur. Böylece
+     * yeni bir ayar sekmesi eklendiğinde aranabilir olması için burada hiçbir
+     * şey değişmez — "çerez" yazan biri Çerez Çubuğu sekmesine ulaşır.
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function settingScreens(): array
+    {
+        return collect(config('settings.groups', []))
+            ->map(fn (array $group, string $key) => [
+                'label' => 'Ayarlar → '.$group['title'],
+                'keywords' => $group['title'].' '.($group['description'] ?? '').' ayar',
+                'subtitle' => $group['description'] ?? '',
+                'url' => route('admin.setting.edit', $key),
+                'permission' => 'setting.index',
+            ])
+            ->values()
+            ->all();
     }
 
     /** İzni null olan kaynak herkese açıktır (örn. kendi profili). */

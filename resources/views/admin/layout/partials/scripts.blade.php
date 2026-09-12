@@ -24,8 +24,20 @@
 <script type="module" src="{{ asset('admin/assets/js/core/datepicker.js') }}"></script>
 <script type="module" src="{{ asset('admin/assets/js/core/map-picker.js') }}"></script>
 
+{{-- tag-input.js BURADA yükleniyor çünkü iki bileşen paylaşıyor: form.tags ve
+     form.chips. Bileşenin içinde @once ile eklenirse Blade her çağrı yeri için
+     ayrı bir kimlik üretir ve aynı <script> etiketi iki kez basılır. Tek
+     kullanıcısı olan modüller (repeater, video-field) kendi bileşenlerinde
+     kalmaya devam ediyor. --}}
+<script type="module" src="{{ asset('admin/assets/js/core/tag-input.js') }}"></script>
+
 {{-- Form label'larındaki (?) yardım ikonu — olay delegasyonu, sayfa JS'i gerektirmez. --}}
 <script type="module" src="{{ asset('admin/assets/js/core/help-popover.js') }}"></script>
 <script type="module" src="{{ asset('admin/assets/js/core/sidebar-scroll.js') }}"></script>
+
+{{-- Header: global arama (Ctrl+K) ve bildirim merkezi. İkisi de her sayfada
+     var, sayfa JS'i gerektirmez. --}}
+<script type="module" src="{{ asset('admin/assets/js/core/global-search.js') }}"></script>
+<script type="module" src="{{ asset('admin/assets/js/core/notifications.js') }}"></script>
 
 @stack('admin.scripts')

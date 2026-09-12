@@ -72,27 +72,31 @@
                     </div>
                 </div>
 
-                <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
-                    <div class="trezo-card-header mb-[20px] md:mb-[25px]">
-                        <div class="trezo-card-title">
-                            <h5 class="!mb-0">SEO</h5>
+                @can('service.seo')
+                    <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
+                        <div class="trezo-card-header mb-[20px] md:mb-[25px]">
+                            <div class="trezo-card-title">
+                                <h5 class="!mb-0">SEO</h5>
+                            </div>
+                        </div>
+                        <div class="trezo-card-content">
+                            <x-admin::form.seo :model="$service" path="hizmetler" imageSource="cover_media_id" analysisType="service" wrapper="" />
                         </div>
                     </div>
-                    <div class="trezo-card-content">
-                        <x-admin::form.seo :model="$service" path="hizmetler" imageSource="cover_media_id" analysisType="service" wrapper="" />
-                    </div>
-                </div>
+                @endcan
 
-                <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
-                    <div class="trezo-card-header mb-[20px] md:mb-[25px]">
-                        <div class="trezo-card-title">
-                            <h5 class="!mb-0">Schema.org</h5>
+                @can('service.schema-org')
+                    <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
+                        <div class="trezo-card-header mb-[20px] md:mb-[25px]">
+                            <div class="trezo-card-title">
+                                <h5 class="!mb-0">Schema.org</h5>
+                            </div>
+                        </div>
+                        <div class="trezo-card-content">
+                            <x-admin::form.schema :model="$service" wrapper="" />
                         </div>
                     </div>
-                    <div class="trezo-card-content">
-                        <x-admin::form.schema :model="$service" wrapper="" />
-                    </div>
-                </div>
+                @endcan
             </div>
 
             {{-- Sağ sütun: yayın, bölgeler, etiketler, görsel --}}
@@ -122,41 +126,45 @@
                     </div>
                 </div>
 
-                <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
-                    <div class="trezo-card-header mb-[20px] md:mb-[25px]">
-                        <div class="trezo-card-title">
-                            <h5 class="!mb-0">Hizmet Bölgeleri</h5>
+                @can('service.classification')
+                    <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
+                        <div class="trezo-card-header mb-[20px] md:mb-[25px]">
+                            <div class="trezo-card-title">
+                                <h5 class="!mb-0">Hizmet Bölgeleri</h5>
+                            </div>
                         </div>
-                    </div>
-                    <div class="trezo-card-content">
-                        <x-admin::form.select name="service_regions" help="service.service_regions" label="Bölgeler" multiple
-                            :options="$regions" :value="$service?->regions->pluck('id')->all() ?? []" wrapper="" />
+                        <div class="trezo-card-content">
+                            <x-admin::form.select name="service_regions" help="service.service_regions" label="Bölgeler" multiple
+                                :options="$regions" :value="$service?->regions->pluck('id')->all() ?? []" wrapper="" />
 
-                        {{-- Kısayollar: il kimlikleri sunucudan gelir, pages/service/form.js okur. --}}
-                        <div class="mt-[10px] flex gap-[8px]">
-                            <button type="button" id="service-regions-all"
-                                data-city-ids="{{ json_encode($cityIds) }}"
-                                class="py-[6px] px-[12px] text-xs text-black dark:text-white transition-all rounded-md border border-gray-200 dark:border-[#172036] hover:bg-gray-50 dark:hover:bg-[#15203c]">
-                                Tüm illeri seç
-                            </button>
-                            <button type="button" id="service-regions-clear"
-                                class="py-[6px] px-[12px] text-xs text-black dark:text-white transition-all rounded-md border border-gray-200 dark:border-[#172036] hover:bg-gray-50 dark:hover:bg-[#15203c]">
-                                Temizle
-                            </button>
+                            {{-- Kısayollar: il kimlikleri sunucudan gelir, pages/service/form.js okur. --}}
+                            <div class="mt-[10px] flex gap-[8px]">
+                                <button type="button" id="service-regions-all"
+                                    data-city-ids="{{ json_encode($cityIds) }}"
+                                    class="py-[6px] px-[12px] text-xs text-black dark:text-white transition-all rounded-md border border-gray-200 dark:border-[#172036] hover:bg-gray-50 dark:hover:bg-[#15203c]">
+                                    Tüm illeri seç
+                                </button>
+                                <button type="button" id="service-regions-clear"
+                                    class="py-[6px] px-[12px] text-xs text-black dark:text-white transition-all rounded-md border border-gray-200 dark:border-[#172036] hover:bg-gray-50 dark:hover:bg-[#15203c]">
+                                    Temizle
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                @endcan
 
-                <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
-                    <div class="trezo-card-header mb-[20px] md:mb-[25px]">
-                        <div class="trezo-card-title">
-                            <h5 class="!mb-0">Etiketler</h5>
+                @can('service.tags')
+                    <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
+                        <div class="trezo-card-header mb-[20px] md:mb-[25px]">
+                            <div class="trezo-card-title">
+                                <h5 class="!mb-0">Etiketler</h5>
+                            </div>
+                        </div>
+                        <div class="trezo-card-content">
+                            <x-admin::form.tags :model="$service" wrapper="" />
                         </div>
                     </div>
-                    <div class="trezo-card-content">
-                        <x-admin::form.tags :model="$service" wrapper="" />
-                    </div>
-                </div>
+                @endcan
 
                 <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
                     <div class="trezo-card-header mb-[20px] md:mb-[25px]">
@@ -170,16 +178,18 @@
                     </div>
                 </div>
 
-                <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
-                    <div class="trezo-card-header mb-[20px] md:mb-[25px]">
-                        <div class="trezo-card-title">
-                            <h5 class="!mb-0">Sıkça Sorulan Sorular</h5>
+                @can('service.faqs')
+                    <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
+                        <div class="trezo-card-header mb-[20px] md:mb-[25px]">
+                            <div class="trezo-card-title">
+                                <h5 class="!mb-0">Sıkça Sorulan Sorular</h5>
+                            </div>
+                        </div>
+                        <div class="trezo-card-content">
+                            <x-admin::form.faqs :model="$service" wrapper="" />
                         </div>
                     </div>
-                    <div class="trezo-card-content">
-                        <x-admin::form.faqs :model="$service" wrapper="" />
-                    </div>
-                </div>
+                @endcan
             </div>
         </div>
     </form>

@@ -155,28 +155,32 @@
                     </div>
                 </div>
 
-                <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
-                    <div class="trezo-card-header mb-[20px] md:mb-[25px]">
-                        <div class="trezo-card-title">
-                            <h5 class="!mb-0">SEO</h5>
+                @can('project.seo')
+                    <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
+                        <div class="trezo-card-header mb-[20px] md:mb-[25px]">
+                            <div class="trezo-card-title">
+                                <h5 class="!mb-0">SEO</h5>
+                            </div>
+                        </div>
+                        <div class="trezo-card-content">
+                            <x-admin::form.seo :model="$project" path="neler-yaptik" imageSource="cover_media_id"
+                                analysisType="project" wrapper="" />
                         </div>
                     </div>
-                    <div class="trezo-card-content">
-                        <x-admin::form.seo :model="$project" path="neler-yaptik" imageSource="cover_media_id"
-                            analysisType="project" wrapper="" />
-                    </div>
-                </div>
+                @endcan
 
-                <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
-                    <div class="trezo-card-header mb-[20px] md:mb-[25px]">
-                        <div class="trezo-card-title">
-                            <h5 class="!mb-0">Schema.org</h5>
+                @can('project.schema-org')
+                    <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
+                        <div class="trezo-card-header mb-[20px] md:mb-[25px]">
+                            <div class="trezo-card-title">
+                                <h5 class="!mb-0">Schema.org</h5>
+                            </div>
+                        </div>
+                        <div class="trezo-card-content">
+                            <x-admin::form.schema :model="$project" wrapper="" />
                         </div>
                     </div>
-                    <div class="trezo-card-content">
-                        <x-admin::form.schema :model="$project" wrapper="" />
-                    </div>
-                </div>
+                @endcan
             </div>
 
             {{-- Sağ sütun: yayın, sınıflandırma, görsel, bağlantılar --}}
@@ -193,9 +197,11 @@
                             :value="$project?->status ?? \App\Models\Project\Project::STATUS_DRAFT"
                             :placeholder="null" />
 
-                        <x-admin::form.select name="project_category_id" help="project.project_category_id"
-                            label="Kategori" :options="$categories" :value="$project?->project_category_id"
-                            placeholder="Kategori seçin" />
+                        @can('project.classification')
+                            <x-admin::form.select name="project_category_id" help="project.project_category_id"
+                                label="Kategori" :options="$categories" :value="$project?->project_category_id"
+                                placeholder="Kategori seçin" />
+                        @endcan
 
                         <x-admin::form.switch name="is_featured" help="project.is_featured" label="Öne çıkan proje"
                             :checked="$project?->is_featured ?? false" />
@@ -261,27 +267,31 @@
                     </div>
                 </div>
 
-                <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
-                    <div class="trezo-card-header mb-[20px] md:mb-[25px]">
-                        <div class="trezo-card-title">
-                            <h5 class="!mb-0">Etiketler</h5>
+                @can('project.tags')
+                    <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
+                        <div class="trezo-card-header mb-[20px] md:mb-[25px]">
+                            <div class="trezo-card-title">
+                                <h5 class="!mb-0">Etiketler</h5>
+                            </div>
+                        </div>
+                        <div class="trezo-card-content">
+                            <x-admin::form.tags :model="$project" label="" wrapper="" />
                         </div>
                     </div>
-                    <div class="trezo-card-content">
-                        <x-admin::form.tags :model="$project" label="" wrapper="" />
-                    </div>
-                </div>
+                @endcan
 
-                <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
-                    <div class="trezo-card-header mb-[20px] md:mb-[25px]">
-                        <div class="trezo-card-title">
-                            <h5 class="!mb-0">Sıkça Sorulan Sorular</h5>
+                @can('project.faqs')
+                    <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
+                        <div class="trezo-card-header mb-[20px] md:mb-[25px]">
+                            <div class="trezo-card-title">
+                                <h5 class="!mb-0">Sıkça Sorulan Sorular</h5>
+                            </div>
+                        </div>
+                        <div class="trezo-card-content">
+                            <x-admin::form.faqs :model="$project" wrapper="" />
                         </div>
                     </div>
-                    <div class="trezo-card-content">
-                        <x-admin::form.faqs :model="$project" wrapper="" />
-                    </div>
-                </div>
+                @endcan
             </div>
         </div>
     </form>

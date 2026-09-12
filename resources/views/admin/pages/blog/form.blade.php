@@ -61,27 +61,31 @@
                     </div>
                 </div>
 
-                <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
-                    <div class="trezo-card-header mb-[20px] md:mb-[25px]">
-                        <div class="trezo-card-title">
-                            <h5 class="!mb-0">SEO</h5>
+                @can('blog.seo')
+                    <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
+                        <div class="trezo-card-header mb-[20px] md:mb-[25px]">
+                            <div class="trezo-card-title">
+                                <h5 class="!mb-0">SEO</h5>
+                            </div>
+                        </div>
+                        <div class="trezo-card-content">
+                            <x-admin::form.seo :model="$blog" path="blog" imageSource="cover_media_id" wrapper="" />
                         </div>
                     </div>
-                    <div class="trezo-card-content">
-                        <x-admin::form.seo :model="$blog" path="blog" imageSource="cover_media_id" wrapper="" />
-                    </div>
-                </div>
+                @endcan
 
-                <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
-                    <div class="trezo-card-header mb-[20px] md:mb-[25px]">
-                        <div class="trezo-card-title">
-                            <h5 class="!mb-0">Schema.org</h5>
+                @can('blog.schema-org')
+                    <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
+                        <div class="trezo-card-header mb-[20px] md:mb-[25px]">
+                            <div class="trezo-card-title">
+                                <h5 class="!mb-0">Schema.org</h5>
+                            </div>
+                        </div>
+                        <div class="trezo-card-content">
+                            <x-admin::form.schema :model="$blog" wrapper="" />
                         </div>
                     </div>
-                    <div class="trezo-card-content">
-                        <x-admin::form.schema :model="$blog" wrapper="" />
-                    </div>
-                </div>
+                @endcan
             </div>
 
             {{-- Sağ sütun: yayın ve sınıflandırma --}}
@@ -117,20 +121,26 @@
                     </div>
                 </div>
 
-                <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
-                    <div class="trezo-card-header mb-[20px] md:mb-[25px]">
-                        <div class="trezo-card-title">
-                            <h5 class="!mb-0">Sınıflandırma</h5>
+                @canany(['blog.classification', 'blog.tags'])
+                    <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
+                        <div class="trezo-card-header mb-[20px] md:mb-[25px]">
+                            <div class="trezo-card-title">
+                                <h5 class="!mb-0">Sınıflandırma</h5>
+                            </div>
+                        </div>
+                        <div class="trezo-card-content">
+                            @can('blog.classification')
+                                <x-admin::form.select name="blog_category_id" help="blog.blog_category_id" label="Kategori"
+                                    :options="$categories->all()" :value="$blog?->blog_category_id"
+                                    placeholder="Kategorisiz" />
+                            @endcan
+
+                            @can('blog.tags')
+                                <x-admin::form.tags :model="$blog" wrapper="" />
+                            @endcan
                         </div>
                     </div>
-                    <div class="trezo-card-content">
-                        <x-admin::form.select name="blog_category_id" help="blog.blog_category_id" label="Kategori"
-                            :options="$categories->all()" :value="$blog?->blog_category_id"
-                            placeholder="Kategorisiz" />
-
-                        <x-admin::form.tags :model="$blog" wrapper="" />
-                    </div>
-                </div>
+                @endcanany
 
                 <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
                     <div class="trezo-card-header mb-[20px] md:mb-[25px]">
@@ -144,16 +154,18 @@
                     </div>
                 </div>
 
-                <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
-                    <div class="trezo-card-header mb-[20px] md:mb-[25px]">
-                        <div class="trezo-card-title">
-                            <h5 class="!mb-0">Sıkça Sorulan Sorular</h5>
+                @can('blog.faqs')
+                    <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
+                        <div class="trezo-card-header mb-[20px] md:mb-[25px]">
+                            <div class="trezo-card-title">
+                                <h5 class="!mb-0">Sıkça Sorulan Sorular</h5>
+                            </div>
+                        </div>
+                        <div class="trezo-card-content">
+                            <x-admin::form.faqs :model="$blog" wrapper="" />
                         </div>
                     </div>
-                    <div class="trezo-card-content">
-                        <x-admin::form.faqs :model="$blog" wrapper="" />
-                    </div>
-                </div>
+                @endcan
             </div>
         </div>
     </form>

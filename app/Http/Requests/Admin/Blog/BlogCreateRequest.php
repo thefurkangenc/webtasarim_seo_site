@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin\Blog;
 
+use App\Http\Requests\Concerns\FiltersPermissionedFields;
 use App\Http\Requests\Concerns\ValidatesSharedFields;
 use App\Models\Blog\Blog;
 use Illuminate\Foundation\Http\FormRequest;
@@ -9,7 +10,19 @@ use Illuminate\Validation\Rule;
 
 class BlogCreateRequest extends FormRequest
 {
-    use ValidatesSharedFields;
+    use FiltersPermissionedFields, ValidatesSharedFields;
+
+    /**
+     * Paylaşılan bileşen alanları izinsiz kullanıcının validated() çıktısından
+     * düşer (bkz. FiltersPermissionedFields). UI tarafı aynı izinlerle
+     * `resources/views/admin/pages/blog/form.blade.php`'de gizlenir.
+     *
+     * @return array<string, array<int, string>>
+     */
+    protected function permissionedFields(): array
+    {
+        return $this->sharedComponentPermissions('blog', 'blog_category_id');
+    }
 
     /** @return array<string, array<int, mixed>> */
     public function rules(): array

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin\Service;
 
+use App\Http\Requests\Concerns\FiltersPermissionedFields;
 use App\Http\Requests\Concerns\ValidatesSharedFields;
 use App\Models\Service\Service;
 use Illuminate\Foundation\Http\FormRequest;
@@ -9,11 +10,23 @@ use Illuminate\Validation\Rule;
 
 class ServiceCreateRequest extends FormRequest
 {
-    use ValidatesSharedFields;
+    use FiltersPermissionedFields, ValidatesSharedFields;
 
     public function authorize(): bool
     {
         return $this->user()->can('service.store');
+    }
+
+    /**
+     * Paylaşılan bileşen alanları izinsiz kullanıcının validated() çıktısından
+     * düşer (bkz. FiltersPermissionedFields). UI tarafı aynı izinlerle
+     * `resources/views/admin/pages/service/form.blade.php`'de gizlenir.
+     *
+     * @return array<string, array<int, string>>
+     */
+    protected function permissionedFields(): array
+    {
+        return $this->sharedComponentPermissions('service', 'service_regions');
     }
 
     /** @return array<string, array<int, mixed>> */

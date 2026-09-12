@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin\Page;
 
+use App\Http\Requests\Concerns\FiltersPermissionedFields;
 use App\Http\Requests\Concerns\ValidatesSharedFields;
 use App\Models\Page\Page;
 use App\Services\Page\PageService;
@@ -13,11 +14,23 @@ use Illuminate\Validation\Rule;
 
 class PageCreateRequest extends FormRequest
 {
-    use ValidatesSharedFields;
+    use FiltersPermissionedFields, ValidatesSharedFields;
 
     public function authorize(): bool
     {
         return $this->user()->can('page.store');
+    }
+
+    /**
+     * Paylaşılan bileşen alanları izinsiz kullanıcının validated() çıktısından
+     * düşer (bkz. FiltersPermissionedFields). UI tarafı aynı izinlerle
+     * `resources/views/admin/pages/page/form.blade.php`'de gizlenir.
+     *
+     * @return array<string, array<int, string>>
+     */
+    protected function permissionedFields(): array
+    {
+        return $this->sharedComponentPermissions('page', null);
     }
 
     /** @return array<string, array<int, mixed>> */

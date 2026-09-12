@@ -21,12 +21,6 @@
     $items = collect(old($name, $values ?? []))->filter()->values();
 @endphp
 
-@once
-    @push('admin.scripts')
-        <script type="module" src="{{ asset('admin/assets/js/core/tag-input.js') }}"></script>
-    @endpush
-@endonce
-
 <div class="{{ $wrapper }}">
     @if ($label)
         <x-admin::form.label :help="$help">{{ $label }}</x-admin::form.label>

@@ -82,27 +82,31 @@
                     </div>
                 </div>
 
-                <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
-                    <div class="trezo-card-header mb-[20px] md:mb-[25px]">
-                        <div class="trezo-card-title">
-                            <h5 class="!mb-0">SEO</h5>
+                @can('page.seo')
+                    <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
+                        <div class="trezo-card-header mb-[20px] md:mb-[25px]">
+                            <div class="trezo-card-title">
+                                <h5 class="!mb-0">SEO</h5>
+                            </div>
+                        </div>
+                        <div class="trezo-card-content">
+                            <x-admin::form.seo :model="$page" :path="$basePath" imageSource="cover_media_id" analysisType="page" wrapper="" />
                         </div>
                     </div>
-                    <div class="trezo-card-content">
-                        <x-admin::form.seo :model="$page" :path="$basePath" imageSource="cover_media_id" analysisType="page" wrapper="" />
-                    </div>
-                </div>
+                @endcan
 
-                <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
-                    <div class="trezo-card-header mb-[20px] md:mb-[25px]">
-                        <div class="trezo-card-title">
-                            <h5 class="!mb-0">Schema.org</h5>
+                @can('page.schema-org')
+                    <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
+                        <div class="trezo-card-header mb-[20px] md:mb-[25px]">
+                            <div class="trezo-card-title">
+                                <h5 class="!mb-0">Schema.org</h5>
+                            </div>
+                        </div>
+                        <div class="trezo-card-content">
+                            <x-admin::form.schema :model="$page" wrapper="" />
                         </div>
                     </div>
-                    <div class="trezo-card-content">
-                        <x-admin::form.schema :model="$page" wrapper="" />
-                    </div>
-                </div>
+                @endcan
             </div>
 
             {{-- Sağ sütun: yayın, adres, etiketler, görsel, SSS --}}
@@ -169,16 +173,18 @@
                     </div>
                 </div>
 
-                <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
-                    <div class="trezo-card-header mb-[20px] md:mb-[25px]">
-                        <div class="trezo-card-title">
-                            <h5 class="!mb-0">Etiketler</h5>
+                @can('page.tags')
+                    <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
+                        <div class="trezo-card-header mb-[20px] md:mb-[25px]">
+                            <div class="trezo-card-title">
+                                <h5 class="!mb-0">Etiketler</h5>
+                            </div>
+                        </div>
+                        <div class="trezo-card-content">
+                            <x-admin::form.tags :model="$page" wrapper="" />
                         </div>
                     </div>
-                    <div class="trezo-card-content">
-                        <x-admin::form.tags :model="$page" wrapper="" />
-                    </div>
-                </div>
+                @endcan
 
                 <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
                     <div class="trezo-card-header mb-[20px] md:mb-[25px]">
@@ -192,16 +198,18 @@
                     </div>
                 </div>
 
-                <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
-                    <div class="trezo-card-header mb-[20px] md:mb-[25px]">
-                        <div class="trezo-card-title">
-                            <h5 class="!mb-0">Sıkça Sorulan Sorular</h5>
+                @can('page.faqs')
+                    <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
+                        <div class="trezo-card-header mb-[20px] md:mb-[25px]">
+                            <div class="trezo-card-title">
+                                <h5 class="!mb-0">Sıkça Sorulan Sorular</h5>
+                            </div>
+                        </div>
+                        <div class="trezo-card-content">
+                            <x-admin::form.faqs :model="$page" wrapper="" />
                         </div>
                     </div>
-                    <div class="trezo-card-content">
-                        <x-admin::form.faqs :model="$page" wrapper="" />
-                    </div>
-                </div>
+                @endcan
             </div>
         </div>
     </form>

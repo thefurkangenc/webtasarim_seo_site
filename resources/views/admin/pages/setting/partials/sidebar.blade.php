@@ -5,7 +5,12 @@
      tanımlanmamış bir sekme en sona, "Diğer" başlığı altına düşer. --}}
 @php
     $sections = config('settings.sections', []);
-    $grouped = collect($groups)->groupBy(fn ($item) => $item['section'] ?? 'other');
+    // İKİNCİ parametre (preserveKeys) ŞART: groupBy varsayılan olarak alt
+    // koleksiyonları yeniden indeksler (0,1,2...) — 'company','seo' gibi
+    // dizi anahtarları kaybolur ve aşağıdaki $key sayısal bir indekse döner,
+    // route('admin.setting.edit', $key) da /admin/setting/0 gibi yanlış bir
+    // adres üretir. Bu proje tam olarak bu hatayı yaşadı.
+    $grouped = collect($groups)->groupBy(fn ($item) => $item['section'] ?? 'other', true);
 @endphp
 
 <div class="settings-nav trezo-card bg-white dark:bg-[#0c1427] p-[15px] md:p-[20px] rounded-md">

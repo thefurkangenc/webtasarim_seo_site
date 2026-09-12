@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin\Project;
 
+use App\Http\Requests\Concerns\FiltersPermissionedFields;
 use App\Http\Requests\Concerns\ValidatesSharedFields;
 use App\Models\Project\Project;
 use Illuminate\Foundation\Http\FormRequest;
@@ -9,11 +10,23 @@ use Illuminate\Validation\Rule;
 
 class ProjectCreateRequest extends FormRequest
 {
-    use ValidatesSharedFields;
+    use FiltersPermissionedFields, ValidatesSharedFields;
 
     public function authorize(): bool
     {
         return $this->user()->can('project.store');
+    }
+
+    /**
+     * Paylaşılan bileşen alanları izinsiz kullanıcının validated() çıktısından
+     * düşer (bkz. FiltersPermissionedFields). UI tarafı aynı izinlerle
+     * `resources/views/admin/pages/project/form.blade.php`'de gizlenir.
+     *
+     * @return array<string, array<int, string>>
+     */
+    protected function permissionedFields(): array
+    {
+        return $this->sharedComponentPermissions('project', 'project_category_id');
     }
 
     /** @return array<string, array<int, mixed>> */
