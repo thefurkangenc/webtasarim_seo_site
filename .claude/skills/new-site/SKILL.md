@@ -1,6 +1,6 @@
 ---
 name: new-site
-description: Use when standing up a new site on this panel for a different company or sector - resets the panel content, runs the setup wizard, then moves the public front end onto the new HTML theme dropped into resources/views/layout/html/ (app.blade.php, the layout partials, every page template, public/assets) while every panel binding (meta, schema, tracking, menus, settings, notices, cookie banner, forms) keeps working. Also use for a theme change alone, or when a single front-end page must be re-cut against the current theme.
+description: Use when standing up a new site on this panel for a different company or sector - resets the panel content, runs the setup wizard, then moves the public front end onto the new HTML theme dropped into resources/views/layout/html/ (app.blade.php, the layout partials, every page template, public/assets) while every panel binding (meta, schema, tracking, menus, settings, notices, cookie banner, forms) keeps working. Also use for a theme change alone, or when a single front-end page must be re-cut against the current theme. Delegates to front-end-module for any active module (existing, like Gallery, or newly named) that has no front-end pages yet.
 ---
 
 # Yeni Site Kurulumu
@@ -333,6 +333,28 @@ satırdaki dosya var olmak zorunda, yoksa o adres 500 verir.
 
 (Eski view'ler duruyorsa — yalnızca tema değişikliği yapıyorsan — tablo yine
 geçerlidir; eski view sadece "hangi bağ nerede kullanılmıştı" için referanstır.)
+
+### 7.0 — Bu sitede hangi modüller ön yüze çıkacak?
+
+Aşağıdaki envanter, ön yüzü **zaten kurulu** modülleri (Blog/Hizmet/Proje/
+Sayfa/İletişim/Hakkımızda/Yasal) belgeler — panelde CRUD'u olan **her**
+modülün karşılığı değil. Örneğin `Gallery` modeli admin'de tam kurulu ama
+hiçbir ön yüz sayfası yok; bu envanterin dışında kalan böyle modüller
+sessizce atlanır, sen sormazsan fark edilmez.
+
+Devam etmeden önce:
+
+1. `app(\App\Support\ModuleRegistry::class)->all()` ile (ya da `/admin/module`
+   ekranından) hangi modüllerin bu kurulumda **aktif** olduğuna bak.
+2. **Kullanıcıya sor**: "Bu site için ön yüzde şunlar olacak: Blog, Hizmet,
+   Proje. Ayrıca [aktif ama envanterde olmayan modüller] var — bunlar da ön
+   yüze çıksın mı?" Aktif-ama-envanterde-yok listesini tahmin etmeden, gerçek
+   `ModuleRegistry::all()` çıktısından çıkar.
+3. Envanterde olan modüller bu adımda aşağıdaki gibi kurulur. Envanterde
+   **olmayan** ama kullanıcının istediği bir modül için (Gallery gibi, ya da
+   kullanıcının yeni tarif ettiği bir modül) **`front-end-module` skill'ini
+   çağır** — route/controller/servis/model sözleşmeleri/schema/sitemap/
+   IndexNow/menü/view kurulumunun tamamı orada.
 
 ### View envanteri
 
