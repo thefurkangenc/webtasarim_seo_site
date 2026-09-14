@@ -558,6 +558,7 @@
 @endsection
 
 @push('css')
+    <link rel="stylesheet" href="{{ asset('assets/css/pages/project/card.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/pages/services/show.css') }}">
 @endpush
 

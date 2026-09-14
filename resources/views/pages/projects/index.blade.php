@@ -55,22 +55,15 @@
             @endif
 
             @if ($categories->isNotEmpty())
-                {{-- Filtre: temanın sekme görünümü, ama gerçek linklerle — her kategori indekslenebilir bir adres. --}}
+                {{-- Filtre: gerçek linklerle — her kategori indekslenebilir bir adres. --}}
                 <div class="row">
-                    <div class="col-lg-10 m-auto text-center">
-                        <div class="categories-buttons">
-                            <ul class="nav nav-pills justify-content-center">
-                                <li class="nav-item">
-                                    <a class="nav-link {{ $category ? '' : 'active' }}"
-                                        href="{{ route('projeler') }}">Tümü</a>
-                                </li>
-                                @foreach ($categories as $item)
-                                    <li class="nav-item">
-                                        <a class="nav-link {{ $category?->is($item) ? 'active' : '' }}"
-                                            href="{{ route('projeler.kategori', $item->slug) }}">{{ $item->name }}</a>
-                                    </li>
-                                @endforeach
-                            </ul>
+                    <div class="col-lg-12">
+                        <div class="project-filter-bar">
+                            <a href="{{ route('projeler') }}" class="project-filter {{ $category ? '' : 'active' }}">Tümü</a>
+                            @foreach ($categories as $item)
+                                <a href="{{ route('projeler.kategori', $item->slug) }}"
+                                    class="project-filter {{ $category?->is($item) ? 'active' : '' }}">{{ $item->name }}</a>
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -89,7 +82,7 @@
             @else
                 <div class="row mt-30">
                     @foreach ($projects as $project)
-                        <div class="col-lg-4 col-md-6 mt-30" data-aos="fade-up" data-aos-duration="900">
+                        <div class="col-lg-4 col-md-6 mt-30">
                             @include('pages.projects.partials.card', ['project' => $project])
                         </div>
                     @endforeach
@@ -108,3 +101,8 @@
 
     @include('pages.projects.partials.cta')
 @endsection
+
+@push('css')
+    <link rel="stylesheet" href="{{ asset('assets/css/pages/project/card.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/pages/project/index.css') }}">
+@endpush

@@ -33,6 +33,7 @@
 @section('meta_image', (string) $seo['image'])
 
 @push('css')
+    <link rel="stylesheet" href="{{ asset('assets/css/pages/project/card.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/pages/project/show.css') }}">
 @endpush
 

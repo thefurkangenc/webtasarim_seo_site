@@ -1,0 +1,138 @@
+/* Proje kartı — liste, "Benzer İşler" ve hizmet detayındaki "bu hizmette
+   yaptığımız işler" bloğu tarafından paylaşılır (pages/projects/partials/card.blade.php).
+   Üç sayfa da bu dosyayı yükler. Renk paleti detay sayfasındaki istatistik
+   kartlarıyla aynıdır (mavi/mercan/turkuaz/amber) — kategoriye sabit bir ton
+   düşer, aynı proje her yerde aynı renkte görünür. */
+
+.project-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid rgba(9, 11, 14, 0.06);
+    box-shadow: 0 16px 34px -26px rgba(9, 11, 14, 0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 22px 40px -24px rgba(9, 11, 14, 0.45);
+}
+
+.project-card-media {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: #f2f4f7;
+}
+
+.project-card-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.project-card:hover .project-card-media img {
+    transform: scale(1.06);
+}
+
+.project-card-tag {
+    position: absolute;
+    left: 16px;
+    bottom: 16px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    background: var(--card-accent, #155FFF);
+}
+
+.project-card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 24px;
+}
+
+.project-card-title {
+    display: block;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: #090B0E;
+    transition: color 0.25s ease;
+}
+
+.project-card-title:hover {
+    color: var(--card-accent, #155FFF);
+}
+
+.project-card-client {
+    margin: 6px 0 0;
+    font-size: 14px;
+    color: #3D4C5E;
+}
+
+.project-card-result {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(61, 76, 94, 0.12);
+}
+
+.project-card-result-icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    font-size: 12px;
+    color: var(--card-accent, #155FFF);
+    background: color-mix(in srgb, var(--card-accent, #155FFF) 14%, #fff);
+}
+
+.project-card-result-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: #090B0E;
+}
+
+.project-card-result-label {
+    font-size: 13px;
+    color: #3D4C5E;
+}
+
+.project-card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 18px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #155FFF;
+}
+
+.project-card-result + .project-card-link {
+    margin-top: 14px;
+    padding-top: 0;
+    border-top: none;
+}
+
+.project-card-link i {
+    font-size: 12px;
+    transition: transform 0.25s ease;
+}
+
+.project-card:hover .project-card-link i {
+    transform: translateX(4px);
+}
