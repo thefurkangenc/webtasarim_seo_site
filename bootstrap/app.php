@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\EnsureModuleIsActive;
+use App\Http\Middleware\EnsureSetupCompleted;
 use App\Http\Middleware\EnsureSiteIsLive;
 use App\Http\Middleware\EnsureUserIsActive;
 use App\Http\Middleware\PermissionMiddleware as MiddlewarePermissionMiddleware;
@@ -33,6 +34,8 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->prefix('admin')
                 ->name('admin.')
                 ->group(base_path('routes/admin.php'));
+
+            Route::middleware('web')->group(base_path('routes/setup.php'));
 
             // Dinamik sayfaların catch-all'ı: her şeyi yakaladığı için
             // uygulamanın EN SON route'u olmak zorunda. Yeni bir route grubu
@@ -71,6 +74,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->web(append: [
             EnsureSiteIsLive::class,
+            EnsureSetupCompleted::class,
         ]);
 
         $middleware->encryptCookies(except: [

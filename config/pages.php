@@ -59,6 +59,7 @@ return [
         'password',
         'sayfa',
         'assets',
+        'kurulum',
     ],
 
 ];

@@ -109,7 +109,7 @@ return [
             // Google, bir web ajansı için LocalBusiness'ın alt türü olan
             // ProfessionalService'i önerir. Fiziksel adres/saat yayınlamak
             // istemeyen kullanıcı "Organization"a çeker.
-            'business_type' => 'ProfessionalService',
+            'business_type' => 'Organization',
             'founding_year' => '',
             'tax_id' => '',
             'tax_office' => '',
@@ -162,6 +162,9 @@ return [
             'marketing_description' => 'Reklam ve dönüşüm pikselleri: Meta, TikTok, LinkedIn ve Bing UET.',
             'lifetime_days' => '180',
             'version' => '1',
+        ],
+        'setup' => [
+            'completed' => '0',
         ],
     ],
 

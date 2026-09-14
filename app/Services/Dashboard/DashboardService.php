@@ -99,8 +99,8 @@ class DashboardService
                 'key' => 'seo',
                 'label' => 'Ortalama SEO Skoru',
                 'hint' => $seoOverview['analyzed'].'/'.$seoOverview['total'].' içerik analizli',
-                'value' => $seoOverview['average'],
-                'suffix' => '/100',
+                'value' => $seoOverview['average'] ?? '—',
+                'suffix' => $seoOverview['average'] === null ? '' : '/100',
                 'change' => null,
                 'icon' => 'travel_explore',
                 'tone' => $this->scoreTone($seoOverview['average']),
@@ -410,8 +410,12 @@ class DashboardService
         return $previous > 0 ? round((($current - $previous) / $previous) * 100, 1) : null;
     }
 
-    private function scoreTone(int $score): string
+    private function scoreTone(?int $score): string
     {
+        if ($score === null) {
+            return 'info';
+        }
+
         return match (true) {
             $score >= 71 => 'success',
             $score >= 41 => 'warning',

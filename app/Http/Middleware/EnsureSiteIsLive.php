@@ -32,6 +32,10 @@ class EnsureSiteIsLive
             return true;
         }
 
+        if ($request->routeIs('setup.*')) {
+            return true;
+        }
+
         if ($request->routeIs('maintenance.preview', 'maintenance.bypass')) {
             return true;
         }

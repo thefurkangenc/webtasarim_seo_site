@@ -5,7 +5,8 @@
 | gömülü YouTube/Vimeo adresleri buraya girmez.
 |
 | ffmpeg / ffprobe sistem ikiliğidir (Composer paketi yok). Yol boşsa
-| PATH'teki `ffmpeg` / `ffprobe` kullanılır.
+| PATH'teki `ffmpeg` / `ffprobe` kullanılır. PHP-FPM PATH'i brew yolunu
+| içermeyebilir; App\Support\Ffmpeg yaygın konumlara da bakar.
 */
 
 return [

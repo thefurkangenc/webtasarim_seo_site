@@ -4,6 +4,7 @@ namespace App\Services\Media;
 
 use App\Models\Media\Media;
 use App\Support\Activity;
+use App\Support\Ffmpeg;
 use Illuminate\Process\Exceptions\ProcessTimedOutException;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Storage;
@@ -87,7 +88,7 @@ class VideoProcessor
     private function probe(string $absolute): array
     {
         $result = Process::timeout(60)->run([
-            config('video.ffprobe'),
+            Ffmpeg::ffprobe() ?? config('video.ffprobe'),
             '-v', 'quiet',
             '-print_format', 'json',
             '-show_format',
@@ -218,7 +219,7 @@ class VideoProcessor
     {
         $timeout = (int) config('video.timeout', 600);
         $result = Process::timeout($timeout)->run([
-            config('video.ffmpeg'),
+            Ffmpeg::ffmpeg() ?? config('video.ffmpeg'),
             '-y',
             ...$arguments,
         ]);
@@ -303,8 +304,7 @@ class VideoProcessor
             return 'Video işlenirken zaman doldu.';
         }
 
-        if (! $this->binaryExists((string) config('video.ffmpeg'))
-            || ! $this->binaryExists((string) config('video.ffprobe'))) {
+        if (! Ffmpeg::installed()) {
             return 'Sunucuda ffmpeg yok.';
         }
 
@@ -313,14 +313,5 @@ class VideoProcessor
         }
 
         return 'Video işlenemedi.';
-    }
-
-    private function binaryExists(string $binary): bool
-    {
-        try {
-            return Process::timeout(5)->run([$binary, '-version'])->successful();
-        } catch (Throwable) {
-            return false;
-        }
     }
 }

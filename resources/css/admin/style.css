@@ -3,6 +3,7 @@
 /* Taranacak kaynaklar - buraya eklenmeyen dosyadaki class derlenmez */
 @source "../../views/admin/**/*.blade.php";
 @source "../../views/admin/html/**/*.html";
+@source "../../views/setup/**/*.blade.php";
 @source "../../../public/admin/assets/js/**/*.js";
 
 /**

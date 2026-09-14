@@ -94,6 +94,7 @@ return [
         'user' => ['label' => 'Kullanıcılar', 'icon' => 'group'],
         'role' => ['label' => 'Roller ve İzinler', 'icon' => 'admin_panel_settings'],
         'setting' => ['label' => 'Site Ayarları', 'icon' => 'settings'],
+        'setup' => ['label' => 'Kurulum', 'icon' => 'rocket_launch'],
         'module' => ['label' => 'Modül Yönetimi', 'icon' => 'widgets'],
         'contact' => ['label' => 'İletişim Formu', 'icon' => 'inbox'],
         'lead' => ['label' => 'Gelen Talepler', 'icon' => 'forward_to_inbox'],

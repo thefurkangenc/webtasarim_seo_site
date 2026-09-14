@@ -246,6 +246,16 @@
     min-height: 40px;
 }
 
+.vp__playback {
+    display: flex;
+    align-items: center;
+}
+
+.vp__btn[data-player-action="back"] .material-symbols-outlined,
+.vp__btn[data-player-action="forward"] .material-symbols-outlined {
+    font-size: 26px;
+}
+
 .vp__btn {
     display: inline-flex;
     align-items: center;

@@ -2,6 +2,7 @@
 
 namespace App\Services\Health;
 
+use App\Support\Ffmpeg;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -119,26 +120,27 @@ class SystemHealth
 
     private function ffmpeg(): Check
     {
-        $hint = 'Sunucuya ffmpeg kurun. Yol farklıysa .env içinde FFMPEG_PATH ve FFPROBE_PATH verin.';
+        $hint = 'Sunucuda şu komutu çalıştırın: '.Ffmpeg::installCommand().' Yol farklıysa .env içinde FFMPEG_PATH ve FFPROBE_PATH verin.';
+        $ffmpeg = Ffmpeg::ffmpeg();
+        $ffprobe = Ffmpeg::ffprobe();
 
-        try {
-            $ffmpeg = Process::timeout(5)->run([config('video.ffmpeg'), '-version']);
-            $ffprobe = Process::timeout(5)->run([config('video.ffprobe'), '-version']);
-        } catch (Throwable) {
+        if ($ffmpeg === null || $ffprobe === null) {
             return Check::critical('ffmpeg', 'ffmpeg',
-                'ffmpeg veya ffprobe çalıştırılamadı. Video kalite kopyaları ve kare önizlemesi üretilmez; orijinal dosya yine oynar.',
+                'ffmpeg veya ffprobe bulunamadı. Video kalite kopyaları ve kare önizlemesi üretilmez; orijinal dosya yine oynar.',
                 $hint);
         }
 
-        if ($ffmpeg->successful() && $ffprobe->successful()) {
-            $line = strtok($ffmpeg->output(), "\n") ?: 'ffmpeg kurulu.';
-
-            return Check::ok('ffmpeg', 'ffmpeg', $line);
+        try {
+            $result = Process::timeout(5)->run([$ffmpeg, '-version']);
+        } catch (Throwable) {
+            return Check::critical('ffmpeg', 'ffmpeg',
+                'ffmpeg çalıştırılamadı. Video kalite kopyaları ve kare önizlemesi üretilmez; orijinal dosya yine oynar.',
+                $hint);
         }
 
-        return Check::critical('ffmpeg', 'ffmpeg',
-            'ffmpeg veya ffprobe bulunamadı. Video kalite kopyaları ve kare önizlemesi üretilmez; orijinal dosya yine oynar.',
-            $hint);
+        $line = strtok($result->output(), "\n") ?: 'ffmpeg kurulu.';
+
+        return Check::ok('ffmpeg', 'ffmpeg', $line.' ('.$ffmpeg.')');
     }
 
     private function debug(): Check

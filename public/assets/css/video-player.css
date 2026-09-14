@@ -264,6 +264,17 @@
     min-height: 44px;
 }
 
+.vp__playback {
+    display: flex;
+    align-items: center;
+}
+
+.vp__icon {
+    display: block;
+    width: 24px;
+    height: 24px;
+}
+
 .vp__btn {
     display: inline-flex;
     align-items: center;
