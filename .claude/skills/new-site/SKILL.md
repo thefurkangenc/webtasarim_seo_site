@@ -326,37 +326,137 @@ commit at — sayfalar bunun üstüne gelecek.
 
 ## Adım 7 — Sayfa şablonları
 
-Her view sırayla elden geçer. Sıra önemlidir: her adımda site ayakta kalır.
+Yeni site kurulumunda `resources/views/pages/**` genelde **boştur** — eski
+temanın sayfaları silinir, sıfırdan yazılır. O yüzden kaynak eski view değil,
+**controller'ın view'a ne geçirdiğidir**. Aşağıdaki tablo sözleşmedir: her
+satırdaki dosya var olmak zorunda, yoksa o adres 500 verir.
 
-| # | View | Yeni temada kaynak | Panel bağı |
-|---|---|---|---|
-| 1 | `pages/home/index.blade.php` | seçilen `index*.html` | Hero, Service, WhyChooseUs, Testimonial, Blog servisleri |
-| 2 | `pages/about/index.blade.php` | `about.html` | (şu an ham tema markup'ı — yenisi de öyle taşınır) |
-| 3 | `pages/contact/index.blade.php` | `contact.html` | `route('iletisim.store')`, `data-contact-form` |
-| 4 | `pages/blog/index.blade.php` + `show.blade.php` | `blog*.html`, `blog-details*.html` | `BlogService`, `seoMeta()`, etiketler |
-| 5 | `pages/services/index.blade.php` + `show.blade.php` | `service*.html`, `service-details*.html` | `ServiceService`, **bölge kenar çubuğu** |
-| 6 | `pages/projects/*` | `portfolio*.html`, `portfolio-details.html` | `ProjectService`, kart partial'ı |
-| 7 | `pages/page/*` (layout/default/wide/sidebar/hero/faqs) | uygun iç sayfa | Dinamik sayfalar, `config/pages.php` |
-| 8 | `pages/legal/show`, `maintenance`, `subscriber/unsubscribed` | herhangi bir iç sayfa | küçük, en sona |
+(Eski view'ler duruyorsa — yalnızca tema değişikliği yapıyorsan — tablo yine
+geçerlidir; eski view sadece "hangi bağ nerede kullanılmıştı" için referanstır.)
 
-Her sayfada yöntem aynı:
+### View envanteri
 
-1. Mevcut view'deki `@php` veri bloklarını, `@foreach`/`@if` mantığını ve tüm
-   `{{ }}` bağlarını **bir kenara yaz** — bunlar korunacak.
-2. Yeni temanın karşılık gelen HTML'inden bölüm markup'ını al.
-3. Demo içeriğin yerine korunan bağları koy.
-4. `@extends('layout.app')`, `@section('title')` ve kardeşleri, `@push('css')`,
-   `@push('scripts')` aynen kalır.
-5. Göreli yollar (`assets/...`, `src=`, `style="background-image: url(...)"`)
+| View dosyası | Çağıran | View'a gelenler |
+|---|---|---|
+| `pages/home/index.blade.php` | `routes/web.php` (closure) | yalnızca `schemaContext` — **veriyi view kendi çeker**, aşağıya bak |
+| `pages/about/index.blade.php` | `AboutController` | `aboutTitle`, `aboutContent`, `testimonials`, `schemaContext` |
+| `pages/contact/index.blade.php` | `ContactController` | `ContactService::pageData()` yayılımı: `enabled`, `email`, `phone`, `tel_href`, `address`, `heading`, `intro`, `privacy_required`, `privacy_html`, `map_embed` (lat/lng doluysa gömülü harita adresi, yoksa null) + `schemaContext` |
+| `pages/blog/index.blade.php` | `routes/web.php` (closure) | `schemaContext` — listeyi view kendi çeker, aşağıdaki nota bak |
+| `pages/blog/show.blade.php` | `BlogController` | `blog`, `related`, `schemaContext` |
+| `pages/services/index.blade.php` | `ServiceController@index` | `services`, `schemaContext` |
+| `pages/services/show.blade.php` | `ServiceController@show` / `@showForRegion` | `service`, `region` (null olabilir), `rendered`, `regionGroups`, `projects`, `schemaContext` |
+| `pages/projects/index.blade.php` | `ProjectController@index` / `@category` | `projects` (paginator), `categories`, `category` (null olabilir), `schemaContext` |
+| `pages/projects/show.blade.php` | `ProjectController@show` | `project`, `related`, `schemaContext` |
+| `pages/page/layout.blade.php` + `default` / `wide` / `sidebar` | `PageController` (`config/pages.php` > `templates`) | `page`, `ancestors`, `section` (yalnızca sidebar), `schemaContext` |
+| `pages/legal/show.blade.php` | `LegalController` (kvkk + çerez) | `title`, `content`, `schemaContext` |
+| `pages/subscriber/unsubscribed.blade.php` | `SubscriberController` | `email` |
+| `pages/maintenance.blade.php` | `MaintenanceController` + `MaintenanceService` (503 ile de basılır) | `title`, `message`, `company_name`, `logo`, `retry_after` |
+
+**Blog listesi ve anasayfa özeldir**: controller yok, route doğrudan view
+döndürür, veriyi view'ın kendisi kapsayıcıdan çeker.
+
+Blog listesi bu projede tarihsel olarak panele **hiç bağlanmamıştı** — ham tema
+markup'ı, sabit demo kartlar. Yeniden yazarken bağlanır: `BlogService::active()`
+son yazıları verir; **sayfalı** bir liste isteniyorsa servise
+`ProjectService::listing()` kalıbında bir metot eklenir (sorgu serviste kalır,
+view'a Eloquent girmez) ve sayfalama `vendor.pagination.theme` ile basılır.
+
+Anasayfa bağları — biri unutulursa o blok siteden sessizce düşer, hata vermez:
+
+```php
+app(\App\Services\Hero\HeroService::class)->current();          // + $hero->getMedia('gallery')
+app(\App\Services\Service\ServiceService::class)->active(6);
+app(\App\Services\WhyChooseUs\WhyChooseUsService::class)->active();
+app(\App\Services\Testimonial\TestimonialService::class)->active();
+app(\App\Services\Blog\BlogService::class)->active(3);
+```
+
+`ReferenceService::active()` de vardır (referans/müşteri logoları) ama ön yüzde
+henüz hiçbir yerde basılmıyor — yeni temada logo şeridi varsa bağlanacak yer
+orasıdır.
+
+### Meta sözleşmesi — her sayfada uyulur
+
+`<title>` ve `<meta>` etiketlerini `<x-site.meta />` basar; view'ın işi ona
+doğru `@section`'ları vermektir. Üç kalıp var, sayfanın türüne göre biri seçilir:
+
+**1. Kaydı olan sayfa** (blog yazısı, hizmet, proje, dinamik sayfa) — dördü de
+yazılır, kaynak modelin `seoMeta()`'sıdır:
+
+```blade
+@php($seo = $blog->seoMeta())
+
+@section('title', $seo['title'] ?: $blog->title)
+@section('meta_description', (string) $seo['description'])
+@section('meta_keywords', (string) $seo['keywords'])
+@section('meta_image', (string) $seo['image'])
+```
+
+Hizmet sayfasında kaynak `$rendered['seo']`'dur (`Service::renderFor()` bölge
+yer tutucularını çözer ve bölge adıyla niteler) — `$service->seoMeta()` **değil**:
+
+```blade
+@section('title', $rendered['seo']['title'] ?: $rendered['title'])
+```
+
+Proje listesinde kategori varsa onun `seoMeta()`'sı, yoksa liste başlığı.
+
+**2. Sabit liste/bilgi sayfası** (Blog, Hizmetler, Hakkımızda, İletişim, KVKK,
+Çerez, bülten) — yalnızca başlık verilir, açıklama/anahtar kelime site geneli
+SEO ayarlarına düşer:
+
+```blade
+@section('title', 'Hizmetler')
+```
+
+**3. Anasayfa** — hiçbir `@section` yazılmaz. `<x-site.meta />` site geneli
+`seo.meta_title` / `seo.meta_description` ayarına düşer; panelden yönetilsin
+diye böyle.
+
+Kurallar:
+- Başlığa site adını **ekleme** — `meta.blade.php` sonuna " | Site Adı" ekliyor zaten.
+- `meta_description`/`meta_keywords`/`meta_image` boş geçilebilir; `(string)`
+  cast'i durur, `null` basılırsa `filled()` kontrolü onu zaten eler.
+- `schemaContext` view'da **kullanılmaz**; controller verir, `layout/app.blade.php`
+  bileşene geçirir. View'da ona dokunma.
+
+### Her sayfa için yöntem
+
+1. Tablodan o view'ın **ne aldığını** oku; emin değilsen controller'ı aç.
+2. Yeni temanın karşılık gelen HTML'inden bölüm markup'ını al
+   (`docs/tema-haritasi.md`'deki eşlemeye göre).
+3. Demo içeriğin yerine gelen değişkenleri koy; liste blokları `@foreach`,
+   koşullu bloklar `@if (filled(...))` ile sarılır — panelde boş bırakılan bir
+   alan sayfada boş bir kutu bırakmamalı.
+4. Meta sözleşmesinden doğru kalıbı uygula.
+5. `@extends('layout.app')`, `@section('content')`, gerekiyorsa `@push('css')` /
+   `@push('scripts')`.
+6. Göreli yollar (`src="assets/..."`, `style="background-image: url(assets/...)"`)
    `{{ asset('assets/...') }}` olur.
-6. İngilizce demo metni Türkçeye çevrilir.
-7. Sayfa açılıyor mu, ekran görüntüsü alınıyor mu — bak, sonra commit.
-8. `docs/tema-haritasi.md`'de o satırı ✓ yap, yeni öğrendiğin sınıf eşlemesini
-   tabloya ekle. **Commit'e bu dosya da girer.**
+7. İngilizce demo metni Türkçeye çevrilir.
+8. Sayfa açılıyor mu — **aç ve bak**, ekran görüntüsü al.
+9. `docs/tema-haritasi.md`'de satırı ✓ yap, öğrendiğin sınıf eşlemesini tabloya
+   ekle. Commit'e bu dosya da girer.
 
-**Paylaşılan partial'lar tek kaynaktır**, üç yerde birden değişir:
-`pages/projects/partials/card.blade.php` (liste + benzer işler + hizmet detayı),
-`pages/projects/partials/cta.blade.php`, `layout/partials/cta.blade.php`.
+### Sıra
+
+Site en hızlı ayağa kalkacak şekilde: **anasayfa → yasal/bülten/bakım (küçük ve
+sabit) → hakkımızda → iletişim → blog liste+detay → hizmetler liste+detay →
+projeler liste+detay → dinamik sayfa şablonları.**
+
+Sayfa yazılana kadar o adres 500 verir; kısa olanları öne almak siteyi erken
+bütünler.
+
+### Partial'lar
+
+Yeni sayfalarda tekrar eden bloklar partial'a çıkar — özellikle **proje kartı**:
+liste, proje detayındaki "Benzer İşler" ve hizmet detayındaki "Bu Hizmette
+Yaptığımız İşler" aynı dosyayı kullanmalı (`pages/projects/partials/card.blade.php`),
+yoksa kart üç yerde ayrı ayrı bakım ister. Aynısı SSS bloğu ve CTA için geçerli.
+
+Sayfalı listelerde sayfalama `{{ $projects->links('vendor.pagination.theme') }}`
+ile çağrılır — Laravel'in varsayılan view'i Tailwind olduğu için doğrudan
+kullanılamaz (bkz. Adım 8).
 
 ## Adım 8 — Sayfalama
 
@@ -426,6 +526,7 @@ php artisan tinker --execute="\App\Models\Popup\Popup::find(<id>)->update(['is_a
 - [ ] Her tema yolu `asset()` içinden geçiyor — göreli yol kalmadı
 - [ ] `html lang="tr"`
 - [ ] Arayüz metinleri Türkçe
+- [ ] Adım 7 envanterindeki her view dosyası var (eksik olan adres 500 verir)
 - [ ] `docs/tema-haritasi.md` güncel — tüm satırlar ✓, kalan madde yok
 
 ## Tuzaklar
