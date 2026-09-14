@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\Page\Page;
+use App\Models\Project\Project;
+use App\Models\ProjectCategory\ProjectCategory;
 use App\Models\Service\Service;
 
 /*
@@ -52,6 +54,8 @@ return [
     'auto_from' => [
         Page::class,
         Service::class,
+        Project::class,
+        ProjectCategory::class,
     ],
 
 ];

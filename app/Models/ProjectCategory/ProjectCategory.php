@@ -2,6 +2,7 @@
 
 namespace App\Models\ProjectCategory;
 
+use App\Contracts\RedirectsOnMove;
 use App\Models\Concerns\HasSeo;
 use App\Models\Concerns\HasSortOrder;
 use App\Models\Concerns\LogsActivity;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable(['name', 'slug', 'description', 'sort_order', 'is_active'])]
-class ProjectCategory extends Model
+class ProjectCategory extends Model implements RedirectsOnMove
 {
     use HasSeo, HasSortOrder, LogsActivity;
 
@@ -27,6 +28,24 @@ class ProjectCategory extends Model
     public function projects(): HasMany
     {
         return $this->hasMany(Project::class);
+    }
+
+    /**
+     * Kategori sayfaları (/projeler/kategori/{slug}) indekslenebilir olduğu
+     * için slug değişimi ölü URL bırakmamalı.
+     *
+     * @return array{from: string, to: string}|null
+     */
+    public function redirectableMove(): ?array
+    {
+        if (! $this->wasChanged('slug')) {
+            return null;
+        }
+
+        return [
+            'from' => 'projeler/kategori/'.$this->getOriginal('slug'),
+            'to' => 'projeler/kategori/'.$this->slug,
+        ];
     }
 
     /** @return array<string, mixed> */

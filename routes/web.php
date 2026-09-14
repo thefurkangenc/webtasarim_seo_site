@@ -6,6 +6,7 @@ use App\Http\Controllers\Contact\ContactController;
 use App\Http\Controllers\IndexNow\IndexNowController;
 use App\Http\Controllers\Legal\LegalController;
 use App\Http\Controllers\Maintenance\MaintenanceController;
+use App\Http\Controllers\Project\ProjectController;
 use App\Http\Controllers\Service\ServiceController;
 use App\Http\Controllers\Sitemap\RobotsController;
 use App\Http\Controllers\Sitemap\SitemapController;
@@ -29,6 +30,17 @@ Route::get('/blog', function () {
 })->name('blog');
 
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
+
+/*
+| Projeler (Neler Yaptık). Kategori route'u okunabilirlik için üstte; {slug}
+| tek segment eşlediği için zaten çakışmazlar. Üçü de Modül Yönetimi'ndeki
+| "project" anahtarına bağlı: modül pasifse ziyaretçiye 404 döner.
+*/
+Route::middleware('module.active:project,404')->group(function () {
+    Route::get('/projeler', [ProjectController::class, 'index'])->name('projeler');
+    Route::get('/projeler/kategori/{slug}', [ProjectController::class, 'category'])->name('projeler.kategori');
+    Route::get('/projeler/{slug}', [ProjectController::class, 'show'])->name('projeler.show');
+});
 
 Route::get('/iletisim', [ContactController::class, 'index'])->name('iletisim');
 Route::post('/iletisim', [ContactController::class, 'store'])

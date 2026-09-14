@@ -2,6 +2,9 @@
 
 namespace App\Models\Project;
 
+use App\Contracts\LinksToPublicPage;
+use App\Contracts\RedirectsOnMove;
+use App\Contracts\SubmitsToIndexNow;
 use App\Models\Concerns\HasFaqs;
 use App\Models\Concerns\HasMedia;
 use App\Models\Concerns\HasRevisions;
@@ -13,6 +16,7 @@ use App\Models\ProjectCategory\ProjectCategory;
 use App\Models\Service\Service;
 use App\Models\Testimonial\Testimonial;
 use App\Models\User;
+use App\Support\ModuleRegistry;
 use App\Support\VideoEmbed;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
@@ -31,7 +35,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
     'technologies', 'results', 'video_url',
     'status', 'is_featured', 'sort_order',
 ])]
-class Project extends Model
+class Project extends Model implements LinksToPublicPage, RedirectsOnMove, SubmitsToIndexNow
 {
     use HasFaqs, HasMedia, HasRevisions, HasSeo, HasSortOrder, HasTags, LogsActivity;
 
@@ -93,6 +97,56 @@ class Project extends Model
     public function statusLabel(): string
     {
         return self::STATUSES[$this->status] ?? $this->status;
+    }
+
+    /**
+     * Kaydın ön yüz adresi — yayında değilse ya da "project" modülü Modül
+     * Yönetimi'nden kapatılmışsa null. Modül kontrolü bilinçli olarak burada:
+     * menü öğeleri ve kart linkleri publicUrl() null dönünce kendiliğinden
+     * düşer, böylece modül kapalıyken 404'e giden bir link kalmaz.
+     */
+    public function publicUrl(): ?string
+    {
+        if (! app(ModuleRegistry::class)->isActive('project')) {
+            return null;
+        }
+
+        return $this->status === self::STATUS_PUBLISHED
+            ? route('projeler.show', $this->slug)
+            : null;
+    }
+
+    /**
+     * IndexNow adresi yayın durumuna da modül durumuna da BAKMAZ: yayından
+     * kaldırılan ya da modülü kapatılan bir adresin de motora bildirilmesi
+     * gerekir, motor 404'ü görüp dizininden düşürsün.
+     */
+    public function indexNowUrl(): ?string
+    {
+        return filled($this->slug) ? route('projeler.show', $this->slug) : null;
+    }
+
+    public function publicLinkLabel(): string
+    {
+        return $this->title;
+    }
+
+    /**
+     * Slug değiştiyse eski → yeni adres. Kategori adresin parçası olmadığı
+     * için kategori değişimi yönlendirme üretmez.
+     *
+     * @return array{from: string, to: string}|null
+     */
+    public function redirectableMove(): ?array
+    {
+        if (! $this->wasChanged('slug')) {
+            return null;
+        }
+
+        return [
+            'from' => 'projeler/'.$this->getOriginal('slug'),
+            'to' => 'projeler/'.$this->slug,
+        ];
     }
 
     /** Künyede "Mart 2026" görünür; gün bilgisi bir projede anlamsız. */

@@ -4,6 +4,7 @@ namespace App\Support;
 
 use App\Models\Blog\Blog;
 use App\Models\Page\Page;
+use App\Models\Project\Project;
 use App\Models\Service\Service;
 use App\Models\ServiceRegion\ServiceRegion;
 use Illuminate\Database\Eloquent\Model;
@@ -32,6 +33,8 @@ final class SchemaContext
     public const SERVICE = 'service';
 
     public const BLOG_POSTING = 'blog_posting';
+
+    public const PROJECT = 'project';
 
     public const PAGE = 'page';
 
@@ -112,6 +115,21 @@ final class SchemaContext
         ]), $blog);
     }
 
+    public static function project(Project $project, ?string $url = null): self
+    {
+        $url ??= route('projeler.show', $project->slug);
+
+        $trail = [['Neler Yaptık', route('projeler')]];
+
+        if ($category = $project->category) {
+            $trail[] = [$category->name, route('projeler.kategori', $category->slug)];
+        }
+
+        $trail[] = [$project->title, $url];
+
+        return new self(self::PROJECT, $url, $project->title, self::trail($trail), $project);
+    }
+
     public static function page(Page $page, ?string $url = null): self
     {
         $url ??= $page->url();
@@ -149,6 +167,7 @@ final class SchemaContext
             'iletisim' => self::contact(),
             'hizmetler' => self::collection('Hizmetler', route('hizmetler')),
             'blog' => self::collection('Blog', route('blog')),
+            'projeler' => self::collection('Neler Yaptık', route('projeler')),
             'kvkk' => self::legal('KVKK Aydınlatma Metni', route('kvkk')),
             'cerez-politikasi' => self::legal('Çerez Politikası', route('cerez-politikasi')),
             default => self::generic(),

@@ -103,6 +103,74 @@ class ProjectService
     }
 
     /**
+     * Ön yüz liste sayfası: sayfalanmış projeler + filtre çubuğu için
+     * kategoriler. Kategori verilirse yalnızca o kategori listelenir.
+     *
+     * Filtre çubuğunda YALNIZCA yayında projesi olan aktif kategoriler yer
+     * alır — boş bir kategoriye tıklayıp boş sayfa görmek kullanıcıyı
+     * şaşırtır, arama motoru için de zayıf sayfa üretir.
+     *
+     * @return array{projects: LengthAwarePaginator, categories: Collection<int, ProjectCategory>, category: ?ProjectCategory}
+     */
+    public function listing(?ProjectCategory $category = null, int $perPage = 9): array
+    {
+        return [
+            'projects' => Project::where('status', Project::STATUS_PUBLISHED)
+                ->with(['media', 'category:id,name,slug'])
+                ->when($category, fn ($query, ProjectCategory $selected) => $query->where('project_category_id', $selected->id))
+                ->orderByDesc('is_featured')
+                ->orderBy('sort_order')
+                ->paginate($perPage),
+            'categories' => ProjectCategory::where('is_active', true)
+                ->whereHas('projects', fn ($query) => $query->where('status', Project::STATUS_PUBLISHED))
+                ->orderBy('sort_order')
+                ->get(['id', 'name', 'slug']),
+            'category' => $category,
+        ];
+    }
+
+    /** Ön yüzde slug ile aktif kategori. Pasif ya da olmayan kategori için null. */
+    public function findCategoryBySlug(string $slug): ?ProjectCategory
+    {
+        return ProjectCategory::where('slug', $slug)
+            ->where('is_active', true)
+            ->with('seo.ogMedia')
+            ->first();
+    }
+
+    /**
+     * Detay sayfasındaki "Benzer İşler". Aynı kategoriden başlar; kategori
+     * yoksa ya da o kategoride yeterli proje yoksa en yeni diğer projelerle
+     * tamamlanır — blok ya dolu görünür ya hiç görünmez, yarım kalmaz.
+     *
+     * @return Collection<int, Project>
+     */
+    public function related(Project $project, int $limit = 3): Collection
+    {
+        $base = fn () => Project::where('status', Project::STATUS_PUBLISHED)
+            ->whereKeyNot($project->id)
+            ->with(['media', 'category:id,name,slug']);
+
+        $same = $project->project_category_id
+            ? $base()->where('project_category_id', $project->project_category_id)
+                ->orderBy('sort_order')
+                ->limit($limit)
+                ->get()
+            : collect();
+
+        if ($same->count() >= $limit) {
+            return $same;
+        }
+
+        return $same->merge(
+            $base()->whereKeyNot($same->modelKeys())
+                ->latest('id')
+                ->limit($limit - $same->count())
+                ->get(),
+        );
+    }
+
+    /**
      * Ön yüzde yayındaki projeler, sıraya göre. Kategori ya da hizmet verilirse
      * o kırılımla daraltılır — "bu hizmette yaptığımız işler" bloğu bunu kullanır.
      *
