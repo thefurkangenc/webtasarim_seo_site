@@ -1,7 +1,7 @@
 @php
     $meta = [
         ['icon' => 'schedule', 'label' => 'Geldiği zaman', 'value' => $lead->created_at?->format('d.m.Y H:i')],
-        ['icon' => 'inbox', 'label' => 'Kaynak', 'value' => $lead->sourceLabel()],
+        ['icon' => $lead->source->icon(), 'label' => 'Tip', 'value' => $lead->sourceLabel()],
         ['icon' => 'description', 'label' => 'Gönderildiği sayfa', 'value' => $lead->page_url],
         ['icon' => 'router', 'label' => 'IP adresi', 'value' => $lead->ip_address],
         ['icon' => 'devices', 'label' => 'Tarayıcı', 'value' => $lead->user_agent],
@@ -11,7 +11,7 @@
     $assigneeOptions = $users;
 @endphp
 
-<div data-lead-detail data-id="{{ $lead->id }}">
+<div data-lead-detail data-id="{{ $lead->id }}" data-title="{{ $lead->source->detailTitle() }}">
 
     {{-- Gönderen --}}
     <div class="flex flex-wrap items-start justify-between gap-[12px] pb-[18px] mb-[18px] border-b border-gray-100 dark:border-[#172036]">
@@ -24,9 +24,14 @@
                 @endif
             </div>
         </div>
-        <span class="text-[10px] font-medium py-[2px] px-[9px] text-{{ $lead->statusColor() }}-600 bg-{{ $lead->statusColor() }}-100 dark:bg-[#ffffff14] inline-block rounded-sm shrink-0">
-            {{ $lead->statusLabel() }}
-        </span>
+        <div class="flex items-center gap-[6px] shrink-0">
+            <span class="text-[10px] font-medium py-[2px] px-[9px] text-{{ $lead->sourceColor() }}-600 bg-{{ $lead->sourceColor() }}-100 dark:bg-[#ffffff14] inline-block rounded-sm">
+                {{ $lead->sourceLabel() }}
+            </span>
+            <span class="text-[10px] font-medium py-[2px] px-[9px] text-{{ $lead->statusColor() }}-600 bg-{{ $lead->statusColor() }}-100 dark:bg-[#ffffff14] inline-block rounded-sm">
+                {{ $lead->statusLabel() }}
+            </span>
+        </div>
     </div>
 
     {{-- Mesaj --}}
@@ -112,10 +117,10 @@
                 @csrf
 
                 <x-admin::form.input name="subject" label="Konu"
-                    :value="'Re: '.(filled($lead->subject) ? $lead->subject : 'Mesajınız hakkında')" wrapper="mb-[15px]" />
+                    :value="$lead->source->replySubject($lead->subject)" wrapper="mb-[15px]" />
 
                 <x-admin::form.textarea name="body" label="Mesaj" rows="5" class="h-[140px]"
-                    placeholder="Merhaba, mesajınız için teşekkürler…" wrapper="mb-[15px]" />
+                    :placeholder="$lead->source->replyPlaceholder()" wrapper="mb-[15px]" />
 
                 <p class="text-xs text-gray-500 dark:text-gray-400 mb-[12px]">
                     Yanıt <strong>{{ $lead->email }}</strong> adresine, Ayarlar → Posta bölümünde tanımlı

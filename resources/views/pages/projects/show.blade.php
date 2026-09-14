@@ -153,7 +153,7 @@
                                         <h3>Proje Videosu</h3>
                                     </div>
                                     <div class="mt-20">
-                                        <x-player :embed="$video" :media="$videoFile" :title="$project->title" />
+                                        <x-player :embed="$video" :media="$videoFile" :title="$project->title" :poster="$cover?->url('medium')" />
                                     </div>
                                 @endif
 

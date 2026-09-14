@@ -69,6 +69,14 @@
                     @endforeach
                 </select>
 
+                <select id="lead-source" data-choices
+                    class="h-[38px] rounded-md text-sm text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[12px] cursor-pointer outline-0 focus:border-primary-500">
+                    <option value="">Tüm tipler</option>
+                    @foreach (\App\Enums\LeadSource::cases() as $source)
+                        <option value="{{ $source->value }}">{{ $source->label() }}</option>
+                    @endforeach
+                </select>
+
                 <select id="lead-assigned" data-choices
                     class="h-[38px] rounded-md text-sm text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[12px] cursor-pointer outline-0 focus:border-primary-500">
                     <option value="">Herkes</option>
@@ -146,6 +154,9 @@
                         </th>
                         <th class="font-medium ltr:text-left rtl:text-right px-[20px] py-[11px] bg-gray-50 dark:bg-[#15203c] whitespace-nowrap cursor-pointer" data-column="name">
                             Gönderen <i class="ri-expand-up-down-fill text-gray-500 dark:text-gray-400"></i>
+                        </th>
+                        <th class="font-medium ltr:text-left rtl:text-right px-[20px] py-[11px] bg-gray-50 dark:bg-[#15203c] whitespace-nowrap cursor-pointer" data-column="source">
+                            Tip <i class="ri-expand-up-down-fill text-gray-500 dark:text-gray-400"></i>
                         </th>
                         <th class="font-medium ltr:text-left rtl:text-right px-[20px] py-[11px] bg-gray-50 dark:bg-[#15203c]">Mesaj</th>
                         <th class="font-medium ltr:text-left rtl:text-right px-[20px] py-[11px] bg-gray-50 dark:bg-[#15203c] whitespace-nowrap cursor-pointer" data-column="status">

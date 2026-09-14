@@ -127,10 +127,10 @@ class NotificationService
             ->get()
             ->map(fn (Lead $lead) => [
                 'key' => "lead:{$lead->id}",
-                'title' => $lead->name.' yeni bir mesaj gönderdi',
+                'title' => $lead->source->notificationTitle($lead->name),
                 'body' => $lead->subject ?: $lead->sourceLabel(),
                 'url' => route('admin.lead.show', $lead),
-                'icon' => 'mark_email_unread',
+                'icon' => $lead->source->icon(),
                 'tone' => 'primary',
                 'permission' => 'lead.index',
                 'at' => $lead->created_at,

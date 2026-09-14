@@ -2,6 +2,7 @@
 
 namespace App\Services\Contact;
 
+use App\Enums\LeadSource;
 use App\Mail\Contact\ContactAutoReply;
 use App\Mail\Contact\ContactNotification;
 use App\Models\Lead\Lead;
@@ -58,7 +59,7 @@ class ContactService
         }
 
         $submission = Lead::query()->create([
-            'source' => 'contact',
+            'source' => LeadSource::Contact,
             'name' => $data['name'],
             'email' => $data['email'],
             'phone' => $data['phone'] ?? null,

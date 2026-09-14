@@ -2,6 +2,7 @@
 
 namespace App\Services\Lead;
 
+use App\Enums\LeadSource;
 use App\Mail\Lead\LeadReply;
 use App\Models\Lead\Lead;
 use App\Models\User;
@@ -177,7 +178,7 @@ class LeadService
      */
     public function exportRows(array $filters): \Generator
     {
-        yield ['Tarih', 'Kaynak', 'Ad', 'E-posta', 'Telefon', 'Konu', 'Mesaj', 'Durum', 'Atanan', 'Okundu', 'Yanıtlandı', 'Sayfa', 'IP'];
+        yield ['Tarih', 'Tip', 'Ad', 'E-posta', 'Telefon', 'Konu', 'Mesaj', 'Durum', 'Atanan', 'Okundu', 'Yanıtlandı', 'Sayfa', 'IP'];
 
         $query = Lead::query()->with('assignee:id,name');
         $this->applyFilters($query, $filters);
@@ -239,7 +240,10 @@ class LeadService
                     ->orWhere('message', 'like', "%{$search}%")
             ))
             ->when($filters['status'] ?? null, fn (Builder $q, string $status) => $q->where('status', $status))
-            ->when($filters['source'] ?? null, fn (Builder $q, string $source) => $q->where('source', $source))
+            ->when($filters['source'] ?? null, fn (Builder $q, mixed $source) => $q->where(
+                'source',
+                $source instanceof LeadSource ? $source->value : $source,
+            ))
             ->when($filters['assigned_to'] ?? null, fn (Builder $q, $id) => $id === 'none'
                 ? $q->whereNull('assigned_to')
                 : $q->where('assigned_to', $id))

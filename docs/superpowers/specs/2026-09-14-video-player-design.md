@@ -218,7 +218,9 @@ Mevcut çağrı yerleri:
 ### Markup sözleşmesi
 
 Kök `[data-player]`. Native `<video>` (`controls` yok, `playsinline`,
-`preload="metadata"`, poster). Kontrol çubuğu. Config:
+`preload="none"`). `src` ilk oynatmaya kadar yazılmaz. Poster ayrı katmanda.
+Oynatılmamışken (`is-pristine`) alt çubuk gizlidir; yalnızca thumbnail +
+ortadaki play. Tıklanınca kaynak yüklenir, çubuk gelir. Config:
 
 ```html
 <script type="application/json" data-player-config>…playerPayload + title…</script>
@@ -235,6 +237,10 @@ yalnızca `qualities` doluysa), PiP (`pictureInPictureEnabled` yoksa gizli),
 tam ekran. Durunca ve hover'da görünür; oynarken ~2.5 sn hareketsizlikte
 gizlenir (`prefers-reduced-motion` gizlemez). iOS'ta ses slider'ı etkisiz,
 mute çalışır.
+
+Oynatılmamışken (`is-pristine`) alt çubuk yoktur; poster + ortadaki play.
+İlk tık (veya Space/K) `src`'yi yazar ve çubuğu açar. Çift tık ±10sn/tam
+ekran, ilk jestten sonraki ~400 ms içinde yok sayılır.
 
 İşaret: tek tık oynat/duraklat. Çift tık sol üçte bir −10sn, sağ +10sn,
 orta tam ekran. Süre çubuğu tık/sürükle. Hover: sprite yoksa zaman, varsa
@@ -281,8 +287,9 @@ koyar. Bileşen `@once` ile script basar (video-field kalıbı).
 Sinema kromu: alt gradient `transparent → rgba(0,0,0,.75)`, ikon beyaz.
 İlerleme: ön yüz `#155FFF` (`--vtc-bg-main4` / şerit), admin `#605DFF`
 (Trezo primary-500). YouTube kırmızısı yok. Kutu 16:9, letterbox siyah.
-Köşe: ön yüz ~12px, admin `rounded-md`. Durmuşken ortada dairesel play +
-poster. Yüklemede üstte ince çubuk + spinner. ±10 sn merkez rozeti ~600 ms.
+Köşe: ön yüz ~12px, admin `rounded-md`. Oynatılmamışken alt çubuk yok;
+ortada marka renkli dairesel play + poster (yoksa siyah zemin). Tıklanınca
+kaynak yüklenir, çubuk gelir. Yüklemede spinner. ±10 sn merkez rozeti ~600 ms.
 Ayar paneli dişliden yukarı. Süre çubuğu 4px / hover 6px. Tipografi: ön yüz
 Outfit, admin Trezo; süre `tabular-nums` 12–13px. Mobil tap ≥44px; dar
 ekranda ses slider gizlenir, mute kalır. `:focus-visible` 2px beyaz halka.

@@ -1,8 +1,8 @@
 <?php
 
 /*
-| Gelen talepler (lead) modülü. Durum ve kaynak etiketlerinin tek kaynağı —
-| panel listesi, filtreler ve rozet renkleri buradan okunur.
+| Gelen talepler (lead) modülü. Durum etiketlerinin tek kaynağı burası;
+| form tipi (`source`) `App\Enums\LeadSource`.
 */
 
 return [
@@ -21,14 +21,6 @@ return [
         'in_progress' => ['label' => 'İşlemde', 'color' => 'warning', 'chart' => '#ffb264', 'icon' => 'hourglass_top'],
         'done' => ['label' => 'Tamamlandı', 'color' => 'success', 'chart' => '#37d80a', 'icon' => 'task_alt'],
         'spam' => ['label' => 'Spam', 'color' => 'danger', 'chart' => '#ee3e5d', 'icon' => 'report'],
-    ],
-
-    /*
-    | Talebin hangi formdan geldiği. Yeni bir form eklenince buraya bir satır
-    | yazılır; listede filtre olarak kendiliğinden görünür.
-    */
-    'sources' => [
-        'contact' => 'İletişim formu',
     ],
 
     // Liste ekranında bir sayfada gösterilecek kayıt sayısı.

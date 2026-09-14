@@ -2,6 +2,7 @@
 
 namespace App\Models\Lead;
 
+use App\Enums\LeadSource;
 use App\Models\Concerns\LogsActivity;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -12,8 +13,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 /**
- * Siteden gelen talep / mesaj. Şu an tek kaynağı iletişim formu (`source`),
- * ileride açılır pencere ve teklif formları da buraya düşecek.
+ * Siteden gelen talep / mesaj.
+ *
+ * `source` hangi form türünden geldiği (`LeadSource`: iletişim, teklif…).
+ * Yeni bir form aynı gelen kutusuna düşer, enum'a case eklenir.
  */
 #[Fillable([
     'source', 'name', 'email', 'phone', 'subject', 'message', 'status',
@@ -35,6 +38,7 @@ class Lead extends Model
     protected function casts(): array
     {
         return [
+            'source' => LeadSource::class,
             'read_at' => 'datetime',
             'replied_at' => 'datetime',
         ];
@@ -67,7 +71,12 @@ class Lead extends Model
 
     public function sourceLabel(): string
     {
-        return config("leads.sources.{$this->source}", $this->source);
+        return $this->source->label();
+    }
+
+    public function sourceColor(): string
+    {
+        return $this->source->color();
     }
 
     /** Liste ekranı için — tam mesaj yerine kısa bir önizleme gider. */
@@ -83,7 +92,9 @@ class Lead extends Model
             'status' => $this->status,
             'status_label' => $this->statusLabel(),
             'status_color' => $this->statusColor(),
+            'source' => $this->source->value,
             'source_label' => $this->sourceLabel(),
+            'source_color' => $this->sourceColor(),
             'assignee' => $this->assignee?->name,
             'is_read' => $this->isRead(),
             'is_replied' => $this->replied_at !== null,

@@ -18,7 +18,7 @@
                                 style="border-top:1px solid #e5e7eb;margin-top:8px;">
                                 <tr>
                                     <td style="padding-top:16px;font-size:12px;color:#6b7280;">
-                                        <strong>Bize gönderdiğiniz mesaj</strong>
+                                        <strong>{{ $lead->source->quotedMessageLabel() }}</strong>
                                         ({{ $lead->created_at?->format('d.m.Y H:i') }}):<br>
                                         <span style="white-space:pre-wrap;">{{ \Illuminate\Support\Str::limit($lead->message, 600) }}</span>
                                     </td>

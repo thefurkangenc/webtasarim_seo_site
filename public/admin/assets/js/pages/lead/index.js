@@ -39,6 +39,7 @@ if (root) {
         search: document.getElementById('lead-search'),
         filters: {
             status: document.getElementById('lead-status'),
+            source: document.getElementById('lead-source'),
             assigned_to: document.getElementById('lead-assigned'),
             unread: document.getElementById('lead-unread'),
             trashed: trashedFilter,
@@ -62,12 +63,13 @@ if (root) {
                         </div>
                     </div>`)}
                 ${cell(`
+                    <span class="text-[10px] font-medium py-[1px] px-[8px] text-${item.source_color}-600 bg-${item.source_color}-100 dark:bg-[#ffffff14] inline-block rounded-sm whitespace-nowrap">${escapeHtml(item.source_label)}</span>`)}
+                ${cell(`
                     <span class="block text-sm truncate max-w-[380px] ${unread ? 'text-black dark:text-white' : 'text-gray-600 dark:text-gray-300'}">${escapeHtml(item.subject || item.preview)}</span>
-                    <span class="flex items-center gap-[8px] mt-[3px] text-[11px] text-gray-400">
-                        <span>${escapeHtml(item.source_label)}</span>
+                    ${item.is_replied || item.has_note ? `<span class="flex items-center gap-[8px] mt-[3px] text-[11px] text-gray-400">
                         ${item.is_replied ? '<span class="inline-flex items-center gap-[2px] text-success-600"><i class="material-symbols-outlined !text-[13px]">reply</i>yanıtlandı</span>' : ''}
                         ${item.has_note ? '<span class="inline-flex items-center gap-[2px]"><i class="material-symbols-outlined !text-[13px]">sticky_note_2</i>not var</span>' : ''}
-                    </span>`)}
+                    </span>` : ''}`)}
                 ${cell(`
                     <span class="text-[10px] font-medium py-[1px] px-[8px] text-${item.status_color}-600 bg-${item.status_color}-100 dark:bg-[#ffffff14] inline-block rounded-sm">${escapeHtml(item.status_label)}</span>
                     ${item.assignee ? `<span class="block text-[11px] text-gray-400 mt-[3px] truncate max-w-[120px]">${escapeHtml(item.assignee)}</span>` : ''}`)}
@@ -210,6 +212,7 @@ if (root) {
         Object.entries({
             search: document.getElementById('lead-search').value.trim(),
             status: statusSelect.value,
+            source: document.getElementById('lead-source').value,
             assigned_to: document.getElementById('lead-assigned').value,
             unread: unreadBox.checked ? '1' : '',
             trashed: trashedFilter.checked ? '1' : '',
@@ -227,6 +230,10 @@ if (root) {
 
         if (open) {
             await modal.open(`/admin/lead/${open.dataset.open}`, { title: 'Talep detayı', width: 'max-w-[720px]' });
+            const detailTitle = modal.body.querySelector('[data-lead-detail]')?.dataset.title;
+            if (detailTitle) {
+                modal.titleElement.textContent = detailTitle;
+            }
             bindDetail();
             // Açılınca okundu sayıldığı için liste ve sayılar tazelenir.
             refresh();

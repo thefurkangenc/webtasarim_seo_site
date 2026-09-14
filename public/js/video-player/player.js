@@ -59,6 +59,9 @@ export class VideoPlayer {
         this.menu = null;
         this.cues = [];
         this.qualityId = 'source';
+        this.started = false;
+        this.startedAt = 0;
+        this.everPlayed = false;
 
         this.build();
         this.bind();
@@ -90,12 +93,11 @@ export class VideoPlayer {
 
         const title = escapeHtml(this.config.title ?? '');
         const src = escapeHtml(this.config.src ?? '');
-        const poster = this.config.poster ? ` poster="${escapeHtml(this.config.poster)}"` : '';
         const pip = document.pictureInPictureEnabled
             ? `<button type="button" class="vp__btn" data-player-action="pip" aria-label="Resim içinde resim">${this.icons.pip}</button>`
             : '';
 
-        this.root.classList.add('vp');
+        this.root.classList.add('vp', 'is-pristine');
         this.root.tabIndex = 0;
         this.root.setAttribute('role', 'region');
         this.root.setAttribute('aria-label', title || 'Video oynatıcı');
@@ -109,7 +111,10 @@ export class VideoPlayer {
         }
 
         this.root.insertAdjacentHTML('afterbegin', `
-            <video class="vp__media" playsinline preload="metadata"${poster} src="${src}"></video>
+            <video class="vp__media" playsinline preload="none"></video>
+            <div class="vp__poster" data-player-poster hidden>
+                <img alt="" data-player-poster-img>
+            </div>
             <div class="vp__ui">
                 <button type="button" class="vp__big-play" data-player-action="toggle" aria-label="Oynat">${this.icons.play}</button>
                 <div class="vp__badge" data-player-badge hidden></div>
@@ -118,7 +123,7 @@ export class VideoPlayer {
                     <p>Video oynatılamadı.</p>
                     <a data-player-download href="${src}" download>Videoyu indir</a>
                 </div>
-                <div class="vp__chrome" data-player-chrome>
+                <div class="vp__chrome" data-player-chrome aria-hidden="true">
                     <div class="vp__progress" data-player-progress>
                         <div class="vp__buf" data-player-buf></div>
                         <div class="vp__played" data-player-played></div>
@@ -154,6 +159,8 @@ export class VideoPlayer {
 
     cache() {
         this.video = this.root.querySelector('.vp__media');
+        this.posterBox = this.root.querySelector('[data-player-poster]');
+        this.posterImg = this.root.querySelector('[data-player-poster-img]');
         this.bigPlay = this.root.querySelector('.vp__big-play');
         this.badge = this.root.querySelector('[data-player-badge]');
         this.spinner = this.root.querySelector('[data-player-spinner]');
@@ -170,7 +177,7 @@ export class VideoPlayer {
         this.currentEl = this.root.querySelector('[data-player-current]');
         this.durationEl = this.root.querySelector('[data-player-duration]');
         this.menuEl = this.root.querySelector('[data-player-menu]');
-        this.toggleBtns = this.root.querySelectorAll('[data-player-action="toggle"]');
+        this.toggleBtns = this.root.querySelectorAll('.vp__bar [data-player-action="toggle"]');
         this.muteBtn = this.root.querySelector('[data-player-action="mute"]');
         this.fsBtn = this.root.querySelector('[data-player-action="fs"]');
         this.download = this.root.querySelector('[data-player-download]');
@@ -191,13 +198,23 @@ export class VideoPlayer {
         on(this.video, 'timeupdate', () => this.sync());
         on(this.video, 'progress', () => this.sync());
         on(this.video, 'waiting', () => this.setBusy(true));
-        on(this.video, 'playing', () => this.setBusy(false));
+        on(this.video, 'playing', () => {
+            this.everPlayed = true;
+            this.setBusy(false);
+            this.hidePoster();
+        });
         on(this.video, 'canplay', () => this.setBusy(false));
         on(this.video, 'loadedmetadata', () => this.sync());
         on(this.video, 'ended', () => this.sync());
         on(this.video, 'volumechange', () => this.syncVolume());
         on(this.video, 'ratechange', () => this.paintMenu());
         on(this.video, 'error', () => this.showError(true));
+
+        on(this.posterImg, 'error', () => {
+            if (this.posterBox) {
+                this.posterBox.hidden = true;
+            }
+        });
 
         on(this.volume, 'input', () => {
             this.video.muted = false;
@@ -238,29 +255,89 @@ export class VideoPlayer {
             this.download.href = this.config.src;
         }
 
-        if (! keepSrc && this.config.src && this.video.src !== this.config.src) {
-            this.video.src = this.config.src;
-        }
-
-        if (this.config.poster) {
-            this.video.poster = this.config.poster;
-        }
+        this.paintPoster();
 
         const wanted = prefs.quality();
         const match = (this.config.qualities ?? []).find((item) => item.id === wanted);
 
-        if (match && this.video.src !== match.src && ! keepSrc) {
+        if (match) {
             this.qualityId = match.id;
-            this.video.src = match.src;
-        } else {
-            const current = (this.config.qualities ?? []).find((item) => item.src === this.video.currentSrc || item.src === this.video.src);
-            this.qualityId = current?.id ?? this.qualityId;
         }
 
-        this.loadSprite(this.config.sprite);
+        if (this.started) {
+            if (! keepSrc) {
+                const src = this.chooseSrc();
+
+                if (src && this.video.src !== src) {
+                    this.video.src = src;
+                }
+            } else {
+                const current = (this.config.qualities ?? []).find((item) => item.src === this.video.currentSrc || item.src === this.video.src);
+                this.qualityId = current?.id ?? this.qualityId;
+            }
+
+            this.loadSprite(this.config.sprite);
+        }
+
         this.paintMenu();
         this.poll();
         this.sync();
+    }
+
+    chooseSrc() {
+        const wanted = prefs.quality();
+        const match = (this.config.qualities ?? []).find((item) => item.id === wanted);
+
+        return match?.src || this.config.src || '';
+    }
+
+    paintPoster() {
+        if (! this.posterBox || ! this.posterImg) {
+            return;
+        }
+
+        const url = this.config.poster;
+
+        if (! url || this.started) {
+            this.posterBox.hidden = ! url || this.started;
+
+            return;
+        }
+
+        this.posterImg.src = url;
+        this.posterImg.alt = this.config.title ?? '';
+        this.posterBox.hidden = false;
+    }
+
+    hidePoster() {
+        if (this.posterBox) {
+            this.posterBox.hidden = true;
+        }
+    }
+
+    begin() {
+        if (this.started) {
+            return;
+        }
+
+        this.started = true;
+        this.startedAt = Date.now();
+        this.root.classList.remove('is-pristine');
+        this.root.classList.add('is-started');
+        this.bigPlay.hidden = true;
+
+        if (this.chrome) {
+            this.chrome.removeAttribute('aria-hidden');
+        }
+
+        const src = this.chooseSrc();
+
+        if (src) {
+            this.video.src = src;
+        }
+
+        this.loadSprite(this.config.sprite);
+        this.setBusy(true);
     }
 
     async loadSprite(sprite) {
@@ -295,6 +372,16 @@ export class VideoPlayer {
             return;
         }
 
+        if (! this.started) {
+            this.play();
+
+            return;
+        }
+
+        if (Date.now() - this.startedAt < 400) {
+            return;
+        }
+
         if (this.clickTimer) {
             return;
         }
@@ -312,6 +399,10 @@ export class VideoPlayer {
 
         window.clearTimeout(this.clickTimer);
         this.clickTimer = 0;
+
+        if (! this.started || Date.now() - this.startedAt < 400) {
+            return;
+        }
 
         const rect = this.root.getBoundingClientRect();
         const x = (event.clientX - rect.left) / rect.width;
@@ -356,7 +447,15 @@ export class VideoPlayer {
         if (key === ' ' || key === 'k' || key === 'K') {
             event.preventDefault();
             this.toggle();
-        } else if (key === 'j' || key === 'J' || key === 'ArrowLeft') {
+
+            return;
+        }
+
+        if (! this.started) {
+            return;
+        }
+
+        if (key === 'j' || key === 'J' || key === 'ArrowLeft') {
             event.preventDefault();
             this.skip(-SKIP);
         } else if (key === 'l' || key === 'L' || key === 'ArrowRight') {
@@ -394,6 +493,15 @@ export class VideoPlayer {
     }
 
     play() {
+        this.begin();
+
+        if (! this.video.src) {
+            this.setBusy(false);
+            this.showError(true);
+
+            return;
+        }
+
         instances.forEach((player) => {
             if (player !== this) {
                 player.video.pause();
@@ -655,7 +763,7 @@ export class VideoPlayer {
     scheduleIdle() {
         window.clearTimeout(this.idleTimer);
 
-        if (this.video.paused || this.menu || this.dragging) {
+        if (this.video.paused || this.menu || this.dragging || ! this.started) {
             return;
         }
 
@@ -701,7 +809,7 @@ export class VideoPlayer {
             button.setAttribute('aria-label', label);
         });
         this.bigPlay.innerHTML = this.icons.play;
-        this.bigPlay.hidden = playing;
+        this.bigPlay.hidden = playing || (this.started && ! this.everPlayed);
 
         if (this.video.buffered.length) {
             const end = this.video.buffered.end(this.video.buffered.length - 1);
