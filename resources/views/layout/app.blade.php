@@ -2,15 +2,15 @@
 <html lang="en">
 
 <head>
-    @include('layout.partials.meta')
-    @include('layout.partials.schema')
-    @include('layout.partials.tracking', ['placement' => 'head'])
+    <x-site.meta />
+    <x-site.schema :context="$schemaContext ?? null" />
+    <x-site.tracking placement="head" />
 
     @include('layout.partials.css')
 </head>
 
 <body class="body1">
-    @include('layout.partials.tracking', ['placement' => 'body'])
+    <x-site.tracking placement="body" />
     <div class="paginacontainer">
 
         <div class="progress-wrap">
@@ -39,7 +39,7 @@
 
     <!--=====PRELOADER END=======-->
 
-    @include('layout.partials.notices')
+    <x-site.notices />
 
     <!--=====HEADER START=======-->
     @include('layout.partials.header')
@@ -56,11 +56,11 @@
 
     @include('layout.partials.footer')
 
-    @include('layout.partials.cookie-banner')
+    <x-site.cookie-banner />
 
     <!--=== js === -->
     @include('layout.partials.scripts')
-    @include('layout.partials.integrations')
+    <x-site.integrations />
 
 </body>
 

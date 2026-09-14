@@ -1,6 +1,9 @@
+@props([
+    'placement' => 'head',
+])
+
 @php
     $tracking = \App\Support\Settings::group('tracking');
-    $placement = $placement ?? 'head';
     $consent = \App\Support\Consent::snapshot();
     $analytics = $consent['analytics'];
     $marketing = $consent['marketing'];

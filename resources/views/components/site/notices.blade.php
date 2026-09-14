@@ -45,7 +45,7 @@
                 @endif
 
                 @if ($popup['collect_email'])
-                    @include('layout.partials.subscribe-form', ['source' => 'popup'])
+                    <x-site.subscribe-form source="popup" />
                 @endif
             </div>
         </div>

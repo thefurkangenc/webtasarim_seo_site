@@ -46,9 +46,27 @@ class SchemaGraphBuilder
      */
     public function build(SchemaContext $ctx): array
     {
-        $company = $this->settings->getGroup('company');
+        // Kurulum sihirbazı firma formunu kısmi yazar (fax/koordinat/SEO yok).
+        // Admin kaydı da her anahtarı doldurmak zorunda değil; eksik anahtar
+        // PHP 8'de "Undefined array key" ile sayfayı düşürmesin.
+        $company = array_replace([
+            'name' => '',
+            'legal_name' => '',
+            'email' => '',
+            'phone' => '',
+            'fax' => '',
+            'address' => '',
+            'short_description' => '',
+            'logo_media_id' => '',
+            'latitude' => '',
+            'longitude' => '',
+        ], $this->settings->getGroup('company'));
         $schema = array_replace(config('settings.defaults.schema', []), $this->settings->getGroup('schema'));
-        $seo = $this->settings->getGroup('seo');
+        $seo = array_replace([
+            'site_name' => '',
+            'meta_title' => '',
+            'meta_description' => '',
+        ], $this->settings->getGroup('seo'));
 
         $nodes = [
             $this->organization($company, $schema),

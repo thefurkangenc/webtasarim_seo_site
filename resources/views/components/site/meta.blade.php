@@ -1,13 +1,13 @@
 @php
     // Sayfa kendi @section('title', ...) tanımlıyorsa (blog/legal gibi) o kullanılır,
     // yoksa (ör. ana sayfa) site geneli SEO ayarlarındaki meta başlığa düşülür.
-    $metaSeo = \App\Support\Settings::group('seo');
-    $metaCompany = \App\Support\Settings::group('company');
-    $metaSiteName = $metaSeo['site_name'] ?: ($metaCompany['name'] ?: config('app.name'));
+    $metaSeo = \App\Support\Settings::merged('seo');
+    $metaCompany = \App\Support\Settings::merged('company');
+    $metaSiteName = ($metaSeo['site_name'] ?? null) ?: ($metaCompany['name'] ?? null) ?: config('app.name');
     $metaPageTitle = trim($__env->yieldContent('title'));
     $metaTitle = $metaPageTitle !== ''
         ? $metaPageTitle.' | '.$metaSiteName
-        : ($metaSeo['meta_title'] ?: $metaSiteName);
+        : (($metaSeo['meta_title'] ?? null) ?: $metaSiteName);
 
     // Sayfa @section('meta_description'|'meta_keywords'|'meta_image', ...)
     // tanımlıyorsa (hizmet/bölge sayfaları gibi, kendi SEO alanları olan

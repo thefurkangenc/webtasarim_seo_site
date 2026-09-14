@@ -1,3 +1,7 @@
+@props([
+    'source',
+])
+
 <form action="{{ route('bulten.store') }}" method="POST" data-subscribe-form class="site-subscribe">
     @csrf
     <input type="hidden" name="source" value="{{ $source }}">
