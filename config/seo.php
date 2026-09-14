@@ -25,6 +25,7 @@ return [
         // Vaka çalışmasının ikna gücü metin uzunluğundan çok künye, görsel ve
         // sonuç bloklarından gelir — eşik bilinçli olarak daha düşük.
         'project' => 200,
+        'gallery' => 50,
     ],
 
     // Bir paragraf bu kelime sayısını aşarsa "uzun paragraf".

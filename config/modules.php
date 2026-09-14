@@ -1,7 +1,7 @@
 <?php
 
 /*
-| Yönetilebilir 13 içerik modülünün değişmeyen gerçeği. Panelden sadece
+| Yönetilebilir içerik modüllerinin değişmeyen gerçeği. Panelden sadece
 | isim (override) ve aktiflik değişir — o `modules` tablosunda durur.
 | Yeni bir modül route'u koddan geldiği için bu dosya elle yazılır.
 |
@@ -35,6 +35,12 @@ return [
             'icon' => 'workspaces',
             'description' => 'Vaka çalışmaları ve proje kategorileri.',
             'routes' => ['project', 'project-category'],
+        ],
+        'gallery' => [
+            'label' => 'Foto Galeri',
+            'icon' => 'photo_library',
+            'description' => 'Fotoğraf albümleri.',
+            'routes' => ['gallery'],
         ],
         'testimonial' => [
             'label' => 'Müşteri Yorumları',

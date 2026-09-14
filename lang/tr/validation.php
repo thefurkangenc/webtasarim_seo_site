@@ -186,6 +186,7 @@ return [
         'slug' => 'kısa ad',
         'content' => 'içerik',
         'excerpt' => 'özet',
+        'description' => 'açıklama',
         'status' => 'durum',
         'folder_id' => 'klasör',
         'category_id' => 'kategori',
@@ -217,6 +218,9 @@ return [
         'service_account' => 'service account JSON',
         'tags' => 'etiketler',
         'tags.*' => 'etiket',
+        'gallery_media_ids' => 'fotoğraflar',
+        'gallery_media_ids.*' => 'fotoğraf',
+        'gallery_media_ids_cover' => 'kapak fotoğrafı',
 
         // Yapay zeka
         'ai_prompt_id' => 'şablon',

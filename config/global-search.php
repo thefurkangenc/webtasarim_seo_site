@@ -2,6 +2,7 @@
 
 use App\Models\Blog\Blog;
 use App\Models\Faq\Faq;
+use App\Models\Gallery\Gallery;
 use App\Models\Lead\Lead;
 use App\Models\Media\Media;
 use App\Models\Page\Page;
@@ -77,6 +78,16 @@ return [
             'subtitle' => 'client_name',
             'route' => 'admin.project.edit',
             'permission' => 'project.index',
+        ],
+        'gallery' => [
+            'label' => 'Foto Galeri',
+            'icon' => 'photo_library',
+            'model' => Gallery::class,
+            'columns' => ['title', 'slug', 'description'],
+            'title' => 'title',
+            'subtitle' => 'slug',
+            'route' => 'admin.gallery.edit',
+            'permission' => 'gallery.index',
         ],
         'lead' => [
             'label' => 'Gelen Talepler',

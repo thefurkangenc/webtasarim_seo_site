@@ -3,6 +3,7 @@
 use App\Models\Blog\Blog;
 use App\Models\BlogCategory\BlogCategory;
 use App\Models\Faq\Faq;
+use App\Models\Gallery\Gallery;
 use App\Models\Page\Page;
 use App\Models\Project\Project;
 use App\Models\ProjectCategory\ProjectCategory;
@@ -12,6 +13,7 @@ use App\Models\Testimonial\Testimonial;
 use App\Models\WhyChooseUs\WhyChooseUs;
 use App\Services\Blog\BlogService;
 use App\Services\Faq\FaqService;
+use App\Services\Gallery\GalleryService;
 use App\Services\Page\PageService;
 use App\Services\Project\ProjectService;
 use App\Services\Reference\ReferenceService;
@@ -181,6 +183,32 @@ return [
                     'type' => 'tags',
                     'input' => 'text',
                     'placeholder' => 'Etiketler (virgülle)',
+                ],
+                'delete' => [
+                    'label' => 'Sil',
+                    'icon' => 'delete',
+                    'type' => 'delete',
+                    'danger' => true,
+                ],
+            ],
+        ],
+
+        'gallery' => [
+            'model' => Gallery::class,
+            'service' => GalleryService::class,
+            'noun' => 'galeri',
+            'actions' => [
+                'publish' => [
+                    'label' => 'Yayınla',
+                    'icon' => 'publish',
+                    'type' => 'update',
+                    'values' => ['status' => Gallery::STATUS_PUBLISHED],
+                ],
+                'draft' => [
+                    'label' => 'Taslağa al',
+                    'icon' => 'drafts',
+                    'type' => 'update',
+                    'values' => ['status' => Gallery::STATUS_DRAFT],
                 ],
                 'delete' => [
                     'label' => 'Sil',

@@ -43,6 +43,7 @@ return [
         'service' => 'Hizmetler',
         'service-region' => 'Hizmet Bölgeleri',
         'project' => 'Neler Yaptık',
+        'gallery' => 'Foto Galeri',
         'activity-log' => 'Log Kayıtları',
     ],
 
@@ -343,6 +344,18 @@ return [
         ['name' => 'project-category.reorder', 'label' => 'Proje Kategori - Sırala', 'category' => 'project', 'guard_name' => 'web'],
         ['name' => 'project-category.update', 'label' => 'Proje Kategori - Güncelle', 'category' => 'project', 'guard_name' => 'web'],
         ['name' => 'project-category.destroy', 'label' => 'Proje Kategori - Sil', 'category' => 'project', 'guard_name' => 'web'],
+
+        ['name' => 'gallery.index', 'label' => 'Foto Galeri - Listele', 'category' => 'gallery', 'guard_name' => 'web'],
+        ['name' => 'gallery.datatable', 'label' => 'Foto Galeri - Tablo', 'category' => 'gallery', 'guard_name' => 'web'],
+        ['name' => 'gallery.create', 'label' => 'Foto Galeri - Ekle', 'category' => 'gallery', 'guard_name' => 'web'],
+        ['name' => 'gallery.store', 'label' => 'Foto Galeri - Kaydet', 'category' => 'gallery', 'guard_name' => 'web'],
+        ['name' => 'gallery.reorder', 'label' => 'Foto Galeri - Sırala', 'category' => 'gallery', 'guard_name' => 'web'],
+        ['name' => 'gallery.edit', 'label' => 'Foto Galeri - Düzenle', 'category' => 'gallery', 'guard_name' => 'web'],
+        ['name' => 'gallery.update', 'label' => 'Foto Galeri - Güncelle', 'category' => 'gallery', 'guard_name' => 'web'],
+        ['name' => 'gallery.destroy', 'label' => 'Foto Galeri - Sil', 'category' => 'gallery', 'guard_name' => 'web'],
+        ['name' => 'gallery.bulk', 'label' => 'Foto Galeri - Toplu İşlem', 'category' => 'gallery', 'guard_name' => 'web'],
+        ['name' => 'gallery.seo', 'label' => 'Foto Galeri - SEO', 'category' => 'gallery', 'guard_name' => 'web'],
+        ['name' => 'gallery.schema-org', 'label' => 'Foto Galeri - Schema.org', 'category' => 'gallery', 'guard_name' => 'web'],
 
         ['name' => 'service-region.index', 'label' => 'Hizmet Bölgesi - Listele', 'category' => 'service-region', 'guard_name' => 'web'],
         ['name' => 'service-region.datatable', 'label' => 'Hizmet Bölgesi - Tablo', 'category' => 'service-region', 'guard_name' => 'web'],

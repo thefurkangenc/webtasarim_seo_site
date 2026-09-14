@@ -2,6 +2,7 @@
 
 use App\Models\Blog\Blog;
 use App\Models\Faq\Faq;
+use App\Models\Gallery\Gallery;
 use App\Models\Page\Page;
 use App\Models\Project\Project;
 use App\Models\Reference\Reference;
@@ -10,6 +11,7 @@ use App\Models\Testimonial\Testimonial;
 use App\Models\WhyChooseUs\WhyChooseUs;
 use App\Services\Blog\BlogService;
 use App\Services\Faq\FaqService;
+use App\Services\Gallery\GalleryService;
 use App\Services\Page\PageService;
 use App\Services\Project\ProjectService;
 use App\Services\Reference\ReferenceService;
@@ -74,6 +76,13 @@ return [
             'icon' => 'workspaces',
             'service' => ProjectService::class,
             'edit_route' => 'admin.project.edit',
+        ],
+        'gallery' => [
+            'class' => Gallery::class,
+            'label' => 'Foto Galeri',
+            'icon' => 'photo_library',
+            'service' => GalleryService::class,
+            'edit_route' => 'admin.gallery.edit',
         ],
         'faq' => [
             'class' => Faq::class,

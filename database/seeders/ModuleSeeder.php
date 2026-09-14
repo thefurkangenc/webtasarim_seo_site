@@ -6,7 +6,7 @@ use App\Models\Module\Module;
 use Illuminate\Database\Seeder;
 
 /**
- * config/modules.php'deki 13 modülü modules tablosuna upsert eder.
+ * config/modules.php'deki içerik modüllerini modules tablosuna upsert eder.
  * Tekrar çalıştırılabilir; mevcut name/is_active değerine dokunmaz.
  */
 class ModuleSeeder extends Seeder

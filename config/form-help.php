@@ -774,6 +774,38 @@ return [
 
     /*
     |----------------------------------------------------------------------
+    | Foto Galeri formu
+    |----------------------------------------------------------------------
+    */
+    'gallery' => [
+        'title' => [
+            'title' => 'Galeri başlığı',
+            'body' => <<<'HTML'
+                <p>Albümün adı. Listede ve (ileride) sitede bu başlık görünür. Kısa ve neyi gösterdiğini anlatan bir ad seçin: “Ofisimiz”, “2026 Açılış Töreni” gibi.</p>
+                HTML,
+        ],
+        'description' => [
+            'title' => 'Açıklama',
+            'body' => <<<'HTML'
+                <p>Galerinin neyi gösterdiğini 1–2 cümlede yazın. Liste kartlarında ve meta açıklama boşsa arama sonuçlarında kullanılır.</p>
+                <p>Fotoğrafların kendisi asıl içeriktir; buraya uzun bir metin yazmanıza gerek yok.</p>
+                HTML,
+        ],
+        'gallery_media_ids' => [
+            'title' => 'Fotoğraflar',
+            'body' => <<<'HTML'
+                <p>Albümdeki fotoğraflar. Birden fazla dosya seçebilir, sürükleyerek sıralayabilir, yıldız ile kapak fotoğrafını işaretleyebilirsiniz.</p>
+                <ul>
+                    <li>Kapak, listede ve paylaşımda görünen ilk görseldir</li>
+                    <li>Yüklerken kırpma penceresi açılır — oranı Modül Yönetimi’nden değiştirilebilir</li>
+                    <li>Silinen fotoğraf medya kütüphanesinde kalır, yalnızca bu albümden çıkar</li>
+                </ul>
+                HTML,
+        ],
+    ],
+
+    /*
+    |----------------------------------------------------------------------
     | Sayfa formu
     |----------------------------------------------------------------------
     */

@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\BrokenLink\BrokenLinkController;
 use App\Http\Controllers\Admin\Bulk\BulkController;
 use App\Http\Controllers\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\Admin\Faq\FaqController;
+use App\Http\Controllers\Admin\Gallery\GalleryController;
 use App\Http\Controllers\Admin\Health\HealthController;
 use App\Http\Controllers\Admin\Hero\HeroController;
 use App\Http\Controllers\Admin\IndexNow\IndexNowController;
@@ -467,6 +468,17 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
         Route::get('{project}/edit', 'edit')->name('edit');
         Route::put('{project}', 'update')->name('update');
         Route::delete('{project}', 'destroy')->name('destroy');
+    });
+
+    Route::middleware('module.active:gallery')->prefix('gallery')->name('gallery.')->controller(GalleryController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('datatable', 'datatable')->name('datatable');
+        Route::get('create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+        Route::put('reorder', 'reorder')->name('reorder');
+        Route::get('{gallery}/edit', 'edit')->name('edit');
+        Route::put('{gallery}', 'update')->name('update');
+        Route::delete('{gallery}', 'destroy')->name('destroy');
     });
 
     // Tekil kayıt modülü: liste, ekleme ve silme yok — tek form.

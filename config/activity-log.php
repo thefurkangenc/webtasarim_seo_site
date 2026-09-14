@@ -83,6 +83,7 @@ return [
         'service-region' => ['label' => 'Hizmet Bölgeleri', 'icon' => 'map'],
         'project' => ['label' => 'Neler Yaptık', 'icon' => 'workspaces'],
         'project-category' => ['label' => 'Proje Kategorileri', 'icon' => 'category'],
+        'gallery' => ['label' => 'Foto Galeri', 'icon' => 'photo_library'],
         'faq' => ['label' => 'Sıkça Sorulan Sorular', 'icon' => 'help'],
         'testimonial' => ['label' => 'Müşteri Yorumları', 'icon' => 'reviews'],
         'reference' => ['label' => 'Referanslar', 'icon' => 'handshake'],

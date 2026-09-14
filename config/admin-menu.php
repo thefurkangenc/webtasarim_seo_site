@@ -22,29 +22,19 @@ use App\Services\Health\HealthService;
 return [
 
     [
-        'title' => 'Modüller',
+        'title' => 'Genel Bakış',
         'items' => [
             [
                 'title' => 'Dashboard',
                 'icon' => 'dashboard',
                 'route' => 'admin.dashboard',
             ],
-            [
-                'title' => 'Gelen Talepler',
-                'icon' => 'inbox',
-                'route' => 'admin.lead.index',
-                'active' => 'admin.lead.*',
-                'permission' => 'lead.index',
-                'module' => 'lead',
-            ],
-            [
-                'title' => 'Tanıtım Alanı',
-                'icon' => 'wallpaper',
-                'route' => 'admin.hero.index',
-                'active' => 'admin.hero.*',
-                'permission' => 'hero.index',
-                'module' => 'hero',
-            ],
+        ],
+    ],
+
+    [
+        'title' => 'İçerik Yönetimi',
+        'items' => [
             [
                 'title' => 'Sayfalar',
                 'icon' => 'description',
@@ -73,6 +63,14 @@ return [
                 ],
             ],
             [
+                'title' => 'Tanıtım Alanı',
+                'icon' => 'wallpaper',
+                'route' => 'admin.hero.index',
+                'active' => 'admin.hero.*',
+                'permission' => 'hero.index',
+                'module' => 'hero',
+            ],
+            [
                 'title' => 'Hizmetler',
                 'icon' => 'design_services',
                 'module' => 'service',
@@ -92,7 +90,7 @@ return [
                 ],
             ],
             [
-                'title' => 'Neler Yaptık',
+                'title' => 'Projeler',
                 'icon' => 'workspaces',
                 'module' => 'project',
                 'children' => [
@@ -109,6 +107,14 @@ return [
                         'permission' => 'project-category.index',
                     ],
                 ],
+            ],
+            [
+                'title' => 'Foto Galeri',
+                'icon' => 'photo_library',
+                'route' => 'admin.gallery.index',
+                'active' => 'admin.gallery.*',
+                'permission' => 'gallery.index',
+                'module' => 'gallery',
             ],
             [
                 'title' => 'Müşteri Yorumları',
@@ -142,26 +148,6 @@ return [
                 'permission' => 'why-choose-us.index',
                 'module' => 'why-choose-us',
             ],
-        ],
-    ],
-
-    [
-        'title' => 'Kullanıcı Yönetimi',
-        'items' => [
-            [
-                'title' => 'Roller',
-                'icon' => 'admin_panel_settings',
-                'route' => 'admin.role.index',
-                'active' => 'admin.role.*',
-                'permission' => 'role.index',
-            ],
-        ],
-    ],
-
-    [
-        'title' => 'Genel',
-        'items' => [
-
             [
                 'title' => 'Menüler',
                 'icon' => 'menu',
@@ -170,33 +156,56 @@ return [
                 'permission' => 'menu.index',
             ],
             [
-                'title' => 'Modül Yönetimi',
-                'icon' => 'widgets',
-                'route' => 'admin.module.index',
-                'active' => 'admin.module.*',
-                'permission' => 'module.index',
+                'title' => 'Medya Kütüphanesi',
+                'icon' => 'perm_media',
+                'route' => 'admin.media.index',
+                'active' => 'admin.media.*',
+                'permission' => 'media.index',
+            ],
+        ],
+    ],
+
+    [
+        'title' => 'Pazarlama & İletişim',
+        'items' => [
+            [
+                'title' => 'Gelen Talepler',
+                'icon' => 'inbox',
+                'route' => 'admin.lead.index',
+                'active' => 'admin.lead.*',
+                'permission' => 'lead.index',
+                'module' => 'lead',
             ],
             [
-                'title' => 'Yönlendirmeler',
-                'icon' => 'alt_route',
-                'route' => 'admin.redirect.index',
-                'active' => 'admin.redirect.*',
-                'permission' => 'redirect.index',
+                'title' => 'Duyuru Şeridi',
+                'icon' => 'campaign',
+                'route' => 'admin.announcement.index',
+                'active' => 'admin.announcement.*',
+                'permission' => 'announcement.index',
+                'module' => 'announcement',
             ],
             [
-                'title' => 'Kırık Linkler',
-                'icon' => 'link_off',
-                'route' => 'admin.broken-link.index',
-                'active' => 'admin.broken-link.*',
-                'permission' => 'broken-link.index',
+                'title' => 'Açılır Pencereler',
+                'icon' => 'web_asset',
+                'route' => 'admin.popup.index',
+                'active' => 'admin.popup.*',
+                'permission' => 'popup.index',
+                'module' => 'popup',
             ],
             [
-                'title' => 'Schema.org',
-                'icon' => 'data_object',
-                'route' => 'admin.schema.index',
-                'active' => 'admin.schema.*',
-                'permission' => 'schema.index',
+                'title' => 'Bülten Aboneleri',
+                'icon' => 'forward_to_inbox',
+                'route' => 'admin.subscriber.index',
+                'active' => 'admin.subscriber.*',
+                'permission' => 'subscriber.index',
+                'module' => 'subscriber',
             ],
+        ],
+    ],
+
+    [
+        'title' => 'SEO & Analitik',
+        'items' => [
             [
                 'title' => 'Analitik',
                 'icon' => 'insights',
@@ -225,44 +234,46 @@ return [
                 'active' => 'admin.search-console.*',
                 'permission' => 'search-console.index',
             ],
+            [
+                'title' => 'Yönlendirmeler',
+                'icon' => 'alt_route',
+                'route' => 'admin.redirect.index',
+                'active' => 'admin.redirect.*',
+                'permission' => 'redirect.index',
+            ],
+            [
+                'title' => 'Kırık Linkler',
+                'icon' => 'link_off',
+                'route' => 'admin.broken-link.index',
+                'active' => 'admin.broken-link.*',
+                'permission' => 'broken-link.index',
+            ],
+            [
+                'title' => 'Schema.org',
+                'icon' => 'data_object',
+                'route' => 'admin.schema.index',
+                'active' => 'admin.schema.*',
+                'permission' => 'schema.index',
+            ],
+        ],
+    ],
 
-            [
-                'title' => 'Duyuru Şeridi',
-                'icon' => 'campaign',
-                'route' => 'admin.announcement.index',
-                'active' => 'admin.announcement.*',
-                'permission' => 'announcement.index',
-                'module' => 'announcement',
-            ],
-            [
-                'title' => 'Açılır Pencereler',
-                'icon' => 'web_asset',
-                'route' => 'admin.popup.index',
-                'active' => 'admin.popup.*',
-                'permission' => 'popup.index',
-                'module' => 'popup',
-            ],
-            [
-                'title' => 'Bülten Aboneleri',
-                'icon' => 'forward_to_inbox',
-                'route' => 'admin.subscriber.index',
-                'active' => 'admin.subscriber.*',
-                'permission' => 'subscriber.index',
-                'module' => 'subscriber',
-            ],
-            [
-                'title' => 'Medya Kütüphanesi',
-                'icon' => 'perm_media',
-                'route' => 'admin.media.index',
-                'active' => 'admin.media.*',
-                'permission' => 'media.index',
-            ],
+    [
+        'title' => 'Sistem',
+        'items' => [
             [
                 'title' => 'Site Ayarları',
                 'icon' => 'settings',
                 'route' => 'admin.setting.index',
                 'active' => 'admin.setting.*',
                 'permission' => 'setting.index',
+            ],
+            [
+                'title' => 'Modül Yönetimi',
+                'icon' => 'widgets',
+                'route' => 'admin.module.index',
+                'active' => 'admin.module.*',
+                'permission' => 'module.index',
             ],
             [
                 'title' => 'Revizyonlar',
@@ -277,7 +288,6 @@ return [
                 'route' => 'admin.health.index',
                 'active' => 'admin.health.*',
                 'permission' => 'health.index',
-                // Kritik/uyarı sayısını rozet olarak basar (cache'ten okur).
                 'badge' => HealthService::class,
             ],
             [
@@ -287,6 +297,12 @@ return [
                 'active' => 'admin.activity-log.*',
                 'permission' => 'activity-log.index',
             ],
+        ],
+    ],
+
+    [
+        'title' => 'Yapay Zeka',
+        'items' => [
             [
                 'title' => 'Yapay Zeka',
                 'icon' => 'smart_toy',
@@ -304,6 +320,19 @@ return [
                         'permission' => 'ai-prompt.index',
                     ],
                 ],
+            ],
+        ],
+    ],
+
+    [
+        'title' => 'Kullanıcı ve Yetki',
+        'items' => [
+            [
+                'title' => 'Roller',
+                'icon' => 'admin_panel_settings',
+                'route' => 'admin.role.index',
+                'active' => 'admin.role.*',
+                'permission' => 'role.index',
             ],
         ],
     ],

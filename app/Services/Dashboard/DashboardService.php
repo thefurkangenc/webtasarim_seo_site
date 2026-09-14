@@ -6,6 +6,7 @@ use App\Models\ActivityLog\ActivityLog;
 use App\Models\Blog\Blog;
 use App\Models\BrokenLink\BrokenLink;
 use App\Models\Faq\Faq;
+use App\Models\Gallery\Gallery;
 use App\Models\Lead\Lead;
 use App\Models\Media\Media;
 use App\Models\Page\Page;
@@ -200,6 +201,7 @@ class DashboardService
             $this->contentRow('Blog Yazıları', 'article', Blog::class, 'blog.index', route('admin.blog.index'), 'status', Blog::STATUS_PUBLISHED, 'blog'),
             $this->contentRow('Hizmetler', 'design_services', Service::class, 'service.index', route('admin.service.index'), 'status', Service::STATUS_PUBLISHED, 'service'),
             $this->contentRow('Neler Yaptık', 'workspaces', Project::class, 'project.index', route('admin.project.index'), 'status', Project::STATUS_PUBLISHED, 'project'),
+            $this->contentRow('Foto Galeri', 'photo_library', Gallery::class, 'gallery.index', route('admin.gallery.index'), 'status', Gallery::STATUS_PUBLISHED, 'gallery'),
             $this->contentRow('Müşteri Yorumları', 'reviews', Testimonial::class, 'testimonial.index', route('admin.testimonial.index'), 'is_active', true, 'testimonial'),
             $this->contentRow('Sıkça Sorulan Sorular', 'quiz', Faq::class, 'faq.index', route('admin.faq.index'), 'is_active', true, 'faq'),
         ])
@@ -279,6 +281,7 @@ class DashboardService
             Blog::class => 'admin.blog.edit',
             Service::class => 'admin.service.edit',
             Project::class => 'admin.project.edit',
+            Gallery::class => 'admin.gallery.edit',
         ];
 
         return Seo::query()
@@ -315,6 +318,7 @@ class DashboardService
             'Blog' => Blog::class,
             'Hizmet' => Service::class,
             'Proje' => Project::class,
+            'Galeri' => Gallery::class,
             'Sayfa' => Page::class,
         ];
 
@@ -387,7 +391,8 @@ class DashboardService
         return Page::where('status', Page::STATUS_PUBLISHED)->count()
             + Blog::where('status', Blog::STATUS_PUBLISHED)->count()
             + Service::where('status', Service::STATUS_PUBLISHED)->count()
-            + Project::where('status', Project::STATUS_PUBLISHED)->count();
+            + Project::where('status', Project::STATUS_PUBLISHED)->count()
+            + Gallery::where('status', Gallery::STATUS_PUBLISHED)->count();
     }
 
     private function draftCount(): int
@@ -395,7 +400,8 @@ class DashboardService
         return Page::where('status', Page::STATUS_DRAFT)->count()
             + Blog::where('status', Blog::STATUS_DRAFT)->count()
             + Service::where('status', Service::STATUS_DRAFT)->count()
-            + Project::where('status', Project::STATUS_DRAFT)->count();
+            + Project::where('status', Project::STATUS_DRAFT)->count()
+            + Gallery::where('status', Gallery::STATUS_DRAFT)->count();
     }
 
     /** Önceki dönem sıfırsa yüzde hesaplanamaz; null "kıyas yok" demektir. */
