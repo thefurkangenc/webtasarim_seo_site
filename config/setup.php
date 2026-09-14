@@ -60,6 +60,75 @@ return [
         MenuSeeder::class,
     ],
 
+    /*
+    | `php artisan setup:reset` bunlara dokunmaz. Sihirbazın foundation
+    | adımı da aynı seeder'ları tekrar basar.
+    */
+    'keep_tables' => [
+        'migrations',
+        'roles',
+        'permissions',
+        'role_has_permissions',
+        'countries',
+        'modules',
+        'media_presets',
+        'ai_prompts',
+        'service_regions',
+        'menus',
+    ],
+
+    /*
+    | İçerik, kullanıcı, ayar ve log. Truncate edilir; kurulum yeniden açılır.
+    */
+    'reset_tables' => [
+        'users',
+        'model_has_roles',
+        'model_has_permissions',
+        'password_reset_tokens',
+        'sessions',
+        'settings',
+        'pages',
+        'blogs',
+        'blog_categories',
+        'services',
+        'service_region_service',
+        'projects',
+        'project_categories',
+        'project_service',
+        'galleries',
+        'testimonials',
+        'references',
+        'faqs',
+        'faqables',
+        'why_choose_us',
+        'heroes',
+        'announcements',
+        'popups',
+        'leads',
+        'subscribers',
+        'social_links',
+        'tags',
+        'taggables',
+        'seo',
+        'menu_items',
+        'media',
+        'media_folders',
+        'mediables',
+        'ai_providers',
+        'ai_generations',
+        'activity_logs',
+        'revisions',
+        'redirects',
+        'not_found_logs',
+        'broken_links',
+        'notification_reads',
+        'cache',
+        'cache_locks',
+        'jobs',
+        'job_batches',
+        'failed_jobs',
+    ],
+
     'legal' => [
         'kvkk' => <<<'HTML'
 <p>Bu aydınlatma metni, 6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamında {name} tarafından hazırlanmıştır. Metni kendi faaliyetinize göre Ayarlar → İçerikler bölümünden güncelleyin.</p>

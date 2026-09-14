@@ -68,7 +68,8 @@ public/admin/assets/css/pages/blog/index.css   <- SADECE gerçek ihtiyaç varsa;
 ```
 1. routes/web.php      (ön yüz)
 2. routes/admin.php    ("admin" öneki, then: kancasında)
-3. routes/pages.php    (dinamik sayfaların catch-all'ı)
+3. routes/setup.php    (/kurulum sihirbazı)
+4. routes/pages.php    (dinamik sayfaların catch-all'ı)
 ```
 
 Laravel route'ları **kayıt sırasına** göre eşleştirir. `routes/pages.php`
@@ -115,7 +116,7 @@ Modüller bunların üzerine kurulur — yeniden yazma, kullan.
 
 | Ne | Nerede |
 |---|---|
-| Tailwind kaynağı | `resources/css/admin/style.css` → `npm run admin:css` |
+| Tailwind kaynağı | `resources/css/admin/style.css` → `npm run admin:css`. `@source` tarar: `views/admin/**`, `views/setup/**`, `public/admin/assets/js/**`. Setup Blade'ine yeni class yazınca bu kaynak şart; yoksa class derlenmez |
 | JSON yanıtları | `App\Http\Controllers\Concerns\RespondsWithJson` (`success()`/`error()`) |
 | Medya kütüphanesi | `App\Services\Media\MediaService` + `MediaFolderService`, `/admin/media` |
 | Modele medya bağlama | `App\Models\Concerns\HasMedia` trait'i (polymorphic, koleksiyonlu) |
@@ -131,7 +132,7 @@ Modüller bunların üzerine kurulur — yeniden yazma, kullan.
 | Tekrarlanabilir satır alanı | `<x-admin::form.repeater>` + `core/repeater.js`. Kolonları `:columns` ile verilir (`key`/`label`/`type`/`options`/`placeholder`/`width`), satır iskeleti `<template>` içinde durur ve `__index__` yer tutucusu JS'te artan bir sayıyla değişir. **İndis silmede yeniden numaralanmaz**: PHP boşluklu indisleri de dizi okur, sıra DOM sırasıdır (tarayıcı FormData'yı DOM sırasına göre gönderir), servis tarafı `values()` ile yeniden indisler. Sunucu render'ı ve `<template>` AYNI partial'ı kullanır (`components/form/partials/repeater-row.blade.php`) |
 | Serbest metin listesi | `<x-admin::form.chips>` — `<x-admin::form.tags>` ile **aynı JS'i** paylaşır (`core/tag-input.js`); tek fark öneri uç noktası verilmemesidir (`data-tag-endpoint` yoksa serbest liste kipi). Etiketler `tags` tablosunda ortak bir sözlüktür, chips ise kaydın kendi alanında yaşar. `tag-input.js` iki bileşen paylaştığı için `scripts.blade.php`'de GLOBAL yüklenir — bileşen içinde `@once` ile eklenirse Blade her çağrı yeri için ayrı kimlik üretir ve script iki kez basılır |
 | Video alanı | `<x-admin::form.video>` + `core/video-field.js` — iki sekme: gömülü adres (YouTube/Vimeo) **ya da** kütüphaneden mp4. Sekme değiştirmek diğer alanı TEMİZLER, böylece forma tek kaynak gider ve sunucunun öncelik kuralı uydurması gerekmez. Adres çözümü `App\Support\VideoEmbed` (kısa adres/shorts/zaman damgası dahil); JS tarafında aynı mantığın bir kopyası canlı "tanındı/tanınmadı" satırını basar. Dosya önizlemesi `<x-admin::player compact>` |
-| Video oynatıcı | `<x-player>` (ön yüz) / `<x-admin::player>` (admin). Gömme = iframe, dosya = `public/js/video-player/` (ES module). Kalite/sprite kuyrukta `ffmpeg` (`VideoProcessor` + `ProcessVideoJob`). Orijinal hemen oynar. Poll `GET /media/{id}/player`. Backfill: `php artisan video:process`. `media.video` JSON. Sunucuda ffmpeg şart (`FFMPEG_PATH`), PHP paketi yok |
+| Video oynatıcı | `<x-player>` (ön yüz) / `<x-admin::player>` (admin). Gömme = iframe, dosya = `public/js/video-player/` (ES module). Kalite/sprite kuyrukta `ffmpeg` (`VideoProcessor` + `ProcessVideoJob`). Orijinal hemen oynar. Poll `GET /media/{id}/player`. Backfill: `php artisan video:process`. `media.video` JSON. PHP paketi yok. Yol çözümü `App\Support\Ffmpeg` (config + PATH + `/opt/homebrew/bin` vb.); PHP-FPM `apt`/`brew` **çalıştırmaz**. Yoksa orijinal yine oynar, kopya üretilmez |
 | Medyada video | `config/media.php` > `accepts` içinde `mp4`/`webm`, sınırı `max_size_by_extension` ezer (64 MB). **Sunucuda `upload_max_filesize` ve `post_max_size` de yükseltilmeli**, yoksa istek Laravel'e hiç ulaşmaz. `MediaUploadRequest` en gevşek sınırı kaba elek olarak kullanır, gerçek sınır `MediaService::guard()`'da tek yerde. `Media::isVideo()` + payload'daki `is_video`: videoyu `<img>`'e koyan her yer önce bunu sormak zorunda |
 | Revizyon tekilleştirme | `RevisionService::$captured` "aynı istekte bir kez" korumasıdır; **uzun yaşayan süreçlerde sıfırlanmalı** — `AppServiceProvider`'da `Queue::looping(fn () => RevisionService::flushCaptured())` bağlı. Unutulursa kuyruk işçisi ayakta olduğu sürece ilk kaydetmeden sonraki değişiklikler geçmişe yazılmaz |
 | Bileşen bazlı yetki | `App\Http\Requests\Concerns\FiltersPermissionedFields` — SEO/Schema.org/Etiketler/Sınıflandırma/SSS bloklarını modül içinde TEK TEK yetkilendirir (`blog.seo`, `blog.schema-org`, `blog.tags`, `blog.classification`, `blog.faqs` gibi — `classification` modüle göre değişen sınıflandırma alanıdır: `blog_category_id`, `service_regions`, `project_category_id`). Create Request'te `use FiltersPermissionedFields;` + `protected function permissionedFields(): array { return $this->sharedComponentPermissions('blog', 'blog_category_id'); }` (sınıflandırması yoksa — örn. Sayfa — ikinci parametre `null`). Update Request Create'i extend ettiği için tekrar yazılmaz. İzni olmayan alan **iki kademede** engellenir: Blade'de `@can('blog.seo')` ile blok hiç basılmaz, `validated()` override'ı ham bir HTTP isteğiyle gönderilse de o alanı sessizce düşürür — UI'yi atlayan istek de kaydedilmez. Şu an blog/page/service/project'te kurulu; Sayfa'da sınıflandırma yok |
@@ -145,8 +146,9 @@ Modüller bunların üzerine kurulur — yeniden yazma, kullan.
 | Sürükle-bırak sıralama | `HasSortOrder` (model) + `ReordersRecords` (servis) + `ReorderRequest` — `sort_order` formda yok, `core/table.js`'in `reorder` seçeneği |
 | Modal iskeleti | `resources/views/admin/layout/modals/ajax-modal.blade.php` (layout'ta include edili) |
 | JS çekirdeği | `public/admin/assets/js/core/` — http, form, modal, table, toast, confirm, editor, seo-field, tag-input, ai-generator |
-| Giriş | `admin.login` / `admin.logout`, `auth` middleware `routes/admin.php`'de |
+| Giriş | `admin.login` / `admin.logout`, `auth` middleware `routes/admin.php`'de. Varsayılan `admin@…` / `password` **yok** — ilk süper yönetici kurulum sihirbazından oluşur |
 | Roller | `super-admin` (Gate::before ile her izne sahip), `admin`, `editor` |
+| İlk kurulum | `GET /kurulum` (`routes/setup.php`, `SetupController` + `SetupService`). Bitene kadar tüm ön yüz/panel adresleri sihirbaza düşer (`EnsureSetupCompleted`, `EnsureSiteIsLive`'tan sonra). Bitince `/kurulum` panele/girişe gider. Ayrıntı: aşağıdaki "İlk kurulum sihirbazı" |
 | Log kayıtları (denetim) | `App\Models\Concerns\LogsActivity` + `<x-admin::activity-log-button>`, `/admin/activity-log` |
 | Sayfa yöneticisi | `App\Models\Page\Page` + `App\Services\Page\PageService`, `/admin/page` — hiyerarşik, `path` kolonu ön yüz adresini tutar, `/{path}` catch-all (`routes/pages.php`) |
 | Menü yöneticisi | `App\Models\Menu\{Menu,MenuItem}` + `App\Services\Menu\{MenuService,MenuRenderer}`, `/admin/menu` — sabit konumlar (header, footer×2), iç içe sürükle-bırak; ön yüzde `MenuRenderer::render('header')` |
@@ -334,13 +336,43 @@ bir satır + `AiService::DRIVERS` eşlemesine bir giriş.
 > **Kuyruk işçisi çalışmıyorsa hiçbir üretim tamamlanmaz.** Geliştirirken
 > `php artisan queue:work` açık olmalı; arayüz 20 saniye sonra bunu uyarır.
 
+## İlk kurulum sihirbazı
+
+Boş bir kurulumda (`users` yok, `settings.setup.completed` yok) site ve panel
+kapalıdır; her adres `/kurulum`'a düşer. Adımlar oturumda birikir, **Kurulumu
+başlat** görevleri sırayla işler (`config/setup.php` > `tasks`). Bitince
+`settings.setup.completed = 1`, süper yönetici oturumu açılır, sihirbaz kapanır.
+
+| | |
+|---|---|
+| Config | `config/setup.php` — adımlar, görevler, seeder'lar, kilitli modüller, `reset_tables` / `keep_tables`, KVKK/çerez taslakları |
+| Servis | `App\Services\Setup\SetupService` — oturum yok (`session()` controller'da) |
+| UI | `resources/views/setup/index.blade.php` (`admin.layout.guest`) + `public/admin/assets/js/pages/setup/index.js` |
+| Middleware | `EnsureSetupCompleted` — bakım modu sihirbazı kapatmasın diye `EnsureSiteIsLive` sihirbazı muaf tutar |
+
+Kurallar (atlanmaz):
+
+1. **Kilitli modüller** `page` ve `lead` — sihirbazdan kapatılamaz.
+2. **Varsayılan yönetici yok.** `AdminUserSeeder` silindi; `db:seed` kullanıcı basmaz. İlk hesap sihirbazdaki süper yönetici adımı.
+3. Schema.org varsayılanı **`Organization`** (`config/settings.php` > `defaults.schema.business_type`) — ajans `ProfessionalService` değil.
+4. **ffmpeg kurulmaz.** `App\Support\Ffmpeg` yol bulur; yoksa uyarı + kopyalanabilir OS komutu (`brew install ffmpeg` / `apt` / `dnf`). Kurulum durmaz.
+5. **Mevcut siteler kilitlenmez.** `users` doluysa middleware + migration (`2026_09_14_150000_mark_existing_installs_setup_complete`) kurulumu tamamlanmış sayar. Canlı sitede sihirbazı görmek için `setup.completed`'i silme / kullanıcıları elle düşürme — `setup:reset` bilinçli sıfırlamadır.
+6. `MenuSeeder` yalnız konum basar (header/footer); öğeleri sihirbaz `menus` görevi doldurur (dolu menüye dokunmaz).
+7. Dashboard SEO kartı analiz yokken `average = null` kabul eder (`scoreTone(?int)`); boş kurulumda 500 verme.
+8. Setup view class'ları Tailwind taramasına girer (`@source "../../views/setup/**/*.blade.php"`).
+
+Sıfırdan: `php artisan migrate --force` + `php artisan db:seed --force` (kullanıcı oluşmaz) → `/kurulum`.
+
+İçeriği silip sihirbazı yeniden açmak: `php artisan setup:reset` (onay sorar; betikte `--force`). `reset_tables` boşalır, `keep_tables` (roller, izinler, ülkeler, modüller, preset, AI şablon, iller, menü konumları) durur; `storage` yüklemeleri de silinir.
+
 ## Komutlar
 
 ```sh
 npm run admin:css            # admin Tailwind derlemesi — yeni class yazdıysan ŞART
 npm run admin:css:watch      # geliştirme sırasında
 php artisan db:seed --class=RolePermissionSeeder   # izin güncellemesi
-php artisan db:seed          # rol/izin + yönetici kullanıcı
+php artisan db:seed          # rol/izin + ülke/modül/preset/menü konumu — yönetici YOK
+php artisan setup:reset      # içeriği sil, /kurulum'u yeniden aç (onaylı; --force betik)
 php artisan queue:work       # yapay zeka üretimi için ŞART
 vendor/bin/pint              # kod formatı
 ```

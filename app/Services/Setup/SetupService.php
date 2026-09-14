@@ -19,7 +19,12 @@ use DomainException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
+use Spatie\Permission\PermissionRegistrar;
 use Throwable;
 
 /**
@@ -69,6 +74,36 @@ class SetupService
             'completed' => '1',
             'completed_at' => now()->toIso8601String(),
         ]);
+    }
+
+    /**
+     * İçeriği, kullanıcıları ve ayarları siler; kurulum sihirbazı yeniden açılır.
+     * Rol/izin ve seeder iskeleti (config/setup.php > keep_tables) durur.
+     */
+    public function reset(): void
+    {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+
+        foreach (config('setup.reset_tables', []) as $table) {
+            if (Schema::hasTable($table)) {
+                DB::table($table)->truncate();
+            }
+        }
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=1');
+
+        $disk = Storage::disk((string) config('media.disk', 'public'));
+        $directory = (string) config('media.directory', 'uploads');
+        $disk->deleteDirectory($directory);
+        $disk->makeDirectory($directory);
+
+        File::deleteDirectory(storage_path('app/'.config('sitemap.path', 'sitemaps')));
+
+        Cache::flush();
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+        MenuRenderer::forget('header');
+        MenuRenderer::forget('footer_primary');
+        MenuRenderer::forget('footer_secondary');
     }
 
     /**
