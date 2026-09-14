@@ -2,6 +2,7 @@
 
 use App\Models\Blog\Blog;
 use App\Models\Page\Page;
+use App\Models\Project\Project;
 use App\Models\Service\Service;
 
 /*
@@ -59,6 +60,12 @@ return [
             'query' => fn () => Blog::query()->where('status', Blog::STATUS_PUBLISHED)->orderByDesc('published_at'),
             'option_label' => fn (Blog $blog) => $blog->title,
         ],
+        'project' => [
+            'label' => 'Proje',
+            'model' => Project::class,
+            'query' => fn () => Project::query()->where('status', Project::STATUS_PUBLISHED)->orderBy('sort_order'),
+            'option_label' => fn (Project $project) => $project->title,
+        ],
     ],
 
     /*
@@ -70,6 +77,7 @@ return [
         'hakkimizda' => 'Hakkımızda',
         'hizmetler' => 'Hizmetler (liste)',
         'blog' => 'Blog (liste)',
+        'projeler' => 'Neler Yaptık (liste)',
         'iletisim' => 'İletişim',
         'kvkk' => 'KVKK Aydınlatma Metni',
         'cerez-politikasi' => 'Çerez Politikası',

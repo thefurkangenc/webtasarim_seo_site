@@ -2,6 +2,7 @@
 
 use App\Models\Blog\Blog;
 use App\Models\Page\Page;
+use App\Models\Project\Project;
 use App\Models\Service\Service;
 
 /*
@@ -47,5 +48,6 @@ return [
         Page::class,
         Blog::class,
         Service::class,
+        Project::class,
     ],
 ];

@@ -4,6 +4,8 @@ namespace App\Services\BrokenLink;
 
 use App\Models\Blog\Blog;
 use App\Models\Page\Page;
+use App\Models\Project\Project;
+use App\Models\ProjectCategory\ProjectCategory;
 use App\Models\Service\Service;
 use App\Services\Redirect\RedirectResolver;
 use Illuminate\Http\Client\ConnectionException;
@@ -120,6 +122,8 @@ class LinkChecker
             'blog.show' => $this->checkRecord(Blog::where('slug', $route->parameter('slug'))->first(), 'Blog yazısı'),
             'hizmetler.show' => $this->checkRecord(Service::where('slug', $route->parameter('slug'))->first(), 'Hizmet'),
             'hizmetler.show-region' => $this->checkRegion($route->parameter('slug'), $route->parameter('region')),
+            'projeler.show' => $this->checkRecord(Project::where('slug', $route->parameter('slug'))->first(), 'Proje'),
+            'projeler.kategori' => $this->checkCategory($route->parameter('slug')),
             default => null,
         };
     }
@@ -129,7 +133,7 @@ class LinkChecker
      * link ziyaretçide 404 üretir — ayrı bir sebeple raporlanır ki düzeltme
      * yolu ("yayınla" mı, "linki değiştir" mi) belli olsun.
      */
-    private function checkRecord(Page|Blog|Service|null $record, string $label): ?array
+    private function checkRecord(Page|Blog|Service|Project|null $record, string $label): ?array
     {
         if (! $record) {
             return $this->broken('internal', 404, 'not_found', "{$label} bulunamadı.");
@@ -151,6 +155,18 @@ class LinkChecker
         return $service->regions()->where('slug', $regionSlug)->where('is_active', true)->exists()
             ? null
             : $this->broken('internal', 404, 'not_found', 'Bu hizmete bağlı böyle bir bölge yok.');
+    }
+
+    /**
+     * Proje kategorisi sayfası. Kategori yoksa da pasifse de adres ziyaretçiye
+     * 404 döner; ikisi ayrı sebeple raporlanmaz çünkü düzeltme yolu aynı:
+     * linki değiştir ya da kategoriyi aktif et.
+     */
+    private function checkCategory(?string $slug): ?array
+    {
+        return ProjectCategory::where('slug', $slug)->where('is_active', true)->exists()
+            ? null
+            : $this->broken('internal', 404, 'not_found', 'Böyle bir proje kategorisi yok ya da pasif.');
     }
 
     /**

@@ -5,8 +5,11 @@ namespace App\Services\Sitemap;
 use App\Jobs\GenerateSitemapJob;
 use App\Models\Blog\Blog;
 use App\Models\Page\Page;
+use App\Models\Project\Project;
+use App\Models\ProjectCategory\ProjectCategory;
 use App\Models\Service\Service;
 use App\Services\Setting\SettingService;
+use App\Support\ModuleRegistry;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -119,6 +122,7 @@ class SitemapService
             'blog' => $enabled['blog'] ? $this->writeBlog() : $this->disable('blog'),
             'services' => $enabled['services'] ? $this->writeServices() : $this->disable('services'),
             'regions' => $enabled['regions'] ? $this->writeRegions() : $this->disable('regions'),
+            'projects' => $enabled['projects'] ? $this->writeProjects() : $this->disable('projects'),
             'extra' => $this->writeExtra(),
         ];
 
@@ -243,6 +247,58 @@ class SitemapService
             });
 
         return $this->writeSource('regions', $urls);
+    }
+
+    /**
+     * Projeler: liste adresi + kategori adresleri + proje adresleri tek
+     * kaynakta. Kaynağın tamamı Modül Yönetimi'ndeki "project" anahtarına
+     * bağlı — modül kapalıyken ön yüz 404 döndüğü için site haritasında da
+     * hiç adres olmamalı.
+     *
+     * @return array{files: array<int, string>, count: int}
+     */
+    private function writeProjects(): array
+    {
+        if (! app(ModuleRegistry::class)->isActive('project')) {
+            return $this->disable('projects');
+        }
+
+        $urls = [['loc' => route('projeler'), 'lastmod' => null, 'image' => null]];
+
+        $categories = ProjectCategory::query()
+            ->where('is_active', true)
+            ->whereHas('projects', fn ($query) => $query->where('status', Project::STATUS_PUBLISHED))
+            ->with('seo')
+            ->get();
+
+        foreach ($categories as $category) {
+            if ($this->isNoindex($category)) {
+                continue;
+            }
+
+            $urls[] = [
+                'loc' => route('projeler.kategori', $category->slug),
+                'lastmod' => $category->updated_at,
+                'image' => null,
+            ];
+        }
+
+        Project::query()->where('status', Project::STATUS_PUBLISHED)->with('seo')
+            ->chunk(100, function ($projects) use (&$urls) {
+                foreach ($projects as $project) {
+                    if ($this->isNoindex($project)) {
+                        continue;
+                    }
+
+                    $urls[] = [
+                        'loc' => $project->publicUrl(),
+                        'lastmod' => $project->updated_at,
+                        'image' => $this->coverImage($project),
+                    ];
+                }
+            });
+
+        return $this->writeSource('projects', $urls);
     }
 
     /** Panelde elle eklenen ek adresler — kaynak anahtarı yok, her zaman denenir. */
