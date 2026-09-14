@@ -13,7 +13,6 @@
 
 import { escapeHtml } from './http.js';
 import { mediaPicker } from './media-picker.js';
-import { toast } from './toast.js';
 
 const BASE_URL = '/admin/assets/js/vendor/tinymce';
 
@@ -22,7 +21,7 @@ const PLUGINS = 'advlist autolink lists link table code codesample charmap '
 
 const TOOLBAR = 'undo redo | blocks | bold italic underline strikethrough | '
     + 'alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | '
-    + 'link medialibrary table blockquote codesample | removeformat searchreplace | '
+    + 'link medialibrary filelibrary table blockquote codesample | removeformat searchreplace | '
     + 'visualblocks code preview fullscreen';
 
 const isDark = () => document.documentElement.classList.contains('dark');
@@ -73,7 +72,13 @@ function options(textarea) {
             editor.ui.registry.addButton('medialibrary', {
                 icon: 'image',
                 tooltip: 'Medya kütüphanesinden görsel ekle',
-                onAction: () => insertFromLibrary(editor),
+                onAction: () => insertImage(editor),
+            });
+
+            editor.ui.registry.addButton('filelibrary', {
+                icon: 'new-document',
+                tooltip: 'Medya kütüphanesinden dosya bağlantısı ekle',
+                onAction: () => insertFile(editor),
             });
 
             // FormData textarea'yı okur; editör her değişimde oraya yazmalı.
@@ -86,21 +91,33 @@ function options(textarea) {
     };
 }
 
-async function insertFromLibrary(editor) {
-    const media = await mediaPicker.open();
+async function insertImage(editor) {
+    // Seçici yalnızca görselleri listeler; sonradan tür kontrolü gerekmiyor.
+    const media = await mediaPicker.open({ accept: 'image' });
+
+    if (media) {
+        editor.insertContent(
+            `<img src="${escapeHtml(media.url)}" alt="${escapeHtml(media.alt || media.name)}">`,
+        );
+    }
+}
+
+/**
+ * Döküman bağlantısı. Seçili metin varsa ona bağlanır, yoksa dosya adı
+ * bağlantı metni olur. Yeni sekmede açılır — PDF/ofis dosyası sayfadan
+ * ayrılmadan görüntülensin.
+ */
+async function insertFile(editor) {
+    const media = await mediaPicker.open({ accept: 'document' });
 
     if (! media) {
         return;
     }
 
-    if (! media.is_image) {
-        toast.error('Yalnızca görsel eklenebilir.');
-
-        return;
-    }
+    const label = editor.selection.getContent({ format: 'text' }) || media.name;
 
     editor.insertContent(
-        `<img src="${escapeHtml(media.url)}" alt="${escapeHtml(media.alt || media.name)}">`,
+        `<a href="${escapeHtml(media.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a>`,
     );
 }
 

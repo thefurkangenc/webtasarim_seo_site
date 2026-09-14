@@ -19,12 +19,10 @@
     $urlField = \App\Support\Field::name($name);
     $mediaField = \App\Support\Field::name($mediaName);
     $url = old($name, $value);
-    $videoAccepts = collect(config('media.accepts'))
-        ->intersect(['mp4', 'webm'])
-        ->map(fn ($extension) => ".{$extension}")
-        ->implode(',');
+    // Uzantı listesi tek kaynaktan (config/media.php > types.video).
+    $videoAccepts = \App\Support\MediaType::accept(\App\Support\MediaType::VIDEO);
     $limit = collect(config('media.max_size_by_extension', []))
-        ->only(['mp4', 'webm'])
+        ->only(\App\Support\MediaType::extensions(\App\Support\MediaType::VIDEO))
         ->max() ?? config('media.max_size');
 @endphp
 
@@ -39,7 +37,9 @@
         <x-admin::form.label :help="$help">{{ $label }}</x-admin::form.label>
     @endif
 
-    <div data-video-field data-media-folder="">
+    {{-- data-media-accept: core/media-upload.js bunu sunucuya da gönderir,
+         böylece bu alana görsel/döküman yüklenemez. --}}
+    <div data-video-field data-media-accept="{{ \App\Support\MediaType::VIDEO }}" data-media-folder="">
         <div class="flex gap-[6px] mb-[12px]">
             <button type="button" data-video-tab="link"
                 class="inline-flex items-center gap-[5px] py-[7px] px-[14px] text-xs rounded-md border transition-all">

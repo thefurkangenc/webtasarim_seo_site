@@ -4,6 +4,7 @@ namespace App\Models\Media;
 
 use App\Models\Concerns\LogsActivity;
 use App\Models\User;
+use App\Support\MediaType;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -80,6 +81,15 @@ class Media extends Model
     public function isVideo(): bool
     {
         return str_starts_with($this->mime_type, 'video/');
+    }
+
+    /**
+     * Kaydın tür grubu: image / video / document / other. Alan kısıtı
+     * (yalnızca görsel seçilebilen alanlar) ve kütüphane filtresi bunu okur.
+     */
+    public function type(): string
+    {
+        return MediaType::of($this->extension);
     }
 
     /** SVG kırpılamaz ve dönüştürülemez; olduğu gibi saklanır. */
@@ -229,6 +239,7 @@ class Media extends Model
             'human_size' => $this->humanSize(),
             'width' => $this->width,
             'height' => $this->height,
+            'type' => $this->type(),
             'is_image' => $this->isImage(),
             'is_video' => $this->isVideo(),
             'is_croppable' => $this->isCroppable(),

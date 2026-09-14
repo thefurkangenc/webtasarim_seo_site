@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin\Media;
 
+use App\Support\MediaType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -18,7 +19,7 @@ class MediaFilterRequest extends FormRequest
         return [
             'search' => ['nullable', 'string', 'max:255'],
             'folder_id' => ['nullable', 'integer'],
-            'type' => ['nullable', Rule::in(['image', 'other'])],
+            'type' => ['nullable', Rule::in(MediaType::keys())],
             'unattached' => ['nullable', 'boolean'],
             'sort' => ['nullable', Rule::in(['created_at', 'name', 'size'])],
             'direction' => ['nullable', Rule::in(['asc', 'desc'])],

@@ -97,9 +97,17 @@ class MediaPreview {
 
         this.stopPlayer();
 
+        const isFile = ! media.is_image && ! media.is_video;
+
         image.classList.toggle('hidden', ! media.is_image);
-        icon.classList.toggle('hidden', media.is_image || media.is_video);
+        icon.classList.toggle('hidden', ! isFile);
         player.classList.toggle('hidden', ! media.is_video);
+
+        if (isFile) {
+            // Döküman gövdede önizlenmez (PDF dışında tarayıcı zaten gösteremez);
+            // tür ikonu basılır, açma işi "Yeni sekmede aç" butonundadır.
+            icon.textContent = media.type === 'document' ? 'description' : 'draft';
+        }
 
         if (media.is_image) {
             image.src = media.url;
@@ -119,8 +127,12 @@ class MediaPreview {
 
         const buttons = [];
 
+        if (isFile) {
+            buttons.push(`<a href="${media.url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-[6px] py-[9px] px-[18px] text-black dark:text-white transition-all rounded-md border border-gray-200 dark:border-[#172036] hover:bg-gray-50 dark:hover:bg-[#15203c]"><i class="material-symbols-outlined !text-[18px]">open_in_new</i> Yeni Sekmede Aç</a>`);
+        }
+
         if (options.selectable) {
-            buttons.push('<button type="button" data-preview-action="select" class="inline-flex items-center gap-[6px] py-[9px] px-[18px] bg-primary-500 text-white transition-all hover:bg-primary-400 rounded-md border border-primary-500 hover:border-primary-400"><i class="material-symbols-outlined !text-[18px]">check</i> Bu Görseli Seç</button>');
+            buttons.push('<button type="button" data-preview-action="select" class="inline-flex items-center gap-[6px] py-[9px] px-[18px] bg-primary-500 text-white transition-all hover:bg-primary-400 rounded-md border border-primary-500 hover:border-primary-400"><i class="material-symbols-outlined !text-[18px]">check</i> Bu Dosyayı Seç</button>');
         }
 
         if (options.manageable) {

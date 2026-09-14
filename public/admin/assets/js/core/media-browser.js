@@ -83,7 +83,14 @@ export class MediaBrowser {
         this.selectable = root.dataset.selectable === '1';
         this.manageable = root.dataset.manageable === '1';
 
-        this.state = { search: '', type: '', page: 1, per_page: 30 };
+        // Tür kısıtı Blade'den gelir (görsel alanından açılan seçici 'image'
+        // gönderir). Kısıt varsa tür filtresi hiç basılmaz ve state'teki tür
+        // sabit kalır — kullanıcı listeyi genişletemez.
+        this.accept = root.dataset.accept || null;
+        this.acceptExtensions = (root.dataset.acceptExtensions || '')
+            .split(',').map((e) => e.trim().toLowerCase()).filter(Boolean);
+
+        this.state = { search: '', type: this.accept ?? '', page: 1, per_page: 30 };
         this.path = []; // [{id, name}, ...] — kök hariç, kökten bu yana gezilen klasörler
         this.mode = 'folder'; // 'folder' | 'recent' | 'unattached' — bkz. showRecent()/showUnattached()
         this.view = localStorage.getItem('media-browser-view') === 'list' ? 'list' : 'grid';
@@ -961,9 +968,24 @@ export class MediaBrowser {
      * Aksiyonlar
      * ---------------------------------------------------------------- */
 
+    /** Dosya adının uzantısı kabul listesinde mi? Sürükle-bırak HTML `accept`
+     *  özniteliğini atladığı için kontrol burada da yapılmak zorunda. */
+    isAccepted(file) {
+        const extension = file.name.split('.').pop()?.toLowerCase() ?? '';
+
+        return this.acceptExtensions.length === 0 || this.acceptExtensions.includes(extension);
+    }
+
     /** @param {File[]} files */
     async upload(files, folderId = undefined) {
-        const accepted = files.filter((file) => file.type.startsWith('image/') || file.name.endsWith('.svg'));
+        const accepted = files.filter((file) => this.isAccepted(file));
+        const rejected = files.length - accepted.length;
+
+        if (rejected > 0) {
+            toast.error(rejected === files.length
+                ? 'Bu dosya türü kabul edilmiyor.'
+                : `${rejected} dosya türü kabul edilmediği için atlandı.`);
+        }
 
         if (accepted.length === 0) {
             return;
@@ -981,6 +1003,10 @@ export class MediaBrowser {
 
             if (target) {
                 body.append('folder_id', target);
+            }
+
+            if (this.accept) {
+                body.append('accept', this.accept);
             }
 
             try {

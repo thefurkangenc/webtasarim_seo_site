@@ -1,7 +1,8 @@
 /**
  * Medya kütüphanesinden dosya seçtiren modal.
  *
- *   const media = await mediaPicker.open();   // seçilen medya ya da null
+ *   const media = await mediaPicker.open();                    // her tür
+ *   const media = await mediaPicker.open({ accept: 'image' }); // yalnızca görsel
  *
  * İçerik /admin/media/picker'dan çekilir; davranışı MediaBrowser verir.
  * Form modalının (z-1400) üstünde açılır. Tüm modal katmanı TinyMCE'nin
@@ -65,8 +66,13 @@ class MediaPicker {
             .some((id) => document.getElementById(id)?.classList.contains('active'));
     }
 
-    /** @returns {Promise<object|null>} */
-    async open() {
+    /**
+     * @param {{accept?: 'image'|'video'|'document'}} options
+     *        accept verilirse kütüphane yalnızca o türü listeler ve tür
+     *        filtresi hiç basılmaz — kullanıcı kısıtı aşamaz.
+     * @returns {Promise<object|null>}
+     */
+    async open({ accept = null } = {}) {
         this.root ??= this.build();
 
         const body = this.root.querySelector('[data-picker-body]');
@@ -76,7 +82,8 @@ class MediaPicker {
         document.body.classList.add('overflow-hidden');
 
         try {
-            body.innerHTML = await http.html('/admin/media/picker');
+            const query = accept ? `?accept=${encodeURIComponent(accept)}` : '';
+            body.innerHTML = await http.html(`/admin/media/picker${query}`);
             // core/select.js gibi dinleyiciler (tür filtresi <select data-choices>)
             // kendini bu olayla kurar — AjaxModal'ın yaptığı gibi.
             body.dispatchEvent(new CustomEvent('admin:content-loaded', { bubbles: true }));

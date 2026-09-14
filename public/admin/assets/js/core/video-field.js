@@ -10,7 +10,6 @@
 
 import { mediaPicker } from './media-picker.js';
 import { uploadFile } from './media-upload.js';
-import { toast } from './toast.js';
 import { escapeHtml } from './http.js';
 import { mountPlayer } from '/js/video-player/player.js';
 
@@ -106,19 +105,11 @@ class VideoField {
     }
 
     async fromLibrary() {
-        const media = await mediaPicker.open();
+        const media = await mediaPicker.open({ accept: 'video' });
 
-        if (! media) {
-            return;
+        if (media) {
+            this.setMedia(media);
         }
-
-        if (! media.is_video) {
-            toast.error('Bu alan yalnızca video dosyası kabul eder.');
-
-            return;
-        }
-
-        this.setMedia(media);
     }
 
     async upload() {

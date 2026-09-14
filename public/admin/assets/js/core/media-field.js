@@ -172,7 +172,9 @@ document.addEventListener('click', async (event) => {
     }
 
     if (action === 'library') {
-        const media = await mediaPicker.open();
+        // Alanın tür kısıtı seçiciye taşınır — görsel alanında kütüphanedeki
+        // video ve dökümanlar hiç listelenmez.
+        const media = await mediaPicker.open({ accept: root.dataset.mediaAccept || null });
 
         if (media) {
             render(root, media);

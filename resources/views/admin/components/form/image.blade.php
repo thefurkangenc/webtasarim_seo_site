@@ -17,7 +17,10 @@
 
 @php
     $size = $preset ? app(\App\Support\MediaPresetRegistry::class)->get($preset) : null;
-    $accepts = collect(config('media.accepts'))->map(fn ($e) => ".{$e}")->implode(',');
+    // Bu bileşen bir GÖRSEL alanıdır: dosya seçici de, kütüphane seçicisi de
+    // yalnızca görsel gösterir. Video/döküman kütüphaneye yüklenebilir ama
+    // buradan seçilemez — kapak görseline video düşmesin.
+    $accepts = \App\Support\MediaType::accept(\App\Support\MediaType::IMAGE);
     $field = \App\Support\Field::name($name);
 
     $items = $multiple ? collect($media ?? []) : collect();
@@ -41,6 +44,7 @@
             data-media-cover="{{ $coverId }}"
             data-media-items="{{ json_encode($items->map->toPayload()->values()) }}"
         @endif
+        data-media-accept="{{ \App\Support\MediaType::IMAGE }}"
         data-media-preset="{{ $preset }}"
         data-media-width="{{ $size['width'] ?? '' }}"
         data-media-height="{{ $size['height'] ?? '' }}"

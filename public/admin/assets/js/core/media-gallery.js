@@ -210,7 +210,7 @@ document.addEventListener('click', async (event) => {
     }
 
     if (action === 'library') {
-        addMedia(root, await mediaPicker.open());
+        addMedia(root, await mediaPicker.open({ accept: root.dataset.mediaAccept || null }));
     }
 
     if (action === 'remove' && await confirm('Tüm görseller alandan kaldırılacak. Dosyalar medya kütüphanesinde kalır.', {

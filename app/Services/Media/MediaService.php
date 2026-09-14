@@ -6,6 +6,7 @@ use App\Jobs\ProcessVideoJob;
 use App\Models\Media\Media;
 use App\Support\Activity;
 use App\Support\MediaPresetRegistry;
+use App\Support\MediaType;
 use DomainException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -37,7 +38,7 @@ class MediaService
     {
         $extension = strtolower($file->getClientOriginalExtension());
 
-        $this->guard($file, $extension);
+        $this->guard($file, $extension, $options['accept'] ?? null);
 
         $directory = config('media.directory').'/'.now()->format('Y/m');
         $uuid = (string) Str::uuid();
@@ -358,9 +359,16 @@ class MediaService
                     ->orWhere('original_name', 'like', "%{$search}%")
                     ->orWhere('alt', 'like', "%{$search}%")
             ))
+            // Görsel/video mime öneki ile, döküman uzantı listesiyle ayrılır:
+            // döküman mime'ları çok çeşitli (application/pdf, ...officedocument...),
+            // uzantı bu ayrım için tek güvenilir işaret.
             ->when($filters['type'] ?? null, fn (Builder $q, string $type) => match ($type) {
-                'image' => $q->where('mime_type', 'like', 'image/%'),
-                'other' => $q->where('mime_type', 'not like', 'image/%'),
+                MediaType::IMAGE => $q->where('mime_type', 'like', 'image/%'),
+                MediaType::VIDEO => $q->where('mime_type', 'like', 'video/%'),
+                MediaType::DOCUMENT => $q->whereIn('extension', MediaType::extensions(MediaType::DOCUMENT)),
+                MediaType::OTHER => $q->where('mime_type', 'not like', 'image/%')
+                    ->where('mime_type', 'not like', 'video/%')
+                    ->whereNotIn('extension', MediaType::extensions(MediaType::DOCUMENT)),
                 default => $q,
             })
             // Hiçbir kayda bağlanmamış dosyalar — terk edilmiş formlardan kalanlar.
@@ -371,10 +379,26 @@ class MediaService
             ));
     }
 
-    private function guard(UploadedFile $file, string $extension): void
+    /**
+     * @param  string|null  $accept  Tür kısıtı (image/video/document). Yalnızca
+     *                               görsel kabul eden bir alandan geliyorsa
+     *                               dolu olur — sürükle-bırak HTML `accept`
+     *                               özniteliğini atladığı için kontrol burada
+     *                               da yapılmak zorunda.
+     */
+    private function guard(UploadedFile $file, string $extension, ?string $accept = null): void
     {
         if (! in_array($extension, config('media.accepts', []), true)) {
             throw new DomainException("'{$extension}' uzantılı dosyalar yüklenemez.");
+        }
+
+        if (! MediaType::allows($accept, $extension)) {
+            throw new DomainException(match ($accept) {
+                MediaType::IMAGE => 'Bu alan yalnızca görsel kabul eder.',
+                MediaType::VIDEO => 'Bu alan yalnızca video kabul eder.',
+                MediaType::DOCUMENT => 'Bu alan yalnızca döküman kabul eder.',
+                default => 'Bu dosya türü bu alana yüklenemez.',
+            });
         }
 
         // Video sınırı görselden ayrıdır; uzantıya özel bir değer varsa o geçer.

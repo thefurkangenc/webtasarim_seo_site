@@ -8,6 +8,17 @@
 | ve çıktı tam bu boyutta üretilir. Preset tanımlı değilse kırpma modalı açılmaz.
 */
 
+/*
+| Uzantı grupları TEK kaynaktır: `accepts` buradan türetilir, HTML `accept`
+| öznitelikleri, kütüphane tür filtresi ve yükleme kontrolü de aynı listeyi
+| okur (App\Support\MediaType). Yeni bir uzantı yalnızca buraya eklenir.
+*/
+$types = [
+    'image' => ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'],
+    'video' => ['mp4', 'webm'],
+    'document' => ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'csv', 'txt', 'zip', 'rar'],
+];
+
 return [
 
     'disk' => 'public',
@@ -25,7 +36,11 @@ return [
     */
     'quota' => 5 * 1024 * 1024 * 1024, // 5 GB
     'max_size' => 8192, // KB
-    'accepts' => ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg', 'mp4', 'webm'],
+
+    'types' => $types,
+
+    // Kabul edilen tüm uzantılar — gruplardan türetilir, elle yazılmaz.
+    'accepts' => array_merge(...array_values($types)),
 
     /*
     | Uzantı bazlı boyut sınırı (KB) — `max_size`'ı ezer. Video bir görselden
@@ -39,6 +54,8 @@ return [
     'max_size_by_extension' => [
         'mp4' => 65536,  // 64 MB
         'webm' => 65536,
+        // Döküman: katalog/fiyat listesi gibi dosyalar 8 MB'ı rahat aşar.
+        ...array_fill_keys($types['document'], 32768), // 32 MB
     ],
 
     /*

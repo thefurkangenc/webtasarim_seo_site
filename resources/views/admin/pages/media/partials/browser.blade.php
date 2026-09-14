@@ -10,14 +10,21 @@
 
     $selectable  : true ise çift tık / "Seç" bir dosyayı seçip modalı kapatır
     $manageable  : true ise context menu, sürükle-taşı, çoklu seçim aktif
+    $accept      : 'image'|'video'|'document' — verilirse tarayıcı yalnızca o
+                   türü gösterir, tür filtresi gizlenir ve yükleme de o türle
+                   sınırlanır. Görsel alanından açılan seçici bunu 'image'
+                   gönderir; /admin/media sayfası boş bırakır (her şey görünür).
 --}}
 @php
     $selectable = $selectable ?? false;
     $manageable = $manageable ?? false;
+    $accept = $accept ?? null;
+    $uploadAccept = \App\Support\MediaType::accept($accept);
 @endphp
 
 <div data-media-browser data-selectable="{{ $selectable ? '1' : '' }}"
-    data-manageable="{{ $manageable ? '1' : '' }}">
+    data-manageable="{{ $manageable ? '1' : '' }}" data-accept="{{ $accept }}"
+    data-accept-extensions="{{ implode(',', \App\Support\MediaType::extensions($accept)) }}">
 
     {{-- Araç çubuğu --}}
     <div class="flex items-center gap-[10px] flex-wrap mb-[18px]">
@@ -29,12 +36,18 @@
             <i class="material-symbols-outlined !text-[19px] absolute text-gray-500 ltr:left-[12px] rtl:right-[12px] top-1/2 -translate-y-1/2">search</i>
         </div>
 
-        <select data-media-type data-choices
-            class="h-[40px] rounded-[10px] text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[13px] outline-0 cursor-pointer transition-all focus:border-primary-500">
-            <option value="">Tüm türler</option>
-            <option value="image">Görseller</option>
-            <option value="other">Diğer</option>
-        </select>
+        {{-- Tür kısıtı varsa filtre anlamsızdır (tek tür gösteriliyor) ve
+             kullanıcının kısıtı aşmasına izin vermemeli — hiç basılmaz. --}}
+        @unless ($accept)
+            <select data-media-type data-choices
+                class="h-[40px] rounded-[10px] text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[13px] outline-0 cursor-pointer transition-all focus:border-primary-500">
+                <option value="">Tüm türler</option>
+                <option value="image">Görseller</option>
+                <option value="video">Videolar</option>
+                <option value="document">Dökümanlar</option>
+                <option value="other">Diğer</option>
+            </select>
+        @endunless
 
         {{-- Izgara / liste görünüm anahtarı --}}
         <div data-media-view-toggle
@@ -62,7 +75,7 @@
             <i class="material-symbols-outlined !text-[19px]">upload</i>
             Yükle
         </button>
-        <input type="file" data-media-upload-input multiple accept="image/*,.svg" class="hidden">
+        <input type="file" data-media-upload-input multiple accept="{{ $uploadAccept }}" class="hidden">
     </div>
 
     {{-- Çoklu seçim aksiyon çubuğu — seçim varken görünür, yoksa gizli --}}

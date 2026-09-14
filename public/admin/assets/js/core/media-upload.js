@@ -22,6 +22,27 @@ export function presetOf(root) {
         : null;
 }
 
+/**
+ * Alanın tür kısıtına uyuyor mu? Görsel alanına sürüklenen bir video HTML
+ * `accept` özniteliğini atlar — dosya seçici penceresi filtreler, sürükle-bırak
+ * filtrelemez. Sunucu tarafı da ayrıca kontrol eder (MediaService::guard);
+ * buradaki kontrol yalnızca kullanıcıya anında geri bildirim içindir.
+ */
+export function isAcceptedFile(root, file) {
+    const accept = root.dataset.mediaAccept;
+
+    if (accept === 'image') {
+        // Bazı tarayıcılar SVG için boş mime döndürür; uzantı yedek işaret.
+        return file.type.startsWith('image/') || String(file.name ?? '').toLowerCase().endsWith('.svg');
+    }
+
+    if (accept === 'video') {
+        return file.type.startsWith('video/');
+    }
+
+    return true;
+}
+
 export function setBusy(root, busy) {
     root.querySelector('[data-media-busy]')?.classList.toggle('hidden', ! busy);
 }
@@ -40,6 +61,11 @@ export async function uploadFile(root, file, crop = null) {
 
     if (root.dataset.mediaPreset) {
         body.append('preset', root.dataset.mediaPreset);
+    }
+
+    // Sunucu da kısıtı bilsin — istemci kontrolü atlatılabilir.
+    if (root.dataset.mediaAccept) {
+        body.append('accept', root.dataset.mediaAccept);
     }
 
     if (root.dataset.mediaFolder) {
@@ -71,6 +97,14 @@ export async function uploadFile(root, file, crop = null) {
  * ederse null döner ve hiçbir şey yüklenmez.
  */
 export async function uploadWithCrop(root, file) {
+    if (! isAcceptedFile(root, file)) {
+        toast.error(root.dataset.mediaAccept === 'video'
+            ? 'Bu alan yalnızca video kabul eder.'
+            : 'Bu alan yalnızca görsel kabul eder.');
+
+        return null;
+    }
+
     const target = presetOf(root);
 
     // SVG kırpılamaz; preset olsa bile doğrudan yüklenir.

@@ -13,7 +13,9 @@ use App\Http\Requests\Admin\Media\MediaUploadRequest;
 use App\Models\Media\Media;
 use App\Models\Media\MediaFolder;
 use App\Services\Media\MediaService;
+use App\Support\MediaType;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class MediaController extends Controller
@@ -27,10 +29,17 @@ class MediaController extends Controller
         return view('admin.pages.media.index');
     }
 
-    /** Form içinden açılan seçici modalın gövdesi. */
-    public function picker(): View
+    /**
+     * Form içinden açılan seçici modalın gövdesi. `?accept=image` verildiğinde
+     * tarayıcı yalnızca o türü listeler — görsel alanları bunu gönderir.
+     */
+    public function picker(Request $request): View
     {
-        return view('admin.pages.media.modals.picker');
+        $accept = $request->query('accept');
+
+        return view('admin.pages.media.modals.picker', [
+            'accept' => in_array($accept, MediaType::keys(), true) ? $accept : null,
+        ]);
     }
 
     /** Dosya bilgilerini düzenleme modalının gövdesi. */

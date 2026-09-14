@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Admin\Media;
 
+use App\Support\MediaType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class MediaUploadRequest extends FormRequest
 {
@@ -40,6 +42,10 @@ class MediaUploadRequest extends FormRequest
             'file' => ['required', 'file', 'max:'.$this->sizeLimit()],
             'folder_id' => ['nullable', 'integer', 'exists:media_folders,id'],
             'preset' => ['nullable', 'string', 'max:100'],
+            // Alanın tür kısıtı (yalnızca görsel kabul eden alanlar 'image'
+            // gönderir). Gerçek kontrol MediaService::guard()'da — uzantı
+            // listesi orada tek yerde duruyor.
+            'accept' => ['nullable', Rule::in(MediaType::keys())],
             'alt' => ['nullable', 'string', 'max:255'],
             'title' => ['nullable', 'string', 'max:255'],
 
