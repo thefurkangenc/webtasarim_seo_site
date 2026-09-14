@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Service;
 
 use App\Http\Controllers\Controller;
+use App\Services\Project\ProjectService;
 use App\Services\Service\ServiceService;
 use App\Support\SchemaContext;
 use Illuminate\View\View;
 
 class ServiceController extends Controller
 {
-    public function __construct(private readonly ServiceService $service) {}
+    public function __construct(
+        private readonly ServiceService $service,
+        private readonly ProjectService $projects,
+    ) {}
 
     public function index(): View
     {
@@ -29,6 +33,7 @@ class ServiceController extends Controller
             'service' => $service,
             'region' => null,
             'rendered' => $service->renderGeneric(),
+            'projects' => $this->projects->active(6, null, $service->id),
             'schemaContext' => SchemaContext::service($service),
         ]);
     }
@@ -49,6 +54,7 @@ class ServiceController extends Controller
             'service' => $service,
             'region' => $region,
             'rendered' => $service->renderFor($region),
+            'projects' => $this->projects->active(6, null, $service->id),
             'schemaContext' => SchemaContext::service($service, $region),
         ]);
     }

@@ -4,6 +4,8 @@ namespace App\Services\Schema;
 
 use App\Models\Blog\Blog;
 use App\Models\Page\Page;
+use App\Models\Project\Project;
+use App\Models\ProjectCategory\ProjectCategory;
 use App\Models\Service\Service;
 use App\Support\SchemaContext;
 use Illuminate\Http\Request;
@@ -59,6 +61,7 @@ class SchemaInspector
                 ['label' => 'Hakkımızda', 'url' => route('hakkimizda')],
                 ['label' => 'Hizmetler', 'url' => route('hizmetler')],
                 ['label' => 'Blog', 'url' => route('blog')],
+                ['label' => 'Neler Yaptık', 'url' => route('projeler')],
                 ['label' => 'İletişim', 'url' => route('iletisim')],
                 ['label' => 'KVKK Aydınlatma Metni', 'url' => route('kvkk')],
                 ['label' => 'Çerez Politikası', 'url' => route('cerez-politikasi')],
@@ -104,6 +107,18 @@ class SchemaInspector
                 ->all()];
         }
 
+        $projects = Project::query()
+            ->where('status', Project::STATUS_PUBLISHED)
+            ->orderBy('sort_order')
+            ->limit(8)
+            ->get(['id', 'title', 'slug']);
+
+        if ($projects->isNotEmpty()) {
+            $groups[] = ['label' => 'Projeler', 'items' => $projects
+                ->map(fn (Project $p) => ['label' => $p->title, 'url' => route('projeler.show', $p->slug)])
+                ->all()];
+        }
+
         $pages = Page::query()->visible()->orderBy('path')->limit(12)->get(['id', 'title', 'path']);
 
         if ($pages->isNotEmpty()) {
@@ -142,11 +157,14 @@ class SchemaInspector
             'iletisim' => [SchemaContext::contact(), true],
             'hizmetler' => [SchemaContext::collection('Hizmetler', route('hizmetler')), true],
             'blog' => [SchemaContext::collection('Blog', route('blog')), true],
+            'projeler' => [SchemaContext::collection('Neler Yaptık', route('projeler')), true],
             'kvkk' => [SchemaContext::legal('KVKK Aydınlatma Metni', route('kvkk')), true],
             'cerez-politikasi' => [SchemaContext::legal('Çerez Politikası', route('cerez-politikasi')), true],
             'hizmetler.show' => $this->serviceContext($slug, null),
             'hizmetler.show-region' => $this->serviceContext($slug, $route->parameter('region')),
             'blog.show' => $this->blogContext($slug),
+            'projeler.show' => $this->projectContext($slug),
+            'projeler.kategori' => $this->projectCategoryContext($slug),
             'sayfa.show' => $this->pageContext((string) $route->parameter('path')),
             default => [SchemaContext::generic(null, $url), false],
         };
@@ -184,6 +202,32 @@ class SchemaInspector
         return $blog
             ? [SchemaContext::blogPosting($blog), true]
             : [SchemaContext::generic(null, url('blog/'.$slug)), false];
+    }
+
+    /**
+     * @return array{0: SchemaContext, 1: bool}
+     */
+    private function projectContext(?string $slug): array
+    {
+        $project = Project::where('slug', $slug)
+            ->with(['media', 'tags', 'faqs', 'seo.ogMedia', 'category:id,name,slug'])
+            ->first();
+
+        return $project
+            ? [SchemaContext::project($project), true]
+            : [SchemaContext::generic(null, url('projeler/'.$slug)), false];
+    }
+
+    /**
+     * @return array{0: SchemaContext, 1: bool}
+     */
+    private function projectCategoryContext(?string $slug): array
+    {
+        $category = ProjectCategory::where('slug', $slug)->where('is_active', true)->first();
+
+        return $category
+            ? [SchemaContext::collection($category->name, route('projeler.kategori', $category->slug)), true]
+            : [SchemaContext::generic(null, url('projeler/kategori/'.$slug)), false];
     }
 
     /**

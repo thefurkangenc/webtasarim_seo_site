@@ -522,6 +522,39 @@
     </section>
     <!-- analysis-area-end -->
 
+    @if ($projects->isNotEmpty())
+        <!--===== SERVICE PROJECTS START =====-->
+
+        <div class="portfolio sp sec-bg1">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-7 m-auto text-center">
+                        <div class="heading2">
+                            <h2>Bu Hizmette Yaptığımız İşler</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-30">
+                    @foreach ($projects as $serviceProject)
+                        <div class="col-lg-4 col-md-6 mt-30" data-aos="fade-up" data-aos-duration="900">
+                            @include('pages.projects.partials.card', ['project' => $serviceProject])
+                        </div>
+                    @endforeach
+                </div>
+                <div class="row mt-40">
+                    <div class="col-lg-12 text-center">
+                        <a class="theme-btn3" href="{{ route('projeler') }}">
+                            Tüm İşlerimiz
+                            <span class="arrow1"><i class="fa-solid fa-arrow-right"></i></span>
+                            <span class="arrow2"><i class="fa-solid fa-arrow-right"></i></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--===== SERVICE PROJECTS END =====-->
+    @endif
 @endsection
 
 @push('css')

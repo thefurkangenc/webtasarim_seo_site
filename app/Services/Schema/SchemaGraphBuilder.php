@@ -5,6 +5,7 @@ namespace App\Services\Schema;
 use App\Models\Blog\Blog;
 use App\Models\Media\Media;
 use App\Models\Page\Page;
+use App\Models\Project\Project;
 use App\Models\Service\Service;
 use App\Models\SocialLink\SocialLink;
 use App\Services\Setting\SettingService;
@@ -174,7 +175,7 @@ class SchemaGraphBuilder
     private function pageNodes(SchemaContext $ctx, array $company, array $schema, ?string $overrideType): array
     {
         $nodes = [];
-        $webPageType = $overrideType && ! in_array($ctx->kind, [SchemaContext::SERVICE, SchemaContext::BLOG_POSTING], true)
+        $webPageType = $overrideType && ! in_array($ctx->kind, [SchemaContext::SERVICE, SchemaContext::BLOG_POSTING, SchemaContext::PROJECT], true)
             ? $overrideType
             : $this->webPageType($ctx->kind);
 
@@ -216,6 +217,10 @@ class SchemaGraphBuilder
             $nodes[] = $this->blogPostingNode($ctx, $overrideType);
         }
 
+        if ($ctx->kind === SchemaContext::PROJECT && $ctx->model instanceof Project) {
+            $nodes[] = $this->projectNode($ctx, $overrideType);
+        }
+
         if ($faq = $this->faqNode($ctx)) {
             $nodes[] = $faq;
         }
@@ -229,6 +234,7 @@ class SchemaGraphBuilder
             SchemaContext::ABOUT => 'AboutPage',
             SchemaContext::CONTACT => 'ContactPage',
             SchemaContext::COLLECTION => 'CollectionPage',
+            SchemaContext::PROJECT => 'ItemPage',
             default => 'WebPage',
         };
     }
@@ -314,6 +320,46 @@ class SchemaGraphBuilder
             'keywords' => method_exists($blog, 'tagNames') && $blog->tagNames() !== []
                 ? implode(', ', $blog->tagNames())
                 : null,
+            'inLanguage' => 'tr-TR',
+        ];
+    }
+
+    /**
+     * Vaka çalışması düğümü. schema.org'da "proje / vaka çalışması" tipi yok;
+     * CreativeWork en yakın karşılıktır. Müşteri adı `about` altında bir
+     * Organization olarak verilir — CreativeWork'ün müşteri alanı yoktur.
+     *
+     * @return array<string, mixed>
+     */
+    private function projectNode(SchemaContext $ctx, ?string $overrideType): array
+    {
+        /** @var Project $project */
+        $project = $ctx->model;
+        $meta = $project->seoMeta();
+
+        return [
+            '@type' => $overrideType ?: 'CreativeWork',
+            '@id' => $this->pageUrl($ctx).'#project',
+            'name' => $project->title,
+            'description' => $meta['description'] ?? null,
+            'url' => $this->pageUrl($ctx),
+            // Kapak + galerinin ilk dördü: portföy kaydında gerçekten birden
+            // fazla görsel var, tek kapakla sınırlamak bilgi kaybı olur.
+            'image' => collect([$project->getFirstMedia('cover')])
+                ->concat($project->getMedia('gallery')->take(4))
+                ->filter()
+                ->map(fn ($media) => $this->absolute($media->url('medium')))
+                ->values()
+                ->all(),
+            'datePublished' => ($project->completed_at ?? $project->created_at)?->toIso8601String(),
+            'dateModified' => $project->updated_at?->toIso8601String(),
+            'creator' => ['@id' => $this->site.'/#organization'],
+            'about' => filled($project->client_name)
+                ? ['@type' => 'Organization', 'name' => $project->client_name]
+                : null,
+            'genre' => $project->category?->name,
+            'keywords' => $project->tagNames() !== [] ? implode(', ', $project->tagNames()) : null,
+            'mainEntityOfPage' => ['@id' => $this->pageUrl($ctx).'#webpage'],
             'inLanguage' => 'tr-TR',
         ];
     }
