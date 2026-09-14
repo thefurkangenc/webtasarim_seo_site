@@ -1,0 +1,60 @@
+/* Proje detayında temada karşılığı olmayan üç blok. Geri kalan her şey
+   temanın portfolio-details sınıflarıyla geliyor. */
+
+.project-tech-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.project-tech-list li {
+    font-size: 14px;
+    line-height: 1;
+    padding: 8px 12px;
+    border: 1px solid rgba(0, 0, 0, .08);
+    border-radius: 4px;
+    background: #fff;
+}
+
+.details-quote blockquote {
+    margin: 0;
+    padding: 28px 30px;
+    border-radius: 8px;
+    background: #f6f7f9;
+    border-left: 3px solid var(--ztc-color-primary, #2b59ff);
+}
+
+.details-quote blockquote > i {
+    font-size: 22px;
+    opacity: .35;
+}
+
+.details-quote blockquote p {
+    margin: 12px 0 0;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+.details-quote blockquote footer {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.details-quote blockquote footer img {
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.details-quote blockquote footer span {
+    display: flex;
+    flex-direction: column;
+}
+
+[data-project-gallery] a[data-gallery-item] {
+    display: block;
+    cursor: zoom-in;
+}
