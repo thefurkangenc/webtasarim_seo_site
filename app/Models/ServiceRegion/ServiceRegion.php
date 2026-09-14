@@ -17,7 +17,7 @@ use Illuminate\Support\Collection;
  * Hizmet bölgesi — sonsuz derinlikli ağaç. parent_id boşsa şehir (depth 0),
  * doluysa alt bölge. Şehirlerin id'si plaka kodudur, ServiceRegionSeeder basar.
  */
-#[Fillable(['parent_id', 'name', 'slug', 'path', 'depth', 'description', 'sort_order', 'is_active'])]
+#[Fillable(['parent_id', 'name', 'slug', 'path', 'slug_path', 'depth', 'description', 'sort_order', 'is_active'])]
 class ServiceRegion extends Model
 {
     use HasSortOrder, LogsActivity;
@@ -97,6 +97,7 @@ class ServiceRegion extends Model
             'name' => $this->name,
             'slug' => $this->slug,
             'path' => $this->path,
+            'slug_path' => $this->slug_path,
             'depth' => $this->depth,
             'is_active' => $this->is_active,
             'children_count' => $this->children_count ?? 0,

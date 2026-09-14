@@ -90,14 +90,25 @@ final class SchemaContext
         $generic = $service->renderGeneric()['title'];
         $rendered = $region ? $service->renderFor($region)['title'] : $generic;
         $url ??= $region
-            ? route('hizmetler.show-region', [$service->slug, $region->slug])
+            ? route('hizmetler.show-region', [$service->slug, $region->slug_path])
             : route('hizmetler.show', $service->slug);
 
         $trail = [['Hizmetler', route('hizmetler')]];
 
         if ($region) {
             $trail[] = [$generic, route('hizmetler.show', $service->slug)];
-            $trail[] = [$region->name, $url];
+
+            // Adres iç içe olduğu için kırılım da öyle: ilçe sayfasında ilin
+            // kendi adresi aradaki basamak olarak görünür. Hizmete bağlı
+            // olmayan üst bölge atlanır — o adreste bir sayfa yok, kırılımdan
+            // 404'e link verilmez.
+            $linkable = $service->regions->pluck('id');
+
+            foreach ($region->ancestorsAndSelf() as $step) {
+                if ($step->is($region) || $linkable->contains($step->id)) {
+                    $trail[] = [$step->name, route('hizmetler.show-region', [$service->slug, $step->slug_path])];
+                }
+            }
         } else {
             $trail[] = [$rendered, $url];
         }

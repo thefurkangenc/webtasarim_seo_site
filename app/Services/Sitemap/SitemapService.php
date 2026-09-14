@@ -238,7 +238,7 @@ class SitemapService
 
                     foreach ($service->regions as $region) {
                         $urls[] = [
-                            'loc' => route('hizmetler.show-region', [$service->slug, $region->slug]),
+                            'loc' => route('hizmetler.show-region', [$service->slug, $region->slug_path]),
                             'lastmod' => $service->updated_at?->greaterThan($region->updated_at) ? $service->updated_at : $region->updated_at,
                             'image' => $this->coverImage($service),
                         ];

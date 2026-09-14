@@ -86,7 +86,7 @@ class SchemaInspector
             if ($region = $service->regions->first()) {
                 $serviceItems[] = [
                     'label' => $service->renderFor($region)['title'].' — '.$region->name.' (bölgeli)',
-                    'url' => route('hizmetler.show-region', [$service->slug, $region->slug]),
+                    'url' => route('hizmetler.show-region', [$service->slug, $region->slug_path]),
                 ];
             }
         }
@@ -173,7 +173,7 @@ class SchemaInspector
     /**
      * @return array{0: SchemaContext, 1: bool}
      */
-    private function serviceContext(?string $slug, ?string $regionSlug): array
+    private function serviceContext(?string $slug, ?string $regionPath): array
     {
         $service = Service::where('slug', $slug)
             ->with(['seo.ogMedia', 'faqs', 'regions' => fn ($q) => $q->where('is_active', true)])
@@ -183,9 +183,9 @@ class SchemaInspector
             return [SchemaContext::generic(null, url('hizmetler/'.$slug)), false];
         }
 
-        $region = $regionSlug ? $service->regions->firstWhere('slug', $regionSlug) : null;
+        $region = $regionPath ? $service->regions->firstWhere('slug_path', $regionPath) : null;
 
-        if ($regionSlug && ! $region) {
+        if ($regionPath && ! $region) {
             return [SchemaContext::service($service), true];
         }
 

@@ -33,29 +33,31 @@ class ServiceController extends Controller
             'service' => $service,
             'region' => null,
             'rendered' => $service->renderGeneric(),
+            'regionGroups' => $this->service->regionGroups($service),
             'projects' => $this->projects->active(6, null, $service->id),
             'schemaContext' => SchemaContext::service($service),
         ]);
     }
 
     /**
-     * Bölgeli sayfa — yer tutucular bu bölgenin değerleriyle çözülür.
-     * Bölge, hizmete gerçekten bağlı değilse (yanlış/uydurma URL) 404 döner.
+     * Bölgeli sayfa — yer tutucular bu bölgenin değerleriyle çözülür. Adres
+     * iç içedir ({şehir}/{ilçe}); hizmete bağlı olmayan bir yol 404 döner.
      */
-    public function showForRegion(string $slug, string $regionSlug): View
+    public function showForRegion(string $slug, string $region): View
     {
         $service = $this->service->findBySlug($slug);
         abort_unless($service, 404);
 
-        $region = $service->regions->firstWhere('slug', $regionSlug);
-        abort_unless($region, 404);
+        $serviceRegion = $this->service->findRegion($service, $region);
+        abort_unless($serviceRegion, 404);
 
         return view('pages.services.show', [
             'service' => $service,
-            'region' => $region,
-            'rendered' => $service->renderFor($region),
+            'region' => $serviceRegion,
+            'rendered' => $service->renderFor($serviceRegion),
+            'regionGroups' => $this->service->regionGroups($service),
             'projects' => $this->projects->active(6, null, $service->id),
-            'schemaContext' => SchemaContext::service($service, $region),
+            'schemaContext' => SchemaContext::service($service, $serviceRegion),
         ]);
     }
 }

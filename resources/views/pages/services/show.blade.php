@@ -1,5 +1,8 @@
 @extends('layout.app')
-@section('title', $rendered['title'])
+{{-- Sekme başlığı SEO alanından gelir; boşsa hizmetin kendi başlığına düşer.
+     Bölge sayfasında bu değer bölge adıyla nitelenmiş olarak gelir (bkz.
+     Service::renderFor), böylece her bölge adresi kendi başlığını alır. --}}
+@section('title', $rendered['seo']['title'] ?: $rendered['title'])
 @section('meta_description', (string) $rendered['seo']['description'])
 @section('meta_keywords', (string) $rendered['seo']['keywords'])
 @section('meta_image', (string) $rendered['seo']['image'])
@@ -9,6 +12,18 @@
         // (yer tutucusuz) başlığı gösterir — "Gaziantep Web Tasarım > Gaziantep"
         // gibi tekrarlı görünmesin diye burada ayrıca çözülür.
         $genericTitle = $service->renderGeneric()['title'];
+
+        // Kırılımın bölge basamakları adresle aynı sırayı izler (il > ilçe).
+        // Hizmete bağlı olmayan bir üst bölgenin sayfası yoktur, o yüzden
+        // linksiz basılır.
+        $regionTrail = $region
+            ? $region->ancestorsAndSelf()->map(fn ($step) => [
+                'name' => $step->name,
+                'url' => $step->is($region) || $service->regions->contains($step)
+                    ? route('hizmetler.show-region', [$service->slug, $step->slug_path])
+                    : null,
+            ])
+            : collect();
     @endphp
 
     <!--===== HERO AREA START =====-->
@@ -27,8 +42,16 @@
                                 @if ($region)
                                     <li class="angle"><i class="fa-solid fa-angle-right"></i></li>
                                     <li><a href="{{ route('hizmetler.show', $service->slug) }}">{{ $genericTitle }}</a></li>
-                                    <li class="angle"><i class="fa-solid fa-angle-right"></i></li>
-                                    <li>{{ $region->name }}</li>
+                                    @foreach ($regionTrail as $step)
+                                        <li class="angle"><i class="fa-solid fa-angle-right"></i></li>
+                                        <li>
+                                            @if ($step['url'] && ! $loop->last)
+                                                <a href="{{ $step['url'] }}">{{ $step['name'] }}</a>
+                                            @else
+                                                {{ $step['name'] }}
+                                            @endif
+                                        </li>
+                                    @endforeach
                                 @else
                                     <li class="angle"><i class="fa-solid fa-angle-right"></i></li>
                                     <li>{{ $rendered['title'] }}</li>
@@ -181,7 +204,18 @@
                             </div>
                         </article>
 
-
+                        {{-- Bölgeye özel metin: aynı hizmetin bütün bölge sayfaları ortak
+                             içeriği paylaşır, özgün olan tek parça budur. Panelde
+                             doldurulmadıysa blok hiç basılmaz. --}}
+                        @if ($region && filled($region->description))
+                            <div class="region-note">
+                                <h2>
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    {{ $region->placeholders()['region'] }} için notumuz
+                                </h2>
+                                <p>{{ $region->description }}</p>
+                            </div>
+                        @endif
 
                         <div class="details-border"></div>
 
@@ -194,26 +228,57 @@
                     <div class="sidebar-area position-relative top-0">
 
 
-                        @if ($service->regions->isNotEmpty())
-                            <div class="_sidebar-widget _list">
-                                <h3>Bu Hizmeti Sunduğumuz Bölgeler</h3>
-                                <p class="text-muted" style="margin-bottom: 15px;font-size: 14px;">
-                                    Bulunduğunuz bölgeye göre {{ $genericTitle }} hizmetimiz hakkında daha fazla bilgi
-                                    alın.
+                        {{-- Bölge listesi: her ilçe bağlı olduğu ilin altında toplanır.
+                             İlin kendisi hizmete bağlı değilse başlık tıklanamaz —
+                             o adrese karşılık gelen bir sayfa yok. --}}
+                        @if ($regionGroups !== [])
+                            <div class="region-widget" data-region-widget>
+                                <h3>Hizmet Verdiğimiz Bölgeler</h3>
+                                <p class="region-widget-note">
+                                    {{ $genericTitle }} hizmetimizi aşağıdaki bölgelerde veriyoruz.
                                 </p>
-                                <div class="sidebar-list">
-                                    <ul>
-                                        @foreach ($service->regions as $serviceRegion)
-                                            <li>
-                                                <a href="{{ route('hizmetler.show-region', [$service->slug, $serviceRegion->slug]) }}"
-                                                    @class(['active' => $region?->id === $serviceRegion->id])>
-                                                    {{ $serviceRegion->path ?: $serviceRegion->name }}
-                                                    <span><i class="fa-solid fa-angle-right"></i></span>
+
+                                @if ($service->regions->count() > 8)
+                                    <div class="region-search">
+                                        <i class="fa-solid fa-magnifying-glass"></i>
+                                        <input type="search" placeholder="Bölge ara" aria-label="Bölge ara"
+                                            data-region-search>
+                                    </div>
+                                @endif
+
+                                <div class="region-groups">
+                                    @foreach ($regionGroups as $group)
+                                        <div class="region-group" data-region-group>
+                                            @if ($group['page'])
+                                                <a class="region-city @if ($region?->is($group['page'])) is-current @endif"
+                                                    href="{{ route('hizmetler.show-region', [$service->slug, $group['page']->slug_path]) }}"
+                                                    data-region-item>
+                                                    <i class="fa-solid fa-location-dot"></i>
+                                                    <span>{{ $group['city']->name }}</span>
                                                 </a>
-                                            </li>
-                                        @endforeach
-                                    </ul>
+                                            @else
+                                                <span class="region-city is-plain" data-region-item>
+                                                    <i class="fa-solid fa-location-dot"></i>
+                                                    <span>{{ $group['city']->name }}</span>
+                                                </span>
+                                            @endif
+
+                                            @if ($group['children']->isNotEmpty())
+                                                <ul class="region-children">
+                                                    @foreach ($group['children'] as $child)
+                                                        <li>
+                                                            <a class="@if ($region?->is($child)) is-current @endif"
+                                                                href="{{ route('hizmetler.show-region', [$service->slug, $child->slug_path]) }}"
+                                                                data-region-item>{{ $child->name }}</a>
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            @endif
+                                        </div>
+                                    @endforeach
                                 </div>
+
+                                <p class="region-empty" data-region-empty hidden>Aradığınız bölge listede yok.</p>
                             </div>
                         @endif
 

@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Str;
 
 /**
  * Hizmet. İçerik bir kez yazılır, bağlı olduğu her hizmet bölgesi için
@@ -166,8 +167,39 @@ class Service extends Model implements LinksToPublicPage, RedirectsOnMove, Submi
             'title' => Placeholder::replace($this->title, $values),
             'excerpt' => Placeholder::replace($this->excerpt, $values),
             'content' => Placeholder::replace($this->content, $values),
-            'seo' => Placeholder::replaceAll($this->seoMeta(), $values),
+            'seo' => $this->qualifySeo(Placeholder::replaceAll($this->seoMeta(), $values), $region),
         ];
+    }
+
+    /**
+     * Meta başlık/açıklamada yer tutucu kullanılmamışsa bütün bölge sayfaları
+     * birebir aynı metayla çıkar — arama motoru için bu kopya içeriktir. Bölge
+     * zincirinden hiçbir ad metinde geçmiyorsa bölge adı başa eklenir.
+     *
+     * Zincirin herhangi bir parçası geçiyorsa dokunulmaz: editör {{city}}
+     * yazmışsa "Gaziantep Web Tasarım" zaten ayrışmıştır, ilçe sayfasında
+     * başa bir de "Gaziantep Şahinbey" eklemek metni bozar.
+     *
+     * @param  array<string, mixed>  $seo
+     * @return array<string, mixed>
+     */
+    private function qualifySeo(array $seo, ServiceRegion $region): array
+    {
+        $names = $region->ancestorsAndSelf()->pluck('name');
+        $mentions = fn (?string $text) => filled($text)
+            && $names->contains(fn (string $name) => Str::contains($text, $name, ignoreCase: true));
+
+        $regionName = $region->placeholders()['region'];
+
+        if (filled($seo['title']) && ! $mentions($seo['title'])) {
+            $seo['title'] = "{$regionName} {$seo['title']}";
+        }
+
+        if (filled($seo['description']) && ! $mentions($seo['description'])) {
+            $seo['description'] = rtrim($seo['description'], ' .').". {$regionName} bölgesinde hizmet veriyoruz.";
+        }
+
+        return $seo;
     }
 
     /**

@@ -23,7 +23,12 @@ Route::get('/hakkimizda', [AboutController::class, 'index'])->name('hakkimizda')
 Route::get('/hizmetler', [ServiceController::class, 'index'])->name('hizmetler');
 
 Route::get('/hizmetler/{slug}', [ServiceController::class, 'show'])->name('hizmetler.show');
-Route::get('/hizmetler/{slug}/{region}', [ServiceController::class, 'showForRegion'])->name('hizmetler.show-region');
+// Bölge adresi iç içedir: /hizmetler/web-tasarim/gaziantep/sahinbey. Parametre
+// birden çok segment tuttuğu için kısıt elle verilir, yoksa {region} tek
+// segmentte kalır ve alt bölge sayfaları hiç eşleşmez.
+Route::get('/hizmetler/{slug}/{region}', [ServiceController::class, 'showForRegion'])
+    ->where('region', '[a-z0-9\-]+(?:/[a-z0-9\-]+)*')
+    ->name('hizmetler.show-region');
 
 Route::get('/blog', function () {
     return view('pages.blog.index', ['schemaContext' => SchemaContext::collection('Blog', route('blog'))]);

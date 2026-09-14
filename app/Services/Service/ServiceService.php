@@ -3,12 +3,14 @@
 namespace App\Services\Service;
 
 use App\Models\Service\Service;
+use App\Models\ServiceRegion\ServiceRegion;
 use App\Services\Concerns\ReordersRecords;
 use App\Support\Placeholder;
 use App\Support\Slug;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ServiceService
 {
@@ -104,6 +106,44 @@ class ServiceService
                 'regions' => fn ($query) => $query->where('is_active', true)->orderBy('sort_order'),
             ])
             ->first();
+    }
+
+    /**
+     * Adres yolundan bölgeyi çözer: "gaziantep/sahinbey" -> Şahinbey kaydı.
+     * Yalnızca hizmete gerçekten bağlı ve aktif bölgeler eşleşir; uydurma bir
+     * yol null döner. findBySlug() bölgeleri zaten yüklediği için sorgu atmaz.
+     */
+    public function findRegion(Service $service, string $path): ?ServiceRegion
+    {
+        return $service->regions->firstWhere('slug_path', $path);
+    }
+
+    /**
+     * Kenar çubuğundaki bölge listesi: her kayıt kök şehrinin altında toplanır,
+     * böylece ilçeler bağlı oldukları ilin altında görünür. Şehrin kendisi
+     * hizmete bağlı değilse (yalnızca ilçesi bağlıysa) başlık olarak görünür
+     * ama tıklanabilir olmaz — öyle bir sayfa yok.
+     *
+     * Kök kayıtlar tek sorguda çekilir: `slug_path`'in ilk parçası kökün
+     * slug'ıdır, bu yüzden ağacı yukarı doğru gezmeye gerek kalmaz.
+     *
+     * @return list<array{city: ServiceRegion, page: ServiceRegion|null, children: Collection<int, ServiceRegion>}>
+     */
+    public function regionGroups(Service $service): array
+    {
+        $grouped = $service->regions->groupBy(fn (ServiceRegion $region) => Str::before($region->slug_path, '/'));
+
+        $roots = ServiceRegion::whereIn('slug', $grouped->keys())->get()->keyBy('slug');
+
+        return $grouped
+            ->map(fn (Collection $regions, string $rootSlug) => [
+                'city' => $roots[$rootSlug] ?? $regions->first(),
+                'page' => $regions->firstWhere('slug', $rootSlug),
+                'children' => $regions->where('depth', '>', 0)->sortBy('sort_order')->values(),
+            ])
+            ->sortBy(fn (array $group) => $group['city']->sort_order)
+            ->values()
+            ->all();
     }
 
     protected function reorderModel(): string

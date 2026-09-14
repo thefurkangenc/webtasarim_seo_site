@@ -144,7 +144,7 @@ class LinkChecker
             : $this->broken('internal', 404, 'unpublished', "{$label} yayında değil, adres ziyaretçiye 404 döner.");
     }
 
-    private function checkRegion(?string $slug, ?string $regionSlug): ?array
+    private function checkRegion(?string $slug, ?string $regionPath): ?array
     {
         $service = Service::where('slug', $slug)->first();
 
@@ -152,7 +152,7 @@ class LinkChecker
             return $result;
         }
 
-        return $service->regions()->where('slug', $regionSlug)->where('is_active', true)->exists()
+        return $service->regions()->where('slug_path', $regionPath)->where('is_active', true)->exists()
             ? null
             : $this->broken('internal', 404, 'not_found', 'Bu hizmete bağlı böyle bir bölge yok.');
     }

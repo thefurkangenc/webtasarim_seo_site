@@ -13,9 +13,11 @@ use Illuminate\Support\Facades\DB;
  * Hizmet bölgesi ağacı. Liste kırılımlı çalışır: normalde yalnızca bir
  * seviyenin kayıtları döner, arama yapıldığında ağacın tamamında aranır.
  *
- * `path` ve `depth` türetilmiş alanlardır — burada hesaplanır, formdan
- * gelmez. Bir kayıt yeniden adlandırıldığında altındaki tüm ağacın `path`i
- * de tazelenir.
+ * `path`, `slug_path` ve `depth` türetilmiş alanlardır — burada hesaplanır,
+ * formdan gelmez. Bir kayıt yeniden adlandırıldığında altındaki tüm ağacın
+ * yolları da tazelenir. `path` adların zinciridir ("Gaziantep Şahinbey"),
+ * `slug_path` adres karşılığıdır ("gaziantep/sahinbey") — ön yüzdeki bölgeli
+ * hizmet adresi bu ikincisinden kurulur.
  */
 class ServiceRegionService
 {
@@ -58,12 +60,13 @@ class ServiceRegionService
     public function create(array $data): ServiceRegion
     {
         $parent = $this->parent($data['parent_id'] ?? null);
+        $slug = Slug::unique(($data['slug'] ?? null) ?: $data['name'], 'service_regions');
 
         return ServiceRegion::create([
             ...$this->attributes($data),
             'parent_id' => $parent?->id,
-            'slug' => Slug::unique(($data['slug'] ?? null) ?: $data['name'], 'service_regions'),
-            ...$this->derive($parent, $data['name']),
+            'slug' => $slug,
+            ...$this->derive($parent, $data['name'], $slug),
         ]);
     }
 
@@ -74,10 +77,12 @@ class ServiceRegionService
     public function update(ServiceRegion $region, array $data): ServiceRegion
     {
         return DB::transaction(function () use ($region, $data) {
+            $slug = Slug::unique(($data['slug'] ?? null) ?: $data['name'], 'service_regions', $region->id);
+
             $region->update([
                 ...$this->attributes($data),
-                'slug' => Slug::unique(($data['slug'] ?? null) ?: $data['name'], 'service_regions', $region->id),
-                ...$this->derive($region->parent, $data['name']),
+                'slug' => $slug,
+                ...$this->derive($region->parent, $data['name'], $slug),
             ]);
 
             $this->refreshSubtree($region);
@@ -114,11 +119,12 @@ class ServiceRegionService
     }
 
     /** Üst bölgeye göre türetilen alanlar. */
-    private function derive(?ServiceRegion $parent, string $name): array
+    private function derive(?ServiceRegion $parent, string $name, string $slug): array
     {
         return [
             'depth' => $parent ? $parent->depth + 1 : 0,
             'path' => $parent ? "{$parent->path} {$name}" : $name,
+            'slug_path' => $parent ? "{$parent->slug_path}/{$slug}" : $slug,
         ];
     }
 
@@ -127,7 +133,7 @@ class ServiceRegionService
         return $parentId ? ServiceRegion::findOrFail($parentId) : null;
     }
 
-    /** Ad değişince altındaki tüm yolları yeniden yazar. */
+    /** Ad ya da slug değişince altındaki tüm yolları yeniden yazar. */
     private function refreshSubtree(ServiceRegion $region, int $level = 0): void
     {
         if ($level >= self::MAX_DEPTH) {
@@ -135,7 +141,7 @@ class ServiceRegionService
         }
 
         foreach ($region->children()->get() as $child) {
-            $child->update($this->derive($region, $child->name));
+            $child->update($this->derive($region, $child->name, $child->slug));
 
             $this->refreshSubtree($child, $level + 1);
         }
