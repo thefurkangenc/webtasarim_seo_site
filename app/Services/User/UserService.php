@@ -9,6 +9,7 @@ use App\Support\Activity;
 use App\Support\Phone;
 use DomainException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -17,7 +18,7 @@ class UserService
     /** @param  array<string, mixed>  $filters */
     public function list(array $filters, User $actor): LengthAwarePaginator
     {
-        return User::query()
+        return $this->visibleTo($actor)
             ->with(['roles', 'country', 'media'])
             ->when($filters['search'] ?? null, function ($query, $term) {
                 $query->where(fn ($query) => $query
@@ -35,13 +36,15 @@ class UserService
     }
 
     /** @return array<string, mixed> */
-    public function indexData(): array
+    public function indexData(User $actor): array
     {
+        $visible = $this->visibleTo($actor);
+
         return [
             'stats' => [
-                'total' => User::query()->count(),
-                'active' => User::query()->where('is_active', true)->count(),
-                'inactive' => User::query()->where('is_active', false)->count(),
+                'total' => (clone $visible)->count(),
+                'active' => (clone $visible)->where('is_active', true)->count(),
+                'inactive' => (clone $visible)->where('is_active', false)->count(),
             ],
             'roles' => $this->assignableRoles(),
         ];
@@ -136,6 +139,13 @@ class UserService
 
         $user->syncMedia(null, 'avatar');
         $user->delete();
+    }
+
+    /** Süper yönetici hesapları yalnızca süper yönetici listesinde görünür. */
+    private function visibleTo(User $actor): Builder
+    {
+        return User::query()
+            ->when(! $actor->isSuperAdmin(), fn (Builder $query) => $query->withoutRole(Role::SUPER_ADMIN));
     }
 
     public function canView(User $user, User $actor): bool

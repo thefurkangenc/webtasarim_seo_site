@@ -23,12 +23,12 @@ const table = new DataTable({
     sort: 'created_at',
     direction: 'desc',
     empty: 'Henüz kullanıcı eklenmedi.',
-    row: (item) => `<tr class="${item.is_active ? '' : 'opacity-60'}">
+    row: (item) => `<tr class="${item.is_self ? 'bg-success-50 dark:bg-[#15203c]' : (item.is_active ? '' : 'opacity-60')}">
         ${cell(`<div class="flex items-center gap-[12px] min-w-0">
             ${avatar(item)}
-            <div class="min-w-0">
-                <span class="font-medium truncate max-w-[220px] block">${escapeHtml(item.name)}</span>
-                ${item.is_self ? '<span class="text-[11px] text-gray-500 dark:text-gray-400">Siz</span>' : ''}
+            <div class="flex items-center gap-[8px] min-w-0">
+                <span class="font-medium truncate max-w-[220px]">${escapeHtml(item.name)}</span>
+                ${item.is_self ? '<span class="inline-block py-[3px] px-[10px] rounded-sm text-xs bg-success-100 dark:bg-[#0c1427] text-success-600 dark:text-success-500 shrink-0">Siz</span>' : ''}
             </div>
         </div>`)}
         ${cell(escapeHtml(item.email))}

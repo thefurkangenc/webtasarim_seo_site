@@ -20,7 +20,7 @@ class UserController extends Controller
 
     public function index(): View
     {
-        return view('admin.pages.user.index', $this->service->indexData());
+        return view('admin.pages.user.index', $this->service->indexData(auth()->user()));
     }
 
     public function create(): View

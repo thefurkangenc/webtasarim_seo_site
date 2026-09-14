@@ -17,7 +17,10 @@ use Illuminate\Database\Eloquent\Model;
 #[Fillable(['title', 'slug', 'description', 'status', 'sort_order'])]
 class Gallery extends Model
 {
-    use HasMedia, HasRevisions, HasSeo, HasSortOrder, LogsActivity;
+    use HasMedia, HasRevisions, HasSeo, HasSortOrder, LogsActivity {
+        HasSeo::seoAnalysisInput as baseSeoAnalysisInput;
+        HasRevisions::revisionRestorePayload as baseRevisionRestorePayload;
+    }
 
     public const STATUS_DRAFT = 'draft';
 
@@ -52,7 +55,7 @@ class Gallery extends Model
      */
     public function revisionRestorePayload(array $snapshot): array
     {
-        $payload = parent::revisionRestorePayload($snapshot);
+        $payload = $this->baseRevisionRestorePayload($snapshot);
         $ids = array_values(array_filter((array) ($payload['gallery_media_id'] ?? [])));
 
         unset($payload['gallery_media_id']);
@@ -86,7 +89,7 @@ class Gallery extends Model
      */
     public function seoAnalysisInput(): array
     {
-        $input = parent::seoAnalysisInput();
+        $input = $this->baseSeoAnalysisInput();
         $input['content'] = (string) $this->description;
 
         return $input;
