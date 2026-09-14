@@ -47,6 +47,45 @@ return [
         'activity-log' => 'Log Kayıtları',
     ],
 
+    /*
+    | Rol formundaki yetki kartları bu bölümlere göre gruplanır. Sıra, admin
+    | menüsündeki gruplarla aynıdır. `categories` içinde olup burada geçmeyen
+    | bir anahtar formda "Diğer" altına düşer.
+    */
+    'sections' => [
+        'content' => [
+            'title' => 'İçerik',
+            'categories' => [
+                'page', 'blog', 'hero', 'service', 'service-region', 'project',
+                'gallery', 'testimonial', 'reference', 'faq', 'why-choose-us',
+                'menu', 'media',
+            ],
+        ],
+        'marketing' => [
+            'title' => 'Pazarlama ve İletişim',
+            'categories' => ['lead', 'announcement', 'popup', 'subscriber'],
+        ],
+        'seo' => [
+            'title' => 'SEO ve Analitik',
+            'categories' => [
+                'analytics', 'seo', 'sitemap', 'indexnow', 'search-console',
+                'redirect', 'broken-link', 'schema',
+            ],
+        ],
+        'system' => [
+            'title' => 'Sistem',
+            'categories' => ['setting', 'module', 'revision', 'health', 'activity-log'],
+        ],
+        'ai' => [
+            'title' => 'Yapay Zeka',
+            'categories' => ['ai'],
+        ],
+        'access' => [
+            'title' => 'Kullanıcı ve Yetki',
+            'categories' => ['user', 'role'],
+        ],
+    ],
+
     'permissions' => [
 
         ['name' => 'user.index', 'label' => 'Kullanıcı - Listele', 'category' => 'user', 'guard_name' => 'web'],
@@ -123,10 +162,6 @@ return [
         ['name' => 'ai-prompt.update', 'label' => 'Yapay Zeka Şablon - Güncelle', 'category' => 'ai', 'guard_name' => 'web'],
         ['name' => 'ai-prompt.destroy', 'label' => 'Yapay Zeka Şablon - Sil', 'category' => 'ai', 'guard_name' => 'web'],
 
-        ['name' => 'ai.generate.form', 'label' => 'Yapay Zeka Üretim - Form', 'category' => 'ai', 'guard_name' => 'web'],
-        ['name' => 'ai.generate.store', 'label' => 'Yapay Zeka Üretim - Kaydet', 'category' => 'ai', 'guard_name' => 'web'],
-        ['name' => 'ai.generate.show', 'label' => 'Yapay Zeka Üretim - Görüntüle', 'category' => 'ai', 'guard_name' => 'web'],
-
         ['name' => 'page.index', 'label' => 'Sayfa - Listele', 'category' => 'page', 'guard_name' => 'web'],
         ['name' => 'page.datatable', 'label' => 'Sayfa - Tablo', 'category' => 'page', 'guard_name' => 'web'],
         ['name' => 'page.create', 'label' => 'Sayfa - Ekle', 'category' => 'page', 'guard_name' => 'web'],
@@ -140,6 +175,7 @@ return [
         ['name' => 'page.schema-org', 'label' => 'Sayfa - Schema.org', 'category' => 'page', 'guard_name' => 'web'],
         ['name' => 'page.tags', 'label' => 'Sayfa - Etiketler', 'category' => 'page', 'guard_name' => 'web'],
         ['name' => 'page.faqs', 'label' => 'Sayfa - SSS', 'category' => 'page', 'guard_name' => 'web'],
+        ['name' => 'page.ai', 'label' => 'Sayfa - Yapay Zeka', 'category' => 'page', 'guard_name' => 'web'],
 
         ['name' => 'menu.index', 'label' => 'Menü - Görüntüle', 'category' => 'menu', 'guard_name' => 'web'],
         ['name' => 'menu.edit', 'label' => 'Menü - Düzenleyici', 'category' => 'menu', 'guard_name' => 'web'],
@@ -258,6 +294,7 @@ return [
         ['name' => 'blog.tags', 'label' => 'Blog - Etiketler', 'category' => 'blog', 'guard_name' => 'web'],
         ['name' => 'blog.classification', 'label' => 'Blog - Sınıflandırma', 'category' => 'blog', 'guard_name' => 'web'],
         ['name' => 'blog.faqs', 'label' => 'Blog - SSS', 'category' => 'blog', 'guard_name' => 'web'],
+        ['name' => 'blog.ai', 'label' => 'Blog - Yapay Zeka', 'category' => 'blog', 'guard_name' => 'web'],
 
         ['name' => 'blog-category.index', 'label' => 'Blog Kategori - Listele', 'category' => 'blog', 'guard_name' => 'web'],
         ['name' => 'blog-category.datatable', 'label' => 'Blog Kategori - Tablo', 'category' => 'blog', 'guard_name' => 'web'],
@@ -321,6 +358,7 @@ return [
         ['name' => 'service.tags', 'label' => 'Hizmet - Etiketler', 'category' => 'service', 'guard_name' => 'web'],
         ['name' => 'service.classification', 'label' => 'Hizmet - Sınıflandırma', 'category' => 'service', 'guard_name' => 'web'],
         ['name' => 'service.faqs', 'label' => 'Hizmet - SSS', 'category' => 'service', 'guard_name' => 'web'],
+        ['name' => 'service.ai', 'label' => 'Hizmet - Yapay Zeka', 'category' => 'service', 'guard_name' => 'web'],
 
         ['name' => 'project.index', 'label' => 'Neler Yaptık - Listele', 'category' => 'project', 'guard_name' => 'web'],
         ['name' => 'project.datatable', 'label' => 'Neler Yaptık - Tablo', 'category' => 'project', 'guard_name' => 'web'],
@@ -336,6 +374,7 @@ return [
         ['name' => 'project.tags', 'label' => 'Neler Yaptık - Etiketler', 'category' => 'project', 'guard_name' => 'web'],
         ['name' => 'project.classification', 'label' => 'Neler Yaptık - Sınıflandırma', 'category' => 'project', 'guard_name' => 'web'],
         ['name' => 'project.faqs', 'label' => 'Neler Yaptık - SSS', 'category' => 'project', 'guard_name' => 'web'],
+        ['name' => 'project.ai', 'label' => 'Neler Yaptık - Yapay Zeka', 'category' => 'project', 'guard_name' => 'web'],
 
         ['name' => 'project-category.index', 'label' => 'Proje Kategori - Listele', 'category' => 'project', 'guard_name' => 'web'],
         ['name' => 'project-category.datatable', 'label' => 'Proje Kategori - Tablo', 'category' => 'project', 'guard_name' => 'web'],
@@ -399,7 +438,6 @@ return [
             'why-choose-us.*',
             'hero.*',
             'media.*',
-            'ai.generate.*',
         ],
     ],
 

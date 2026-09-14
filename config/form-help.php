@@ -967,8 +967,8 @@ return [
         'permissions' => [
             'title' => 'Yetkiler',
             'body' => <<<'HTML'
-                <p>Bu role verilen izinler. Bir kullanıcıya birden çok rol atanabilir; izinler toplanır (biri izin veriyorsa yeterli).</p>
-                <p>Grup başlığındaki <strong>“Tümünü Seç”</strong> ile bir modülün tüm izinlerini bir kerede açarsınız.</p>
+                <p>Bu role verilen izinler. Kartlar menüdeki gibi gruplanır; üstteki arama kutusuyla modül veya yetki adı yazarak süzebilirsiniz.</p>
+                <p>Grup veya bölüm başlığındaki <strong>“Tümünü seç”</strong> ile o kümenin (aramada görünür) izinlerini bir kerede açarsınız.</p>
                 <p><code>super-admin</code> rolü listeden bağımsız olarak <strong>her şeyi</strong> yapabilir.</p>
                 HTML,
         ],

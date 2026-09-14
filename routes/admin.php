@@ -176,7 +176,10 @@ Route::middleware(['auth', 'user.active', 'permission_middleware'])->group(funct
     });
 
     // İçerik üretimi: modül formlarından çağrılır, kuyruğa atar ve durum döner.
-    Route::prefix('ai')->name('ai.')->controller(AiGenerationController::class)->group(function () {
+    // Route adından izin türetmez (`ai.generate.form` yok) — yetki şablon
+    // anahtarının modülünden gelir (`blog.content` → `blog.ai`). Durum sorgusu
+    // yalnızca kaydı açan kullanıcıya aittir.
+    Route::withoutMiddleware('permission_middleware')->prefix('ai')->name('ai.')->controller(AiGenerationController::class)->group(function () {
         Route::get('generate/{key}/form', 'form')->name('generate.form');
         Route::post('generate', 'store')->name('generate.store');
         Route::get('generate/{generation}', 'show')->name('generate.show');

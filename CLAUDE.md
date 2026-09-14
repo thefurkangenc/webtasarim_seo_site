@@ -137,11 +137,11 @@ Modüller bunların üzerine kurulur — yeniden yazma, kullan.
 | Video oynatıcı | `<x-player>` (ön yüz) / `<x-admin::player>` (admin). Gömme = iframe, dosya = `public/js/video-player/` (ES module). Kalite/sprite kuyrukta `ffmpeg` (`VideoProcessor` + `ProcessVideoJob`). Orijinal hemen oynar. Poll `GET /media/{id}/player`. Backfill: `php artisan video:process`. `media.video` JSON. PHP paketi yok. Yol çözümü `App\Support\Ffmpeg` (config + PATH + `/opt/homebrew/bin` vb.); PHP-FPM `apt`/`brew` **çalıştırmaz**. Yoksa orijinal yine oynar, kopya üretilmez |
 | Medyada video | `config/media.php` > `accepts` içinde `mp4`/`webm`, sınırı `max_size_by_extension` ezer (64 MB). **Sunucuda `upload_max_filesize` ve `post_max_size` de yükseltilmeli**, yoksa istek Laravel'e hiç ulaşmaz. `MediaUploadRequest` en gevşek sınırı kaba elek olarak kullanır, gerçek sınır `MediaService::guard()`'da tek yerde. `Media::isVideo()` + payload'daki `is_video`: videoyu `<img>`'e koyan her yer önce bunu sormak zorunda |
 | Revizyon tekilleştirme | `RevisionService::$captured` "aynı istekte bir kez" korumasıdır; **uzun yaşayan süreçlerde sıfırlanmalı** — `AppServiceProvider`'da `Queue::looping(fn () => RevisionService::flushCaptured())` bağlı. Unutulursa kuyruk işçisi ayakta olduğu sürece ilk kaydetmeden sonraki değişiklikler geçmişe yazılmaz |
-| Bileşen bazlı yetki | `App\Http\Requests\Concerns\FiltersPermissionedFields` — SEO/Schema.org/Etiketler/Sınıflandırma/SSS bloklarını modül içinde TEK TEK yetkilendirir (`blog.seo`, `blog.schema-org`, `blog.tags`, `blog.classification`, `blog.faqs` gibi — `classification` modüle göre değişen sınıflandırma alanıdır: `blog_category_id`, `service_regions`, `project_category_id`). Create Request'te `use FiltersPermissionedFields;` + `protected function permissionedFields(): array { return $this->sharedComponentPermissions('blog', 'blog_category_id'); }` (sınıflandırması yoksa — örn. Sayfa — ikinci parametre `null`). Update Request Create'i extend ettiği için tekrar yazılmaz. İzni olmayan alan **iki kademede** engellenir: Blade'de `@can('blog.seo')` ile blok hiç basılmaz, `validated()` override'ı ham bir HTTP isteğiyle gönderilse de o alanı sessizce düşürür — UI'yi atlayan istek de kaydedilmez. Şu an blog/page/service/project'te kurulu; Sayfa'da sınıflandırma yok |
+| Bileşen bazlı yetki | `App\Http\Requests\Concerns\FiltersPermissionedFields` — SEO/Schema.org/Etiketler/Sınıflandırma/SSS bloklarını modül içinde TEK TEK yetkilendirir (`blog.seo`, `blog.schema-org`, `blog.tags`, `blog.classification`, `blog.faqs` gibi — `classification` modüle göre değişen sınıflandırma alanıdır: `blog_category_id`, `service_regions`, `project_category_id`). Create Request'te `use FiltersPermissionedFields;` + `protected function permissionedFields(): array { return $this->sharedComponentPermissions('blog', 'blog_category_id'); }` (sınıflandırması yoksa — örn. Sayfa — ikinci parametre `null`). Update Request Create'i extend ettiği için tekrar yazılmaz. İzni olmayan alan **iki kademede** engellenir: Blade'de `@can('blog.seo')` ile blok hiç basılmaz, `validated()` override'ı ham bir HTTP isteğiyle gönderilse de o alanı sessizce düşürür — UI'yi atlayan istek de kaydedilmez. Şu an blog/page/service/project'te kurulu; Sayfa'da sınıflandırma yok. **Yapay zeka butonu** aynı kalıbın alan-olmayan hali: `{modül}.ai` (`blog.ai`, `page.ai`, `service.ai`, `project.ai`). Blade `@can` butonu gizler; üretim API'si şablon anahtarının ilk parçasından aynı izni ister (`blog.content` → `blog.ai`). Kayda yazılan bir alan olmadığı için `FiltersPermissionedFields`'e girmez |
 | SEO alanları | `App\Models\Concerns\HasSeo` + `<x-admin::form.seo>` (polymorphic `seo` tablosu) |
 | Etiketler | `App\Models\Concerns\HasTags` + `<x-admin::form.tags>` (`tags` + `taggables`) |
 | Zengin metin | `<x-admin::form.editor>` — TinyMCE 7, `core/editor.js` |
-| Yapay zeka | `App\Services\Ai\AiService` + `core/ai-generator.js`, `/admin/ai-provider`, `/admin/ai-prompt` |
+| Yapay zeka | `App\Services\Ai\AiService` + `core/ai-generator.js`, `/admin/ai-provider`, `/admin/ai-prompt`. Form butonu `{modül}.ai` iznine bağlı (`blog.ai` vb.); üretim uçları route-adından izin türetmez |
 | Alan adı dönüşümü | `App\Support\Field` — `seo.meta_title` → `name="seo[meta_title]"` |
 | CSV indirme | `App\Support\Csv::download($dosyaAdi, $satirlar)` — satırları akıtır (generator), BOM + noktalı virgül ayırıcı (Türkçe Excel). Servis HTTP bilmez: satırları servis üretir, yanıtı controller kurar |
 | Benzersiz slug | `App\Support\Slug::unique($deger, 'blogs', $id)` — Türkçe karakter duyarlı |
@@ -183,7 +183,8 @@ Modüller bunların üzerine kurulur — yeniden yazma, kullan.
 
 
 Yeni modülün izinlerini `config/permissions.php` içindeki `permissions` dizisine
-ekle, kategorisini `categories`'e yaz ve seeder'ı tekrar çalıştır. Seeder
+ekle, kategorisini `categories`'e yaz, rol formunda görüneceği bölümü
+`sections`'a ekle ve seeder'ı tekrar çalıştır. Seeder
 tekrar çalıştırılabilir: mevcut kayıtlar ve rol atamaları korunur, ama
 config'ten kaldırılan izinler **veritabanından tamamen silinir** (önce bir
 uyarı basılır) — bir izni kaldırmadan önce ona sahip roller olup olmadığını
@@ -325,6 +326,11 @@ Bir modüle üretim eklemek:
 const output = await aiGenerator.open('blog.content', { defaults: { title } });
 if (output) { /* alanları doldur */ }
 ```
+
+Butonu `@can('blog.ai')` ile sar (izin adı şablon anahtarının ilk parçası + `.ai`).
+`config/permissions.php` içine `{modül}.ai` satırını o modülün SEO/SSS izinlerinin yanına ekle.
+Üretim uçları (`/admin/ai/generate/...`) `permission_middleware`'den muaftır: yetki
+`AiPrompt::permissionForKey($key)` ile FormRequest'te kontrol edilir.
 
 Sunucuda yeni kod gerekmez — panelden o `key` ile bir şablon tanımlamak yeter.
 Şablon `{{keywords}}`, `{{title}}`, `{{category}}`, `{{length}}`, `{{notes}}`

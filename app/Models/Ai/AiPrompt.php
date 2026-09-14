@@ -6,6 +6,7 @@ use App\Models\Concerns\LogsActivity;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 #[Fillable([
     'name', 'key', 'system_prompt', 'user_prompt',
@@ -33,6 +34,15 @@ class AiPrompt extends Model
     public function provider(): BelongsTo
     {
         return $this->belongsTo(AiProvider::class, 'ai_provider_id');
+    }
+
+    /**
+     * Şablon anahtarının ilk parçası hangi formda durduğunu söyler:
+     * `blog.content` → `blog.ai`. Form butonu ve üretim API'si aynı izni kullanır.
+     */
+    public static function permissionForKey(string $key): string
+    {
+        return Str::before($key, '.').'.ai';
     }
 
     /** @return array<string, mixed> */

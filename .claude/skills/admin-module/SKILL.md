@@ -145,6 +145,8 @@ route middleware'i tekrar etmez.
 
 Sonra `php artisan db:seed --class=RolePermissionSeeder` çalıştır.
 Editörün erişmesi gerekiyorsa `roles.editor` desenine `blog-category.*` ekle.
+Rol formunda kartın doğru bölümde durması için kategoriyi `sections` içindeki
+ilgili gruba da ekle (eklenmezse "Diğer" altına düşer).
 
 ## 9. View'lar
 
@@ -231,7 +233,10 @@ Sunucuda kod yazılmaz. Panelden `/admin/ai-prompt` ekranında modülün anahtar
 const output = await aiGenerator.open('hizmet.content', { defaults: { title } });
 ```
 
-Butonu `@can('ai.generate')` ile sar.
+Butonu `@can('{modül}.ai')` ile sar (`blog.ai`, `page.ai`, `service.ai`, `project.ai`).
+İzni `config/permissions.php` içinde o modülün SEO/SSS satırlarının yanına ekle.
+Üretim API'si şablon anahtarından aynı izni ister (`blog.content` → `blog.ai`);
+ayrı bir `ai.generate.*` izni yoktur.
 
 ## 12f. Log kaydı (denetim) — HER MODÜLDE, atlanmaz
 

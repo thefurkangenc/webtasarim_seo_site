@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Ai;
 
 use App\Http\Controllers\Concerns\RespondsWithJson;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Ai\AiGenerateFormRequest;
 use App\Http\Requests\Admin\Ai\AiGenerateRequest;
 use App\Models\Ai\AiGeneration;
 use App\Models\Ai\AiPrompt;
@@ -22,8 +23,10 @@ class AiGenerationController extends Controller
     ) {}
 
     /** Modül formundan açılan üretim modalının gövdesi. */
-    public function form(string $key): View
+    public function form(AiGenerateFormRequest $request): View
     {
+        $key = (string) $request->route('key');
+
         return view('admin.pages.ai.modals.generate', [
             'promptKey' => $key,
             'prompts' => $this->prompts->forKey($key),

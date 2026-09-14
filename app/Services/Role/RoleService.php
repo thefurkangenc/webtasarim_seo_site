@@ -26,14 +26,14 @@ class RoleService
             ->through(fn (Role $role) => $role->toPayload());
     }
 
-    /** @return array{role: ?Role, groups: Collection<int, array<string, mixed>>, selected: array<int, int>, guards: array<string, string>} */
+    /** @return array{role: ?Role, sections: Collection<int, array<string, mixed>>, selected: array<int, int>, guards: array<string, string>} */
     public function formData(?Role $role = null): array
     {
         $role?->load('permissions');
 
         return [
             'role' => $role,
-            'groups' => $this->permissionGroups(),
+            'sections' => $this->permissionSections(),
             'selected' => $role?->permissions->pluck('id')->map(fn ($id) => (int) $id)->all() ?? [],
             'guards' => Role::GUARDS,
         ];
@@ -104,8 +104,13 @@ class RoleService
             ->get();
     }
 
-    /** Config kategorilerine göre gruplanmış yetkiler. */
-    private function permissionGroups(): Collection
+    /**
+     * Yetkiler önce config kategorisine, sonra rol formundaki bölüme göre
+     * toplanır. Bölüme yazılmamış kategori "Diğer" altına düşer.
+     *
+     * @return Collection<int, array{key: string, title: string, groups: Collection<int, array{key: string, title: string, permissions: Collection<int, Permission>}>}>
+     */
+    private function permissionSections(): Collection
     {
         $titles = config('permissions.categories', []);
         $grouped = Permission::query()
@@ -121,7 +126,7 @@ class RoleService
                 continue;
             }
 
-            $groups->push([
+            $groups->put($key, [
                 'key' => $key,
                 'title' => $title,
                 'permissions' => $grouped->get($key),
@@ -129,17 +134,49 @@ class RoleService
         }
 
         foreach ($grouped as $key => $permissions) {
-            if (isset($titles[$key])) {
+            if ($groups->has($key)) {
                 continue;
             }
 
-            $groups->push([
+            $groups->put($key, [
                 'key' => $key,
                 'title' => $key === '_other' ? 'Diğer' : $key,
                 'permissions' => $permissions,
             ]);
         }
 
-        return $groups;
+        $used = [];
+        $sections = collect();
+
+        foreach (config('permissions.sections', []) as $key => $section) {
+            $sectionGroups = collect($section['categories'] ?? [])
+                ->map(fn (string $category) => $groups->get($category))
+                ->filter()
+                ->values();
+
+            if ($sectionGroups->isEmpty()) {
+                continue;
+            }
+
+            $used = [...$used, ...$sectionGroups->pluck('key')->all()];
+
+            $sections->push([
+                'key' => $key,
+                'title' => $section['title'],
+                'groups' => $sectionGroups,
+            ]);
+        }
+
+        $leftover = $groups->reject(fn (array $group) => in_array($group['key'], $used, true))->values();
+
+        if ($leftover->isNotEmpty()) {
+            $sections->push([
+                'key' => 'other',
+                'title' => 'Diğer',
+                'groups' => $leftover,
+            ]);
+        }
+
+        return $sections;
     }
 }
