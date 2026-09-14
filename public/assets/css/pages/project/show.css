@@ -1,5 +1,172 @@
-/* Proje detayında temada karşılığı olmayan üç blok. Geri kalan her şey
-   temanın portfolio-details sınıflarıyla geliyor. */
+/* Proje detayında temada karşılığı olmayan bloklar. Geri kalan her şey
+   temanın portfolio-details sınıflarıyla geliyor.
+
+   Renk paleti sitenin kendi marka renklerinden: mavi (--vtc-bg-main4),
+   mercan (--vtc-bg-main6), turkuaz (--vtc-bg-main5) — dördüncü ton (amber)
+   sitenin soluk sarısının (--vtc-bg-main8) beyaz üstünde okunaklı olacak
+   koyu karşılığı. Değerler burada sabit yazılır çünkü bu sayfa dışındaki
+   hiçbir yerde main.css'in :root'u import edilmiyor. */
+
+/*
+::::::::::::::::::::::::::
+ SONUÇLAR — renkli istatistik kartları
+::::::::::::::::::::::::::
+*/
+
+.project-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 18px;
+}
+
+.project-stat-card {
+    position: relative;
+    overflow: hidden;
+    padding: 26px 22px;
+    border-radius: 14px;
+    background: #fff;
+    border: 1px solid rgba(9, 11, 14, 0.06);
+    box-shadow: 0 14px 30px -22px rgba(9, 11, 14, 0.35);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.project-stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 34px -20px rgba(9, 11, 14, 0.4);
+}
+
+/* Üst kenarda ince bir aksan şeridi — kartı ayırt eder, çığlık atmaz. */
+.project-stat-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 4px;
+    background: var(--stat-accent, #155FFF);
+}
+
+.project-stat-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    margin-bottom: 16px;
+    border-radius: 12px;
+    font-size: 17px;
+    color: var(--stat-accent, #155FFF);
+    background: color-mix(in srgb, var(--stat-accent, #155FFF) 14%, #fff);
+}
+
+.project-stat-value {
+    display: block;
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 1.1;
+    color: #090B0E;
+    letter-spacing: -0.01em;
+}
+
+.project-stat-label {
+    display: block;
+    margin-top: 6px;
+    font-size: 15px;
+    color: #3D4C5E;
+}
+
+/*
+::::::::::::::::::::::::::
+ PROJE KÜNYESİ — sidebar kartı
+::::::::::::::::::::::::::
+*/
+
+.project-credits {
+    padding: 30px 26px;
+    border-radius: 16px;
+    background: #fff;
+    border: 1px solid rgba(9, 11, 14, 0.06);
+    box-shadow: 0 18px 40px -28px rgba(9, 11, 14, 0.45);
+}
+
+.project-credits > h3 {
+    margin: 0 0 6px;
+    font-size: 20px;
+}
+
+.project-credits-list {
+    list-style: none;
+    margin: 18px 0 0;
+    padding: 0;
+}
+
+.project-credits-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(61, 76, 94, 0.12);
+}
+
+.project-credits-list li:first-child {
+    padding-top: 0;
+}
+
+.project-credits-list li:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.project-credits-icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    margin-top: 1px;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #155FFF;
+    background: rgba(21, 95, 255, 0.1);
+}
+
+.project-credits-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.project-credits-label {
+    font-size: 13px;
+    color: #3D4C5E;
+}
+
+.project-credits-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: #090B0E;
+}
+
+.project-credits-value a {
+    color: #155FFF;
+}
+
+.project-credits-value a:hover {
+    text-decoration: underline;
+}
+
+.project-tech {
+    margin-top: 22px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(61, 76, 94, 0.12);
+}
+
+.project-tech h4 {
+    margin: 0 0 12px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #090B0E;
+}
 
 .project-tech-list {
     display: flex;
@@ -11,12 +178,13 @@
 }
 
 .project-tech-list li {
-    font-size: 14px;
+    font-size: 13px;
+    font-weight: 500;
     line-height: 1;
-    padding: 8px 12px;
-    border: 1px solid rgba(0, 0, 0, .08);
-    border-radius: 4px;
-    background: #fff;
+    padding: 9px 14px;
+    border-radius: 999px;
+    color: #155FFF;
+    background: rgba(21, 95, 255, 0.08);
 }
 
 .details-quote blockquote {
@@ -24,7 +192,7 @@
     padding: 28px 30px;
     border-radius: 8px;
     background: #f6f7f9;
-    border-left: 3px solid var(--ztc-color-primary, #2b59ff);
+    border-left: 3px solid #155FFF;
 }
 
 .details-quote blockquote > i {

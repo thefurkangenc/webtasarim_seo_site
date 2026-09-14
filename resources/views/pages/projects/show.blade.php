@@ -11,13 +11,20 @@
     $shareUrl = urlencode((string) ($project->publicUrl() ?? url()->current()));
 
     // Künye satırları tek yerde kurulur: boş olanlar elenir, sıra sabit kalır.
+    // İkon her satırın türünü anlatır (dekoratif değil) — künyeyi tarayan göz
+    // "müşteri mi süre mi" ayrımını renk/şekilden okur, etiketi okumadan önce.
     $facts = collect([
-        ['Müşteri', $project->client_name, null],
-        ['Sektör', $project->sector, null],
-        ['Kategori', $project->category?->name, $project->category ? route('projeler.kategori', $project->category->slug) : null],
-        ['Tamamlanma', $project->completedLabel(), null],
-        ['Süre', $project->duration, null],
-    ])->filter(fn ($row) => filled($row[1]));
+        ['fa-user-tie', 'Müşteri', $project->client_name, null],
+        ['fa-briefcase', 'Sektör', $project->sector, null],
+        ['fa-folder-open', 'Kategori', $project->category?->name, $project->category ? route('projeler.kategori', $project->category->slug) : null],
+        ['fa-calendar-check', 'Tamamlanma', $project->completedLabel(), null],
+        ['fa-hourglass-half', 'Süre', $project->duration, null],
+    ])->filter(fn ($row) => filled($row[2]));
+
+    // Sonuç kartlarının rengi `direction`'dan (yön okundan) bağımsızdır —
+    // "renkli/modern" istek burada karşılanır, ama renk anlam taşımaz, sadece
+    // kartları birbirinden ayırır. Yön hâlâ sadece ok ikonuyla anlatılır.
+    $statAccents = ['#155FFF', '#FD6543', '#11819B', '#C98A2E'];
 @endphp
 
 @section('title', $seo['title'] ?: $project->title)
@@ -95,29 +102,29 @@
                                     {{--
                                         Ölçülebilir sonuçlar. `direction` yalnızca ok yönünü belirler,
                                         renk sabit kalır: "çıkma oranı %60 düştü" iyi bir sonuçtur —
-                                        yön tek başına iyi/kötü demez.
+                                        yön tek başına iyi/kötü demez. Kart rengi kartı ayırt etmek
+                                        içindir, yönle ilgisi yoktur.
                                     --}}
                                     <div class="heading2 mt-50">
                                         <h3>Sonuçlar</h3>
                                     </div>
-                                    <div class="counters-area-details mt-10">
-                                        <div class="row">
-                                            @foreach ($results as $result)
-                                                <div class="col-lg-3 col-md-6">
-                                                    <div class="details-counter-box mt-30">
-                                                        <h3>
-                                                            @if ($result['direction'] === 'up')
-                                                                <i class="fa-solid fa-arrow-trend-up"></i>
-                                                            @elseif ($result['direction'] === 'down')
-                                                                <i class="fa-solid fa-arrow-trend-down"></i>
-                                                            @endif
-                                                            {{ $result['value'] }}
-                                                        </h3>
-                                                        <p class="mt-10">{{ $result['label'] }}</p>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
+                                    <div class="project-stats mt-20">
+                                        @foreach ($results as $result)
+                                            @php($accent = $statAccents[$loop->index % count($statAccents)])
+                                            <div class="project-stat-card" style="--stat-accent: {{ $accent }}">
+                                                <span class="project-stat-icon">
+                                                    @if ($result['direction'] === 'up')
+                                                        <i class="fa-solid fa-arrow-trend-up"></i>
+                                                    @elseif ($result['direction'] === 'down')
+                                                        <i class="fa-solid fa-arrow-trend-down"></i>
+                                                    @else
+                                                        <i class="fa-solid fa-minus"></i>
+                                                    @endif
+                                                </span>
+                                                <span class="project-stat-value">{{ $result['value'] }}</span>
+                                                <span class="project-stat-label">{{ $result['label'] }}</span>
+                                            </div>
+                                        @endforeach
                                     </div>
                                 @endif
 
@@ -251,32 +258,33 @@
                 <div class="col-lg-4">
                     <div class="sidebar-area ml-30 md:ml-0 sm:ml-0 md:mt-40 sm:mt-40">
                         @if ($facts->isNotEmpty() || $technologies !== [] || filled($project->project_url))
-                            <div class="_sidebar-widget _portfolio">
+                            <div class="project-credits">
                                 <h3>Proje Künyesi</h3>
 
                                 @if ($facts->isNotEmpty())
-                                    <div class="portfolio-list">
-                                        <ul>
-                                            @foreach ($facts as [$label, $value, $url])
-                                                <li>
-                                                    {{ $label }}:
-                                                    <span>
+                                    <ul class="project-credits-list">
+                                        @foreach ($facts as [$icon, $label, $value, $url])
+                                            <li>
+                                                <span class="project-credits-icon"><i class="fa-solid {{ $icon }}"></i></span>
+                                                <span class="project-credits-text">
+                                                    <span class="project-credits-label">{{ $label }}</span>
+                                                    <span class="project-credits-value">
                                                         @if ($url)
                                                             <a href="{{ $url }}">{{ $value }}</a>
                                                         @else
                                                             {{ $value }}
                                                         @endif
                                                     </span>
-                                                </li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
+                                                </span>
+                                            </li>
+                                        @endforeach
+                                    </ul>
                                 @endif
 
                                 @if ($technologies !== [])
-                                    <div class="project-tech mt-20">
+                                    <div class="project-tech">
                                         <h4>Kullanılan Teknolojiler</h4>
-                                        <ul class="project-tech-list mt-10">
+                                        <ul class="project-tech-list">
                                             @foreach ($technologies as $technology)
                                                 <li>{{ $technology }}</li>
                                             @endforeach
