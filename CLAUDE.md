@@ -101,7 +101,7 @@ sabit ilk segmentlerini toplar), böylece o adla bir sayfa oluşturulamaz.
 | `admin-module` | Yeni bir admin modülü kurarken (uçtan uca reçete) |
 | `trezo-ui` | Admin Blade'i yazarken, herhangi bir arayüz markup'ı üretirken |
 | `admin-js` | `public/admin/assets/js/` altında JS yazarken |
-| `theme-swap` | Ön yüz temasını değiştirirken (`layout/html/`'e yeni tema konduğunda) ya da tek bir ön yüz sayfasını temaya göre yeniden keserken |
+| `new-site` | Bu panel üzerinde başka bir firma/sektör için site kurarken (sıfırla → `/kurulum` → yeni tema), ön yüz temasını değiştirirken ya da tek bir ön yüz sayfasını temaya göre yeniden keserken |
 
 Admin tarafında iş yapıyorsan bu skill'leri **kod yazmadan önce** aç.
 

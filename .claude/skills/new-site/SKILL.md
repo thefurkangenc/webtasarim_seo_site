@@ -1,15 +1,47 @@
 ---
-name: theme-swap
-description: Use when the public site must be moved onto a new HTML theme dropped into resources/views/layout/html/ - rebuilds layout/app.blade.php, the layout partials, the page templates and public/assets from the new theme while every panel binding (meta, schema, tracking, menus, settings, notices, cookie banner, forms) keeps working. Also use when a single front-end page must be re-cut against the current theme.
+name: new-site
+description: Use when standing up a new site on this panel for a different company or sector - resets the panel content, runs the setup wizard, then moves the public front end onto the new HTML theme dropped into resources/views/layout/html/ (app.blade.php, the layout partials, every page template, public/assets) while every panel binding (meta, schema, tracking, menus, settings, notices, cookie banner, forms) keeps working. Also use for a theme change alone, or when a single front-end page must be re-cut against the current theme.
 ---
 
-# Tema Değiştirme
+# Yeni Site Kurulumu
 
-Ön yüzü yeni bir HTML temasına taşır. Yeni tema `resources/views/layout/html/`
-içine konur (eski temanın üzerine — eski sürüm git geçmişinde durur).
+Bu panel üzerinde başka bir firma/sektör için site ayağa kaldırır: panel
+içeriğini sıfırlar, kurulum sihirbazını tamamlar, sonra ön yüzü yeni HTML
+temasına taşır. Yeni tema `resources/views/layout/html/` içine konur (eski
+temanın üzerine — eski sürüm git geçmişinde durur).
 
-**Yalnızca ön yüz.** `resources/views/admin/**` ve `public/admin/**` bu iş
-sırasında açılmaz bile — CLAUDE.md'deki "İki Ayrı Dünya" kuralı.
+**Ön yüz kodu değişir, panel kodu değişmez.** `resources/views/admin/**` ve
+`public/admin/**` bu iş sırasında açılmaz bile — CLAUDE.md'deki "İki Ayrı
+Dünya" kuralı. Değişen tek panel şeyi onun **içeriğidir** (ayarlar, menüler,
+sayfalar), o da sihirbazdan.
+
+## Sıfırdan site kuruyorsan — önce panel
+
+Yalnızca temayı değiştiriyorsan bu bölümü atla, Adım 0'dan başla.
+
+1. **İçeriği sıfırla.** `php artisan setup:reset` — onay sorar (betikte
+   `--force`). `config/setup.php` > `reset_tables` boşalır, `keep_tables`
+   (roller, izinler, ülkeler, iller, modüller, medya preset'leri, AI şablonları,
+   menü konumları) durur; `storage` yüklemeleri de silinir. Bittiğinde
+   `/kurulum` yeniden açılır ve tüm ön yüz adresleri oraya düşer.
+
+   Tamamen boş bir kurulumda bunun yerine: `php artisan migrate --force` +
+   `php artisan db:seed --force` (seeder **yönetici oluşturmaz**, ilk hesap
+   sihirbazdan gelir).
+
+2. **Sihirbazı tamamla** — `/kurulum`. Yedi adım: Yönetici, Firma, Modüller,
+   İletişim, E-posta, Yasal, Özet. "Kurulumu başlat" görevleri sırayla işler
+   (`config/setup.php` > `tasks`). `page` ve `lead` modülleri kilitlidir,
+   kapatılamaz.
+
+   **Bu adımı kullanıcı yapar, sen yapmazsın** — firma adı, logo, e-posta,
+   hangi modüllerin açılacağı onun kararı. Sihirbaz bitmeden tema işine
+   başlama: header/footer panelden veri okuyor, boş veriyle ne yaptığını
+   göremezsin.
+
+3. Sihirbaz bittikten sonra **elinde ne var, gör**: hangi modüller açık
+   (`/admin/module`), menülerde ne var, kaç sayfa/yazı/hizmet kaydı var.
+   Kapalı bir modülün ön yüz sayfasını temaya uyarlamak boşa iştir.
 
 ## Temel kural
 
@@ -46,6 +78,67 @@ grep -n "</main>\|<footer\|<header\|preloader\|offcanvas" resources/views/layout
    `index2.html`, …). **Kullanıcıya sor** — varyant seçimi tasarım kararıdır,
    tahmin edilmez. Aynı soruyla iç sayfa varyantlarını da netleştir
    (`blog.html` mi `blog2.html` mi, `service-details3.html` mi).
+
+5. **Tema haritasını yaz** (aşağıdaki bölüm). Kod yazmadan önce.
+
+### Tema haritası — `docs/tema-haritasi.md`
+
+Bu iş tek oturuma sığmaz: 20'den fazla view, yüzlerce sınıf adı. Bağlam
+sıkıştığında her şeyi baştan keşfetmek zorunda kalmamak için harita **iş
+başlamadan** yazılır ve her adım bitince güncellenir. Sonraki oturum bu dosyayı
+okur, kaldığı yerden devam eder — "hangi tema dosyasına bakıyorduk, menü sınıfı
+neydi, nerede kalmıştık" soruları burada cevaplı durur.
+
+Dosya git'e girer; iş bitince silinmez (bir sonraki tema değişiminde önceki
+temanın haritası karşılaştırma için işe yarar).
+
+```markdown
+# Tema Haritası — <tema adı>
+
+Tarih: <tarih> · Kaynak: `resources/views/layout/html/`
+
+## Kararlar
+- Anasayfa varyantı: `index7.html` (kullanıcı seçti)
+- Blog listesi: `blog2.html` · Blog detay: `blog-details.html`
+- Hizmet detay: `service-details3.html` · Portfolyo: `portfolio2.html`
+
+## Sayfa eşlemesi
+| Tema dosyası | View | Durum |
+|---|---|---|
+| index7.html | pages/home/index.blade.php | ✓ |
+| about.html | pages/about/index.blade.php | — |
+| contact.html | pages/contact/index.blade.php | — |
+| ... | ... | |
+
+## Sınıf eşlemesi
+| Rol | Eski tema | Yeni tema |
+|---|---|---|
+| Alt menülü kök `<li>` | `has-dropdown` | ? |
+| Aktif menü `<li>` | `current-menu-item` | ? |
+| Alt menü `<ul>` (1. seviye) | `sub-menu` | ? |
+| Alt menü `<ul>` (2. seviye) | `sub-menu menu1` | ? |
+| Birincil buton | `theme-btn27` | ? |
+| İç sayfa üst görseli | `inner-hero` | ? |
+| Kırılım (breadcrumb) | `breadcrumbs-pages` | ? |
+| Sayfalama | `theme-pagination` | ? |
+| Kenar çubuğu kutusu | `_sidebar-widget` | ? |
+
+## Kütüphaneler
+Yeni temada olanlar: bootstrap, swiper, gsap, ...
+**Eski temada olup yenide olmayanlar:** aos, slick, nice-select → bunları
+kullanan view'ler (`data-aos`, `.slick-*`, `<select>`) o kütüphane gittiğinde
+sessizce bozulur, tek tek gezilir.
+
+## Kalanlar
+- [ ] sayfalama view'i
+- [ ] mobil menü klonlama kontrolü
+- [ ] ...
+```
+
+"Kütüphaneler" satırını atlamak pahalıya patlar: eski tema AOS ile geliyordu ve
+sayfalarda `data-aos` öznitelikleri var. Yeni temada AOS yoksa öznitelikler
+zararsızca durur ama **animasyon hiç çalışmaz** ve hata da vermez; ya kütüphane
+korunur ya öznitelikler temizlenir — karar burada yazılır.
 
 ## Adım 1 — Asset'ler
 
@@ -188,14 +281,9 @@ $headerMenu    = app(\App\Services\Menu\MenuRenderer::class)->render('header');
 
 **Menü ağacı `menu-nav.blade.php`'de** ve tamamen tema sınıflarına bağlıdır
 (`has-dropdown`, `sub-menu`, `current-menu-item`, ok ikonu). Yeni temanın
-`index.html`'inde **alt menüsü olan** bir örnek bul, sınıfları oradan eşle:
-
-| Veri | Şu anki tema | Yeni temada |
-|---|---|---|
-| Alt menüsü olan kök `<li>` | `has-dropdown` | ? |
-| Aktif `<li>` | `current-menu-item` | ? |
-| Alt menü `<ul>` (1. seviye) | `sub-menu` | ? |
-| Alt menü `<ul>` (2. seviye) | `sub-menu menu1` | ? |
+anasayfasında **alt menüsü olan** bir örnek bul, sınıfları oradan eşle ve
+eşlemeyi `docs/tema-haritasi.md` > "Sınıf eşlemesi" tablosuna yaz — sonraki
+adımlarda oraya bakılacak.
 
 `$items` yapısı değişmez: `['label', 'url', 'target', 'active', 'children']`.
 Özyineleme (`$depth`) korunur; tema 3 seviyeden fazlasını açmıyorsa
@@ -263,6 +351,8 @@ Her sayfada yöntem aynı:
    `{{ asset('assets/...') }}` olur.
 6. İngilizce demo metni Türkçeye çevrilir.
 7. Sayfa açılıyor mu, ekran görüntüsü alınıyor mu — bak, sonra commit.
+8. `docs/tema-haritasi.md`'de o satırı ✓ yap, yeni öğrendiğin sınıf eşlemesini
+   tabloya ekle. **Commit'e bu dosya da girer.**
 
 **Paylaşılan partial'lar tek kaynaktır**, üç yerde birden değişir:
 `pages/projects/partials/card.blade.php` (liste + benzer işler + hizmet detayı),
@@ -336,6 +426,7 @@ php artisan tinker --execute="\App\Models\Popup\Popup::find(<id>)->update(['is_a
 - [ ] Her tema yolu `asset()` içinden geçiyor — göreli yol kalmadı
 - [ ] `html lang="tr"`
 - [ ] Arayüz metinleri Türkçe
+- [ ] `docs/tema-haritasi.md` güncel — tüm satırlar ✓, kalan madde yok
 
 ## Tuzaklar
 
