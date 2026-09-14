@@ -328,6 +328,13 @@ return [
         'title' => 'Kullanıcı ve Yetki',
         'items' => [
             [
+                'title' => 'Kullanıcılar',
+                'icon' => 'group',
+                'route' => 'admin.user.index',
+                'active' => 'admin.user.*',
+                'permission' => 'user.index',
+            ],
+            [
                 'title' => 'Roller',
                 'icon' => 'admin_panel_settings',
                 'route' => 'admin.role.index',

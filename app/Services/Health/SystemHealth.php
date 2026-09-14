@@ -5,6 +5,7 @@ namespace App\Services\Health;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Process;
 use Throwable;
 
 /**
@@ -19,7 +20,7 @@ class SystemHealth
     /** @return array<int, Check> */
     public function checks(): array
     {
-        return [$this->cron(), $this->disk(), $this->database(), $this->writable(), $this->debug()];
+        return [$this->cron(), $this->disk(), $this->database(), $this->writable(), $this->ffmpeg(), $this->debug()];
     }
 
     private function cron(): Check
@@ -114,6 +115,30 @@ class SystemHealth
 
         return Check::ok('writable', 'Yazma İzinleri',
             count(config('health.writable_paths', [])).' dizinin tamamı yazılabilir.');
+    }
+
+    private function ffmpeg(): Check
+    {
+        $hint = 'Sunucuya ffmpeg kurun. Yol farklıysa .env içinde FFMPEG_PATH ve FFPROBE_PATH verin.';
+
+        try {
+            $ffmpeg = Process::timeout(5)->run([config('video.ffmpeg'), '-version']);
+            $ffprobe = Process::timeout(5)->run([config('video.ffprobe'), '-version']);
+        } catch (Throwable) {
+            return Check::critical('ffmpeg', 'ffmpeg',
+                'ffmpeg veya ffprobe çalıştırılamadı. Video kalite kopyaları ve kare önizlemesi üretilmez; orijinal dosya yine oynar.',
+                $hint);
+        }
+
+        if ($ffmpeg->successful() && $ffprobe->successful()) {
+            $line = strtok($ffmpeg->output(), "\n") ?: 'ffmpeg kurulu.';
+
+            return Check::ok('ffmpeg', 'ffmpeg', $line);
+        }
+
+        return Check::critical('ffmpeg', 'ffmpeg',
+            'ffmpeg veya ffprobe bulunamadı. Video kalite kopyaları ve kare önizlemesi üretilmez; orijinal dosya yine oynar.',
+            $hint);
     }
 
     private function debug(): Check

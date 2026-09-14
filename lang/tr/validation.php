@@ -204,6 +204,11 @@ return [
         'type' => 'tür',
         'direction' => 'sıralama yönü',
         'sort' => 'sıralama alanı',
+        'country_id' => 'ülke',
+        'role_id' => 'rol',
+        'is_active' => 'hesap durumu',
+        'avatar_media_id' => 'profil fotoğrafı',
+        'password_confirmation' => 'şifre tekrarı',
 
         // Paylaşılan bileşenler
         'seo.meta_title' => 'meta başlık',

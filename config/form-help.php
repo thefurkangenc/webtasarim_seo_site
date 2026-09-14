@@ -888,6 +888,59 @@ return [
 
     /*
     |----------------------------------------------------------------------
+    | Kullanıcı formu
+    |----------------------------------------------------------------------
+    */
+    'user' => [
+        'name' => [
+            'title' => 'Ad soyad',
+            'body' => <<<'HTML'
+                <p>Kullanıcının panelde ve kayıt geçmişinde görünecek tam adı.</p>
+                HTML,
+        ],
+        'email' => [
+            'title' => 'E-posta',
+            'body' => <<<'HTML'
+                <p>Girişte kullanılan adres. Sistemde başka bir hesapta olamaz.</p>
+                HTML,
+        ],
+        'phone' => [
+            'title' => 'Telefon',
+            'body' => <<<'HTML'
+                <p>Soldan ülkeyi seçin; numara yazıldıkça o ülkenin biçimine çevrilir. Veritabanında yalnızca rakamlar saklanır.</p>
+                <p>Türkiye’de baştaki <code>0</code> otomatik düşer — <code>0555 111 22 33</code> yazsanız da <code>555 111 22 33</code> olarak kaydolur.</p>
+                HTML,
+        ],
+        'password' => [
+            'title' => 'Şifre',
+            'body' => <<<'HTML'
+                <p>Panele giriş şifresi. En az 8 karakter, içinde harf ve rakam bulunmalı.</p>
+                <p>Düzenlerken boş bırakırsanız mevcut şifre değişmez. Kullanıcı kendi şifresini Profilim ekranından da değiştirebilir.</p>
+                HTML,
+        ],
+        'role_id' => [
+            'title' => 'Rol',
+            'body' => <<<'HTML'
+                <p>Kullanıcının panelde neleri göreceğini ve yapabileceğini belirler.</p>
+                HTML,
+        ],
+        'is_active' => [
+            'title' => 'Hesap durumu',
+            'body' => <<<'HTML'
+                <p>Kapalı hesap panele giriş yapamaz. Açık bir oturumu varsa bir sonraki istekte düşer.</p>
+                <p>Kendi hesabınızı ve süper yönetici hesabını buradan kapatamazsınız.</p>
+                HTML,
+        ],
+        'avatar_media_id' => [
+            'title' => 'Profil fotoğrafı',
+            'body' => <<<'HTML'
+                <p>Panelin sağ üst köşesinde ve kullanıcı listesinde görünür. Yüklemezseniz adın baş harfleri gösterilir.</p>
+                HTML,
+        ],
+    ],
+
+    /*
+    |----------------------------------------------------------------------
     | Rol formu
     |----------------------------------------------------------------------
     */

@@ -70,8 +70,7 @@
 
             <div data-video-preview @if (! $media) hidden @endif>
                 @if ($media)
-                    <video src="{{ $media->url() }}" controls preload="metadata"
-                        class="w-full max-h-[220px] rounded-md bg-black"></video>
+                    <x-admin::player :media="$media" :title="$media->name" compact />
                     <p class="!mb-0 mt-[8px] text-xs text-gray-500 dark:text-gray-400 truncate">
                         {{ $media->name }} · {{ $media->humanSize() }}
                     </p>

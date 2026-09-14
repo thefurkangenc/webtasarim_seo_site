@@ -2,6 +2,7 @@
 
 namespace App\Services\Media;
 
+use App\Jobs\ProcessVideoJob;
 use App\Models\Media\Media;
 use App\Support\Activity;
 use App\Support\MediaPresetRegistry;
@@ -46,7 +47,7 @@ class MediaService
             ? $this->storeProcessed($file, $directory, $uuid, $options)
             : $this->storeRaw($file, $directory, $uuid, $extension);
 
-        return Media::create([
+        $media = Media::create([
             ...$attributes,
             'folder_id' => $options['folder_id'] ?? null,
             'disk' => $disk,
@@ -56,7 +57,14 @@ class MediaService
             'title' => $options['title'] ?? null,
             'preset' => $options['preset'] ?? null,
             'uploaded_by' => auth()->id(),
+            'video' => in_array($extension, ['mp4', 'webm'], true) ? ['status' => 'processing'] : null,
         ]);
+
+        if (in_array($extension, ['mp4', 'webm'], true)) {
+            ProcessVideoJob::dispatch($media->id);
+        }
+
+        return $media;
     }
 
     /**

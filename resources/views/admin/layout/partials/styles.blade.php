@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="{{ asset('admin/assets/css/vendor/choices.min.css') }}">
 <link rel="stylesheet" href="{{ asset('admin/assets/css/vendor/flatpickr.min.css') }}">
 <link rel="stylesheet" href="{{ asset('admin/assets/css/style.css') }}">
+<link rel="stylesheet" href="{{ asset('admin/assets/css/video-player.css') }}">
 
 @stack('admin.css')
 

@@ -2,18 +2,21 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Concerns\HasMedia;
 use App\Models\Concerns\LogsActivity;
+use App\Models\Country\Country;
+use App\Models\Role\Role;
+use App\Support\Phone;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['name', 'email', 'password', 'country_id', 'phone', 'is_active'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -23,14 +26,26 @@ class User extends Authenticatable
     /**
      * Get the attributes that should be cast.
      *
-     * @return array<string, string>
+     * @return array<string, mixed>
      */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
+            'last_login_at' => 'datetime',
+            'is_active' => 'boolean',
             'password' => 'hashed',
         ];
+    }
+
+    public function country(): BelongsTo
+    {
+        return $this->belongsTo(Country::class);
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->hasRole(Role::SUPER_ADMIN);
     }
 
     /**
@@ -62,5 +77,27 @@ class User extends Authenticatable
         return $this->roles
             ->map(fn ($role) => $role->label ?: $role->name)
             ->join(', ') ?: 'Kullanıcı';
+    }
+
+    public function formattedPhone(): ?string
+    {
+        if (blank($this->phone) || ! $this->country) {
+            return null;
+        }
+
+        $national = Phone::format($this->phone, $this->country->mask);
+
+        return $national !== '' ? '+'.$this->country->dial_code.' '.$national : null;
+    }
+
+    public function phoneHref(): ?string
+    {
+        return Phone::href($this->phone, $this->country);
+    }
+
+    /** Giriş damgası denetim kaydına düşmesin diye yok sayılır. */
+    public function activityIgnored(): array
+    {
+        return ['last_login_at'];
     }
 }

@@ -30,6 +30,7 @@
      kullanıcısı olan modüller (repeater, video-field) kendi bileşenlerinde
      kalmaya devam ediyor. --}}
 <script type="module" src="{{ asset('admin/assets/js/core/tag-input.js') }}"></script>
+<script type="module" src="{{ asset('admin/assets/js/core/phone-field.js') }}"></script>
 
 {{-- Form label'larındaki (?) yardım ikonu — olay delegasyonu, sayfa JS'i gerektirmez. --}}
 <script type="module" src="{{ asset('admin/assets/js/core/help-popover.js') }}"></script>

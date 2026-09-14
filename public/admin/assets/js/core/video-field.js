@@ -11,6 +11,8 @@
 import { mediaPicker } from './media-picker.js';
 import { uploadFile } from './media-upload.js';
 import { toast } from './toast.js';
+import { escapeHtml } from './http.js';
+import { mountPlayer } from '/js/video-player/player.js';
 
 /** Adresten YouTube/Vimeo kimliğini çıkarır — App\Support\VideoEmbed'in eşi. */
 function parseEmbed(url) {
@@ -46,6 +48,7 @@ class VideoField {
         this.bind();
         this.setTab(this.mediaInput.value ? 'file' : 'link', false);
         this.renderStatus();
+        this.player = this.preview?.querySelector('[data-player]')?._vp ?? null;
     }
 
     bind() {
@@ -135,11 +138,19 @@ class VideoField {
 
     setMedia(media) {
         this.mediaInput.value = media?.id ?? '';
+        this.preview.querySelectorAll('[data-player]').forEach((el) => el._vp?.destroy());
+        this.player = null;
 
-        this.preview.innerHTML = media
-            ? `<video src="${media.url}" controls preload="metadata" class="w-full max-h-[220px] rounded-md bg-black"></video>
-               <p class="!mb-0 mt-[8px] text-xs text-gray-500 dark:text-gray-400 truncate">${media.name} · ${media.human_size}</p>`
-            : '';
+        if (! media) {
+            this.preview.innerHTML = '';
+        } else {
+            const config = media.video ?? { src: media.url, status: 'processing', status_url: `/media/${media.id}/player`, qualities: [] };
+            config.src = config.src || media.url;
+            config.title = media.name;
+            this.preview.innerHTML = `<div data-video-player-host></div>
+               <p class="!mb-0 mt-[8px] text-xs text-gray-500 dark:text-gray-400 truncate">${escapeHtml(media.name)} · ${escapeHtml(media.human_size)}</p>`;
+            this.player = mountPlayer(this.preview.querySelector('[data-video-player-host]'), config, { icons: 'material', compact: true });
+        }
 
         this.preview.hidden = ! media;
         this.root.querySelector('[data-video-action="clear"]').hidden = ! media;

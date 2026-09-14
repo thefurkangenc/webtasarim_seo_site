@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\EnsureModuleIsActive;
 use App\Http\Middleware\EnsureSiteIsLive;
+use App\Http\Middleware\EnsureUserIsActive;
 use App\Http\Middleware\PermissionMiddleware as MiddlewarePermissionMiddleware;
 use App\Services\Health\SystemHealth;
 use App\Services\Redirect\NotFoundLogger;
@@ -82,6 +83,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role_or_permission' => RoleOrPermissionMiddleware::class,
             'permission_middleware' => MiddlewarePermissionMiddleware::class,
             'module.active' => EnsureModuleIsActive::class,
+            'user.active' => EnsureUserIsActive::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

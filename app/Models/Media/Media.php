@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Storage;
 #[Fillable([
     'folder_id', 'disk', 'path', 'original_path', 'name', 'original_name',
     'mime_type', 'extension', 'size', 'width', 'height', 'alt', 'title',
-    'crop', 'conversions', 'preset', 'uploaded_by',
+    'crop', 'conversions', 'video', 'preset', 'uploaded_by',
 ])]
 class Media extends Model
 {
@@ -26,6 +26,7 @@ class Media extends Model
         return [
             'crop' => 'array',
             'conversions' => 'array',
+            'video' => 'array',
             'size' => 'integer',
             'width' => 'integer',
             'height' => 'integer',
@@ -90,11 +91,113 @@ class Media extends Model
     /** Diskte tuttuğu tüm dosyalar — silme sırasında kullanılır. */
     public function allPaths(): array
     {
+        $video = $this->video ?? [];
+
         return array_values(array_filter([
             $this->path,
             $this->original_path,
             ...array_values($this->conversions ?? []),
+            $video['poster']['path'] ?? null,
+            $video['sprite']['path'] ?? null,
+            $video['sprite']['vtt'] ?? null,
+            ...array_column($video['renditions'] ?? [], 'path'),
         ]));
+    }
+
+    /**
+     * Oynatıcının okuduğu tek gövde. Public JSON ve Blade config aynı şekil.
+     * Video değilse null. Yükleyen / klasör / orijinal ad yok.
+     *
+     * @return array<string, mixed>|null
+     */
+    public function playerPayload(): ?array
+    {
+        if (! $this->isVideo()) {
+            return null;
+        }
+
+        $video = $this->video ?? [];
+        $status = $video['status'] ?? null;
+
+        return [
+            'src' => $this->url(),
+            'poster' => isset($video['poster']['path']) ? $this->urlFor($video['poster']['path']) : null,
+            'duration' => isset($video['duration']) ? (float) $video['duration'] : null,
+            'status' => $status,
+            'status_url' => $status === 'processing' ? route('media.player', $this) : null,
+            'qualities' => $this->playerQualities($video),
+            'sprite' => $this->playerSprite($video),
+        ];
+    }
+
+    /** @param  array<string, mixed>  $video */
+    private function playerQualities(array $video): array
+    {
+        if (($video['status'] ?? null) !== 'ready') {
+            return [];
+        }
+
+        $qualities = [];
+        $sourceHeight = (int) ($video['height'] ?? $this->height ?? 0);
+
+        foreach ($video['renditions'] ?? [] as $label => $rendition) {
+            $path = $rendition['path'] ?? null;
+
+            if (! $path) {
+                continue;
+            }
+
+            $qualities[] = [
+                'id' => (string) $label,
+                'label' => $label.'p',
+                'src' => $this->urlFor($path),
+            ];
+        }
+
+        $hasSameHeight = $sourceHeight > 0 && isset($video['renditions'][(string) $sourceHeight]);
+
+        if ($sourceHeight > 0 && ! $hasSameHeight) {
+            $qualities[] = [
+                'id' => 'source',
+                'label' => $sourceHeight.'p',
+                'src' => $this->url(),
+            ];
+        }
+
+        usort($qualities, function (array $a, array $b): int {
+            $heightA = $a['id'] === 'source' ? (int) $a['label'] : (int) $a['id'];
+            $heightB = $b['id'] === 'source' ? (int) $b['label'] : (int) $b['id'];
+
+            return $heightB <=> $heightA;
+        });
+
+        return $qualities;
+    }
+
+    /** @param  array<string, mixed>  $video */
+    private function playerSprite(array $video): ?array
+    {
+        $sprite = $video['sprite'] ?? null;
+        $path = $sprite['path'] ?? null;
+        $vtt = $sprite['vtt'] ?? null;
+
+        if (! $path || ! $vtt) {
+            return null;
+        }
+
+        return [
+            'url' => $this->urlFor($path),
+            'vtt' => $this->urlFor($vtt),
+            'interval' => (int) ($sprite['interval'] ?? 2),
+            'columns' => (int) ($sprite['columns'] ?? 5),
+            'width' => (int) ($sprite['width'] ?? 160),
+            'height' => (int) ($sprite['height'] ?? 90),
+        ];
+    }
+
+    private function urlFor(string $path): string
+    {
+        return Storage::disk($this->disk)->url($path);
     }
 
     /**
@@ -133,6 +236,7 @@ class Media extends Model
             'can_recrop' => (bool) $this->original_path,
             'folder_id' => $this->folder_id,
             'created_at' => $this->created_at?->format('d.m.Y H:i'),
+            'video' => $this->playerPayload(),
         ];
     }
 

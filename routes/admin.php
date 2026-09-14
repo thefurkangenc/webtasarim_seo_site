@@ -45,6 +45,7 @@ use App\Http\Controllers\Admin\SocialLink\SocialLinkController;
 use App\Http\Controllers\Admin\Subscriber\SubscriberController;
 use App\Http\Controllers\Admin\Tag\TagController;
 use App\Http\Controllers\Admin\Testimonial\TestimonialController;
+use App\Http\Controllers\Admin\User\UserController;
 use App\Http\Controllers\Admin\WhyChooseUs\WhyChooseUsController;
 use Illuminate\Support\Facades\Route;
 
@@ -63,7 +64,7 @@ Route::middleware('guest')->group(function () {
     Route::post('login', [LoginController::class, 'store'])->name('login.store')->middleware('throttle:5,1');
 });
 
-Route::middleware(['auth', 'permission_middleware'])->group(function () {
+Route::middleware(['auth', 'user.active', 'permission_middleware'])->group(function () {
     /*
     | Yetki istemeyen uçlar: her oturum sahibinin erişmesi gerekenler.
     |
@@ -532,6 +533,16 @@ Route::middleware(['auth', 'permission_middleware'])->group(function () {
         Route::put('reorder', 'reorder')->name('reorder');
         Route::put('{faq}', 'update')->name('update');
         Route::delete('{faq}', 'destroy')->name('destroy');
+    });
+
+    Route::prefix('user')->name('user.')->controller(UserController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('datatable', 'datatable')->name('datatable');
+        Route::get('create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+        Route::get('{user}/edit', 'edit')->name('edit');
+        Route::put('{user}', 'update')->name('update');
+        Route::delete('{user}', 'destroy')->name('destroy');
     });
 
     Route::prefix('role')->name('role.')->controller(RoleController::class)->group(function () {

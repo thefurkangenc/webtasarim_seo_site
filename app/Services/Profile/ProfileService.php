@@ -2,24 +2,29 @@
 
 namespace App\Services\Profile;
 
+use App\Models\Country\Country;
 use App\Models\User;
 use App\Support\Activity;
+use App\Support\Phone;
 use DomainException;
 use Illuminate\Support\Facades\Hash;
 
 /**
  * Kullanıcının kendi hesabı. Kullanıcı yönetimi modülünden (başkalarının
  * hesaplarını düzenlemek) ayrıdır: burada rol ya da yetki değiştirilemez,
- * yalnızca kimlik bilgileri ve şifre güncellenir.
+ * yalnızca kimlik bilgileri, telefon ve şifre güncellenir.
  */
 class ProfileService
 {
     /** @return array<string, mixed> */
     public function formData(User $user): array
     {
+        $user->loadMissing('country');
+
         return [
             'user' => $user,
             'avatar' => $user->getFirstMedia('avatar'),
+            'countries' => Country::query()->active()->ordered()->get(),
             'roles' => $user->roles->map(fn ($role) => $role->label ?: $role->name)->all(),
             'permissionCount' => $user->hasRole('super-admin')
                 ? null  // super-admin Gate::before ile her izne sahip; sayı anlamsız.
@@ -30,9 +35,17 @@ class ProfileService
     /** @param  array<string, mixed>  $data */
     public function update(User $user, array $data): User
     {
+        $country = isset($data['country_id'])
+            ? Country::query()->find($data['country_id'])
+            : null;
+
+        $phone = Phone::normalize($data['phone'] ?? null, $country);
+
         $user->update([
             'name' => $data['name'],
             'email' => $data['email'],
+            'country_id' => $data['country_id'] ?? null,
+            'phone' => $phone !== '' ? $phone : null,
         ]);
 
         $user->syncMedia($data['avatar_media_id'] ?? null, 'avatar');

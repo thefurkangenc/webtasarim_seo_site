@@ -69,10 +69,10 @@
                 <span class="text-xs text-gray-500 dark:text-gray-400 leading-[1.7]">
                     Burada yalnızca kendi hesabınızı düzenlersiniz. Rolünüzü ve yetkilerinizi
                     buradan değiştiremezsiniz — onlar
-                    @can('role.index')
-                        <a href="{{ route('admin.role.index') }}" class="text-primary-500 hover:underline">Roller ve İzinler</a>
+                    @can('user.index')
+                        <a href="{{ route('admin.user.index') }}" class="text-primary-500 hover:underline">Kullanıcılar</a>
                     @else
-                        Roller ve İzinler
+                        Kullanıcılar
                     @endcan
                     ekranından bir yöneticinin atadığı değerlerdir.
                 </span>
@@ -94,9 +94,13 @@
                 <div class="trezo-card-content">
                     <form id="profile-form">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-[20px]">
-                            <x-admin::form.input name="name" label="Ad Soyad" required :value="$user->name" />
-                            <x-admin::form.input name="email" type="email" label="E-posta" required :value="$user->email" />
+                            <x-admin::form.input name="name" help="user.name" label="Ad Soyad" required :value="$user->name" />
+                            <x-admin::form.input name="email" help="user.email" type="email" label="E-posta" required :value="$user->email" />
                         </div>
+
+                        <x-admin::form.phone name="phone" country-name="country_id" help="user.phone"
+                            :phone="$user->phone" :country-id="$user->country_id" :countries="$countries"
+                            hint="Numara yazıldıkça seçilen ülkenin formatına çevrilir." />
 
                         <x-admin::form.image name="avatar_media_id" label="Profil Fotoğrafı" preset="user.avatar"
                             :media="$avatar" hint="Kare kırpılır. Boş bırakırsanız baş harfleriniz gösterilir." />

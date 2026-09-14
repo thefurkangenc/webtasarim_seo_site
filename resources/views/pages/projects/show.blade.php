@@ -153,19 +153,7 @@
                                         <h3>Proje Videosu</h3>
                                     </div>
                                     <div class="mt-20">
-                                        @if ($video)
-                                            <div class="ratio ratio-16x9">
-                                                <iframe src="{{ $video['embed_url'] }}" title="{{ $project->title }}"
-                                                    loading="lazy" allowfullscreen
-                                                    allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                    referrerpolicy="strict-origin-when-cross-origin"></iframe>
-                                            </div>
-                                        @else
-                                            <video class="w-full" controls preload="metadata"
-                                                @if ($cover) poster="{{ $cover->url('medium') }}" @endif>
-                                                <source src="{{ $videoFile->url() }}" type="{{ $videoFile->mime_type }}">
-                                            </video>
-                                        @endif
+                                        <x-player :embed="$video" :media="$videoFile" :title="$project->title" />
                                     </div>
                                 @endif
 

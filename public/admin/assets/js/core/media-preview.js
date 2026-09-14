@@ -7,6 +7,8 @@
  *   // action: null (kapatıldı) | 'select' | 'edit' | 'recrop' | 'delete'
  */
 
+import { mountPlayer } from '/js/video-player/player.js';
+
 class MediaPreview {
     constructor() {
         this.root = null;
@@ -30,6 +32,7 @@ class MediaPreview {
                     <div class="bg-gray-50 dark:bg-[#15203c] rounded-md overflow-hidden flex items-center justify-center min-h-[240px] max-h-[55vh]">
                         <img data-preview-image class="max-w-full max-h-[55vh] object-contain hidden" alt="">
                         <i data-preview-icon class="material-symbols-outlined !text-[64px] text-gray-400 hidden">draft</i>
+                        <div data-preview-player class="w-full hidden"></div>
                     </div>
 
                     <p data-preview-meta class="!mb-0 mt-[12px] text-xs text-gray-500 dark:text-gray-400"></p>
@@ -69,6 +72,7 @@ class MediaPreview {
 
         this.root.classList.remove('active');
         document.body.classList.remove('overflow-hidden');
+        this.stopPlayer();
 
         const resolve = this.resolver;
         this.resolver = null;
@@ -89,13 +93,24 @@ class MediaPreview {
 
         const image = $('[data-preview-image]');
         const icon = $('[data-preview-icon]');
+        const player = $('[data-preview-player]');
+
+        this.stopPlayer();
 
         image.classList.toggle('hidden', ! media.is_image);
-        icon.classList.toggle('hidden', media.is_image);
+        icon.classList.toggle('hidden', media.is_image || media.is_video);
+        player.classList.toggle('hidden', ! media.is_video);
 
         if (media.is_image) {
             image.src = media.url;
             image.alt = media.alt ?? media.name;
+        }
+
+        if (media.is_video) {
+            const config = media.video ?? { src: media.url, status: 'processing', status_url: `/media/${media.id}/player`, qualities: [] };
+            config.src = config.src || media.url;
+            config.title = media.name;
+            mountPlayer(player, config, { icons: 'material', compact: true });
         }
 
         $('[data-preview-meta]').textContent = media.width
@@ -126,6 +141,16 @@ class MediaPreview {
         return new Promise((resolve) => {
             this.resolver = resolve;
         });
+    }
+
+    stopPlayer() {
+        const host = this.root?.querySelector('[data-preview-player]');
+
+        if (host?._vp) {
+            host._vp.destroy();
+            host.innerHTML = '';
+            host._vp = null;
+        }
     }
 }
 

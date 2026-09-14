@@ -46,6 +46,8 @@ class RolePermissionSeeder extends Seeder
         foreach (config('permissions.roles', []) as $role => $patterns) {
             $label = match ($role) {
                 'super-admin' => 'Süper Yönetici',
+                'admin' => 'Yönetici',
+                'editor' => 'Editör',
                 default => $role,
             };
 

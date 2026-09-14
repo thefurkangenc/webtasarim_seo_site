@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Models\User;
 use App\Support\Activity;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Auth\Events\Lockout;
@@ -37,6 +38,10 @@ class LogAuthenticationActivity
 
     public function onLogin(Login $event): void
     {
+        if ($event->user instanceof User && $event->user->is_active) {
+            $event->user->forceFill(['last_login_at' => now()])->saveQuietly();
+        }
+
         Activity::record(
             logName: 'auth',
             event: 'login',

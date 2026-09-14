@@ -6,6 +6,7 @@ use App\Http\Controllers\Contact\ContactController;
 use App\Http\Controllers\IndexNow\IndexNowController;
 use App\Http\Controllers\Legal\LegalController;
 use App\Http\Controllers\Maintenance\MaintenanceController;
+use App\Http\Controllers\Media\PlayerController;
 use App\Http\Controllers\Project\ProjectController;
 use App\Http\Controllers\Service\ServiceController;
 use App\Http\Controllers\Sitemap\RobotsController;
@@ -74,6 +75,10 @@ Route::get('/sitemap-{name}.xml', [SitemapController::class, 'file'])
     ->name('sitemap.file');
 
 Route::get('/robots.txt', [RobotsController::class, 'index'])->name('robots');
+
+Route::get('/media/{media}/player', [PlayerController::class, 'show'])
+    ->middleware('throttle:60,1')
+    ->name('media.player');
 
 Route::get('/{key}.txt', [IndexNowController::class, 'key'])
     ->where('key', '[A-Za-z0-9-]{8,128}')

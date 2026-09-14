@@ -10,6 +10,7 @@ use App\Models\Project\Project;
 use App\Models\Service\Service;
 use App\Models\Subscriber\Subscriber;
 use App\Models\Testimonial\Testimonial;
+use App\Models\User;
 
 /*
 | Header'daki global arama (Ctrl+K).
@@ -143,6 +144,16 @@ return [
             'index_route' => 'admin.media.index',
             'permission' => 'media.index',
         ],
+        'user' => [
+            'label' => 'Kullanıcılar',
+            'icon' => 'group',
+            'model' => User::class,
+            'columns' => ['name', 'email', 'phone'],
+            'title' => 'name',
+            'subtitle' => 'email',
+            'route' => 'admin.user.edit',
+            'permission' => 'user.index',
+        ],
     ],
 
     /*
@@ -164,7 +175,8 @@ return [
         ['label' => 'Menüler', 'keywords' => 'menü menu navigasyon header footer', 'route' => 'admin.menu.index', 'permission' => 'menu.index'],
         ['label' => 'Duyuru Şeridi', 'keywords' => 'duyuru şeridi announcement bar', 'route' => 'admin.announcement.index', 'permission' => 'announcement.index'],
         ['label' => 'Açılır Pencereler', 'keywords' => 'popup açılır pencere modal bülten', 'route' => 'admin.popup.index', 'permission' => 'popup.index'],
-        ['label' => 'Roller ve İzinler', 'keywords' => 'rol yetki izin kullanıcı', 'route' => 'admin.role.index', 'permission' => 'role.index'],
+        ['label' => 'Kullanıcılar', 'keywords' => 'kullanıcı hesap ekip personel', 'route' => 'admin.user.index', 'permission' => 'user.index'],
+        ['label' => 'Roller ve İzinler', 'keywords' => 'rol yetki izin', 'route' => 'admin.role.index', 'permission' => 'role.index'],
         ['label' => 'Profilim', 'keywords' => 'hesap şifre parola avatar profil fotoğraf', 'route' => 'admin.profile.edit', 'permission' => null],
     ],
 ];

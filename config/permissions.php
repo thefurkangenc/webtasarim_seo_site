@@ -50,9 +50,9 @@ return [
     'permissions' => [
 
         ['name' => 'user.index', 'label' => 'Kullanıcı - Listele', 'category' => 'user', 'guard_name' => 'web'],
+        ['name' => 'user.datatable', 'label' => 'Kullanıcı - Tablo', 'category' => 'user', 'guard_name' => 'web'],
         ['name' => 'user.create', 'label' => 'Kullanıcı - Ekle', 'category' => 'user', 'guard_name' => 'web'],
         ['name' => 'user.store', 'label' => 'Kullanıcı - Kaydet', 'category' => 'user', 'guard_name' => 'web'],
-        ['name' => 'user.show', 'label' => 'Kullanıcı - Görüntüle', 'category' => 'user', 'guard_name' => 'web'],
         ['name' => 'user.edit', 'label' => 'Kullanıcı - Düzenle', 'category' => 'user', 'guard_name' => 'web'],
         ['name' => 'user.update', 'label' => 'Kullanıcı - Güncelle', 'category' => 'user', 'guard_name' => 'web'],
         ['name' => 'user.destroy', 'label' => 'Kullanıcı - Sil', 'category' => 'user', 'guard_name' => 'web'],
@@ -383,6 +383,24 @@ return [
     */
     'roles' => [
         'super-admin' => '*',
+        'admin' => '*',
+        'editor' => [
+            'page.*',
+            'blog.*',
+            'blog-category.*',
+            'service.*',
+            'service-region.*',
+            'project.*',
+            'project-category.*',
+            'gallery.*',
+            'faq.*',
+            'testimonial.*',
+            'reference.*',
+            'why-choose-us.*',
+            'hero.*',
+            'media.*',
+            'ai.generate.*',
+        ],
     ],
 
 ];

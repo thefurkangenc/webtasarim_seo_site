@@ -72,7 +72,7 @@ Her blok **verisi yoksa hiç basılmaz**.
 | Proje Hakkında | `excerpt` (lead) + `content` | |
 | Ölçülebilir sonuçlar | `resultRows()` | `details-counter-box`; `direction` yalnızca ok yönünü belirler, renk sabit kalır — "çıkma oranı %60 düştü" iyi bir sonuçtur, yön tek başına iyi/kötü demez |
 | Galeri | `getMedia('gallery')` | 2 kolon ızgara + magnific-popup lightbox |
-| Video | `videoEmbed()` ya da `getFirstMedia('video')` | Embed varsa iframe (nocookie), yoksa mp4 için `<video controls>` |
+| Video | `videoEmbed()` ya da `getFirstMedia('video')` | `<x-player :embed="$video" :media="$videoFile" :title="$project->title" />` — gömme iframe, dosya özel oynatıcı (bkz. `2026-09-14-video-player-design.md`) |
 | Bağlı hizmetler | `services` | Tik ikonlu liste, `publicUrl()` olanlar link |
 | Müşteri yorumu | `testimonial` | Alıntı bloğu |
 | SSS | `faqs` | Bootstrap akordeon, id'ler proje kimliğiyle önekli |

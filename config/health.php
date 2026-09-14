@@ -26,7 +26,7 @@ return [
             'label' => 'Sunucu',
             'icon' => 'dns',
             'description' => 'Sitenin üzerinde çalıştığı makine: disk alanı, veritabanı bağlantısı ve dosya yazma izinleri.',
-            'keys' => ['disk', 'database', 'writable'],
+            'keys' => ['disk', 'database', 'writable', 'ffmpeg'],
         ],
         'security' => [
             'label' => 'Güvenlik ve Ortam',

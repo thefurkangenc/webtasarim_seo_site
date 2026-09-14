@@ -137,6 +137,7 @@ return [
         'job_delete' => ['label' => 'İş Kaydı Silindi', 'icon' => 'delete_sweep', 'color' => 'danger', 'severity' => 'notice'],
         'alert' => ['label' => 'Uyarı Gönderildi', 'icon' => 'crisis_alert', 'color' => 'warning', 'severity' => 'warning'],
         'restored' => ['label' => 'Eski Sürüme Dönüldü', 'icon' => 'settings_backup_restore', 'color' => 'orange', 'severity' => 'notice'],
+        'processed' => ['label' => 'İşlendi', 'icon' => 'movie', 'color' => 'info', 'severity' => 'info'],
     ],
 
     /*
