@@ -9,6 +9,7 @@ use App\Models\Project\Project;
 use App\Models\ProjectCategory\ProjectCategory;
 use App\Models\Service\Service;
 use App\Services\Setting\SettingService;
+use App\Support\AdminPrefix;
 use App\Support\ModuleRegistry;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
@@ -62,8 +63,9 @@ class SitemapService
     public function robotsBody(): string
     {
         $saved = (string) $this->settings->get('sitemap', 'robots_txt', '');
+        $body = trim($saved) !== '' ? $saved : (string) config('sitemap.robots_default');
 
-        return trim($saved) !== '' ? $saved : config('sitemap.robots_default');
+        return str_replace('{admin}', AdminPrefix::get(), $body);
     }
 
     /** Son üretimin özeti — kaynak başına URL sayısı, toplam, zaman. Henüz üretilmediyse null. */

@@ -3,9 +3,71 @@
  *
  * Dönen değer sunucunun JSON gövdesinin tamamıdır:
  *   { success, message, data, meta? }
+ *
+ * Panel URL öneki config/admin.php (`ADMIN_PREFIX`). `adminUrl('/blog/datatable')`
+ * onu ekler. `/admin/...` ile yazılmış eski adresler de aynı öneke çevrilir.
  */
 
 const csrfToken = () => document.querySelector('meta[name="csrf-token"]')?.content ?? '';
+
+const DEFAULT_PREFIX = 'admin';
+
+/** `<html data-admin-prefix>` — Blade `AdminPrefix::get()` basar. */
+export function adminPrefix() {
+    const value = document.documentElement?.dataset?.adminPrefix ?? '';
+
+    return /^[a-z][a-z0-9-]*$/.test(value) ? value : DEFAULT_PREFIX;
+}
+
+/**
+ * Panel içi adres. Tam URL'ler ve /assets, /kurulum, /storage dokunulmaz.
+ * `/admin/blog` yazılmış olsa da çalışan önek kullanılır.
+ */
+export function adminUrl(path = '') {
+    if (typeof path !== 'string') {
+        return `/${adminPrefix()}`;
+    }
+
+    const trimmed = path.trim();
+
+    if (trimmed === '') {
+        return `/${adminPrefix()}`;
+    }
+
+    if (/^https?:\/\//i.test(trimmed) || trimmed.startsWith('//')) {
+        return trimmed;
+    }
+
+    if (
+        trimmed.startsWith('/kurulum')
+        || trimmed.startsWith('/assets/')
+        || trimmed.startsWith('/storage/')
+        || trimmed.startsWith('/js/')
+    ) {
+        return trimmed;
+    }
+
+    const prefixPath = `/${adminPrefix()}`;
+    const [pathname, ...queryParts] = trimmed.split('?');
+    const query = queryParts.length ? `?${queryParts.join('?')}` : '';
+    let pathOnly = pathname;
+
+    if (pathOnly === '/admin' || pathOnly.startsWith('/admin/')) {
+        pathOnly = pathOnly.slice('/admin'.length);
+    } else if (pathOnly === prefixPath || pathOnly.startsWith(`${prefixPath}/`)) {
+        return `${pathOnly}${query}`;
+    }
+
+    if (pathOnly === '') {
+        return `${prefixPath}${query}`;
+    }
+
+    if (! pathOnly.startsWith('/')) {
+        pathOnly = `/${pathOnly}`;
+    }
+
+    return `${prefixPath}${pathOnly}${query}`;
+}
 
 export class HttpError extends Error {
     constructor(message, status, payload = null) {
@@ -54,6 +116,7 @@ async function parse(response) {
 }
 
 async function request(method, url, body = null) {
+    url = adminUrl(url);
     const options = {
         method,
         credentials: 'same-origin',
@@ -113,7 +176,7 @@ export const http = {
 
     /** Blade parçası döndüren uç noktalar için (modal gövdesi gibi). */
     async html(url) {
-        const response = await fetch(url, {
+        const response = await fetch(adminUrl(url), {
             credentials: 'same-origin',
             headers: { 'X-Requested-With': 'XMLHttpRequest' },
         });

@@ -52,7 +52,7 @@ return [
     */
     'robots_default' => <<<'TXT'
     User-agent: *
-    Disallow: /admin
+    Disallow: /{admin}
     Disallow: /bakim-onizleme
     TXT,
 

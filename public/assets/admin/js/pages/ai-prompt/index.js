@@ -1,7 +1,7 @@
 /** Prompt şablonları ekranı. */
 
 import { confirm } from '../../core/confirm.js';
-import { escapeHtml, http, HttpError } from '../../core/http.js';
+import { escapeHtml, http, HttpError, adminUrl } from '../../core/http.js';
 import { AjaxModal } from '../../core/modal.js';
 import { cell, DataTable } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
@@ -26,7 +26,7 @@ const driverIcon = (driver) => DRIVER_ICONS[driver]
     : '';
 
 const table = new DataTable({
-    endpoint: '/admin/ai-prompt/datatable',
+    endpoint: adminUrl('/ai-prompt/datatable'),
     body: document.getElementById('prompt-table-body'),
     search: document.getElementById('prompt-search'),
     sort: 'created_at',
@@ -49,7 +49,7 @@ const table = new DataTable({
 });
 
 function open(id = null) {
-    modal.open(`/admin/ai-prompt/form/${id ?? ''}`, {
+    modal.open(adminUrl(`/ai-prompt/form/${id ?? ''}`), {
         title: id ? 'Şablonu Düzenle' : 'Yeni Şablon',
         width: 'max-w-[820px]',
     });
@@ -81,7 +81,7 @@ document.getElementById('prompt-table-body').addEventListener('click', async (ev
     }
 
     try {
-        const { message } = await http.delete(`/admin/ai-prompt/${remove.dataset.delete}`);
+        const { message } = await http.delete(adminUrl(`/ai-prompt/${remove.dataset.delete}`));
         toast.success(message);
         table.reload();
     } catch (error) {
@@ -94,8 +94,8 @@ modal.onSubmit(async (form) => {
     const body = new FormData(form);
 
     const { message } = id
-        ? await http.put(`/admin/ai-prompt/${id}`, body)
-        : await http.post('/admin/ai-prompt', body);
+        ? await http.put(adminUrl(`/ai-prompt/${id}`), body)
+        : await http.post(adminUrl('/ai-prompt'), body);
 
     toast.success(message);
     modal.close();

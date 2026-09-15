@@ -11,7 +11,7 @@
  */
 
 import { confirm } from '../../core/confirm.js';
-import { escapeHtml, http, HttpError } from '../../core/http.js';
+import { escapeHtml, http, HttpError, adminUrl } from '../../core/http.js';
 import { AjaxModal } from '../../core/modal.js';
 import { cell, DataTable, reorderHandle } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
@@ -37,7 +37,7 @@ const badge = (label, variant) =>
 const searching = () => (searchInput?.value ?? '').trim() !== '';
 
 const table = new DataTable({
-    endpoint: '/admin/service-region/datatable',
+    endpoint: adminUrl('/service-region/datatable'),
     body: document.getElementById('region-table-body'),
     search: searchInput,
     filters: {
@@ -49,7 +49,7 @@ const table = new DataTable({
     empty: 'Bu seviyede bölge yok.',
     reorder: {
         button: document.getElementById('region-reorder'),
-        endpoint: '/admin/service-region/reorder',
+        endpoint: adminUrl('/service-region/reorder'),
         // Sıralama seviye içinde tekil; yalnızca seviye filtresi taşınır.
         // Durum filtresi taşınsaydı gizlenen kayıtların sırası bozulurdu.
         withFilters: ['parent_id'],
@@ -103,7 +103,7 @@ async function goTo(regionId) {
         path = [];
     } else {
         try {
-            const { data } = await http.get(`/admin/service-region/breadcrumb/${regionId}`);
+            const { data } = await http.get(adminUrl(`/service-region/breadcrumb/${regionId}`));
             path = data ?? [];
         } catch (error) {
             toast.error(error instanceof HttpError ? error.message : 'Bölge açılamadı.');
@@ -131,8 +131,8 @@ async function goTo(regionId) {
 
 async function open(id = null) {
     const url = id
-        ? `/admin/service-region/form/${id}`
-        : `/admin/service-region/form?parent_id=${parentInput.value}`;
+        ? adminUrl(`/service-region/form/${id}`)
+        : adminUrl(`/service-region/form?parent_id=${parentInput.value}`);
 
     await modal.open(url, {
         title: id ? 'Bölgeyi Düzenle' : 'Yeni Bölge',
@@ -184,7 +184,7 @@ document.getElementById('region-table-body').addEventListener('click', async (ev
     }
 
     try {
-        const { message } = await http.delete(`/admin/service-region/${remove.dataset.delete}`);
+        const { message } = await http.delete(adminUrl(`/service-region/${remove.dataset.delete}`));
         toast.success(message);
         table.reload();
     } catch (error) {
@@ -197,8 +197,8 @@ modal.onSubmit(async (form) => {
     const body = new FormData(form);
 
     const { message } = id
-        ? await http.put(`/admin/service-region/${id}`, body)
-        : await http.post('/admin/service-region', body);
+        ? await http.put(adminUrl(`/service-region/${id}`), body)
+        : await http.post(adminUrl('/service-region'), body);
 
     toast.success(message);
     modal.close();

@@ -10,7 +10,7 @@
  * tazelenir, böylece kullanıcı menüyü açtığında bayat veri görmez.
  */
 
-import { escapeHtml, http } from './http.js';
+import { escapeHtml, http, adminUrl } from './http.js';
 import { toast } from './toast.js';
 
 const TONES = {
@@ -46,7 +46,7 @@ class NotificationCenter {
             event.stopPropagation();
 
             try {
-                const { message, data } = await http.post('/admin/notification/read-all');
+                const { message, data } = await http.post(adminUrl('/notification/read-all'));
                 this.render(data);
                 toast.success(message);
             } catch {
@@ -64,13 +64,13 @@ class NotificationCenter {
                 return;
             }
 
-            http.post('/admin/notification/read', { key: item.dataset.notificationKey }).catch(() => {});
+            http.post(adminUrl('/notification/read'), { key: item.dataset.notificationKey }).catch(() => {});
         });
     }
 
     async load() {
         try {
-            const { data } = await http.get('/admin/notification');
+            const { data } = await http.get(adminUrl('/notification'));
             this.render(data);
         } catch {
             this.list.innerHTML = this.message('Bildirimler alınamadı.');

@@ -7,10 +7,10 @@
  */
 
 import { clearErrors, setLoading, showErrors } from '../../core/form.js';
-import { http, HttpError, ValidationError } from '../../core/http.js';
+import { http, HttpError, ValidationError, adminUrl } from '../../core/http.js';
 import { toast } from '../../core/toast.js';
 
-bind(document.getElementById('profile-form'), '/admin/profile', (data) => {
+bind(document.getElementById('profile-form'), adminUrl('/profile'), (data) => {
     document.querySelectorAll('[data-user-name]').forEach((node) => {
         node.textContent = data.name;
     });
@@ -26,7 +26,7 @@ bind(document.getElementById('profile-form'), '/admin/profile', (data) => {
     });
 });
 
-bind(document.getElementById('password-form'), '/admin/profile/password', (_data, form) => {
+bind(document.getElementById('password-form'), adminUrl('/profile/password'), (_data, form) => {
     // Şifre alanları başarıda temizlenir; tarayıcıda açık kalmasın.
     form.reset();
 });

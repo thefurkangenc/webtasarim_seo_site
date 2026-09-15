@@ -10,7 +10,7 @@ import { historyButton } from '../../core/activity-log.js';
 import { bindBulk, bulkCell } from '../../core/bulk.js';
 import { revisionButton } from '../../core/revisions.js';
 import { confirm } from '../../core/confirm.js';
-import { escapeHtml, http, HttpError } from '../../core/http.js';
+import { escapeHtml, http, HttpError, adminUrl } from '../../core/http.js';
 import { cell, DataTable, reorderHandle } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
 import { pageViews } from '../analytics/views.js';
@@ -79,7 +79,7 @@ const selection = bindBulk({
 });
 
 const table = new DataTable({
-    endpoint: '/admin/page/datatable',
+    endpoint: adminUrl('/page/datatable'),
     body: document.getElementById('page-table-body'),
     search: document.getElementById('page-search'),
     filters: {
@@ -93,7 +93,7 @@ const table = new DataTable({
     empty: 'Henüz sayfa eklenmedi.',
     reorder: {
         button: reorderButton,
-        endpoint: '/admin/page/reorder',
+        endpoint: adminUrl('/page/reorder'),
         // Sıra seviye içinde tekil; yalnızca seviye filtresi taşınır.
         withFilters: ['parent_id'],
     },
@@ -119,7 +119,7 @@ const table = new DataTable({
             </a>
             ${historyButton('App\\Models\\Page\\Page', item.id)}
             ${revisionButton('App\\Models\\Page\\Page', item.id)}
-            <a href="/admin/page/${item.id}/edit" title="Düzenle" class="text-gray-500 dark:text-gray-400 leading-none transition-all hover:text-primary-500">
+            <a href="${adminUrl(`/page/${item.id}/edit`)}" title="Düzenle" class="text-gray-500 dark:text-gray-400 leading-none transition-all hover:text-primary-500">
                 <i class="material-symbols-outlined !text-md">edit</i>
             </a>
             <button type="button" data-delete="${item.id}" data-children="${item.children_count}" title="Sil" class="text-gray-500 dark:text-gray-400 leading-none transition-all hover:text-danger-500">
@@ -148,7 +148,7 @@ document.getElementById('page-table-body').addEventListener('click', async (even
     }
 
     try {
-        const { message: response } = await http.delete(`/admin/page/${remove.dataset.delete}`);
+        const { message: response } = await http.delete(adminUrl(`/page/${remove.dataset.delete}`));
         toast.success(response);
         table.reload();
     } catch (error) {

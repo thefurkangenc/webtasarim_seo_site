@@ -1,7 +1,7 @@
 /** Müşteri yorumları ekranı. */
 
 import { confirm } from '../../core/confirm.js';
-import { escapeHtml, http, HttpError } from '../../core/http.js';
+import { escapeHtml, http, HttpError, adminUrl } from '../../core/http.js';
 import { AjaxModal } from '../../core/modal.js';
 import { cell, DataTable, reorderHandle } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
@@ -29,7 +29,7 @@ const selection = bindBulk({
 });
 
 const table = new DataTable({
-    endpoint: '/admin/testimonial/datatable',
+    endpoint: adminUrl('/testimonial/datatable'),
     body: document.getElementById('testimonial-table-body'),
     search: document.getElementById('testimonial-search'),
     sort: 'sort_order',
@@ -37,7 +37,7 @@ const table = new DataTable({
     empty: 'Henüz müşteri yorumu eklenmedi.',
     reorder: {
         button: document.getElementById('testimonial-reorder'),
-        endpoint: '/admin/testimonial/reorder',
+        endpoint: adminUrl('/testimonial/reorder'),
     },
     onLoaded: () => selection.sync(),
     row: (item) => `<tr data-id="${item.id}">
@@ -65,7 +65,7 @@ const table = new DataTable({
 });
 
 async function open(id = null) {
-    await modal.open(`/admin/testimonial/form/${id ?? ''}`, {
+    await modal.open(adminUrl(`/testimonial/form/${id ?? ''}`), {
         title: id ? 'Yorumu Düzenle' : 'Yeni Yorum',
     });
 }
@@ -96,7 +96,7 @@ document.getElementById('testimonial-table-body').addEventListener('click', asyn
     }
 
     try {
-        const { message } = await http.delete(`/admin/testimonial/${remove.dataset.delete}`);
+        const { message } = await http.delete(adminUrl(`/testimonial/${remove.dataset.delete}`));
         toast.success(message);
         table.reload();
     } catch (error) {
@@ -109,8 +109,8 @@ modal.onSubmit(async (form) => {
     const body = new FormData(form);
 
     const { message } = id
-        ? await http.put(`/admin/testimonial/${id}`, body)
-        : await http.post('/admin/testimonial', body);
+        ? await http.put(adminUrl(`/testimonial/${id}`), body)
+        : await http.post(adminUrl('/testimonial'), body);
 
     toast.success(message);
     modal.close();

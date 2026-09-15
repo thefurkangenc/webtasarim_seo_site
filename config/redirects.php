@@ -15,7 +15,6 @@ return [
     // önekler yönlendirme sisteminin tamamen dışında tutulur — panel,
     // API, dosya istekleri asla yönlendirilmez ve 404 loguna girmez.
     'ignore_prefixes' => [
-        'admin',
         'api',
         'storage',
         'vendor',

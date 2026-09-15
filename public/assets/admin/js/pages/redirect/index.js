@@ -4,7 +4,7 @@
  */
 
 import { confirm } from '../../core/confirm.js';
-import { escapeHtml, http, HttpError } from '../../core/http.js';
+import { escapeHtml, http, HttpError, adminUrl } from '../../core/http.js';
 import { AjaxModal } from '../../core/modal.js';
 import { cell, DataTable } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
@@ -52,7 +52,7 @@ const activeToggle = (item) => `<button type="button" data-toggle="${item.id}" t
 </button>`;
 
 const redirects = new DataTable({
-    endpoint: '/admin/redirect/datatable',
+    endpoint: adminUrl('/redirect/datatable'),
     body: document.getElementById('redirect-table-body'),
     search: document.getElementById('redirect-search'),
     filters: {
@@ -91,7 +91,7 @@ document.getElementById('redirect-table-body').addEventListener('click', async (
 
     if (toggle) {
         try {
-            await http.put(`/admin/redirect/${toggle.dataset.toggle}/toggle`);
+            await http.put(adminUrl(`/redirect/${toggle.dataset.toggle}/toggle`));
             redirects.reload();
             refreshStats();
         } catch (error) {
@@ -110,7 +110,7 @@ document.getElementById('redirect-table-body').addEventListener('click', async (
     }
 
     try {
-        const { message } = await http.delete(`/admin/redirect/${remove.dataset.delete}`);
+        const { message } = await http.delete(adminUrl(`/redirect/${remove.dataset.delete}`));
         toast.success(message);
         redirects.reload();
         refreshStats();
@@ -122,7 +122,7 @@ document.getElementById('redirect-table-body').addEventListener('click', async (
 document.getElementById('redirect-create')?.addEventListener('click', () => openForm());
 
 async function openForm(id = null, query = '') {
-    await modal.open(`/admin/redirect/form/${id ?? ''}${query}`, {
+    await modal.open(adminUrl(`/redirect/form/${id ?? ''}${query}`), {
         title: id ? 'Yönlendirmeyi Düzenle' : 'Yeni Yönlendirme',
     });
 }
@@ -132,8 +132,8 @@ modal.onSubmit(async (form) => {
     const body = new FormData(form);
 
     const { message } = id
-        ? await http.put(`/admin/redirect/${id}`, body)
-        : await http.post('/admin/redirect', body);
+        ? await http.put(adminUrl(`/redirect/${id}`), body)
+        : await http.post(adminUrl('/redirect'), body);
 
     toast.success(message);
     modal.close();
@@ -176,7 +176,7 @@ document.getElementById('ajax-modal').addEventListener('admin:content-loaded', (
                 params.ignore = form.dataset.id;
             }
 
-            const { data } = await http.get('/admin/redirect/analyze', params);
+            const { data } = await http.get(adminUrl('/redirect/analyze'), params);
 
             if (data.loop) {
                 warning.className = 'mb-[20px] md:mb-[25px] p-[12px] rounded-md text-xs border border-danger-500 bg-danger-100 text-danger-600';
@@ -227,7 +227,7 @@ importFile?.addEventListener('change', async () => {
     importFile.value = '';
 
     try {
-        const { message, data } = await http.post('/admin/redirect/import', body);
+        const { message, data } = await http.post(adminUrl('/redirect/import'), body);
         toast.success(message);
 
         importModal.querySelector('[data-import-created]').textContent = data.created;
@@ -258,7 +258,7 @@ const refererCell = (item) => item.last_referer
     : '<span class="text-xs text-gray-400">—</span>';
 
 const notFound = new DataTable({
-    endpoint: '/admin/not-found/datatable',
+    endpoint: adminUrl('/not-found/datatable'),
     body: document.getElementById('nf-table-body'),
     search: document.getElementById('nf-search'),
     filters: { include_resolved: document.getElementById('nf-resolved') },
@@ -302,7 +302,7 @@ document.getElementById('nf-table-body').addEventListener('click', async (event)
     }
 
     try {
-        const { message } = await http.delete(`/admin/not-found/${remove.dataset.nfDelete}`);
+        const { message } = await http.delete(adminUrl(`/not-found/${remove.dataset.nfDelete}`));
         toast.success(message);
         notFound.reload();
         refreshStats();
@@ -317,7 +317,7 @@ document.getElementById('nf-table-body').addEventListener('click', async (event)
 
 async function refreshStats() {
     try {
-        const { data } = await http.get('/admin/redirect/stats');
+        const { data } = await http.get(adminUrl('/redirect/stats'));
 
         Object.entries(data).forEach(([key, value]) => {
             const el = document.querySelector(`[data-stat="${key}"]`);

@@ -5,7 +5,7 @@
  */
 
 import { confirm } from '../../core/confirm.js';
-import { escapeHtml, http, HttpError } from '../../core/http.js';
+import { escapeHtml, http, HttpError, adminUrl } from '../../core/http.js';
 import { AjaxModal } from '../../core/modal.js';
 import { cell, DataTable } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
@@ -62,7 +62,7 @@ const actionsCell = (item) => `<div class="flex items-center gap-[9px]">
 </div>`;
 
 const table = new DataTable({
-    endpoint: '/admin/broken-link/datatable',
+    endpoint: adminUrl('/broken-link/datatable'),
     body: document.getElementById('broken-link-table-body'),
     search: document.getElementById('broken-link-search'),
     filters: {
@@ -90,14 +90,14 @@ document.getElementById('broken-link-table-body').addEventListener('click', asyn
     const remove = event.target.closest('[data-delete]');
 
     if (redirect) {
-        return modal.open(`/admin/redirect/form?from=/${encodeURIComponent(redirect.dataset.redirect)}`, {
+        return modal.open(adminUrl(`/redirect/form?from=/${encodeURIComponent(redirect.dataset.redirect)}`), {
             title: 'Yeni Yönlendirme',
         });
     }
 
     if (ignore) {
         try {
-            const { message } = await http.put(`/admin/broken-link/${ignore.dataset.ignore}/ignore`);
+            const { message } = await http.put(adminUrl(`/broken-link/${ignore.dataset.ignore}/ignore`));
             toast.success(message);
             refresh();
         } catch (error) {
@@ -119,7 +119,7 @@ document.getElementById('broken-link-table-body').addEventListener('click', asyn
     }
 
     try {
-        const { message } = await http.delete(`/admin/broken-link/${remove.dataset.delete}`);
+        const { message } = await http.delete(adminUrl(`/broken-link/${remove.dataset.delete}`));
         toast.success(message);
         refresh();
     } catch (error) {
@@ -129,7 +129,7 @@ document.getElementById('broken-link-table-body').addEventListener('click', asyn
 
 /* Yönlendirme modalının gönderimi — kayıt Yönlendirme modülüne gider. */
 modal.onSubmit(async (form) => {
-    const { message } = await http.post('/admin/redirect', new FormData(form));
+    const { message } = await http.post(adminUrl('/redirect'), new FormData(form));
 
     toast.success(message);
     modal.close();
@@ -173,7 +173,7 @@ async function refresh() {
     table.reload();
 
     try {
-        const { data } = await http.get('/admin/broken-link/stats');
+        const { data } = await http.get(adminUrl('/broken-link/stats'));
 
         Object.entries(data).forEach(([key, value]) => {
             const element = document.querySelector(`[data-stat="${key}"]`);

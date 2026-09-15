@@ -8,7 +8,7 @@
 import { aiGenerator } from '../../core/ai-generator.js';
 import { AiProgress } from '../../core/ai-progress.js';
 import { clearErrors, setLoading, showErrors } from '../../core/form.js';
-import { http, HttpError, ValidationError } from '../../core/http.js';
+import { http, HttpError, ValidationError, adminUrl } from '../../core/http.js';
 import { toast } from '../../core/toast.js';
 
 const form = document.getElementById('service-form');
@@ -24,8 +24,8 @@ form.addEventListener('submit', async (event) => {
 
     try {
         const { message, data } = id
-            ? await http.put(`/admin/service/${id}`, new FormData(form))
-            : await http.post('/admin/service', new FormData(form));
+            ? await http.put(adminUrl(`/service/${id}`), new FormData(form))
+            : await http.post(adminUrl('/service'), new FormData(form));
 
         toast.success(message);
 

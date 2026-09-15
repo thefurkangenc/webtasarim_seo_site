@@ -1,13 +1,13 @@
 /** Roller listesi. */
 
 import { confirm } from '../../core/confirm.js';
-import { escapeHtml, http, HttpError } from '../../core/http.js';
+import { escapeHtml, http, HttpError, adminUrl } from '../../core/http.js';
 import { cell, DataTable } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
 import { historyButton } from '../../core/activity-log.js';
 
 const table = new DataTable({
-    endpoint: '/admin/role/datatable',
+    endpoint: adminUrl('/role/datatable'),
     body: document.getElementById('role-table-body'),
     search: document.getElementById('role-search'),
     sort: 'name',
@@ -21,7 +21,7 @@ const table = new DataTable({
         ${cell(item.users_count)}
         ${cell(`<div class="flex items-center gap-[9px]">
             ${historyButton('App\\Models\\Role\\Role', item.id)}
-            <a href="/admin/role/${item.id}/edit" title="Düzenle" class="text-gray-500 dark:text-gray-400 leading-none transition-all hover:text-primary-500">
+            <a href="${adminUrl(`/role/${item.id}/edit`)}" title="Düzenle" class="text-gray-500 dark:text-gray-400 leading-none transition-all hover:text-primary-500">
                 <i class="material-symbols-outlined !text-md">edit</i>
             </a>
             <button type="button" data-delete="${item.id}" title="Sil" class="text-gray-500 dark:text-gray-400 leading-none transition-all hover:text-danger-500">
@@ -48,7 +48,7 @@ document.getElementById('role-table-body').addEventListener('click', async (even
     }
 
     try {
-        const { message } = await http.delete(`/admin/role/${remove.dataset.delete}`);
+        const { message } = await http.delete(adminUrl(`/role/${remove.dataset.delete}`));
         toast.success(message);
         table.reload();
     } catch (error) {

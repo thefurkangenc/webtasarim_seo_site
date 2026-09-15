@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html dir="ltr">
+<html dir="ltr" data-admin-prefix="{{ \App\Support\AdminPrefix::get() }}">
 
 <head>
     @include('admin.layout.partials.meta')

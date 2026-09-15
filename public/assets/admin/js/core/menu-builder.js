@@ -13,7 +13,7 @@
  */
 
 import { confirm } from './confirm.js';
-import { escapeHtml, http, HttpError, ValidationError } from './http.js';
+import { escapeHtml, http, HttpError, ValidationError, adminUrl } from './http.js';
 import { toast } from './toast.js';
 
 const TYPE_LABELS = {
@@ -223,7 +223,7 @@ export class MenuBuilder {
         this.savingHint.classList.add('flex');
 
         try {
-            const { data } = await http.put(`/admin/menu/${this.menuId}/tree`, { nodes: this.serialize() });
+            const { data } = await http.put(adminUrl(`/menu/${this.menuId}/tree`), { nodes: this.serialize() });
             // Sunucu temizlenmiş ağacı döndürür; state'i tazele (kart görünümü
             // değişmez, yalnızca nodes haritası güncel kalsın).
             this.nodes.clear();
@@ -239,21 +239,21 @@ export class MenuBuilder {
     }
 
     async reload() {
-        const { data } = await http.get(`/admin/menu/${this.menuId}/tree`);
+        const { data } = await http.get(adminUrl(`/menu/${this.menuId}/tree`));
         this.render(data);
     }
 
     /** Modal'dan gelir: itemId varsa güncelle, yoksa yeni öğe. */
     async persistItem(payload, itemId) {
         if (itemId) {
-            const { data } = await http.put(`/admin/menu-item/${itemId}`, payload);
+            const { data } = await http.put(adminUrl(`/menu-item/${itemId}`), payload);
             this.replaceNode(itemId, data);
             toast.success('Menü öğesi güncellendi.');
 
             return;
         }
 
-        const { data } = await http.post(`/admin/menu/${this.menuId}/items`, payload);
+        const { data } = await http.post(adminUrl(`/menu/${this.menuId}/items`), payload);
         this.appendNode(data);
         toast.success('Menü öğesi eklendi.');
     }
@@ -340,7 +340,7 @@ export class MenuBuilder {
         }
 
         try {
-            await http.delete(`/admin/menu-item/${id}`);
+            await http.delete(adminUrl(`/menu-item/${id}`));
             nodeEl.remove();
             this.nodes.delete(id);
 
@@ -370,7 +370,7 @@ export class MenuBuilder {
         button.disabled = true;
 
         try {
-            const { data } = await http.put(`/admin/menu-item/${id}`, payload);
+            const { data } = await http.put(adminUrl(`/menu-item/${id}`), payload);
             this.replaceNode(id, data);
             toast.success('Menü öğesi güncellendi.');
         } catch (error) {
@@ -401,7 +401,7 @@ export class MenuBuilder {
         button.disabled = true;
 
         try {
-            await http.put(`/admin/menu/${this.menuId}`, { title: form.querySelector('[name="title"]').value });
+            await http.put(adminUrl(`/menu/${this.menuId}`), { title: form.querySelector('[name="title"]').value });
             toast.success('Menü başlığı güncellendi.');
         } catch (error) {
             toast.error(error instanceof HttpError ? error.message : 'Kaydedilemedi.');

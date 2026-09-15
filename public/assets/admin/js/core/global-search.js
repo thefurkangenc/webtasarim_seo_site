@@ -8,7 +8,7 @@
  * hangi modülün sonucunun döneceğine GlobalSearchService karar verir.
  */
 
-import { escapeHtml, http } from './http.js';
+import { escapeHtml, http, adminUrl } from './http.js';
 
 const MIN_LENGTH = 2;
 const DEBOUNCE = 250;
@@ -121,7 +121,7 @@ class GlobalSearch {
         this.busy(true);
 
         try {
-            const { data } = await http.get('/admin/search', { q: term });
+            const { data } = await http.get(adminUrl('/search'), { q: term });
 
             if (ticket !== this.request) {
                 return;

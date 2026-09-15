@@ -1,6 +1,6 @@
 import { MediaBrowser } from '../../core/media-browser.js';
 import { AjaxModal } from '../../core/modal.js';
-import { escapeHtml, http } from '../../core/http.js';
+import { escapeHtml, http, adminUrl } from '../../core/http.js';
 import { toast } from '../../core/toast.js';
 
 const modal = new AjaxModal();
@@ -85,7 +85,7 @@ function folderTree(folders, path = [], depth = 0) {
 }
 
 const browser = new MediaBrowser(document.querySelector('[data-media-browser]'), {
-    onOpen: (media) => modal.open(`/admin/media/${media.id}/form`, { title: 'Dosya Bilgileri' }),
+    onOpen: (media) => modal.open(adminUrl(`/media/${media.id}/form`), { title: 'Dosya Bilgileri' }),
     onNavigate: ({ mode, folderId }) => {
         if (! sidebar) {
             return;
@@ -152,8 +152,8 @@ if (sidebar) {
     (async () => {
         try {
             const [{ data: tree }, { data: stats }] = await Promise.all([
-                http.get('/admin/media/folders/tree'),
-                http.get('/admin/media/stats'),
+                http.get(adminUrl('/media/folders/tree')),
+                http.get(adminUrl('/media/stats')),
             ]);
 
             const list = sidebar.querySelector('[data-sidebar-folders]');

@@ -1,7 +1,7 @@
 /** Blog kategorileri ekranı. */
 
 import { confirm } from '../../core/confirm.js';
-import { escapeHtml, http, HttpError } from '../../core/http.js';
+import { escapeHtml, http, HttpError, adminUrl } from '../../core/http.js';
 import { AjaxModal } from '../../core/modal.js';
 import { initSeoFields } from '../../core/seo-field.js';
 import { cell, DataTable, reorderHandle } from '../../core/table.js';
@@ -19,7 +19,7 @@ const badge = (label, variant) =>
     `<span class="inline-block py-[3px] px-[10px] rounded-sm text-xs ${BADGES[variant]}">${label}</span>`;
 
 const table = new DataTable({
-    endpoint: '/admin/blog-category/datatable',
+    endpoint: adminUrl('/blog-category/datatable'),
     body: document.getElementById('category-table-body'),
     search: document.getElementById('category-search'),
     filters: { is_active: document.getElementById('category-active') },
@@ -28,7 +28,7 @@ const table = new DataTable({
     empty: 'Henüz kategori eklenmedi.',
     reorder: {
         button: document.getElementById('category-reorder'),
-        endpoint: '/admin/blog-category/reorder',
+        endpoint: adminUrl('/blog-category/reorder'),
     },
     row: (item) => `<tr data-id="${item.id}">
         ${reorderHandle()}
@@ -49,7 +49,7 @@ const table = new DataTable({
 });
 
 async function open(id = null) {
-    await modal.open(`/admin/blog-category/form/${id ?? ''}`, {
+    await modal.open(adminUrl(`/blog-category/form/${id ?? ''}`), {
         title: id ? 'Kategoriyi Düzenle' : 'Yeni Kategori',
         width: 'max-w-[1200px]',
     });
@@ -84,7 +84,7 @@ document.getElementById('category-table-body').addEventListener('click', async (
     }
 
     try {
-        const { message } = await http.delete(`/admin/blog-category/${remove.dataset.delete}`);
+        const { message } = await http.delete(adminUrl(`/blog-category/${remove.dataset.delete}`));
         toast.success(message);
         table.reload();
     } catch (error) {
@@ -97,8 +97,8 @@ modal.onSubmit(async (form) => {
     const body = new FormData(form);
 
     const { message } = id
-        ? await http.put(`/admin/blog-category/${id}`, body)
-        : await http.post('/admin/blog-category', body);
+        ? await http.put(adminUrl(`/blog-category/${id}`), body)
+        : await http.post(adminUrl('/blog-category'), body);
 
     toast.success(message);
     modal.close();

@@ -8,7 +8,7 @@
 import { aiGenerator } from '../../core/ai-generator.js';
 import { AiProgress } from '../../core/ai-progress.js';
 import { clearErrors, setLoading, showErrors } from '../../core/form.js';
-import { http, HttpError, ValidationError } from '../../core/http.js';
+import { http, HttpError, ValidationError, adminUrl } from '../../core/http.js';
 import { toast } from '../../core/toast.js';
 
 const form = document.getElementById('blog-form');
@@ -24,8 +24,8 @@ form.addEventListener('submit', async (event) => {
 
     try {
         const { message, data } = id
-            ? await http.put(`/admin/blog/${id}`, new FormData(form))
-            : await http.post('/admin/blog', new FormData(form));
+            ? await http.put(adminUrl(`/blog/${id}`), new FormData(form))
+            : await http.post(adminUrl('/blog'), new FormData(form));
 
         toast.success(message);
 

@@ -7,7 +7,7 @@
  * bağlanmamış olmasına) takılmaz. Veri yoksa kolon tamamen gizlenir.
  */
 
-import { http } from '../../core/http.js';
+import { http, adminUrl } from '../../core/http.js';
 import { cell } from '../../core/table.js';
 
 const formatter = new Intl.NumberFormat('tr-TR');
@@ -34,7 +34,7 @@ export function pageViews(type) {
             }
 
             try {
-                const { data } = await http.get('/admin/analytics/page-views', {
+                const { data } = await http.get(adminUrl('/analytics/page-views'), {
                     type,
                     ids: items.map((item) => item.id).join(','),
                 });

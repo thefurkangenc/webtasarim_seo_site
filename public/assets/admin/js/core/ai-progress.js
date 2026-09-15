@@ -14,7 +14,7 @@
  *   else if (result) { doldur(result); }
  */
 
-import { http, HttpError } from './http.js';
+import { http, HttpError, adminUrl } from './http.js';
 
 const POLL_INTERVAL = 2000;
 
@@ -110,7 +110,7 @@ export class AiProgress {
 
         this.timer = setTimeout(async () => {
             try {
-                const { data } = await http.get(`/admin/ai/generate/${id}`);
+                const { data } = await http.get(adminUrl(`/ai/generate/${id}`));
 
                 if (! data.finished) {
                     if (data.status === 'running') {

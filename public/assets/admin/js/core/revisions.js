@@ -11,7 +11,7 @@
  */
 
 import { confirm } from './confirm.js';
-import { escapeHtml, http, HttpError } from './http.js';
+import { escapeHtml, http, HttpError, adminUrl } from './http.js';
 import { toast } from './toast.js';
 
 const CELL = 'ltr:text-left rtl:text-right px-[20px] py-[13px] border-b border-gray-100 dark:border-[#172036] align-top';
@@ -132,7 +132,7 @@ class CompareModal {
         document.body.classList.add('overflow-hidden');
 
         try {
-            const { data } = await http.get(`/admin/revision/${id}`);
+            const { data } = await http.get(adminUrl(`/revision/${id}`));
             this.render(data);
         } catch (error) {
             this.body.innerHTML = `<div class="py-[40px] text-center text-danger-500">${escapeHtml(
@@ -158,7 +158,7 @@ class CompareModal {
         }
 
         try {
-            const { message } = await http.post(`/admin/revision/${this.id}/restore`);
+            const { message } = await http.post(adminUrl(`/revision/${this.id}/restore`));
             toast.success(message);
             this.close();
             document.dispatchEvent(new CustomEvent('revision:restored'));
@@ -253,7 +253,7 @@ class RevisionListModal {
                     <div class="trezo-card-header bg-gray-50 dark:bg-[#15203c] mb-[16px] flex items-center justify-between gap-[12px] -mx-[20px] md:-mx-[25px] -mt-[20px] md:-mt-[25px] p-[20px] md:p-[25px] rounded-t-md">
                         <div class="trezo-card-title"><h5 class="!mb-0" data-list-title>Revizyon Geçmişi</h5></div>
                         <div class="flex items-center gap-[12px]">
-                            <a href="/admin/revision" class="text-sm text-primary-500 transition-all hover:underline whitespace-nowrap">Tümünü gör</a>
+                            <a href="${adminUrl('/revision')}" class="text-sm text-primary-500 transition-all hover:underline whitespace-nowrap">Tümünü gör</a>
                             <button type="button" data-list-close class="text-[23px] transition-all leading-none text-black dark:text-white hover:text-primary-500">
                                 <i class="ri-close-fill"></i>
                             </button>
@@ -330,7 +330,7 @@ class RevisionListModal {
 
     async load(append = false) {
         try {
-            const { data, meta } = await http.get('/admin/revision/datatable', { ...this.params, page: this.page });
+            const { data, meta } = await http.get(adminUrl('/revision/datatable'), { ...this.params, page: this.page });
 
             if (! data || data.length === 0) {
                 if (! append) {

@@ -10,7 +10,7 @@
  * görünümü paylaşır.
  */
 
-import { escapeHtml, http, HttpError } from './http.js';
+import { escapeHtml, http, HttpError, adminUrl } from './http.js';
 
 /* ------------------------------------------------------------------ *
  * Rozetler ve hücreler
@@ -287,7 +287,7 @@ class LogDetailModal {
         document.body.classList.add('overflow-hidden');
 
         try {
-            const { data } = await http.get(`/admin/activity-log/${id}`);
+            const { data } = await http.get(adminUrl(`/activity-log/${id}`));
             this.render(data);
         } catch (error) {
             this.body.innerHTML = `<div class="py-[40px] text-center text-danger-500">${escapeHtml(
@@ -385,7 +385,7 @@ class LogListModal {
                     <div class="trezo-card-header bg-gray-50 dark:bg-[#15203c] mb-[16px] flex items-center justify-between gap-[12px] -mx-[20px] md:-mx-[25px] -mt-[20px] md:-mt-[25px] p-[20px] md:p-[25px] rounded-t-md">
                         <div class="trezo-card-title"><h5 class="!mb-0" data-list-title>Log Kayıtları</h5></div>
                         <div class="flex items-center gap-[12px]">
-                            <a data-list-full href="/admin/activity-log"
+                            <a data-list-full href="${adminUrl('/activity-log')}"
                                class="text-sm text-primary-500 transition-all hover:underline whitespace-nowrap">Tümünü gör</a>
                             <button type="button" data-list-close class="text-[23px] transition-all leading-none text-black dark:text-white hover:text-primary-500">
                                 <i class="ri-close-fill"></i>
@@ -444,8 +444,8 @@ class LogListModal {
 
         this.title.textContent = options.title ?? 'Log Kayıtları';
         this.fullLink.href = options.module
-            ? `/admin/activity-log?module=${encodeURIComponent(options.module)}`
-            : '/admin/activity-log';
+            ? adminUrl(`/activity-log?module=${encodeURIComponent(options.module)}`)
+            : adminUrl('/activity-log');
 
         this.body.innerHTML = '<div class="py-[40px] text-center text-gray-500 dark:text-gray-400">Yükleniyor...</div>';
         this.more.innerHTML = '';
@@ -465,7 +465,7 @@ class LogListModal {
 
     async load(append = false) {
         try {
-            const { data, meta } = await http.get('/admin/activity-log/datatable', { ...this.params, page: this.page });
+            const { data, meta } = await http.get(adminUrl('/activity-log/datatable'), { ...this.params, page: this.page });
 
             if (! data || data.length === 0) {
                 if (! append) {

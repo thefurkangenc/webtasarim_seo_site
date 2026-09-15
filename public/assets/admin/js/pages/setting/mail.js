@@ -4,7 +4,7 @@
  */
 
 import { clearErrors, showErrors } from '../../core/form.js';
-import { http, HttpError, ValidationError } from '../../core/http.js';
+import { http, HttpError, ValidationError, adminUrl } from '../../core/http.js';
 import { toast } from '../../core/toast.js';
 
 const PORTS = { tls: '587', ssl: '465', none: '25' };
@@ -47,7 +47,7 @@ testButton?.addEventListener('click', async () => {
     body.delete('_method');
 
     try {
-        const { message } = await http.post('/admin/setting/mail/test', body);
+        const { message } = await http.post(adminUrl('/setting/mail/test'), body);
         paintStatus('success', message);
         toast.success(message);
     } catch (error) {

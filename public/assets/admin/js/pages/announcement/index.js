@@ -1,7 +1,7 @@
 /** Duyuru şeridi listesi. */
 
 import { confirm } from '../../core/confirm.js';
-import { escapeHtml, http, HttpError } from '../../core/http.js';
+import { escapeHtml, http, HttpError, adminUrl } from '../../core/http.js';
 import { AjaxModal } from '../../core/modal.js';
 import { cell, DataTable } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
@@ -15,7 +15,7 @@ const statusBadge = (active) => active
     : '<span class="inline-block py-[3px] px-[10px] rounded-sm text-xs bg-gray-100 dark:bg-[#15203c] text-gray-600 dark:text-gray-400">Kapalı</span>';
 
 const table = new DataTable({
-    endpoint: '/admin/announcement/datatable',
+    endpoint: adminUrl('/announcement/datatable'),
     body: document.getElementById('announcement-table-body'),
     search: document.getElementById('announcement-search'),
     sort: 'created_at',
@@ -40,7 +40,7 @@ const table = new DataTable({
 });
 
 async function open(id = null) {
-    await modal.open(`/admin/announcement/form/${id ?? ''}`, {
+    await modal.open(adminUrl(`/announcement/form/${id ?? ''}`), {
         title: id ? 'Duyuruyu Düzenle' : 'Yeni Duyuru',
         width: 'max-w-[720px]',
     });
@@ -67,7 +67,7 @@ document.getElementById('announcement-table-body').addEventListener('click', asy
     }
 
     try {
-        const { message } = await http.delete(`/admin/announcement/${remove.dataset.delete}`);
+        const { message } = await http.delete(adminUrl(`/announcement/${remove.dataset.delete}`));
         toast.success(message);
         table.reload();
     } catch (error) {
@@ -79,8 +79,8 @@ modal.onSubmit(async (form) => {
     const id = form.dataset.id;
     const body = new FormData(form);
     const { message } = id
-        ? await http.put(`/admin/announcement/${id}`, body)
-        : await http.post('/admin/announcement', body);
+        ? await http.put(adminUrl(`/announcement/${id}`), body)
+        : await http.post(adminUrl('/announcement'), body);
 
     toast.success(message);
     modal.close();

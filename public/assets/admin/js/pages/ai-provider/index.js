@@ -1,7 +1,7 @@
 /** Yapay zeka sağlayıcıları ekranı. */
 
 import { confirm } from '../../core/confirm.js';
-import { escapeHtml, http, HttpError } from '../../core/http.js';
+import { escapeHtml, http, HttpError, adminUrl } from '../../core/http.js';
 import { AjaxModal } from '../../core/modal.js';
 import { setLoading } from '../../core/form.js';
 import { cell, DataTable } from '../../core/table.js';
@@ -29,7 +29,7 @@ const driverIcon = (driver) => DRIVER_ICONS[driver]
     : '';
 
 const table = new DataTable({
-    endpoint: '/admin/ai-provider/datatable',
+    endpoint: adminUrl('/ai-provider/datatable'),
     body: document.getElementById('provider-table-body'),
     search: document.getElementById('provider-search'),
     filters: { driver: document.getElementById('provider-driver') },
@@ -60,7 +60,7 @@ const table = new DataTable({
 });
 
 function open(id = null) {
-    modal.open(`/admin/ai-provider/form/${id ?? ''}`, {
+    modal.open(adminUrl(`/ai-provider/form/${id ?? ''}`), {
         title: id ? 'Sağlayıcıyı Düzenle' : 'Yeni Sağlayıcı',
         width: 'max-w-[720px]',
     });
@@ -92,7 +92,7 @@ document.getElementById('provider-table-body').addEventListener('click', async (
     }
 
     try {
-        const { message } = await http.delete(`/admin/ai-provider/${remove.dataset.delete}`);
+        const { message } = await http.delete(adminUrl(`/ai-provider/${remove.dataset.delete}`));
         toast.success(message);
         table.reload();
     } catch (error) {
@@ -149,7 +149,7 @@ document.addEventListener('click', async (event) => {
     output.className = '!mb-0 text-xs text-gray-500 dark:text-gray-400';
 
     try {
-        const { message, data } = await http.post(`/admin/ai-provider/${form.dataset.id}/test`);
+        const { message, data } = await http.post(adminUrl(`/ai-provider/${form.dataset.id}/test`));
         output.textContent = `${message} Yanıt: "${data.content}"`;
         output.className = '!mb-0 text-xs text-success-500';
     } catch (error) {
@@ -165,8 +165,8 @@ modal.onSubmit(async (form) => {
     const body = new FormData(form);
 
     const { message } = id
-        ? await http.put(`/admin/ai-provider/${id}`, body)
-        : await http.post('/admin/ai-provider', body);
+        ? await http.put(adminUrl(`/ai-provider/${id}`), body)
+        : await http.post(adminUrl('/ai-provider'), body);
 
     toast.success(message);
     modal.close();

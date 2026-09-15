@@ -3,6 +3,7 @@
 namespace App\Services\Redirect;
 
 use App\Models\Redirect\NotFoundLog;
+use App\Support\AdminPrefix;
 use App\Support\UrlPath;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -55,7 +56,12 @@ class NotFoundLogger
     {
         $first = explode('/', $path)[0];
 
-        if (in_array($first, config('redirects.ignore_prefixes', []), true)) {
+        $ignored = array_unique([
+            ...config('redirects.ignore_prefixes', []),
+            AdminPrefix::get(),
+        ]);
+
+        if (in_array($first, $ignored, true)) {
             return true;
         }
 

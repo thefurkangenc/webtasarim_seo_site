@@ -5,11 +5,12 @@
 
 import { openRevisionCompare, revisionRow } from '../../core/revisions.js';
 import { DataTable } from '../../core/table.js';
+import { adminUrl } from '../../core/http.js';
 
 const body = document.getElementById('revision-table-body');
 
 const table = new DataTable({
-    endpoint: '/admin/revision/datatable',
+    endpoint: adminUrl('/revision/datatable'),
     body,
     search: document.getElementById('revision-search'),
     filters: {

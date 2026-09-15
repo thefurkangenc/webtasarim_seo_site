@@ -3,11 +3,11 @@
  * Anahtar açılınca ajax modal ile bilgiler istenir; kayıt edilmeden aktif olmaz.
  */
 
-import { http, HttpError } from '../../core/http.js';
+import { http, HttpError, adminUrl } from '../../core/http.js';
 import { AjaxModal } from '../../core/modal.js';
 import { toast } from '../../core/toast.js';
 
-const ENDPOINT = '/admin/integration';
+const ENDPOINT = adminUrl('/integration');
 const grid = document.getElementById('integration-grid');
 const canUpdate = grid?.dataset.canUpdate === '1';
 const modal = new AjaxModal();

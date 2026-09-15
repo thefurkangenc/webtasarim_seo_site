@@ -7,11 +7,11 @@
  * hiçbir şey render etmez — çağıran taraf sonucu kendi arayüzüne yazar.
  */
 
-import { http, HttpError, ValidationError } from './http.js';
+import { http, HttpError, ValidationError, adminUrl } from './http.js';
 import { cropModal } from './cropper.js';
 import { toast } from './toast.js';
 
-const UPLOAD_URL = '/admin/media/upload';
+const UPLOAD_URL = adminUrl('/media/upload');
 
 /** Alanın kırpma hedefi; preset tanımlı değilse null (kırpma yok). */
 export function presetOf(root) {

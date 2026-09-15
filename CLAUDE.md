@@ -373,6 +373,7 @@ Kurallar (atlanmaz):
 6. `MenuSeeder` yalnız konum basar (header/footer); öğeleri sihirbaz `menus` görevi doldurur (dolu menüye dokunmaz).
 7. Dashboard SEO kartı analiz yokken `average = null` kabul eder (`scoreTone(?int)`); boş kurulumda 500 verme.
 8. Setup view class'ları Tailwind taramasına girer (`@source "../../views/setup/**/*.blade.php"`).
+9. **Panel URL öneki** `config/admin.php` → `env('ADMIN_PREFIX', 'admin')`. Sihirbazda alanı yoktur, ayarlar tablosundan okunmaz. Route **adları** `admin.*` kalır; adres `App\Support\AdminPrefix` ile çözülür. Statik dosyalar `/assets/admin` altındadır, önekle karışmaz. Değiştirince `php artisan config:clear`.
 
 Sıfırdan: `php artisan migrate --force` + `php artisan db:seed --force` (kullanıcı oluşmaz) → `/kurulum`.
 

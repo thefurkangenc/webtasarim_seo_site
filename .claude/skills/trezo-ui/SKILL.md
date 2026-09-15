@@ -189,13 +189,14 @@ public function reorder(ReorderRequest $request): JsonResponse
 
 ```js
 import { cell, DataTable, reorderHandle } from '../../core/table.js';
+import { adminUrl } from '../../core/http.js';
 
 const table = new DataTable({
-    endpoint: '/admin/blog-category/datatable',
+    endpoint: adminUrl('/blog-category/datatable'),
     body: document.getElementById('category-table-body'),
     reorder: {
         button: document.getElementById('category-reorder'),
-        endpoint: '/admin/blog-category/reorder',
+        endpoint: adminUrl('/blog-category/reorder'),
     },
     row: (item) => `<tr data-id="${item.id}">
         ${reorderHandle()}

@@ -1,7 +1,7 @@
 /** Hizmetler listesi. */
 
 import { confirm } from '../../core/confirm.js';
-import { escapeHtml, http, HttpError } from '../../core/http.js';
+import { escapeHtml, http, HttpError, adminUrl } from '../../core/http.js';
 import { cell, DataTable, reorderHandle } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
 import { historyButton } from '../../core/activity-log.js';
@@ -28,7 +28,7 @@ const selection = bindBulk({
 });
 
 const table = new DataTable({
-    endpoint: '/admin/service/datatable',
+    endpoint: adminUrl('/service/datatable'),
     body: document.getElementById('service-table-body'),
     search: document.getElementById('service-search'),
     filters: {
@@ -40,7 +40,7 @@ const table = new DataTable({
     empty: 'Henüz hizmet eklenmedi.',
     reorder: {
         button: document.getElementById('service-reorder'),
-        endpoint: '/admin/service/reorder',
+        endpoint: adminUrl('/service/reorder'),
     },
     // Tek kanca: aynı nesnede iki kez yazılırsa ikincisi birincisini ezer ve
     // görüntüleme kolonu sessizce hiç dolmaz (yaşanan hata buydu).
@@ -64,7 +64,7 @@ const table = new DataTable({
         ${cell(`<div class="flex items-center gap-[9px]">
             ${historyButton('App\\Models\\Service\\Service', item.id)}
             ${revisionButton('App\\Models\\Service\\Service', item.id)}
-            <a href="/admin/service/${item.id}/edit" title="Düzenle" class="text-gray-500 dark:text-gray-400 leading-none transition-all hover:text-primary-500">
+            <a href="${adminUrl(`/service/${item.id}/edit`)}" title="Düzenle" class="text-gray-500 dark:text-gray-400 leading-none transition-all hover:text-primary-500">
                 <i class="material-symbols-outlined !text-md">edit</i>
             </a>
             <button type="button" data-delete="${item.id}" title="Sil" class="text-gray-500 dark:text-gray-400 leading-none transition-all hover:text-danger-500">
@@ -91,7 +91,7 @@ document.getElementById('service-table-body').addEventListener('click', async (e
     }
 
     try {
-        const { message } = await http.delete(`/admin/service/${remove.dataset.delete}`);
+        const { message } = await http.delete(adminUrl(`/service/${remove.dataset.delete}`));
         toast.success(message);
         table.reload();
     } catch (error) {

@@ -9,7 +9,7 @@
 
 import { confirm } from '../../core/confirm.js';
 import { clearErrors, setLoading, showErrors } from '../../core/form.js';
-import { escapeHtml, http, HttpError, ValidationError } from '../../core/http.js';
+import { escapeHtml, http, HttpError, ValidationError, adminUrl } from '../../core/http.js';
 import { AjaxModal } from '../../core/modal.js';
 import { cell, DataTable } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
@@ -229,7 +229,7 @@ if (root) {
         const open = event.target.closest('[data-open]');
 
         if (open) {
-            await modal.open(`/admin/lead/${open.dataset.open}`, { title: 'Talep detayı', width: 'max-w-[720px]' });
+            await modal.open(adminUrl(`/lead/${open.dataset.open}`), { title: 'Talep detayı', width: 'max-w-[720px]' });
             const detailTitle = modal.body.querySelector('[data-lead-detail]')?.dataset.title;
             if (detailTitle) {
                 modal.titleElement.textContent = detailTitle;
@@ -245,7 +245,7 @@ if (root) {
 
         if (restore) {
             try {
-                const { message } = await http.post(`/admin/lead/${restore.dataset.restore}/restore`);
+                const { message } = await http.post(adminUrl(`/lead/${restore.dataset.restore}/restore`));
                 toast.success(message);
                 await refresh();
             } catch (error) {

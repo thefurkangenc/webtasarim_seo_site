@@ -3,7 +3,7 @@
  * kural denetimini gösterir ve harici doğrulayıcılara bağlantı kurar.
  */
 
-import { escapeHtml, http, HttpError } from '../../core/http.js';
+import { escapeHtml, http, HttpError, adminUrl } from '../../core/http.js';
 import { toast } from '../../core/toast.js';
 
 const targetSelect = document.getElementById('schema-target');
@@ -77,7 +77,7 @@ async function run() {
     runButton.classList.add('opacity-60');
 
     try {
-        const { data } = await http.get(`/admin/schema/preview?url=${encodeURIComponent(url)}`);
+        const { data } = await http.get(adminUrl(`/schema/preview?url=${encodeURIComponent(url)}`));
         render(data);
     } catch (error) {
         toast.error(error instanceof HttpError ? error.message : 'Çıktı üretilemedi.');

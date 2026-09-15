@@ -5,11 +5,12 @@
 
 import { DataTable } from '../../core/table.js';
 import { logRow, openLogDetail } from '../../core/activity-log.js';
+import { adminUrl } from '../../core/http.js';
 
 const body = document.getElementById('log-table-body');
 
 const table = new DataTable({
-    endpoint: '/admin/activity-log/datatable',
+    endpoint: adminUrl('/activity-log/datatable'),
     body,
     search: document.getElementById('log-search'),
     perPage: 20,

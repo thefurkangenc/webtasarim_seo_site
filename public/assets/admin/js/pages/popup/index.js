@@ -1,7 +1,7 @@
 /** Açılır pencere listesi. */
 
 import { confirm } from '../../core/confirm.js';
-import { escapeHtml, http, HttpError } from '../../core/http.js';
+import { escapeHtml, http, HttpError, adminUrl } from '../../core/http.js';
 import { AjaxModal } from '../../core/modal.js';
 import { cell, DataTable } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
@@ -15,7 +15,7 @@ const statusBadge = (active) => active
     : '<span class="inline-block py-[3px] px-[10px] rounded-sm text-xs bg-gray-100 dark:bg-[#15203c] text-gray-600 dark:text-gray-400">Kapalı</span>';
 
 const table = new DataTable({
-    endpoint: '/admin/popup/datatable',
+    endpoint: adminUrl('/popup/datatable'),
     body: document.getElementById('popup-table-body'),
     search: document.getElementById('popup-search'),
     sort: 'created_at',
@@ -42,7 +42,7 @@ const table = new DataTable({
 });
 
 async function open(id = null) {
-    await modal.open(`/admin/popup/form/${id ?? ''}`, {
+    await modal.open(adminUrl(`/popup/form/${id ?? ''}`), {
         title: id ? 'Pencereyi Düzenle' : 'Yeni Açılır Pencere',
         width: 'max-w-[720px]',
     });
@@ -69,7 +69,7 @@ document.getElementById('popup-table-body').addEventListener('click', async (eve
     }
 
     try {
-        const { message } = await http.delete(`/admin/popup/${remove.dataset.delete}`);
+        const { message } = await http.delete(adminUrl(`/popup/${remove.dataset.delete}`));
         toast.success(message);
         table.reload();
     } catch (error) {
@@ -81,8 +81,8 @@ modal.onSubmit(async (form) => {
     const id = form.dataset.id;
     const body = new FormData(form);
     const { message } = id
-        ? await http.put(`/admin/popup/${id}`, body)
-        : await http.post('/admin/popup', body);
+        ? await http.put(adminUrl(`/popup/${id}`), body)
+        : await http.post(adminUrl('/popup'), body);
 
     toast.success(message);
     modal.close();

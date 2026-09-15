@@ -3,7 +3,7 @@
  */
 
 import { confirm } from '../../core/confirm.js';
-import { escapeHtml, http, HttpError } from '../../core/http.js';
+import { escapeHtml, http, HttpError, adminUrl } from '../../core/http.js';
 import { toast } from '../../core/toast.js';
 import { GRADE, scoreBadge } from './badge.js';
 
@@ -98,7 +98,7 @@ if (root) {
         button.classList.add('opacity-60');
 
         try {
-            const { message, data } = await http.post('/admin/seo/rescore');
+            const { message, data } = await http.post(adminUrl('/seo/rescore'));
             toast.success(message);
             renderOverview(data);
             load();

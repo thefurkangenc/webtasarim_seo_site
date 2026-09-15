@@ -10,7 +10,7 @@
  */
 
 import { clearErrors, setLoading, showErrors } from './form.js';
-import { http, HttpError, ValidationError } from './http.js';
+import { http, HttpError, ValidationError, adminUrl } from './http.js';
 import { toast } from './toast.js';
 
 const POLL_INTERVAL = 2000;
@@ -88,7 +88,7 @@ class AiGenerator {
         this.show();
 
         try {
-            this.body.innerHTML = await http.html(`/admin/ai/generate/${encodeURIComponent(key)}/form`);
+            this.body.innerHTML = await http.html(adminUrl(`/ai/generate/${encodeURIComponent(key)}/form`));
             this.applyDefaults(options.defaults ?? {});
         } catch (error) {
             this.hide();
@@ -126,7 +126,7 @@ class AiGenerator {
         setLoading(button, true);
 
         try {
-            const { data } = await http.post('/admin/ai/generate', new FormData(form));
+            const { data } = await http.post(adminUrl('/ai/generate'), new FormData(form));
 
             this.generationId = data.id;
             this.panel('progress');
@@ -166,7 +166,7 @@ class AiGenerator {
 
         this.timer = setTimeout(async () => {
             try {
-                const { data } = await http.get(`/admin/ai/generate/${id}`);
+                const { data } = await http.get(adminUrl(`/ai/generate/${id}`));
 
                 this.status = data.status;
 

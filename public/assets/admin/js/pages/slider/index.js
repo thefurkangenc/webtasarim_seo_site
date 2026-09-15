@@ -1,7 +1,7 @@
 /** Slaytlar ekranı. */
 
 import { confirm } from '../../core/confirm.js';
-import { escapeHtml, http, HttpError } from '../../core/http.js';
+import { escapeHtml, http, HttpError, adminUrl } from '../../core/http.js';
 import { AjaxModal } from '../../core/modal.js';
 import { cell, DataTable, reorderHandle } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
@@ -27,7 +27,7 @@ const selection = bindBulk({
 });
 
 const table = new DataTable({
-    endpoint: '/admin/slider/datatable',
+    endpoint: adminUrl('/slider/datatable'),
     body: document.getElementById('slider-table-body'),
     search: document.getElementById('slider-search'),
     sort: 'sort_order',
@@ -35,7 +35,7 @@ const table = new DataTable({
     empty: 'Henüz slayt eklenmedi.',
     reorder: {
         button: document.getElementById('slider-reorder'),
-        endpoint: '/admin/slider/reorder',
+        endpoint: adminUrl('/slider/reorder'),
     },
     onLoaded: () => selection.sync(),
     row: (item) => `<tr data-id="${item.id}">
@@ -62,7 +62,7 @@ const table = new DataTable({
 });
 
 async function open(id = null) {
-    await modal.open(`/admin/slider/form/${id ?? ''}`, {
+    await modal.open(adminUrl(`/slider/form/${id ?? ''}`), {
         title: id ? 'Slaytı Düzenle' : 'Yeni Slayt',
         width: 'max-w-[1040px]',
     });
@@ -94,7 +94,7 @@ document.getElementById('slider-table-body').addEventListener('click', async (ev
     }
 
     try {
-        const { message } = await http.delete(`/admin/slider/${remove.dataset.delete}`);
+        const { message } = await http.delete(adminUrl(`/slider/${remove.dataset.delete}`));
         toast.success(message);
         table.reload();
     } catch (error) {
@@ -107,8 +107,8 @@ modal.onSubmit(async (form) => {
     const body = new FormData(form);
 
     const { message } = id
-        ? await http.put(`/admin/slider/${id}`, body)
-        : await http.post('/admin/slider', body);
+        ? await http.put(adminUrl(`/slider/${id}`), body)
+        : await http.post(adminUrl('/slider'), body);
 
     toast.success(message);
     modal.close();

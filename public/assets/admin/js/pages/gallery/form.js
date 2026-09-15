@@ -5,7 +5,7 @@
  */
 
 import { clearErrors, setLoading, showErrors } from '../../core/form.js';
-import { http, HttpError, ValidationError } from '../../core/http.js';
+import { http, HttpError, ValidationError, adminUrl } from '../../core/http.js';
 import { toast } from '../../core/toast.js';
 
 const form = document.getElementById('gallery-form');
@@ -21,8 +21,8 @@ form.addEventListener('submit', async (event) => {
 
     try {
         const { message, data } = id
-            ? await http.put(`/admin/gallery/${id}`, new FormData(form))
-            : await http.post('/admin/gallery', new FormData(form));
+            ? await http.put(adminUrl(`/gallery/${id}`), new FormData(form))
+            : await http.post(adminUrl('/gallery'), new FormData(form));
 
         toast.success(message);
 

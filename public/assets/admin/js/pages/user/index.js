@@ -1,7 +1,7 @@
 /** Kullanıcı listesi. */
 
 import { confirm } from '../../core/confirm.js';
-import { escapeHtml, http, HttpError } from '../../core/http.js';
+import { escapeHtml, http, HttpError, adminUrl } from '../../core/http.js';
 import { cell, DataTable } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
 import { historyButton } from '../../core/activity-log.js';
@@ -13,7 +13,7 @@ const avatar = (item) => item.avatar
     : `<span class="w-[40px] h-[40px] rounded-full bg-primary-50 dark:bg-[#15203c] text-primary-500 text-xs font-semibold flex items-center justify-center shrink-0">${escapeHtml(item.initials)}</span>`;
 
 const table = new DataTable({
-    endpoint: '/admin/user/datatable',
+    endpoint: adminUrl('/user/datatable'),
     body: document.getElementById('user-table-body'),
     search: document.getElementById('user-search'),
     filters: {
@@ -41,7 +41,7 @@ const table = new DataTable({
         ${cell(`<div class="flex items-center gap-[9px]">
             ${historyButton(MODEL, item.id)}
             ${item.can_edit
-                ? `<a href="/admin/user/${item.id}/edit" title="Düzenle" class="text-gray-500 dark:text-gray-400 leading-none transition-all hover:text-primary-500">
+                ? `<a href="${adminUrl(`/user/${item.id}/edit`)}" title="Düzenle" class="text-gray-500 dark:text-gray-400 leading-none transition-all hover:text-primary-500">
                     <i class="material-symbols-outlined !text-md">edit</i>
                    </a>`
                 : ''}
@@ -71,7 +71,7 @@ document.getElementById('user-table-body').addEventListener('click', async (even
     }
 
     try {
-        const { message } = await http.delete(`/admin/user/${remove.dataset.delete}`);
+        const { message } = await http.delete(adminUrl(`/user/${remove.dataset.delete}`));
         toast.success(message);
         table.reload();
     } catch (error) {

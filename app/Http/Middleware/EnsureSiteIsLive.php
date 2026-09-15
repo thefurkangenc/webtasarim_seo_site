@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Services\Maintenance\MaintenanceService;
+use App\Support\AdminPrefix;
 use App\Support\Settings;
 use Closure;
 use Illuminate\Database\QueryException;
@@ -28,7 +29,7 @@ class EnsureSiteIsLive
 
     private function exempt(Request $request): bool
     {
-        if ($request->is('admin', 'admin/*')) {
+        if (AdminPrefix::is($request)) {
             return true;
         }
 

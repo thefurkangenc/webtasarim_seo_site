@@ -1,7 +1,7 @@
 /** Referanslar ekranı. */
 
 import { confirm } from '../../core/confirm.js';
-import { escapeHtml, http, HttpError } from '../../core/http.js';
+import { escapeHtml, http, HttpError, adminUrl } from '../../core/http.js';
 import { AjaxModal } from '../../core/modal.js';
 import { cell, DataTable, reorderHandle } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
@@ -47,7 +47,7 @@ const selection = bindBulk({
 });
 
 const table = new DataTable({
-    endpoint: '/admin/reference/datatable',
+    endpoint: adminUrl('/reference/datatable'),
     body: document.getElementById('reference-table-body'),
     search: document.getElementById('reference-search'),
     sort: 'sort_order',
@@ -55,7 +55,7 @@ const table = new DataTable({
     empty: 'Henüz referans eklenmedi.',
     reorder: {
         button: document.getElementById('reference-reorder'),
-        endpoint: '/admin/reference/reorder',
+        endpoint: adminUrl('/reference/reorder'),
     },
     onLoaded: () => selection.sync(),
     row: (item) => `<tr data-id="${item.id}">
@@ -81,7 +81,7 @@ const table = new DataTable({
 });
 
 async function open(id = null) {
-    await modal.open(`/admin/reference/form/${id ?? ''}`, {
+    await modal.open(adminUrl(`/reference/form/${id ?? ''}`), {
         title: id ? 'Referansı Düzenle' : 'Yeni Referans',
     });
 }
@@ -112,7 +112,7 @@ document.getElementById('reference-table-body').addEventListener('click', async 
     }
 
     try {
-        const { message } = await http.delete(`/admin/reference/${remove.dataset.delete}`);
+        const { message } = await http.delete(adminUrl(`/reference/${remove.dataset.delete}`));
         toast.success(message);
         table.reload();
     } catch (error) {
@@ -125,8 +125,8 @@ modal.onSubmit(async (form) => {
     const body = new FormData(form);
 
     const { message } = id
-        ? await http.put(`/admin/reference/${id}`, body)
-        : await http.post('/admin/reference', body);
+        ? await http.put(adminUrl(`/reference/${id}`), body)
+        : await http.post(adminUrl('/reference'), body);
 
     toast.success(message);
     modal.close();

@@ -6,11 +6,11 @@
  */
 
 import { confirm } from '../../core/confirm.js';
-import { escapeHtml, http, HttpError } from '../../core/http.js';
+import { escapeHtml, http, HttpError, adminUrl } from '../../core/http.js';
 import { AjaxModal } from '../../core/modal.js';
 import { toast } from '../../core/toast.js';
 
-const ENDPOINT = '/admin/social-link';
+const ENDPOINT = adminUrl('/social-link');
 const grid = document.getElementById('social-link-grid');
 const empty = document.getElementById('social-link-empty');
 const canUpdate = grid?.dataset.canUpdate === '1';

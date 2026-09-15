@@ -1,7 +1,7 @@
 /** Rol formu: bölüm/kart tümünü seç, yetki araması, seçili sayısı. */
 
 import { clearErrors, setLoading, showErrors } from '../../core/form.js';
-import { http, HttpError, ValidationError } from '../../core/http.js';
+import { http, HttpError, ValidationError, adminUrl } from '../../core/http.js';
 import { toast } from '../../core/toast.js';
 
 const form = document.getElementById('role-form');
@@ -148,8 +148,8 @@ form.addEventListener('submit', async (event) => {
 
     try {
         const { message, data } = id
-            ? await http.put(`/admin/role/${id}`, new FormData(form))
-            : await http.post('/admin/role', new FormData(form));
+            ? await http.put(adminUrl(`/role/${id}`), new FormData(form))
+            : await http.post(adminUrl('/role'), new FormData(form));
 
         toast.success(message);
 

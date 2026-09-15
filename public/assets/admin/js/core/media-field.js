@@ -14,7 +14,7 @@
  * document seviyesinde yapılır, sayfa JS'inin bir şey çağırmasına gerek yoktur.
  */
 
-import { http, HttpError } from './http.js';
+import { http, HttpError, adminUrl } from './http.js';
 import { cropModal } from './cropper.js';
 import { toast } from './toast.js';
 import { confirm } from './confirm.js';
@@ -137,7 +137,7 @@ async function onRecrop(root) {
             return;
         }
 
-        const { data, message } = await http.post(`/admin/media/${id}/recrop`, { crop });
+        const { data, message } = await http.post(adminUrl(`/media/${id}/recrop`), { crop });
         // Değişmeyen bir URL tarayıcı önbelleğinden eskisini gösterebilir.
         render(root, { ...data, medium: `${data.medium}?v=${Date.now()}` });
         toast.success(message);

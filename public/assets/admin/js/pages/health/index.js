@@ -7,7 +7,7 @@
  */
 
 import { confirm } from '../../core/confirm.js';
-import { escapeHtml, http, HttpError } from '../../core/http.js';
+import { escapeHtml, http, HttpError, adminUrl } from '../../core/http.js';
 import { toast } from '../../core/toast.js';
 
 const root = document.querySelector('[data-health]');
@@ -237,7 +237,7 @@ async function load(fresh = false) {
     }
 
     try {
-        const { data } = await http.get(`/admin/health/data${fresh ? '?fresh=1' : ''}`);
+        const { data } = await http.get(adminUrl(`/health/data${fresh ? '?fresh=1' : ''}`));
         render(data);
     } catch (error) {
         toast.error(error instanceof HttpError ? error.message : 'Sağlık raporu alınamadı.');
@@ -268,8 +268,8 @@ failedBody.addEventListener('click', async (event) => {
 
     try {
         const { message } = retry
-            ? await http.post(`/admin/health/${uuid}/retry`)
-            : await http.delete(`/admin/health/${uuid}`);
+            ? await http.post(adminUrl(`/health/${uuid}/retry`))
+            : await http.delete(adminUrl(`/health/${uuid}`));
 
         toast.success(message);
         load();
@@ -287,7 +287,7 @@ root.querySelector('[data-retry-all]')?.addEventListener('click', async () => {
     }
 
     try {
-        const { message } = await http.post('/admin/health/retry-all');
+        const { message } = await http.post(adminUrl('/health/retry-all'));
         toast.success(message);
         load();
     } catch (error) {
@@ -304,7 +304,7 @@ root.querySelector('[data-flush]')?.addEventListener('click', async () => {
     }
 
     try {
-        const { message } = await http.delete('/admin/health/failed');
+        const { message } = await http.delete(adminUrl('/health/failed'));
         toast.success(message);
         load();
     } catch (error) {

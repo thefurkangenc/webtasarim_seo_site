@@ -1,13 +1,13 @@
 /** Bülten abone listesi. */
 
 import { confirm } from '../../core/confirm.js';
-import { escapeHtml, http, HttpError } from '../../core/http.js';
+import { escapeHtml, http, HttpError, adminUrl } from '../../core/http.js';
 import { cell, DataTable } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
 import { historyButton } from '../../core/activity-log.js';
 
 const table = new DataTable({
-    endpoint: '/admin/subscriber/datatable',
+    endpoint: adminUrl('/subscriber/datatable'),
     body: document.getElementById('subscriber-table-body'),
     search: document.getElementById('subscriber-search'),
     filters: {
@@ -46,7 +46,7 @@ document.getElementById('subscriber-table-body').addEventListener('click', async
     }
 
     try {
-        const { message } = await http.delete(`/admin/subscriber/${remove.dataset.delete}`);
+        const { message } = await http.delete(adminUrl(`/subscriber/${remove.dataset.delete}`));
         toast.success(message);
         table.reload();
     } catch (error) {

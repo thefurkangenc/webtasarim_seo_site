@@ -100,6 +100,7 @@ class SetupService
         File::deleteDirectory(storage_path('app/'.config('sitemap.path', 'sitemaps')));
 
         Cache::flush();
+        Artisan::call('route:clear');
         app(PermissionRegistrar::class)->forgetCachedPermissions();
         MenuRenderer::forget('header');
         MenuRenderer::forget('footer_primary');

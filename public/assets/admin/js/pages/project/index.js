@@ -1,7 +1,7 @@
 /** Neler Yaptık (projeler) listesi. */
 
 import { confirm } from '../../core/confirm.js';
-import { escapeHtml, http, HttpError } from '../../core/http.js';
+import { escapeHtml, http, HttpError, adminUrl } from '../../core/http.js';
 import { cell, DataTable, reorderHandle } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
 import { historyButton } from '../../core/activity-log.js';
@@ -57,7 +57,7 @@ const selection = bindBulk({
 });
 
 const table = new DataTable({
-    endpoint: '/admin/project/datatable',
+    endpoint: adminUrl('/project/datatable'),
     body: document.getElementById('project-table-body'),
     search: document.getElementById('project-search'),
     filters: {
@@ -71,7 +71,7 @@ const table = new DataTable({
     onLoaded: () => selection.sync(),
     reorder: {
         button: document.getElementById('project-reorder'),
-        endpoint: '/admin/project/reorder',
+        endpoint: adminUrl('/project/reorder'),
     },
     row: (item) => `<tr data-id="${item.id}">
         ${bulkCell(item)}
@@ -97,7 +97,7 @@ const table = new DataTable({
         ${cell(`<div class="flex items-center gap-[9px]">
             ${historyButton(MODEL, item.id)}
             ${revisionButton(MODEL, item.id)}
-            <a href="/admin/project/${item.id}/edit" title="Düzenle" class="text-gray-500 dark:text-gray-400 leading-none transition-all hover:text-primary-500">
+            <a href="${adminUrl(`/project/${item.id}/edit`)}" title="Düzenle" class="text-gray-500 dark:text-gray-400 leading-none transition-all hover:text-primary-500">
                 <i class="material-symbols-outlined !text-md">edit</i>
             </a>
             <button type="button" data-delete="${item.id}" title="Sil" class="text-gray-500 dark:text-gray-400 leading-none transition-all hover:text-danger-500">
@@ -124,7 +124,7 @@ document.getElementById('project-table-body').addEventListener('click', async (e
     }
 
     try {
-        const { message } = await http.delete(`/admin/project/${remove.dataset.delete}`);
+        const { message } = await http.delete(adminUrl(`/project/${remove.dataset.delete}`));
         toast.success(message);
         table.reload();
     } catch (error) {

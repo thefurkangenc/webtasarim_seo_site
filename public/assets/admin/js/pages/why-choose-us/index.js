@@ -2,7 +2,7 @@
 
 import { confirm } from '../../core/confirm.js';
 import { clearErrors, setLoading, showErrors } from '../../core/form.js';
-import { escapeHtml, http, HttpError, ValidationError } from '../../core/http.js';
+import { escapeHtml, http, HttpError, ValidationError, adminUrl } from '../../core/http.js';
 import { AjaxModal } from '../../core/modal.js';
 import { cell, DataTable, reorderHandle } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
@@ -22,7 +22,7 @@ const selection = bindBulk({
 });
 
 const table = new DataTable({
-    endpoint: '/admin/why-choose-us/datatable',
+    endpoint: adminUrl('/why-choose-us/datatable'),
     body: document.getElementById('why-choose-us-table-body'),
     search: document.getElementById('why-choose-us-search'),
     sort: 'sort_order',
@@ -30,7 +30,7 @@ const table = new DataTable({
     empty: 'Henüz kart eklenmedi.',
     reorder: {
         button: document.getElementById('why-choose-us-reorder'),
-        endpoint: '/admin/why-choose-us/reorder',
+        endpoint: adminUrl('/why-choose-us/reorder'),
     },
     onLoaded: () => selection.sync(),
     row: (item) => `<tr data-id="${item.id}">
@@ -55,7 +55,7 @@ const table = new DataTable({
 });
 
 async function open(id = null) {
-    await modal.open(`/admin/why-choose-us/form/${id ?? ''}`, {
+    await modal.open(adminUrl(`/why-choose-us/form/${id ?? ''}`), {
         title: id ? 'Kartı Düzenle' : 'Yeni Kart',
     });
 }
@@ -86,7 +86,7 @@ document.getElementById('why-choose-us-table-body').addEventListener('click', as
     }
 
     try {
-        const { message } = await http.delete(`/admin/why-choose-us/${remove.dataset.delete}`);
+        const { message } = await http.delete(adminUrl(`/why-choose-us/${remove.dataset.delete}`));
         toast.success(message);
         table.reload();
     } catch (error) {
@@ -99,8 +99,8 @@ modal.onSubmit(async (form) => {
     const body = new FormData(form);
 
     const { message } = id
-        ? await http.put(`/admin/why-choose-us/${id}`, body)
-        : await http.post('/admin/why-choose-us', body);
+        ? await http.put(adminUrl(`/why-choose-us/${id}`), body)
+        : await http.post(adminUrl('/why-choose-us'), body);
 
     toast.success(message);
     modal.close();

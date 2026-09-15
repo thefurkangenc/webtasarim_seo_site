@@ -9,7 +9,7 @@
  * ikisi de summary() çıktısından beslenir, aralık değişince tek istek atılır.
  */
 
-import { escapeHtml, http } from '../../core/http.js';
+import { escapeHtml, http, adminUrl } from '../../core/http.js';
 import { apexBase, changeBadge, compact, formatMetric } from '../../core/metrics.js';
 
 const KPI_KEYS = ['activeUsers', 'sessions', 'screenPageViews', 'bounceRate'];
@@ -30,7 +30,7 @@ if (realtime) {
 
     const tick = async () => {
         try {
-            const { data } = await http.get('/admin/analytics/realtime');
+            const { data } = await http.get(adminUrl('/analytics/realtime'));
             count.textContent = data.active_users;
             // Kimse yokken "0 kişi sitede" yazmak bilgi değil gürültü.
             realtime.hidden = data.active_users === 0;

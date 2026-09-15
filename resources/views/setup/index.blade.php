@@ -59,7 +59,7 @@
                         <x-admin::form.input name="name" label="Ad soyad" required placeholder="Örn. Ayşe Yılmaz" :value="$payload['admin']['name'] ?? ''" />
                         <x-admin::form.input name="email" type="email" label="E-posta" required placeholder="ornek@sirket.com" :value="$payload['admin']['email'] ?? ''" />
                         <x-admin::form.input name="password" type="password" label="Parola" required autocomplete="new-password" />
-                        <x-admin::form.input name="password_confirmation" type="password" label="Parola tekrar" required autocomplete="new-password" wrapper="mb-0" />
+                        <x-admin::form.input name="password_confirmation" type="password" label="Parola tekrar" required autocomplete="new-password" />
                         <div class="flex justify-end mt-[24px]">
                             <button type="submit" class="inline-flex items-center gap-[6px] py-[10px] px-[22px] bg-primary-500 text-white rounded-md border border-primary-500 hover:bg-primary-400 hover:border-primary-400">
                                 Devam et <i class="material-symbols-outlined !text-[18px]">arrow_forward</i>

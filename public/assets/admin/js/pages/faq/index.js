@@ -1,7 +1,7 @@
 /** Sıkça sorulan sorular ekranı. */
 
 import { confirm } from '../../core/confirm.js';
-import { escapeHtml, http, HttpError } from '../../core/http.js';
+import { escapeHtml, http, HttpError, adminUrl } from '../../core/http.js';
 import { AjaxModal } from '../../core/modal.js';
 import { cell, DataTable, reorderHandle } from '../../core/table.js';
 import { toast } from '../../core/toast.js';
@@ -21,7 +21,7 @@ const selection = bindBulk({
 });
 
 const table = new DataTable({
-    endpoint: '/admin/faq/datatable',
+    endpoint: adminUrl('/faq/datatable'),
     body: document.getElementById('faq-table-body'),
     search: document.getElementById('faq-search'),
     sort: 'sort_order',
@@ -29,7 +29,7 @@ const table = new DataTable({
     empty: 'Henüz soru eklenmedi.',
     reorder: {
         button: document.getElementById('faq-reorder'),
-        endpoint: '/admin/faq/reorder',
+        endpoint: adminUrl('/faq/reorder'),
     },
     onLoaded: () => selection.sync(),
     row: (item) => `<tr data-id="${item.id}">
@@ -54,7 +54,7 @@ const table = new DataTable({
 });
 
 async function open(id = null) {
-    await modal.open(`/admin/faq/form/${id ?? ''}`, {
+    await modal.open(adminUrl(`/faq/form/${id ?? ''}`), {
         title: id ? 'Soruyu Düzenle' : 'Yeni Soru',
     });
 }
@@ -85,7 +85,7 @@ document.getElementById('faq-table-body').addEventListener('click', async (event
     }
 
     try {
-        const { message } = await http.delete(`/admin/faq/${remove.dataset.delete}`);
+        const { message } = await http.delete(adminUrl(`/faq/${remove.dataset.delete}`));
         toast.success(message);
         table.reload();
     } catch (error) {
@@ -98,8 +98,8 @@ modal.onSubmit(async (form) => {
     const body = new FormData(form);
 
     const { message } = id
-        ? await http.put(`/admin/faq/${id}`, body)
-        : await http.post('/admin/faq', body);
+        ? await http.put(adminUrl(`/faq/${id}`), body)
+        : await http.post(adminUrl('/faq'), body);
 
     toast.success(message);
     modal.close();

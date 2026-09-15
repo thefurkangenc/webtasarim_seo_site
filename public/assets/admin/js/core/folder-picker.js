@@ -1,6 +1,6 @@
 /**
  * Promise döndüren klasör ağacı seçici — dosya yöneticisinin "Taşı" diyaloğu.
- * `/admin/media/folders/tree` uç noktasının döndürdüğü iç içe klasör
+ * adminUrl(`/media/folders/tree`) uç noktasının döndürdüğü iç içe klasör
  * dizisini render eder; taşınan öğelerin kendisi (ve klasörse alt ağacı)
  * hedef olarak seçilemez şekilde devre dışı bırakılır.
  *
@@ -9,7 +9,7 @@
  *   // folderId === null | number -> seçilen klasör (null = kök)
  */
 
-import { escapeHtml } from './http.js';
+import { escapeHtml, adminUrl } from './http.js';
 
 class FolderPicker {
     constructor() {
@@ -111,7 +111,7 @@ class FolderPicker {
     }
 
     /**
-     * @param {Array<object>} tree  `/admin/media/folders/tree` yanıtı
+     * @param {Array<object>} tree  adminUrl(`/media/folders/tree`) yanıtı
      * @param {{excludeIds?: number[], currentId?: number|null}} options
      * @returns {Promise<number|null|undefined>}
      */

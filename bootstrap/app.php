@@ -9,6 +9,7 @@ use App\Services\Health\SystemHealth;
 use App\Services\Redirect\NotFoundLogger;
 use App\Services\Redirect\RedirectResolver;
 use App\Support\Activity;
+use App\Support\AdminPrefix;
 use App\Support\Consent;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Console\Scheduling\Schedule;
@@ -31,7 +32,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
         then: function () {
             Route::middleware('web')
-                ->prefix('admin')
+                ->prefix(AdminPrefix::get())
                 ->name('admin.')
                 ->group(base_path('routes/admin.php'));
 
@@ -133,7 +134,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 return null;
             }
 
-            if ($request->expectsJson() || $request->is('admin', 'admin/*', 'api/*')) {
+            if ($request->expectsJson() || AdminPrefix::is($request) || $request->is('api/*')) {
                 return null;
             }
 

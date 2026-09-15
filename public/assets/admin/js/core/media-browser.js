@@ -12,7 +12,7 @@
  * dosyalarla aynı ızgarada kart olarak durur, çift tıklanınca içine girilir.
  */
 
-import { escapeHtml, http, HttpError } from './http.js';
+import { escapeHtml, http, HttpError, adminUrl } from './http.js';
 import { toast } from './toast.js';
 import { confirm } from './confirm.js';
 import { promptText } from './prompt.js';
@@ -537,7 +537,7 @@ export class MediaBrowser {
         try {
             const [folders, filesResponse] = await Promise.all([
                 flat || this.state.search ? Promise.resolve([]) : this.loadFolders(),
-                http.get('/admin/media/datatable', {
+                http.get(adminUrl('/media/datatable'), {
                     ...this.state,
                     folder_id: flat ? '' : (this.currentFolderId ?? ''),
                     unattached: this.mode === 'unattached' ? 1 : '',
@@ -582,7 +582,7 @@ export class MediaBrowser {
     }
 
     async loadFolders() {
-        const { data } = await http.get('/admin/media/folders', { parent_id: this.currentFolderId ?? '' });
+        const { data } = await http.get(adminUrl('/media/folders'), { parent_id: this.currentFolderId ?? '' });
 
         return data;
     }
@@ -1010,7 +1010,7 @@ export class MediaBrowser {
             }
 
             try {
-                await http.post('/admin/media/upload', body);
+                await http.post(adminUrl('/media/upload'), body);
             } catch (error) {
                 toast.error(`${file.name}: ${error instanceof HttpError ? error.message : 'yüklenemedi'}`);
             }
@@ -1035,7 +1035,7 @@ export class MediaBrowser {
                 return;
             }
 
-            const { message } = await http.post(`/admin/media/${media.id}/recrop`, { crop });
+            const { message } = await http.post(adminUrl(`/media/${media.id}/recrop`), { crop });
             toast.success(message);
             this.load();
         } catch (error) {
@@ -1051,7 +1051,7 @@ export class MediaBrowser {
         }
 
         try {
-            const { message } = await http.post('/admin/media/folders', {
+            const { message } = await http.post(adminUrl('/media/folders'), {
                 name,
                 parent_id: this.currentFolderId,
             });
@@ -1070,7 +1070,7 @@ export class MediaBrowser {
         }
 
         try {
-            const { message } = await http.put(`/admin/media/folders/${folder.id}`, { name });
+            const { message } = await http.put(adminUrl(`/media/folders/${folder.id}`), { name });
             toast.success(message);
             this.load();
         } catch (error) {
@@ -1092,7 +1092,7 @@ export class MediaBrowser {
         const { media, folders } = this.splitSelection(keys);
 
         try {
-            const { message } = await http.post('/admin/media/bulk-move', {
+            const { message } = await http.post(adminUrl('/media/bulk-move'), {
                 media,
                 folders,
                 target_folder_id: targetFolderId,
@@ -1107,14 +1107,14 @@ export class MediaBrowser {
 
     async pickAndMove(media, folders) {
         try {
-            const { data: tree } = await http.get('/admin/media/folders/tree');
+            const { data: tree } = await http.get(adminUrl('/media/folders/tree'));
             const targetId = await folderPicker.open(tree, { excludeIds: folders, currentId: this.currentFolderId });
 
             if (targetId === undefined) {
                 return;
             }
 
-            const { message } = await http.post('/admin/media/bulk-move', {
+            const { message } = await http.post(adminUrl('/media/bulk-move'), {
                 media,
                 folders,
                 target_folder_id: targetId,
@@ -1145,7 +1145,7 @@ export class MediaBrowser {
         }
 
         try {
-            const { message } = await http.post('/admin/media/bulk-delete', { media, folders });
+            const { message } = await http.post(adminUrl('/media/bulk-delete'), { media, folders });
             toast.success(message);
             this.clearSelection();
             this.load();

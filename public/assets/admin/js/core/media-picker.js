@@ -11,7 +11,7 @@
  * daha düşük bir değer, TinyMCE'nin "..." araç çubuğu altında kalırdı.
  */
 
-import { http, HttpError } from './http.js';
+import { http, HttpError, adminUrl } from './http.js';
 import { MediaBrowser } from './media-browser.js';
 import { toast } from './toast.js';
 
@@ -83,7 +83,7 @@ class MediaPicker {
 
         try {
             const query = accept ? `?accept=${encodeURIComponent(accept)}` : '';
-            body.innerHTML = await http.html(`/admin/media/picker${query}`);
+            body.innerHTML = await http.html(adminUrl(`/media/picker${query}`));
             // core/select.js gibi dinleyiciler (tür filtresi <select data-choices>)
             // kendini bu olayla kurar — AjaxModal'ın yaptığı gibi.
             body.dispatchEvent(new CustomEvent('admin:content-loaded', { bubbles: true }));

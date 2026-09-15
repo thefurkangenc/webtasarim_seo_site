@@ -69,8 +69,17 @@ http.patch(url, body)
 http.delete(url)
 http.html(url)                   // -> Promise<string>, Blade parçası (modal gövdesi)
 
+adminPrefix()                    // config/admin.php öneki (`admin`, `panel`…)
+adminUrl('/blog/datatable')      // `/{önek}/blog/datatable`
 escapeHtml(value)                // innerHTML'e basılan her kullanıcı verisi için
 ```
+
+Panel adresi `.env` içindeki `ADMIN_PREFIX` (varsayılan `admin`). Route
+**adları** `admin.*` kalır; JS `adminUrl('/blog/datatable')` kullanır. `http.*`
+ayrıca `/admin/...` ile yazılmış eski adresleri de çalışan öneke çevirir —
+native `fetch()` kullanma.
+
+`data-*` ile Blade'den gelen `route('admin....')` tam URL'leri olduğu gibi bırakılır.
 
 **Dönen değer sunucunun JSON gövdesinin tamamıdır**, `data` alanı tek başına değil:
 
@@ -128,8 +137,10 @@ modal.onSubmit(async (formEl) => { ... });               // form submit'ini yaka
 ### table.js
 
 ```js
+import { adminUrl } from '../../core/http.js';
+
 const table = new DataTable({
-    endpoint: '/admin/blog/datatable',
+    endpoint: adminUrl('/blog/datatable'),
     body:     document.querySelector('#blog-table-body'),
     search:   document.querySelector('#blog-search'),
     filters:  { category_id: document.querySelector('#filter-category') },
@@ -243,14 +254,14 @@ if (await confirm('Bu yazı silinecek. Emin misiniz?')) { ... }
 ```js
 import { DataTable } from '../../core/table.js';
 import { AjaxModal } from '../../core/modal.js';
-import { http } from '../../core/http.js';
+import { adminUrl, http } from '../../core/http.js';
 import { toast } from '../../core/toast.js';
 import { confirm } from '../../core/confirm.js';
 
 const modal = new AjaxModal();
 
 const table = new DataTable({
-    endpoint: '/admin/blog/datatable',
+    endpoint: adminUrl('/blog/datatable'),
     body: document.querySelector('#blog-table-body'),
     search: document.querySelector('#blog-search'),
     row: (blog) => `
@@ -273,18 +284,18 @@ document.querySelector('#blog-table-body').addEventListener('click', async (even
     const { action, id } = button.dataset;
 
     if (action === 'edit') {
-        await modal.open(`/admin/blog/form/${id}`, { title: 'Blog Yazısını Düzenle' });
+        await modal.open(adminUrl(`/blog/form/${id}`), { title: 'Blog Yazısını Düzenle' });
     }
 
     if (action === 'delete' && await confirm('Bu yazı silinecek. Emin misiniz?')) {
-        const { message } = await http.delete(`/admin/blog/${id}`);
+        const { message } = await http.delete(adminUrl(`/blog/${id}`));
         toast.success(message);
         table.reload();
     }
 });
 
 document.querySelector('#blog-create').addEventListener('click', () => {
-    modal.open('/admin/blog/form', { title: 'Yeni Blog Yazısı' });
+    modal.open(adminUrl('/blog/form'), { title: 'Yeni Blog Yazısı' });
 });
 
 modal.onSubmit(async (form) => {

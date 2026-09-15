@@ -4,7 +4,7 @@
  */
 
 import { clearErrors, setLoading, showErrors } from '../../core/form.js';
-import { http, HttpError, ValidationError } from '../../core/http.js';
+import { http, HttpError, ValidationError, adminUrl } from '../../core/http.js';
 import { toast } from '../../core/toast.js';
 
 const form = document.getElementById('analytics-form');
@@ -38,7 +38,7 @@ testButton?.addEventListener('click', async () => {
     setLoading(testButton, true);
 
     try {
-        const { message } = await http.post('/admin/analytics/test');
+        const { message } = await http.post(adminUrl('/analytics/test'));
         toast.success(message);
     } catch (error) {
         toast.error(error instanceof HttpError ? error.message : 'Bağlantı testi başarısız.');

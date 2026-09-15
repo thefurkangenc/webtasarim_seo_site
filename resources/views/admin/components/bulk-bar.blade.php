@@ -18,7 +18,7 @@
 --}}
 
 @can($module.'.bulk')
-    <div data-bulk-bar="{{ $module }}" data-bulk-endpoint="{{ url("admin/{$module}/bulk") }}"
+    <div data-bulk-bar="{{ $module }}" data-bulk-endpoint="{{ route('admin.'.$module.'.bulk') }}"
         class="hidden items-center gap-[12px] flex-wrap mb-[20px] p-[14px] rounded-md bg-primary-50 dark:bg-[#15203c] border border-primary-100 dark:border-[#172036]">
         <span class="text-sm text-black dark:text-white whitespace-nowrap">
             <strong data-bulk-count>0</strong> kayıt seçildi
