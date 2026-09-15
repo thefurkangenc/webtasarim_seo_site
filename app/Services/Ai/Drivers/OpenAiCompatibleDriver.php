@@ -16,11 +16,13 @@ class OpenAiCompatibleDriver implements ChatDriver
 {
     public function chat(AiProvider $provider, array $messages, array $options = []): array
     {
+        $tokenParam = $provider->definition()['token_param'] ?? 'max_tokens';
+
         $body = [
             'model' => $provider->model,
             'messages' => $messages,
             'temperature' => $provider->temperature,
-            'max_tokens' => $options['max_tokens'] ?? $provider->max_tokens,
+            $tokenParam => $options['max_tokens'] ?? $provider->max_tokens,
         ];
 
         if ($options['json'] ?? false) {

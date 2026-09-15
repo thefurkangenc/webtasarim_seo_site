@@ -17,6 +17,8 @@ return [
             'requires_key' => true,
             // Modelden geçerli JSON dönmesini garantileyen response_format desteği.
             'supports_json' => true,
+            // OpenAI'nin yeni modelleri (gpt-5, o-serisi) "max_tokens"ı reddedip bunu ister.
+            'token_param' => 'max_completion_tokens',
         ],
 
         'deepseek' => [
