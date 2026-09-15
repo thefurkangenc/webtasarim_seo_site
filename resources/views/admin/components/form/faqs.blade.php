@@ -31,7 +31,7 @@
 
 @once
     @push('admin.scripts')
-        <script type="module" src="{{ asset('admin/assets/js/core/faq-picker.js') }}"></script>
+        <script type="module" src="{{ asset('assets/admin/js/core/faq-picker.js') }}"></script>
     @endpush
 @endonce
 

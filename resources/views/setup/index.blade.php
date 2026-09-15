@@ -21,8 +21,8 @@
 
         <div class="mx-auto max-w-[920px]">
             <div class="text-center mb-[28px]">
-                <img src="{{ asset('admin/assets/images/etkisoft-logo.svg') }}" alt="" class="inline-block dark:hidden h-[36px]">
-                <img src="{{ asset('admin/assets/images/etkisoft-logo.svg') }}" alt="" class="hidden dark:inline-block h-[36px]">
+                <img src="{{ asset('assets/admin/images/etkisoft-logo.svg') }}" alt="" class="inline-block dark:hidden h-[36px]">
+                <img src="{{ asset('assets/admin/images/etkisoft-logo.svg') }}" alt="" class="hidden dark:inline-block h-[36px]">
                 <h1 class="!font-semibold !text-[22px] md:!text-xl !mt-[18px] !mb-[6px] text-black dark:text-white">Site kurulumu</h1>
                 <p class="text-sm text-gray-500 dark:text-gray-400">Birkaç adımda paneli bu kuruma göre ayarlayın.</p>
             </div>
@@ -248,5 +248,5 @@
 @endsection
 
 @push('admin.scripts')
-    <script type="module" src="{{ asset('admin/assets/js/pages/setup/index.js') }}"></script>
+    <script type="module" src="{{ asset('assets/admin/js/pages/setup/index.js') }}"></script>
 @endpush

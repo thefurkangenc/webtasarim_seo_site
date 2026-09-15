@@ -9,7 +9,7 @@
 
 @once
     @push('admin.scripts')
-        <script type="module" src="{{ asset('admin/assets/js/core/seo-field.js') }}"></script>
+        <script type="module" src="{{ asset('assets/admin/js/core/seo-field.js') }}"></script>
     @endpush
 @endonce
 

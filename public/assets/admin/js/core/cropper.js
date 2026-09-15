@@ -10,7 +10,7 @@
  * bu maliyeti ödemez.
  */
 
-const CROPPER_SRC = '/admin/assets/js/vendor/cropper/cropper.min.js';
+const CROPPER_SRC = '/assets/admin/js/vendor/cropper/cropper.min.js';
 
 let cropperLoader = null;
 

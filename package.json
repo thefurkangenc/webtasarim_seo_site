@@ -5,8 +5,8 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
-        "admin:css": "tailwindcss -i ./resources/css/admin/style.css -o ./public/admin/assets/css/style.css",
-        "admin:css:watch": "tailwindcss -i ./resources/css/admin/style.css -o ./public/admin/assets/css/style.css --watch"
+        "admin:css": "tailwindcss -i ./resources/css/admin/style.css -o ./public/assets/admin/css/style.css",
+        "admin:css:watch": "tailwindcss -i ./resources/css/admin/style.css -o ./public/assets/admin/css/style.css --watch"
     },
     "devDependencies": {
         "@tailwindcss/cli": "^4.3.3",

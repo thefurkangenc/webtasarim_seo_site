@@ -64,5 +64,5 @@
 @endsection
 
 @push('admin.scripts')
-    <script type="module" src="{{ asset('admin/assets/js/pages/announcement/index.js') }}"></script>
+    <script type="module" src="{{ asset('assets/admin/js/pages/announcement/index.js') }}"></script>
 @endpush

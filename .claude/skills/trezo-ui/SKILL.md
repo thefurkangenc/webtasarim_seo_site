@@ -17,7 +17,7 @@ kalıpları birleştir; yepyeni bir tasarım dili üretme.
 Şüphelendiğin bir class'ı doğrula:
 
 ```sh
-grep -c 'first\\:rounded-tl-md' public/admin/assets/css/style.css   # derlenmiş mi
+grep -c 'first\\:rounded-tl-md' public/assets/admin/css/style.css   # derlenmiş mi
 grep -rl 'text-danger-500' resources/views/admin/html/               # template kullanıyor mu
 ```
 
@@ -90,7 +90,7 @@ büyük olduğundan **`trezo-ui-extractor` agent'ına** sor — ana bağlamı ş
 @endsection
 
 @push('admin.scripts')
-    <script type="module" src="{{ asset('admin/assets/js/pages/blog/index.js') }}"></script>
+    <script type="module" src="{{ asset('assets/admin/js/pages/blog/index.js') }}"></script>
 @endpush
 ```
 

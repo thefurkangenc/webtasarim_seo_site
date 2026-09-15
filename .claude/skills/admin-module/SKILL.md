@@ -176,13 +176,13 @@ Markup kalıpları için `trezo-ui`.
 
 ## 10. Sayfa JS
 
-`public/admin/assets/js/pages/blog-category/index.js`
+`public/assets/admin/js/pages/blog-category/index.js`
 
 DataTable + AjaxModal + silme akışı. Şablon `admin-js` skill'inde.
 
 ## 11. Sayfa CSS
 
-`public/admin/assets/css/pages/blog-category/index.css`
+`public/assets/admin/css/pages/blog-category/index.css`
 
 **Yalnızca gerçek ihtiyaç varsa.** Tailwind build kurulu olduğu için çoğu
 modülün özel CSS'i olmaz. Boş dosya açma; açtıysan `@push('admin.css')` ile ekle.
@@ -293,7 +293,7 @@ app/Http/Requests/Admin/BlogCategory/BlogCategoryFilterRequest.php
 app/Http/Controllers/Admin/BlogCategory/BlogCategoryController.php
 resources/views/admin/pages/blog-category/index.blade.php
 resources/views/admin/pages/blog-category/modals/form.blade.php
-public/admin/assets/js/pages/blog-category/index.js
+public/assets/admin/js/pages/blog-category/index.js
 ```
 
 Değiştirilenler: `routes/admin.php`, `config/admin-menu.php`, izin seeder'ı.

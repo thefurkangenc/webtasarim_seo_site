@@ -5,7 +5,7 @@
     <div
         class="logo bg-white dark:bg-[#0c1427] border-b border-gray-100 dark:border-[#172036] px-[25px] pt-[19px] pb-[15px] absolute z-[2] right-0 top-0 left-0">
         <a href="{{ route('admin.dashboard') }}" class="transition-none relative flex items-center">
-            <img src="{{ asset('admin/assets/images/logo-icon.svg') }}" alt="logo-icon">
+            <img src="{{ asset('assets/admin/images/logo-icon.svg') }}" alt="logo-icon">
             <span class="font-bold text-black dark:text-white relative ltr:ml-[8px] rtl:mr-[8px] top-px text-xl">
                 Yönetim
             </span>

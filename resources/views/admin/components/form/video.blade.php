@@ -28,7 +28,7 @@
 
 @once
     @push('admin.scripts')
-        <script type="module" src="{{ asset('admin/assets/js/core/video-field.js') }}"></script>
+        <script type="module" src="{{ asset('assets/admin/js/core/video-field.js') }}"></script>
     @endpush
 @endonce
 

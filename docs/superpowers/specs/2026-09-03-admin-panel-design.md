@@ -10,7 +10,7 @@ taslak olarak hazır. Bu tasarım, siteyi besleyecek admin panelinin mimarisini 
 
 Admin arayüzü **Trezo** (Tailwind CSS v4) hazır HTML template'i üzerine kurulur.
 Template kaynağı: `resources/views/admin/html/` (219 HTML sayfa + assets).
-Çalışan assetler: `public/admin/assets/`.
+Çalışan assetler: `public/assets/admin/`.
 
 Ön yüz ve admin **iki ayrı dünyadır**: ön yüz Bootstrap, admin Tailwind.
 CSS/JS asla karışmaz.
@@ -53,8 +53,8 @@ resources/views/admin/pages/blog/index.blade.php
 resources/views/admin/pages/blog/show.blade.php
 resources/views/admin/pages/blog/modals/form.blade.php
 
-public/admin/assets/js/pages/blog/index.js
-public/admin/assets/css/pages/blog/index.css <- SADECE gerçek ihtiyaç varsa
+public/assets/admin/js/pages/blog/index.js
+public/assets/admin/css/pages/blog/index.css <- SADECE gerçek ihtiyaç varsa
 ```
 
 `Admin/` segmenti Controller ve Request'te vardır, Service ve Model'de **yoktur**:
@@ -99,7 +99,7 @@ jQuery kullanılmaz. Native `<script type="module">` ile ES modules.
 Build adımı yoktur — tarayıcı `import`'u doğrudan çözer.
 
 ```
-public/admin/assets/js/core/
+public/assets/admin/js/core/
     http.js      fetch sarmalayıcı: CSRF header, JSON parse, 422/403/500 ayrımı
     form.js      form -> FormData, hata boyama/temizleme
     modal.js     AjaxModal: open(url) / close() / onSubmit
@@ -122,7 +122,7 @@ Bu dosyanın iskeleti proje sahibi tarafından kurulacaktır.
 
 ## 7. Tailwind Build
 
-Mevcut `public/admin/assets/scss/style.scss` gerçekte bir Tailwind v4 CSS
+Mevcut `public/assets/admin/scss/style.scss` gerçekte bir Tailwind v4 CSS
 entry'sidir (`@import "tailwindcss"` + `@theme` + `@apply`'lı bileşenler, 1613 satır).
 
 Plan:
@@ -130,9 +130,9 @@ Plan:
 2. Başına `@source` direktifleri eklenir:
    - `resources/views/admin/**/*.blade.php`
    - `resources/views/admin/html/**/*.html`  (template class'ları kaybolmasın)
-   - `public/admin/assets/js/**/*.js`
+   - `public/assets/admin/js/**/*.js`
 3. `@tailwindcss/cli` eklenir; npm script'leri `admin:css` ve `admin:css:watch`.
-   Çıktı yine `public/admin/assets/css/style.css` — `styles.blade.php` değişmez.
+   Çıktı yine `public/assets/admin/css/style.css` — `styles.blade.php` değişmez.
 4. Build öncesi `style.css` yedeklenir, sonrası ile karşılaştırılır.
    Mevcut sınıf setinin kaybolmadığı teyit edilmeden ilerlenmez.
 
@@ -200,7 +200,7 @@ Tarih: 2026-09-03 · Durum: tamamlandı
 |---|---|
 | Medya bağı | `media` tablosu + `mediables` polymorphic pivot (koleksiyonlu) |
 | Kırpma | Orijinal saklanır, koordinat gönderilir, sunucuda `intervention/image` v4 ile kırpılır |
-| Kırpma UI | Cropper.js v1.6.3, `public/admin/assets/js/vendor/cropper/` altında yerel kopya |
+| Kırpma UI | Cropper.js v1.6.3, `public/assets/admin/js/vendor/cropper/` altında yerel kopya |
 | Türetme | Yüklemede `thumb` + `medium`, hepsi WebP |
 | File manager | `/admin/media` sayfası + form içinden açılan seçici modal, ortak markup |
 | Klasör | Mantıksal (`media_folders.parent_id`), disk düz `uploads/YYYY/MM` |
@@ -230,10 +230,10 @@ app/Models/Concerns/HasMedia.php    getMedia / getFirstMedia / mediaUrl / syncMe
 app/Services/Media/MediaService.php        store / recrop / update / delete / move / list
 app/Services/Media/MediaFolderService.php  tree / create / update / delete
 
-public/admin/assets/js/core/cropper.js        kırpma modalı
-public/admin/assets/js/core/media-browser.js  klasör + ızgara
-public/admin/assets/js/core/media-picker.js   seçici modal
-public/admin/assets/js/core/media-field.js    <x-admin::form.image> davranışı
+public/assets/admin/js/core/cropper.js        kırpma modalı
+public/assets/admin/js/core/media-browser.js  klasör + ızgara
+public/assets/admin/js/core/media-picker.js   seçici modal
+public/assets/admin/js/core/media-field.js    <x-admin::form.image> davranışı
 ```
 
 ## Doğrulanan davranışlar

@@ -22,8 +22,10 @@ Mimari kararların gerekçesi: `docs/superpowers/specs/2026-09-03-admin-panel-de
 
 ## İki Ayrı Dünya
 
-- **Ön yüz**: `resources/views/pages/` + `resources/views/layout/` + `resources/views/components/` + `public/assets/` → Bootstrap
-- **Admin**: `resources/views/admin/` + `public/admin/assets/` → Tailwind
+- **Ön yüz**: `resources/views/pages/` + `resources/views/layout/` + `resources/views/components/` + `public/assets/{css,js,img,fonts}` → Bootstrap
+- **Admin**: `resources/views/admin/` + `public/assets/admin/` → Tailwind
+
+Statik kök `public/assets/` ortaktır; panel dosyaları yalnızca `admin/` altındadır (`/assets/admin/...`). Apache'de `public/admin` klasörü `/admin` rota önekiyle çakışmasın diye panel asset'i orada tutulmaz.
 
 Panelden yönetilen ön yüz iskeleti `resources/views/components/site/` altında yaşar (`<x-site.meta />`, `<x-site.schema />`, `<x-site.tracking />`, `<x-site.notices />`, `<x-site.cookie-banner />`, `<x-site.integrations />`, `<x-site.subscribe-form />`). Tema kromu (header/footer/menü/css/scripts) `layout/partials/`'te kalır; `layout/app.blade.php` her ikisini de çağırır. Admin `x-admin::*` ile karışmaz.
 
@@ -59,8 +61,8 @@ resources/views/admin/pages/blog/index.blade.php
 resources/views/admin/pages/blog/show.blade.php
 resources/views/admin/pages/blog/modals/form.blade.php
 
-public/admin/assets/js/pages/blog/index.js
-public/admin/assets/css/pages/blog/index.css   <- SADECE gerçek ihtiyaç varsa; boş dosya açma
+public/assets/admin/js/pages/blog/index.js
+public/assets/admin/css/pages/blog/index.css   <- SADECE gerçek ihtiyaç varsa; boş dosya açma
 ```
 
 ## Route Yükleme Sırası — dikkat
@@ -101,7 +103,7 @@ sabit ilk segmentlerini toplar), böylece o adla bir sayfa oluşturulamaz.
 | `admin-module` | Yeni bir admin modülü kurarken (uçtan uca reçete) |
 | `front-end-module` | Panelde CRUD'u kurulu bir modülün ön yüzünü (liste/detay, schema, sitemap, IndexNow, menü) bağlarken |
 | `trezo-ui` | Admin Blade'i yazarken, herhangi bir arayüz markup'ı üretirken |
-| `admin-js` | `public/admin/assets/js/` altında JS yazarken |
+| `admin-js` | `public/assets/admin/js/` altında JS yazarken |
 | `new-site` | Bu panel üzerinde başka bir firma/sektör için site kurarken (sıfırla → `/kurulum` → yeni tema), ön yüz temasını değiştirirken ya da tek bir ön yüz sayfasını temaya göre yeniden keserken |
 
 Admin tarafında iş yapıyorsan bu skill'leri **kod yazmadan önce** aç.
@@ -120,7 +122,7 @@ Modüller bunların üzerine kurulur — yeniden yazma, kullan.
 
 | Ne | Nerede |
 |---|---|
-| Tailwind kaynağı | `resources/css/admin/style.css` → `npm run admin:css`. `@source` tarar: `views/admin/**`, `views/setup/**`, `public/admin/assets/js/**`. Setup Blade'ine yeni class yazınca bu kaynak şart; yoksa class derlenmez |
+| Tailwind kaynağı | `resources/css/admin/style.css` → `npm run admin:css`. `@source` tarar: `views/admin/**`, `views/setup/**`, `public/assets/admin/js/**`. Setup Blade'ine yeni class yazınca bu kaynak şart; yoksa class derlenmez |
 | JSON yanıtları | `App\Http\Controllers\Concerns\RespondsWithJson` (`success()`/`error()`) |
 | Medya kütüphanesi | `App\Services\Media\MediaService` + `MediaFolderService`, `/admin/media` |
 | Modele medya bağlama | `App\Models\Concerns\HasMedia` trait'i (polymorphic, koleksiyonlu) |
@@ -150,7 +152,7 @@ Modüller bunların üzerine kurulur — yeniden yazma, kullan.
 | Benzersiz slug | `App\Support\Slug::unique($deger, 'blogs', $id)` — Türkçe karakter duyarlı |
 | Sürükle-bırak sıralama | `HasSortOrder` (model) + `ReordersRecords` (servis) + `ReorderRequest` — `sort_order` formda yok, `core/table.js`'in `reorder` seçeneği |
 | Modal iskeleti | `resources/views/admin/layout/modals/ajax-modal.blade.php` (layout'ta include edili) |
-| JS çekirdeği | `public/admin/assets/js/core/` — http, form, modal, table, toast, confirm, editor, seo-field, tag-input, ai-generator |
+| JS çekirdeği | `public/assets/admin/js/core/` — http, form, modal, table, toast, confirm, editor, seo-field, tag-input, ai-generator |
 | Giriş | `admin.login` / `admin.logout`, `auth` middleware `routes/admin.php`'de. Varsayılan `admin@…` / `password` **yok** — ilk süper yönetici kurulum sihirbazından oluşur |
 | Roller | `super-admin` (Gate::before ile her izne sahip), `admin`, `editor` |
 | İlk kurulum | `GET /kurulum` (`routes/setup.php`, `SetupController` + `SetupService`). Bitene kadar tüm ön yüz/panel adresleri sihirbaza düşer (`EnsureSetupCompleted`, `EnsureSiteIsLive`'tan sonra). Bitince `/kurulum` panele/girişe gider. Ayrıntı: aşağıdaki "İlk kurulum sihirbazı" |
@@ -273,7 +275,7 @@ Kurallara `...$this->tagRules()` eklenir. Eşleşme slug üzerinden yapılır:
 <x-admin::form.editor name="content" :value="$blog?->content" :height="560" />
 ```
 
-TinyMCE 7 self-host (`public/admin/assets/js/vendor/tinymce/`). Görsel butonu
+TinyMCE 7 self-host (`public/assets/admin/js/vendor/tinymce/`). Görsel butonu
 medya seçicisini açar — editöre giren görsel de kütüphaneye kaydolur. Karanlık
 mod değişince editör, içerik korunarak yeniden kurulur.
 
@@ -358,7 +360,7 @@ başlat** görevleri sırayla işler (`config/setup.php` > `tasks`). Bitince
 |---|---|
 | Config | `config/setup.php` — adımlar, görevler, seeder'lar, kilitli modüller, `reset_tables` / `keep_tables`, KVKK/çerez taslakları |
 | Servis | `App\Services\Setup\SetupService` — oturum yok (`session()` controller'da) |
-| UI | `resources/views/setup/index.blade.php` (`admin.layout.guest`) + `public/admin/assets/js/pages/setup/index.js` |
+| UI | `resources/views/setup/index.blade.php` (`admin.layout.guest`) + `public/assets/admin/js/pages/setup/index.js` |
 | Middleware | `EnsureSetupCompleted` — bakım modu sihirbazı kapatmasın diye `EnsureSiteIsLive` sihirbazı muaf tutar |
 
 Kurallar (atlanmaz):

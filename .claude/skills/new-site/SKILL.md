@@ -11,7 +11,7 @@ temasına taşır. Yeni tema `resources/views/layout/html/` içine konur (eski
 temanın üzerine — eski sürüm git geçmişinde durur).
 
 **Ön yüz kodu değişir, panel kodu değişmez.** `resources/views/admin/**` ve
-`public/admin/**` bu iş sırasında açılmaz bile — CLAUDE.md'deki "İki Ayrı
+`public/assets/admin/**` bu iş sırasında açılmaz bile — CLAUDE.md'deki "İki Ayrı
 Dünya" kuralı. Değişen tek panel şeyi onun **içeriğidir** (ayarlar, menüler,
 sayfalar), o da sihirbazdan.
 
@@ -562,7 +562,7 @@ php artisan tinker --execute="\App\Models\Popup\Popup::find(<id>)->update(['is_a
 | Mobil menü klonlama mekanizmasını kontrol etmemek | Mobilde menü tamamen boş |
 | `vendor/pagination/theme.blade.php`'yi atlamak | Blog/proje listelerinde sayfalama bozuk |
 | Tema demo metnini İngilizce bırakmak | CLAUDE.md kural 5 ihlali |
-| `resources/views/admin/**` veya `public/admin/**`'e dokunmak | İki Ayrı Dünya ihlali — panel bozulur |
+| `resources/views/admin/**` veya `public/assets/admin/**`'e dokunmak | İki Ayrı Dünya ihlali — panel bozulur |
 | Tek dev commit | Bir şey bozulunca geri dönülecek ara nokta kalmaz |
 
 ## Adım adım commit

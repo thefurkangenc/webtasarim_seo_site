@@ -930,7 +930,7 @@ git commit -m "Add Module Management controller, service and route"
 
 **Files:**
 - Create: `resources/views/admin/pages/module/index.blade.php`
-- Create: `public/admin/assets/js/pages/module/form.js`
+- Create: `public/assets/admin/js/pages/module/form.js`
 
 **Interfaces:**
 - Consumes: `$modules` (Collection, her öğe Task 4'teki `formData()` şekli), `$generalPresets` (list) — controller'dan view'e geçer.
@@ -1019,11 +1019,11 @@ git commit -m "Add Module Management controller, service and route"
 @endsection
 
 @push('admin.scripts')
-    <script type="module" src="{{ asset('admin/assets/js/pages/module/form.js') }}"></script>
+    <script type="module" src="{{ asset('assets/admin/js/pages/module/form.js') }}"></script>
 @endpush
 ```
 
-- [ ] **Step 2: `public/admin/assets/js/pages/module/form.js`'i yaz — `setting/form.js` ile aynı desen**
+- [ ] **Step 2: `public/assets/admin/js/pages/module/form.js`'i yaz — `setting/form.js` ile aynı desen**
 
 ```js
 /**
@@ -1075,7 +1075,7 @@ vendor/bin/pint app/Services/Module app/Http/Requests/Admin/Module app/Http/Cont
 ```
 
 ```bash
-git add resources/views/admin/pages/module/index.blade.php public/admin/assets/js/pages/module/form.js
+git add resources/views/admin/pages/module/index.blade.php public/assets/admin/js/pages/module/form.js
 git commit -m "Add Module Management screen (view + JS)"
 ```
 

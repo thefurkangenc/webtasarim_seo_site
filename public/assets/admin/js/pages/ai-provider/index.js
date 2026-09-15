@@ -25,7 +25,7 @@ const badge = (label, variant) =>
 const DRIVER_ICONS = { openai: 'chatgpt', deepseek: 'deepseek', ollama: 'ollama' };
 
 const driverIcon = (driver) => DRIVER_ICONS[driver]
-    ? `<img src="/admin/assets/images/icons/ai/${DRIVER_ICONS[driver]}.svg" alt="" class="w-[18px] h-[18px] shrink-0">`
+    ? `<img src="/assets/admin/images/icons/ai/${DRIVER_ICONS[driver]}.svg" alt="" class="w-[18px] h-[18px] shrink-0">`
     : '';
 
 const table = new DataTable({

@@ -275,14 +275,14 @@ linki olarak kalır.
 | `format.js` | `0:05`, `1:02:03` |
 
 Boot: ön yüz `public/assets/js/video-player.js`, admin
-`public/admin/assets/js/core/video-player.js`. İkisi `/js/video-player/player.js`
+`public/assets/admin/js/core/video-player.js`. İkisi `/js/video-player/player.js`
 import eder, `[data-player]:not([data-player-ready])` tarar, `data-player-ready`
 koyar. Bileşen `@once` ile script basar (video-field kalıbı).
 
 ### CSS
 
 `public/assets/css/video-player.css` ve
-`public/admin/assets/css/video-player.css`. Paylaşılmaz.
+`public/assets/admin/css/video-player.css`. Paylaşılmaz.
 
 Sinema kromu: alt gradient `transparent → rgba(0,0,0,.75)`, ikon beyaz.
 İlerleme: ön yüz `#155FFF` (`--vtc-bg-main4` / şerit), admin `#605DFF`
@@ -342,10 +342,10 @@ resources/views/pages/projects/show.blade.php
 public/js/video-player/{player,sprite-preview,prefs,format}.js
 public/assets/js/video-player.js
 public/assets/css/video-player.css
-public/admin/assets/js/core/video-player.js
-public/admin/assets/js/core/video-field.js
-public/admin/assets/js/core/media-preview.js
-public/admin/assets/css/video-player.css
+public/assets/admin/js/core/video-player.js
+public/assets/admin/js/core/video-field.js
+public/assets/admin/js/core/media-preview.js
+public/assets/admin/css/video-player.css
 resources/views/layout/partials/css.blade.php   (stack zaten var; bileşen @push)
 CLAUDE.md                                       (kurulu altyapı satırı)
 docs/superpowers/specs/2026-09-12-projects-frontend-design.md  (video satırı)

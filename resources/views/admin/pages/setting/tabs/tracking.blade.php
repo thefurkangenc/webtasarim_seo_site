@@ -10,7 +10,7 @@
         <div class="settings-panel">
             <div class="flex items-center gap-[12px] mb-[20px]">
                 <span class="settings-chip w-[40px] h-[40px] flex items-center justify-center shrink-0">
-                    <img src="{{ asset('admin/assets/images/icons/tracking/google.svg') }}" alt="" class="w-[24px] h-[24px] object-contain">
+                    <img src="{{ asset('assets/admin/images/icons/tracking/google.svg') }}" alt="" class="w-[24px] h-[24px] object-contain">
                 </span>
                 <p class="!mb-0 font-medium text-black dark:text-white">Google</p>
             </div>
@@ -42,7 +42,7 @@
         <div class="settings-panel">
             <div class="flex items-center gap-[12px] mb-[20px]">
                 <span class="settings-chip w-[40px] h-[40px] flex items-center justify-center shrink-0">
-                    <img src="{{ asset('admin/assets/images/icons/tracking/microsoft.svg') }}" alt="" class="w-[24px] h-[24px] object-contain">
+                    <img src="{{ asset('assets/admin/images/icons/tracking/microsoft.svg') }}" alt="" class="w-[24px] h-[24px] object-contain">
                 </span>
                 <p class="!mb-0 font-medium text-black dark:text-white">Microsoft</p>
             </div>
@@ -61,7 +61,7 @@
         <div class="settings-panel">
             <div class="flex items-center gap-[12px] mb-[20px]">
                 <span class="settings-chip w-[40px] h-[40px] flex items-center justify-center shrink-0">
-                    <img src="{{ asset('admin/assets/images/icons/tracking/meta.svg') }}" alt="" class="w-[24px] h-[24px] object-contain">
+                    <img src="{{ asset('assets/admin/images/icons/tracking/meta.svg') }}" alt="" class="w-[24px] h-[24px] object-contain">
                 </span>
                 <p class="!mb-0 font-medium text-black dark:text-white">Meta</p>
             </div>
@@ -76,7 +76,7 @@
         <div class="settings-panel">
             <div class="flex items-center gap-[12px] mb-[20px]">
                 <span class="settings-chip w-[40px] h-[40px] flex items-center justify-center shrink-0">
-                    <img src="{{ asset('admin/assets/images/icons/tracking/yandex.svg') }}" alt="" class="w-[24px] h-[24px] object-contain">
+                    <img src="{{ asset('assets/admin/images/icons/tracking/yandex.svg') }}" alt="" class="w-[24px] h-[24px] object-contain">
                 </span>
                 <p class="!mb-0 font-medium text-black dark:text-white">Yandex</p>
             </div>
@@ -95,7 +95,7 @@
         <div class="settings-panel">
             <div class="flex items-center gap-[12px] mb-[20px]">
                 <span class="settings-chip w-[40px] h-[40px] flex items-center justify-center shrink-0">
-                    <img src="{{ asset('admin/assets/images/icons/tracking/tiktok.svg') }}" alt="" class="w-[24px] h-[24px] object-contain">
+                    <img src="{{ asset('assets/admin/images/icons/tracking/tiktok.svg') }}" alt="" class="w-[24px] h-[24px] object-contain">
                 </span>
                 <p class="!mb-0 font-medium text-black dark:text-white">TikTok</p>
             </div>
@@ -110,7 +110,7 @@
         <div class="settings-panel">
             <div class="flex items-center gap-[12px] mb-[20px]">
                 <span class="settings-chip w-[40px] h-[40px] flex items-center justify-center shrink-0">
-                    <img src="{{ asset('admin/assets/images/icons/tracking/linkedin.svg') }}" alt="" class="w-[24px] h-[24px] object-contain">
+                    <img src="{{ asset('assets/admin/images/icons/tracking/linkedin.svg') }}" alt="" class="w-[24px] h-[24px] object-contain">
                 </span>
                 <p class="!mb-0 font-medium text-black dark:text-white">LinkedIn</p>
             </div>

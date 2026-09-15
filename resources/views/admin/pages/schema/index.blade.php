@@ -106,5 +106,5 @@
 @endsection
 
 @push('admin.scripts')
-    <script type="module" src="{{ asset('admin/assets/js/pages/schema/index.js') }}"></script>
+    <script type="module" src="{{ asset('assets/admin/js/pages/schema/index.js') }}"></script>
 @endpush

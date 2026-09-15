@@ -51,7 +51,7 @@
 @if ($analysis)
     @once
         @push('admin.scripts')
-            <script type="module" src="{{ asset('admin/assets/js/core/seo-analyzer.js') }}"></script>
+            <script type="module" src="{{ asset('assets/admin/js/core/seo-analyzer.js') }}"></script>
         @endpush
     @endonce
 @endif

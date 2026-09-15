@@ -173,5 +173,5 @@
 @endsection
 
 @push('admin.scripts')
-    <script type="module" src="{{ asset('admin/assets/js/pages/redirect/index.js') }}"></script>
+    <script type="module" src="{{ asset('assets/admin/js/pages/redirect/index.js') }}"></script>
 @endpush

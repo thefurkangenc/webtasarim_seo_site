@@ -7,14 +7,14 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-[25px] items-center">
                 <div
                     class="xl:ltr:-mr-[25px] xl:rtl:-ml-[25px] 2xl:ltr:-mr-[45px] 2xl:rtl:-ml-[45px] rounded-[25px] order-2 lg:order-1">
-                    <img src="{{ asset('admin/assets/images/sign-in.jpg') }}" alt="Giriş" class="rounded-[25px]">
+                    <img src="{{ asset('assets/admin/images/sign-in.jpg') }}" alt="Giriş" class="rounded-[25px]">
                 </div>
 
                 <div
                     class="xl:ltr:pl-[90px] xl:rtl:pr-[90px] 2xl:ltr:pl-[120px] 2xl:rtl:pr-[120px] order-1 lg:order-2">
-                    <img src="{{ asset('admin/assets/images/logo-big.svg') }}" alt="Logo"
+                    <img src="{{ asset('assets/admin/images/logo-big.svg') }}" alt="Logo"
                         class="inline-block dark:hidden">
-                    <img src="{{ asset('admin/assets/images/white-logo-big.svg') }}" alt="Logo"
+                    <img src="{{ asset('assets/admin/images/white-logo-big.svg') }}" alt="Logo"
                         class="hidden dark:inline-block">
 
                     <div class="my-[17px] md:my-[25px]">

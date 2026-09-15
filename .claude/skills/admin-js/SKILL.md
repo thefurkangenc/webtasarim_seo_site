@@ -1,6 +1,6 @@
 ---
 name: admin-js
-description: Use when writing or editing JavaScript under public/admin/assets/js/ - AJAX tables, ajax modals, form submission, toasts, delete confirmation, page scripts. Defines the native ES module architecture, the core/ helper APIs and the no-jQuery rule for the admin panel.
+description: Use when writing or editing JavaScript under public/assets/admin/js/ - AJAX tables, ajax modals, form submission, toasts, delete confirmation, page scripts. Defines the native ES module architecture, the core/ helper APIs and the no-jQuery rule for the admin panel.
 ---
 
 # Admin JavaScript
@@ -14,7 +14,7 @@ takip et.
 ## Dosya düzeni
 
 ```
-public/admin/assets/js/
+public/assets/admin/js/
     custom.js                 <- template'in kendi dosyası, DOKUNMA
     charts-custom.js          <- template'in kendi dosyası, DOKUNMA
     vendor/cropper/           <- Cropper.js v1 yerel kopyası, DOKUNMA
@@ -44,7 +44,7 @@ Modül klasörü kebab-case: `blog-category/index.js`.
 
 ```blade
 @push('admin.scripts')
-    <script type="module" src="{{ asset('admin/assets/js/pages/blog/index.js') }}"></script>
+    <script type="module" src="{{ asset('assets/admin/js/pages/blog/index.js') }}"></script>
 @endpush
 ```
 
@@ -102,7 +102,7 @@ input'a `!border-danger-500` ekler.
 > **Dikkat:** `!border-danger-500` derlenmiş `style.css` içinde **yoktur** ve
 > template'te de geçmez — Tailwind build kurulmadan bu class hiçbir şey yapmaz.
 > Yeni bir utility class yazdığında bu ihtimali her zaman düşün:
-> `grep -c 'class-adi' public/admin/assets/css/style.css` ile doğrula,
+> `grep -c 'class-adi' public/assets/admin/css/style.css` ile doğrula,
 > yoksa `npm run admin:css` çalıştır.
 
 ### modal.js

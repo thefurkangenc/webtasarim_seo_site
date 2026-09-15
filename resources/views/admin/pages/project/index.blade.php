@@ -152,5 +152,5 @@
 @endsection
 
 @push('admin.scripts')
-    <script type="module" src="{{ asset('admin/assets/js/pages/project/index.js') }}"></script>
+    <script type="module" src="{{ asset('assets/admin/js/pages/project/index.js') }}"></script>
 @endpush

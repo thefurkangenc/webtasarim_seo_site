@@ -115,5 +115,5 @@
 @endsection
 
 @push('admin.scripts')
-    <script type="module" src="{{ asset('admin/assets/js/pages/why-choose-us/index.js') }}"></script>
+    <script type="module" src="{{ asset('assets/admin/js/pages/why-choose-us/index.js') }}"></script>
 @endpush

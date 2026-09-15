@@ -24,10 +24,10 @@
 @elseif ($media)
     @once
         @push('admin.css')
-            <link rel="stylesheet" href="{{ asset('admin/assets/css/video-player.css') }}">
+            <link rel="stylesheet" href="{{ asset('assets/admin/css/video-player.css') }}">
         @endpush
         @push('admin.scripts')
-            <script type="module" src="{{ asset('admin/assets/js/core/video-player.js') }}"></script>
+            <script type="module" src="{{ asset('assets/admin/js/core/video-player.js') }}"></script>
         @endpush
     @endonce
 

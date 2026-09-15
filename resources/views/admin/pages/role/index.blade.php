@@ -74,5 +74,5 @@
 @endsection
 
 @push('admin.scripts')
-    <script type="module" src="{{ asset('admin/assets/js/pages/role/index.js') }}"></script>
+    <script type="module" src="{{ asset('assets/admin/js/pages/role/index.js') }}"></script>
 @endpush

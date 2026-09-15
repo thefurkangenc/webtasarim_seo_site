@@ -19,7 +19,7 @@
     @can('revision.index')
         @once
             @push('admin.scripts')
-                <script type="module" src="{{ asset('admin/assets/js/core/revisions.js') }}"></script>
+                <script type="module" src="{{ asset('assets/admin/js/core/revisions.js') }}"></script>
             @endpush
         @endonce
 

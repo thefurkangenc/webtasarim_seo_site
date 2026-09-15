@@ -15,8 +15,8 @@
 
 @once
     @push('admin.scripts')
-        <script src="{{ asset('admin/assets/js/vendor/tinymce/tinymce.min.js') }}"></script>
-        <script type="module" src="{{ asset('admin/assets/js/core/editor.js') }}"></script>
+        <script src="{{ asset('assets/admin/js/vendor/tinymce/tinymce.min.js') }}"></script>
+        <script type="module" src="{{ asset('assets/admin/js/core/editor.js') }}"></script>
     @endpush
 @endonce
 

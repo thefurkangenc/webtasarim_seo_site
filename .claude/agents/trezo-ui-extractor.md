@@ -48,7 +48,7 @@ Blade'e yapıştırılmaya hazır** markup olarak döndür.
 4. **Temizle:**
    - `.html` linklerini `{{ route(...) }}` yer tutucusuna çevir, hangi route
      gerektiğini not düş
-   - `assets/...` yollarını `{{ asset('admin/assets/...') }}` yap
+   - `assets/...` yollarını `{{ asset('assets/admin/...') }}` yap
    - `prism`/`click-to-show-hide-code` gibi template'in kendi demo sarmalayıcılarını at
    - Placeholder metinleri Türkçeye çevir
    - Girintileri düzelt

@@ -144,7 +144,7 @@ class ActivityLog extends Model
 
         $file = $map[$group][$label] ?? null;
 
-        return $file ? "admin/assets/images/icons/{$group}/{$file}.svg" : null;
+        return $file ? "assets/admin/images/icons/{$group}/{$file}.svg" : null;
     }
 
     /** Cihaz tipine karşılık gelen material ikon adı. */

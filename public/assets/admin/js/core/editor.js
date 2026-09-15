@@ -14,7 +14,7 @@
 import { escapeHtml } from './http.js';
 import { mediaPicker } from './media-picker.js';
 
-const BASE_URL = '/admin/assets/js/vendor/tinymce';
+const BASE_URL = '/assets/admin/js/vendor/tinymce';
 
 const PLUGINS = 'advlist autolink lists link table code codesample charmap '
     + 'searchreplace visualblocks fullscreen preview wordcount anchor importcss';

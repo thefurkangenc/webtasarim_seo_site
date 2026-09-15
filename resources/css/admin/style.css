@@ -4,11 +4,11 @@
 @source "../../views/admin/**/*.blade.php";
 @source "../../views/admin/html/**/*.html";
 @source "../../views/setup/**/*.blade.php";
-@source "../../../public/admin/assets/js/**/*.js";
+@source "../../../public/assets/admin/js/**/*.js";
 
 /**
- * Poppins — self-host. Dosyalar public/admin/assets/fonts/poppins/ altında,
- * yol bu dosyanın DERLENDİĞİ yere göredir (public/admin/assets/css/style.css),
+ * Poppins — self-host. Dosyalar public/assets/admin/fonts/poppins/ altında,
+ * yol bu dosyanın DERLENDİĞİ yere göredir (public/assets/admin/css/style.css),
  * kaynak dosyanın yerine göre değil.
  *
  * Yalnızca latin + latin-ext altkümeleri indirildi: Türkçe'nin ı harfi latin

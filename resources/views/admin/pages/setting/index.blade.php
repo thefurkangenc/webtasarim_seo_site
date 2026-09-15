@@ -53,24 +53,24 @@
 
 @push('admin.scripts')
     @if ($group === 'social')
-        <script type="module" src="{{ asset('admin/assets/js/pages/setting/social.js') }}"></script>
+        <script type="module" src="{{ asset('assets/admin/js/pages/setting/social.js') }}"></script>
     @elseif ($group === 'integrations')
-        <script type="module" src="{{ asset('admin/assets/js/pages/setting/integration.js') }}"></script>
+        <script type="module" src="{{ asset('assets/admin/js/pages/setting/integration.js') }}"></script>
     @elseif ($group === 'analytics')
-        <script type="module" src="{{ asset('admin/assets/js/pages/setting/analytics.js') }}"></script>
+        <script type="module" src="{{ asset('assets/admin/js/pages/setting/analytics.js') }}"></script>
     @else
-        <script type="module" src="{{ asset('admin/assets/js/pages/setting/form.js') }}"></script>
+        <script type="module" src="{{ asset('assets/admin/js/pages/setting/form.js') }}"></script>
         @if ($group === 'mail')
-            <script type="module" src="{{ asset('admin/assets/js/pages/setting/mail.js') }}"></script>
+            <script type="module" src="{{ asset('assets/admin/js/pages/setting/mail.js') }}"></script>
         @endif
         @if ($group === 'contact')
-            <script type="module" src="{{ asset('admin/assets/js/pages/setting/contact.js') }}"></script>
+            <script type="module" src="{{ asset('assets/admin/js/pages/setting/contact.js') }}"></script>
         @endif
         @if ($group === 'tracking')
-            <script type="module" src="{{ asset('admin/assets/js/pages/setting/tracking.js') }}"></script>
+            <script type="module" src="{{ asset('assets/admin/js/pages/setting/tracking.js') }}"></script>
         @endif
         @if ($group === 'schema')
-            <script type="module" src="{{ asset('admin/assets/js/pages/setting/schema.js') }}"></script>
+            <script type="module" src="{{ asset('assets/admin/js/pages/setting/schema.js') }}"></script>
         @endif
     @endif
 @endpush

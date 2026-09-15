@@ -6,7 +6,7 @@
     $driverIcons = ['openai' => 'chatgpt', 'deepseek' => 'deepseek', 'ollama' => 'ollama'];
     $driverOptions = collect($drivers)->map(fn ($driver, $key) => [
         'label' => $driver['label'],
-        'icon' => isset($driverIcons[$key]) ? asset("admin/assets/images/icons/ai/{$driverIcons[$key]}.svg") : null,
+        'icon' => isset($driverIcons[$key]) ? asset("assets/admin/images/icons/ai/{$driverIcons[$key]}.svg") : null,
     ])->all();
     $keyPlaceholder = $provider?->api_key
         ? 'Kayıtlı anahtar korunuyor — değiştirmek için yeni anahtar yazın'

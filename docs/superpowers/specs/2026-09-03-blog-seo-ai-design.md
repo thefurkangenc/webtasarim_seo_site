@@ -24,7 +24,7 @@ olduğu için ayrı bir turda eklenir.
 | SEO saklama | Polymorphic `seo` tablosu + `HasSeo` trait | Medyadaki kalıbın aynısı. Yeni modüle SEO eklemek migration gerektirmez; alan eklendiğinde tek yerde değişir. |
 | Etiket | `tags` + `taggables` polymorphic pivot | Etiket arşiv sayfası ve etiket sayımı mümkün olur; JSON kolonda bunlar yapılamaz. Pivot medyadaki `mediables` ile aynı şekilde çalışır. |
 | Kategori | Ayrı `BlogCategory` modülü | Blog'a ait ama kendi ekranı olan bir varlık; blog formunda select olarak görünür. |
-| Editör | TinyMCE 7.2.1, self-host | Kullanıcı kararı. Dosyalar `public/admin/assets/js/vendor/tinymce/` altına elle konuldu. GPL self-host, API anahtarı gerekmez, `tr.js` ve `oxide-dark` skin mevcut. Tablo desteği Quill'de yoktu. |
+| Editör | TinyMCE 7.2.1, self-host | Kullanıcı kararı. Dosyalar `public/assets/admin/js/vendor/tinymce/` altına elle konuldu. GPL self-host, API anahtarı gerekmez, `tr.js` ve `oxide-dark` skin mevcut. Tablo desteği Quill'de yoktu. |
 | AI istek modeli | Kuyruk + durum sorgulama | Kullanıcı kararı. Ollama yerelde dakikalarca sürebilir; senkron istekte PHP-FPM zaman aşımı riski var. |
 | AI çıktısı | Tek JSON, tüm alanları doldurur | Tek istekte başlık + özet + içerik + etiket + meta üretilir; alan başına ayrı istek token ve bekleme israfı olurdu. |
 | Prompt şablonu | İsimli şablonlar, `key` ile modüle bağlı | Aynı modül için birden çok üslup ("Kısa tanıtım", "Detaylı rehber") tanımlanabilir. |
@@ -73,7 +73,7 @@ duyarlı üretilir.
 ### Editör
 
 `<x-admin::form.editor name="content" :value="$blog?->content" />`
-→ `public/admin/assets/js/core/editor.js`
+→ `public/assets/admin/js/core/editor.js`
 
 TinyMCE `no-jquery` şekilde, ES modülü içinden global `tinymce` üzerinden
 başlatılır. Karanlık mod panelin temasını izler. Görsel ekleme butonu mevcut
