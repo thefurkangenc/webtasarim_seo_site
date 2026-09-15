@@ -190,6 +190,14 @@ class AnalyticsService
     /** @return array<string, mixed> */
     public function realtime(): array
     {
+        if (! $this->configured()) {
+            return [
+                'active_users' => 0,
+                'pages' => [],
+                'updated_at' => now()->toIso8601String(),
+            ];
+        }
+
         return Cache::remember('analytics.realtime', now()->addSeconds(30), function () {
             $client = $this->requireClient();
 

@@ -23,6 +23,7 @@ document.getElementById('light-dark-toggle')?.addEventListener('click', () => {
 });
 
 /* ── Şu an sitede kaç kişi var ─────────────────────────────────────── */
+// Rozet yalnızca GA4 bağlıyken Blade'de basılır; yoksa istek atılmaz.
 const realtime = document.querySelector('[data-realtime]');
 
 if (realtime) {

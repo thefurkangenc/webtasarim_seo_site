@@ -31,15 +31,18 @@
 
         <div class="flex items-center gap-[10px] mt-[14px] md:mt-0">
             @can('analytics.realtime')
-                {{-- Şu an sitede kaç kişi var. 30 sn'de bir tazelenir. --}}
-                <span data-realtime hidden
-                    class="items-center gap-[7px] py-[8px] px-[14px] rounded-md bg-success-50 dark:bg-[#15203c] text-success-600 text-sm font-medium">
-                    <span class="relative flex w-[8px] h-[8px]">
-                        <span class="absolute inline-flex w-full h-full rounded-full bg-success-500 opacity-60 animate-ping"></span>
-                        <span class="relative inline-flex w-[8px] h-[8px] rounded-full bg-success-500"></span>
+                @if ($analyticsReady)
+                    {{-- Şu an sitede kaç kişi var. 30 sn'de bir tazelenir.
+                         Rozet yoksa JS isteği de atmaz; GA4 yokken 422 basılmaz. --}}
+                    <span data-realtime hidden
+                        class="items-center gap-[7px] py-[8px] px-[14px] rounded-md bg-success-50 dark:bg-[#15203c] text-success-600 text-sm font-medium">
+                        <span class="relative flex w-[8px] h-[8px]">
+                            <span class="absolute inline-flex w-full h-full rounded-full bg-success-500 opacity-60 animate-ping"></span>
+                            <span class="relative inline-flex w-[8px] h-[8px] rounded-full bg-success-500"></span>
+                        </span>
+                        <span data-realtime-count>0</span> kişi sitede
                     </span>
-                    <span data-realtime-count>0</span> kişi sitede
-                </span>
+                @endif
             @endcan
 
             <a href="{{ url('/') }}" target="_blank"
