@@ -17,17 +17,17 @@
     <div class="hero6" style="background-image: url({{ $heroBackground?->url() ?: asset('assets/img/hero/hero6-bg.jpg') }});">
         <div class="container">
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-lg-7">
                     <div class="main-heading6">
                         <span class="sub-title" data-aos="zoom-in-left" data-aos-duration="900">
                             <img style="width: 20px; height: 20px; margin-right: 5px;"
                                 src="{{ asset('assets/img/icons/icon.png') }}"
-                                alt="">{{ $hero->badge ?: 'Her adımda şeffaf raporlama.' }}</span>
-                        <h1>{{ $hero->title ?: 'Akıllı SEO ile Daha Fazla Trafik, Müşteri ve Satış' }}</h1>
+                                alt=""> {{ $hero->badge }}</span>
+                        <h1>{{ $hero->title}}</h1>
                         <p class="mt-16">
-                            {{ $hero->description ?: 'Uzman ekibimizle sitenizi arama sonuçlarında yükseltiyor, düzenli organik trafik kazandırıyor ve ziyaretçileri müşteriye dönüştürüyoruz.' }}
+                            {{ $hero->description }}
                         </p>
-                        <div class="buttons">
+                        {{-- <div class="buttons">
                             @if (filled($hero->button_text))
                                 <a href="{{ $hero->button_url ?: route('iletisim') }}" class="theme-btn11">
                                     <span class="theme-btn11__shape"></span>
@@ -45,7 +45,7 @@
                                 </a>
                                 <p>Play Video</p>
                             </div>
-                        </div>
+                        </div> --}}
 
                     </div>
                 </div>
@@ -96,61 +96,69 @@
             <div class="row">
                 <div class="col-lg-4">
                     <div class="heading1">
-                        <span class="sub-title" data-aos="zoom-in-left" data-aos-duration="900"><img
-                                src="assets/img/icons/span1.svg" alt=""> Hakkımızda </span>
-                        <h2 class="text-anime-style-3">{{ $homeAboutTitle ?: 'Dijitalde İz Bırakan Çözümler Üretiyoruz' }}
+                        <span class="sub-title" data-aos="zoom-in-left" data-aos-duration="900">
+                            <img style="width: 20px; height: 20px; margin-right: 5px;"
+                                src="{{ asset('assets/img/icons/icon.png') }}"
+                                alt=""> Hakkımızda </span>
+                        <h2 class="text-anime-style-3">{{ $homeAboutTitle }}
                         </h2>
                         @if (filled($homeAboutContent))
                             <div class="mt-16" data-aos="fade-right" data-aos-duration="900">{!! $homeAboutContent !!}</div>
-                        @else
-                            <p class="mt-16" data-aos="fade-right" data-aos-duration="900">Web tasarımdan dijital
-                                pazarlamaya,
-                                işletmenizin ihtiyaç duyduğu her alanda uzman ekibimizle yanınızdayız. Modern, hızlı
-                                ve etkili çözümlerle markanızı bir adım öne taşıyoruz.</p>
                         @endif
                     </div>
                 </div>
                 <div class="col-lg-8 text-end sm:text-start md:text-start md:mt-30 sm:mt-30">
-                    <div class="button" data-aos="fade-left" data-aos-duration="1000">
-                        <a href="about.html" class="theme-btn1">Work With Us</a>
+                    <div class="button"     >
+                        <a href="{{route('hakkimizda')}}" class="theme-btn1 ">
+                            <i style="font-size:15px;" class="fa-solid fa-phone-volume"></i> &nbsp; Detayları Konuşalım!
+                        </a>
                     </div>
                 </div>
             </div>
             <div class="row mt-30 align-items-end about1-boxs-all">
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="500">
+                <div class="col-lg-4 col-md-6">
                     <div class="about1-box box1 white-heading mt-30">
                         <div class="top-heading">
-                            <h5>Clients Served Worldwide</h5>
-                            <p class="mt-16">Partnering with businesses across the globe to achieve outstanding results.
+                            <h5>Google'da Bulunun</h5>
+                            <p class="mt-16">
+                                Müşterileriniz firmanızın adını veya sunduğunuz hizmeti aradığında karşılarına işletmenize ait bir web sitesi çıksın.
                             </p>
                         </div>
                         <div class="bottom-heading">
-                            <h3><span class="counter">500</span> +</h3>
+                            <h3><span class="">GOOGLE'DA
+                                YERİNİZİ ALIN</span></h3>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="300">
+                <div class="col-lg-4 col-md-6">
                     <div class="about1-box box2 white-heading mt-30">
                         <div class="top-heading">
-                            <h5>Projects Successfully Completed</h5>
-                            <p class="mt-16">Delivering customized campaigns that drive traffic and boost conversions.</p>
+                            <h5>İşinizi Anlatın</h5>
+                            <p class="mt-16">
+                                Müşterileriniz kim olduğunuzu, ne yaptığınızı, hangi hizmetleri sunduğunuzu ve sizinle nasıl iletişime geçebileceğini tek yerde görebilsin.
+                            </p>
                         </div>
                         <div class="bottom-heading">
-                            <h3><span class="counter">700</span> +</h3>
+                            <h3><span class="">
+                                Güven Oluşturun
+
+                            </span></h3>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
+                <div class="col-lg-4 col-md-6" >
                     <div class="about1-box box3 white-heading mt-30">
                         <div class="top-heading">
-                            <h5>Revenue Generated for Clients</h5>
-                            <p class="mt-16">Partnering with businesses across the globe to achieve outstanding results.
+                            <h5>Yeni Müşterilere Ulaşın</h5>
+                            <p class="mt-16">
+                                Google'da sizi arayan potansiyel müşterilerin karşısına çıkın. Web sitenizi arama motorlarına uygun bir altyapıyla hazırlıyoruz.
+
                             </p>
                         </div>
                         <div class="bottom-heading">
-                            <h3>$<span class="counter">200</span>M+</h3>
+                            <h3><span class="">GÜVENİ SATIŞA ÇEVİRİN!</span></h3>
                         </div>
                     </div>
                 </div>

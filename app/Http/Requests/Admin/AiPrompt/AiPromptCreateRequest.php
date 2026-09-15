@@ -12,8 +12,8 @@ class AiPromptCreateRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:100'],
             'key' => ['required', 'string', 'max:64', 'regex:/^[a-z0-9]+(\.[a-z0-9-]+)*$/'],
-            'system_prompt' => ['required', 'string', 'max:8000'],
-            'user_prompt' => ['required', 'string', 'max:8000'],
+            'system_prompt' => ['required', 'string', 'max:32000'],
+            'user_prompt' => ['required', 'string', 'max:32000'],
             'ai_provider_id' => ['nullable', 'integer', 'exists:ai_providers,id'],
             'is_active' => ['boolean'],
             'is_default' => ['boolean'],
