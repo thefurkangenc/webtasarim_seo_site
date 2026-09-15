@@ -24,9 +24,16 @@ class MenuItemStoreRequest extends FormRequest
             'label' => [Rule::requiredIf($type !== MenuItem::TYPE_LINKABLE), 'nullable', 'string', 'max:120'],
 
             'link_type' => ['required', Rule::in(array_keys(MenuItem::TYPES))],
+            'unlinked' => ['boolean'],
 
             // Tam URL de göreli yol da (/hakkimizda) kabul edilir; 'url' kuralı yok.
-            'url' => [Rule::requiredIf($type === MenuItem::TYPE_URL), 'nullable', 'string', 'max:2000'],
+            // Bağlantısız özel öğede adres girilmez.
+            'url' => [
+                Rule::requiredIf($type === MenuItem::TYPE_URL && ! $this->boolean('unlinked')),
+                'nullable',
+                'string',
+                'max:2000',
+            ],
 
             'route_name' => [
                 Rule::requiredIf($type === MenuItem::TYPE_ROUTE),

@@ -176,15 +176,31 @@ class MenuService
     {
         $type = $data['link_type'];
 
+        $url = $this->urlValue($type, $data);
+
         return [
             'label' => $data['label'] ?? null,
             'link_type' => $type,
-            'url' => $type === MenuItem::TYPE_URL ? ($data['url'] ?? null) : null,
+            'url' => $url,
             'route_name' => $type === MenuItem::TYPE_ROUTE ? ($data['route_name'] ?? null) : null,
             'linkable_type' => $type === MenuItem::TYPE_LINKABLE ? ($data['linkable_type'] ?? null) : null,
             'linkable_id' => $type === MenuItem::TYPE_LINKABLE ? ($data['linkable_id'] ?? null) : null,
-            'target' => $data['target'] ?? '_self',
+            'target' => $url === MenuItem::UNLINKED_HREF ? '_self' : ($data['target'] ?? '_self'),
             'status' => $data['status'] ?? true,
         ];
+    }
+
+    /** @param  array<string, mixed>  $data */
+    private function urlValue(string $type, array $data): ?string
+    {
+        if ($type !== MenuItem::TYPE_URL) {
+            return null;
+        }
+
+        if (! empty($data['unlinked']) || ($data['url'] ?? '') === MenuItem::UNLINKED_HREF) {
+            return MenuItem::UNLINKED_HREF;
+        }
+
+        return $data['url'] ?? null;
     }
 }

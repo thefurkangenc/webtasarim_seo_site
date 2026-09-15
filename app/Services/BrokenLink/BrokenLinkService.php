@@ -201,6 +201,10 @@ class BrokenLinkService
         }
 
         foreach (MenuItem::with('menu:id,name')->where('status', true)->cursor() as $item) {
+            if ($item->isUnlinked()) {
+                continue;
+            }
+
             $label = ($item->menu?->name ?? 'Menü').' → '.($item->label ?: $item->resolveUrl());
 
             yield $item->resolveUrl()

@@ -16,9 +16,12 @@ use Illuminate\Support\Facades\Route;
 /**
  * Bir menü öğesi. Üç bağlantı tipinden biri:
  *
- *   url      → elle girilen adres (mutlak ya da göreli)
+ *   url      → elle girilen adres (mutlak, göreli ya da bağlantısız)
  *   route    → parametresiz ön yüz route'u (config/menus.php > routes)
  *   linkable → bir kayda bağlı (Page/Service/Blog); URL render anında çözülür
+ *
+ * Bağlantısız özel öğenin url kolonu UNLINKED_HREF tutar; ön yüzde tıklanınca
+ * gitmez, alt öğeleri (açılır menü başlığı) durur.
  *
  * Ağaç `parent_id` ile kurulur, en fazla config('menus.max_depth') derinlik.
  */
@@ -35,6 +38,8 @@ class MenuItem extends Model
     public const TYPE_ROUTE = 'route';
 
     public const TYPE_LINKABLE = 'linkable';
+
+    public const UNLINKED_HREF = 'javascript:void(0)';
 
     public const TYPES = [
         self::TYPE_URL => 'Özel bağlantı',
@@ -101,6 +106,11 @@ class MenuItem extends Model
         };
     }
 
+    public function isUnlinked(): bool
+    {
+        return $this->link_type === self::TYPE_URL && $this->url === self::UNLINKED_HREF;
+    }
+
     /** Etiket boş bırakıldıysa bağlı kaydın adına düşülür. */
     public function resolveLabel(): string
     {
@@ -130,7 +140,7 @@ class MenuItem extends Model
         return match ($this->link_type) {
             self::TYPE_ROUTE => config("menus.routes.{$this->route_name}", (string) $this->route_name),
             self::TYPE_LINKABLE => $this->linkableSummary(),
-            default => (string) $this->url,
+            default => $this->isUnlinked() ? 'Bağlantısız' : (string) $this->url,
         };
     }
 
@@ -157,6 +167,7 @@ class MenuItem extends Model
             'link_type' => $this->link_type,
             'type_label' => $this->typeLabel(),
             'url' => $this->url,
+            'unlinked' => $this->isUnlinked(),
             'route_name' => $this->route_name,
             'linkable_type' => $this->linkable_type,
             'linkable_id' => $this->linkable_id,
