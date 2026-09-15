@@ -81,9 +81,13 @@ function render(root, media) {
     // daha fazla kırpar (ya da hiç güncellenmemişse boş kalıp canvas'ı
     // siyah bırakır).
     image.dataset.original = media.original ?? media.url;
+
+    const { mediaWidth: targetWidth, mediaHeight: targetHeight } = root.dataset;
+    const target = targetWidth && targetHeight ? ` · Hedef: ${targetWidth}×${targetHeight}` : '';
+
     info.textContent = media.width
-        ? `${media.name} · ${media.width}×${media.height} · ${media.human_size}`
-        : `${media.name} · ${media.human_size}`;
+        ? `${media.name} · ${media.width}×${media.height} · ${media.human_size}${target}`
+        : `${media.name} · ${media.human_size}${target}`;
 
     preview.classList.remove('hidden');
     empty.classList.add('hidden');

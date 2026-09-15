@@ -19,8 +19,12 @@
     </div>
 
     <form id="module-form" action="{{ route('admin.module.update') }}">
+        {{-- Masonry: modüllerin preset sayısı farklı olduğu için düz grid
+             yerine multi-column kullanılıyor — kısa kartlar birbirinin altını
+             doldurur, satırlar arası boşluk kalmaz. --}}
+        <div class="columns-1 md:columns-2 xl:columns-3 gap-[25px]">
         @foreach ($modules as $module)
-            <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
+            <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md break-inside-avoid">
                 <div class="trezo-card-header mb-[20px] md:mb-[25px] flex items-center justify-between gap-[12px] flex-wrap">
                     <div class="trezo-card-title flex items-center gap-[10px]">
                         <i class="material-symbols-outlined !text-[22px] text-primary-500">{{ $module['icon'] }}</i>
@@ -49,7 +53,7 @@
         @endforeach
 
         @if ($generalPresets !== [])
-            <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
+            <div class="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md break-inside-avoid">
                 <div class="trezo-card-header mb-[20px] md:mb-[25px]">
                     <div class="trezo-card-title">
                         <h5 class="!mb-0">Genel Boyutlar</h5>
@@ -68,6 +72,7 @@
                 </div>
             </div>
         @endif
+        </div>
 
         <div class="flex items-center justify-end">
             <button type="submit"

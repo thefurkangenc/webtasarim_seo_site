@@ -71,6 +71,14 @@ return [
                 'module' => 'hero',
             ],
             [
+                'title' => 'Slaytlar',
+                'icon' => 'view_carousel',
+                'route' => 'admin.slider.index',
+                'active' => 'admin.slider.*',
+                'permission' => 'slider.index',
+                'module' => 'slider',
+            ],
+            [
                 'title' => 'Hizmetler',
                 'icon' => 'design_services',
                 'module' => 'service',

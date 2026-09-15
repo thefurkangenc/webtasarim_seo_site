@@ -86,6 +86,7 @@ return [
         'gallery' => ['label' => 'Foto Galeri', 'icon' => 'photo_library'],
         'faq' => ['label' => 'Sıkça Sorulan Sorular', 'icon' => 'help'],
         'testimonial' => ['label' => 'Müşteri Yorumları', 'icon' => 'reviews'],
+        'slider' => ['label' => 'Slaytlar', 'icon' => 'view_carousel'],
         'reference' => ['label' => 'Referanslar', 'icon' => 'handshake'],
         'why-choose-us' => ['label' => 'Neden Biz', 'icon' => 'workspace_premium'],
         'hero' => ['label' => 'Tanıtım Alanı', 'icon' => 'slideshow'],

@@ -9,6 +9,7 @@ use App\Models\Project\Project;
 use App\Models\ProjectCategory\ProjectCategory;
 use App\Models\Reference\Reference;
 use App\Models\Service\Service;
+use App\Models\Slider\Slider;
 use App\Models\Testimonial\Testimonial;
 use App\Models\WhyChooseUs\WhyChooseUs;
 use App\Services\Blog\BlogService;
@@ -18,6 +19,7 @@ use App\Services\Page\PageService;
 use App\Services\Project\ProjectService;
 use App\Services\Reference\ReferenceService;
 use App\Services\Service\ServiceService;
+use App\Services\Slider\SliderService;
 use App\Services\Testimonial\TestimonialService;
 use App\Services\WhyChooseUs\WhyChooseUsService;
 
@@ -245,6 +247,17 @@ return [
             'model' => Testimonial::class,
             'service' => TestimonialService::class,
             'noun' => 'yorum',
+            'actions' => [
+                'activate' => ['label' => 'Yayınla', 'icon' => 'visibility', 'type' => 'update', 'values' => ['is_active' => true]],
+                'deactivate' => ['label' => 'Gizle', 'icon' => 'visibility_off', 'type' => 'update', 'values' => ['is_active' => false]],
+                'delete' => ['label' => 'Sil', 'icon' => 'delete', 'type' => 'delete', 'danger' => true],
+            ],
+        ],
+
+        'slider' => [
+            'model' => Slider::class,
+            'service' => SliderService::class,
+            'noun' => 'slayt',
             'actions' => [
                 'activate' => ['label' => 'Yayınla', 'icon' => 'visibility', 'type' => 'update', 'values' => ['is_active' => true]],
                 'deactivate' => ['label' => 'Gizle', 'icon' => 'visibility_off', 'type' => 'update', 'values' => ['is_active' => false]],

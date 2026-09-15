@@ -97,6 +97,7 @@ return [
         'project_service',
         'galleries',
         'testimonials',
+        'sliders',
         'references',
         'faqs',
         'faqables',

@@ -41,6 +41,7 @@ use App\Http\Controllers\Admin\Service\ServiceController;
 use App\Http\Controllers\Admin\ServiceRegion\ServiceRegionController;
 use App\Http\Controllers\Admin\Setting\SettingController;
 use App\Http\Controllers\Admin\Sitemap\SitemapController;
+use App\Http\Controllers\Admin\Slider\SliderController;
 use App\Http\Controllers\Admin\SocialLink\SocialLinkController;
 use App\Http\Controllers\Admin\Subscriber\SubscriberController;
 use App\Http\Controllers\Admin\Tag\TagController;
@@ -501,6 +502,18 @@ Route::middleware(['auth', 'user.active', 'permission_middleware'])->group(funct
         Route::put('reorder', 'reorder')->name('reorder');
         Route::put('{testimonial}', 'update')->name('update');
         Route::delete('{testimonial}', 'destroy')->name('destroy');
+    });
+
+    Route::middleware('module.active:slider')->prefix('slider')->name('slider.')->controller(SliderController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('datatable', 'datatable')->name('datatable');
+        Route::get('form/{slider?}', 'form')->name('form');
+        Route::post('/', 'store')->name('store');
+        // 'reorder' sabit segmenti, aşağıdaki {slider} joker'ından ÖNCE
+        // tanımlanmalı — aksi halde 'reorder' bir kayıt kimliği sanılır.
+        Route::put('reorder', 'reorder')->name('reorder');
+        Route::put('{slider}', 'update')->name('update');
+        Route::delete('{slider}', 'destroy')->name('destroy');
     });
 
     Route::middleware('module.active:reference')->prefix('reference')->name('reference.')->controller(ReferenceController::class)->group(function () {

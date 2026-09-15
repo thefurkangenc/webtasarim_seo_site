@@ -1636,6 +1636,41 @@ return [
         ],
     ],
 
+    'slider' => [
+        'is_active' => [
+            'title' => 'Yayında',
+            'body' => '<p>Kapatırsanız bu slayt ön yüzdeki slider\'da görünmez. Kampanya bitince silmek yerine kapatabilirsiniz.</p>',
+        ],
+        'title' => [
+            'title' => 'Başlık',
+            'body' => '<p>Slaytın ana başlığı. Kısa ve vurgulu tutun — slider genelde büyük punto ile basılır.</p>',
+        ],
+        'slogan' => [
+            'title' => 'Slogan',
+            'body' => '<p>Başlığın üstünde görünen küçük vurgu metni — örn. “YENİ SEZON” ya da “SINIRLI SÜRE”. İsteğe bağlı.</p>',
+        ],
+        'description' => [
+            'title' => 'Açıklama',
+            'body' => '<p>Başlığın altında görünen kısa tanıtım metni. Uzun paragraflar yerine tek-iki cümle tercih edin.</p>',
+        ],
+        'button_text' => [
+            'title' => 'Buton Metni',
+            'body' => '<p>Slayttaki aksiyon butonunun yazısı — örn. “Detaylı Bilgi”. Boş bırakılırsa buton hiç basılmaz.</p>',
+        ],
+        'button_url' => [
+            'title' => 'Buton Adresi',
+            'body' => '<p>Butona tıklanınca gidilecek adres. Site içi bir sayfaya gidecekse o sayfanın adresini, dış bağlantıysa tam adresi (https:// ile) yazın.</p>',
+        ],
+        'desktop_media_id' => [
+            'title' => 'Masaüstü Görseli',
+            'body' => '<p>Geniş ekranlarda gösterilen slayt görseli. Mobil görsel girilmezse bu görsel mobilde de kullanılır.</p>',
+        ],
+        'mobile_media_id' => [
+            'title' => 'Mobil Görseli',
+            'body' => '<p>İsteğe bağlı. Dar ekranda masaüstü görseli kırpılınca önemli kısım kesiliyorsa, mobile özel dikey bir görsel verin.</p>',
+        ],
+    ],
+
     'why_choose_us' => [
         'is_active' => [
             'title' => 'Yayında',

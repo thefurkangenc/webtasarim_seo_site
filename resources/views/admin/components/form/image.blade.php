@@ -115,6 +115,9 @@
         <p data-media-info class="{{ $first ? '' : 'hidden' }} !mb-0 mt-[10px] text-xs text-gray-500 dark:text-gray-400 truncate">
             @if ($first)
                 {{ $first->name }} · {{ $first->width }}×{{ $first->height }} · {{ $first->humanSize() }}
+                @if ($size)
+                    · <span class="text-gray-400 dark:text-gray-500">Hedef: {{ $size['width'] }}×{{ $size['height'] }}</span>
+                @endif
             @endif
         </p>
 

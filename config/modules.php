@@ -48,6 +48,12 @@ return [
             'description' => 'Müşteri yorumları.',
             'routes' => ['testimonial'],
         ],
+        'slider' => [
+            'label' => 'Slaytlar',
+            'icon' => 'view_carousel',
+            'description' => 'Ana sayfa slider/carousel slaytları.',
+            'routes' => ['slider'],
+        ],
         'reference' => [
             'label' => 'Referanslar',
             'icon' => 'handshake',

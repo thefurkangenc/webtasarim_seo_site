@@ -7,6 +7,7 @@ use App\Models\Page\Page;
 use App\Models\Project\Project;
 use App\Models\Reference\Reference;
 use App\Models\Service\Service;
+use App\Models\Slider\Slider;
 use App\Models\Testimonial\Testimonial;
 use App\Models\WhyChooseUs\WhyChooseUs;
 use App\Services\Blog\BlogService;
@@ -16,6 +17,7 @@ use App\Services\Page\PageService;
 use App\Services\Project\ProjectService;
 use App\Services\Reference\ReferenceService;
 use App\Services\Service\ServiceService;
+use App\Services\Slider\SliderService;
 use App\Services\Testimonial\TestimonialService;
 use App\Services\WhyChooseUs\WhyChooseUsService;
 
@@ -103,6 +105,13 @@ return [
             'label' => 'Müşteri Yorumları',
             'icon' => 'reviews',
             'service' => TestimonialService::class,
+            'edit_route' => null,
+        ],
+        'slider' => [
+            'class' => Slider::class,
+            'label' => 'Slaytlar',
+            'icon' => 'view_carousel',
+            'service' => SliderService::class,
             'edit_route' => null,
         ],
         'why-choose-us' => [

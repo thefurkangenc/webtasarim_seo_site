@@ -8,6 +8,7 @@ use App\Models\Media\Media;
 use App\Models\Page\Page;
 use App\Models\Project\Project;
 use App\Models\Service\Service;
+use App\Models\Slider\Slider;
 use App\Models\Subscriber\Subscriber;
 use App\Models\Testimonial\Testimonial;
 use App\Models\User;
@@ -110,6 +111,17 @@ return [
             'route' => null,
             'index_route' => 'admin.testimonial.index',
             'permission' => 'testimonial.index',
+        ],
+        'slider' => [
+            'label' => 'Slaytlar',
+            'icon' => 'view_carousel',
+            'model' => Slider::class,
+            'columns' => ['title', 'slogan', 'description'],
+            'title' => 'title',
+            'subtitle' => 'slogan',
+            'route' => null,
+            'index_route' => 'admin.slider.index',
+            'permission' => 'slider.index',
         ],
         'faq' => [
             'label' => 'Sıkça Sorulan Sorular',
