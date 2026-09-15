@@ -38,9 +38,14 @@
                     <div data-when="url">
                         <div class="mb-[20px]">
                             <x-admin::form.label for="menu-item-url">Adres</x-admin::form.label>
-                            <input type="text" id="menu-item-url" name="url"
-                                placeholder="/hakkimizda ya da https://..."
-                                class="h-[42px] rounded-md text-sm text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[14px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500">
+                            <div class="flex items-center gap-[12px]">
+                                <input type="text" id="menu-item-url" name="url"
+                                    placeholder="/hakkimizda ya da https://..."
+                                    autocomplete="off"
+                                    class="h-[42px] rounded-md text-sm text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[14px] block min-w-0 grow outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500">
+                                <x-admin::form.switch name="unlinked" label="Bağlantısız"
+                                    help="menu.unlinked" wrapper="mb-0 shrink-0" data-menu-unlinked />
+                            </div>
                             <span class="text-danger-500 text-xs mt-[6px] block" data-error="url"></span>
                         </div>
                     </div>

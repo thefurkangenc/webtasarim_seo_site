@@ -127,10 +127,10 @@ class MenuRenderer
         return parse_url($url, PHP_URL_HOST) !== parse_url(config('app.url'), PHP_URL_HOST);
     }
 
-    /** İç bağlantının site köküne göre yolu; dış bağlantıda null. */
+    /** İç bağlantının site köküne göre yolu; dış bağlantıda ve bağlantısız öğede null. */
     private function pathOf(string $url): ?string
     {
-        if ($this->isExternal($url)) {
+        if ($this->isExternal($url) || str_starts_with(strtolower($url), 'javascript:')) {
             return null;
         }
 

@@ -439,6 +439,10 @@ class ItemModal {
         });
 
         this.form.addEventListener('submit', (event) => this.submit(event));
+
+        this.form.querySelector('[data-menu-unlinked]')?.addEventListener('change', (event) => {
+            this.setUnlinked(event.target.checked);
+        });
     }
 
     open(node) {
@@ -468,6 +472,7 @@ class ItemModal {
         this.syncChoice('menu-item-route', '');
         this.syncChoice('menu-item-linkable', '');
         this.syncChoice('menu-item-target', '_self');
+        this.setUnlinked(false);
     }
 
     fill(node) {
@@ -476,7 +481,12 @@ class ItemModal {
         this.syncChoice('menu-item-target', node.target ?? '_self');
 
         if (node.link_type === 'url') {
-            this.form.querySelector('[name="url"]').value = node.url ?? '';
+            const unlinked = Boolean(node.unlinked) || node.url === 'javascript:void(0)';
+            this.setUnlinked(unlinked);
+
+            if (! unlinked) {
+                this.form.querySelector('[name="url"]').value = node.url ?? '';
+            }
         } else if (node.link_type === 'route') {
             this.syncChoice('menu-item-route', node.route_name ?? '');
         } else if (node.link_type === 'linkable') {
@@ -498,6 +508,31 @@ class ItemModal {
         this.el.querySelectorAll('[data-when]').forEach((section) => {
             section.hidden = section.dataset.when !== type;
         });
+
+        if (type !== 'url') {
+            this.setUnlinked(false);
+        }
+    }
+
+    setUnlinked(on) {
+        const box = this.form.querySelector('[data-menu-unlinked]');
+        const input = this.form.querySelector('[name="url"]');
+
+        if (box) {
+            box.checked = on;
+        }
+
+        if (! input) {
+            return;
+        }
+
+        input.disabled = on;
+        input.placeholder = on ? 'Bağlantı yok' : '/hakkimizda ya da https://...';
+
+        if (on) {
+            input.value = '';
+            this.syncChoice('menu-item-target', '_self');
+        }
     }
 
     async submit(event) {
@@ -540,7 +575,8 @@ class ItemModal {
         };
 
         if (type === 'url') {
-            data.url = this.form.querySelector('[name="url"]').value.trim();
+            data.unlinked = Boolean(this.form.querySelector('[data-menu-unlinked]')?.checked);
+            data.url = data.unlinked ? '' : this.form.querySelector('[name="url"]').value.trim();
         } else if (type === 'route') {
             data.route_name = this.form.querySelector('[name="route_name"]').value;
         } else if (type === 'linkable') {

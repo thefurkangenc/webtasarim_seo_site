@@ -1896,4 +1896,14 @@ return [
             'body' => '<p>Seçilen hizmet sayfalarında görünür.</p>',
         ],
     ],
+
+    'menu' => [
+        'unlinked' => [
+            'title' => 'Bağlantısız',
+            'body' => <<<'HTML'
+                <p>Açıkken bu öğe bir sayfaya gitmez; yalnızca başlık olur (açılır menünün üst öğesi gibi).</p>
+                <p>Ön yüzde bağlantı <code>javascript:void(0)</code> basılır. Adres kutusuna bir şey yazılmaz.</p>
+HTML,
+        ],
+    ],
 ];
