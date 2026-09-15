@@ -296,6 +296,24 @@ alt satıra düşüyordu). Kural: koşullu `hidden` ile birleşecek bir buton/el
 `flex` veya `grid` kullanmalı, `inline-flex`/`inline`/`inline-block`
 kullanmamalı. Kaçınılmazsa `!hidden` (important) ile zorla.
 
+### Tuzak: `hidden` bir Google Fonts kuralına (ya da başka katmansız CSS'e) karşı asla kazanamaz
+
+Tailwind v4'ün derlenmiş çıktısı utility'leri `@layer utilities` içine koyar.
+CSS Cascade Layers kuralı gereği **katmansız (unlayered) hiçbir normal kural,
+katmanlı bir kurala kaynak sırasında bile yenilmez** — `<link>` etiketini
+Tailwind'den önce ya da sonra koymak sonucu değiştirmez, katmansız kural her
+zaman kazanır. `layout/partials/styles.blade.php`'deki Google Fonts Material
+Symbols sayfası tam olarak böyle bir kural taşıyor:
+`.material-symbols-outlined { display: inline-block; }`, katmansız. Bu class'ı
+taşıyan bir `<i>` üzerine koşullu `hidden` koyarsan (`icon.classList.toggle
+('hidden', ...)`), ikon **asla gizlenmez** — `core/media-preview.js`'deki
+dosya önizleme ikonunun video/resmin yanında gri bir şerit olarak kalması bu
+yüzdendi. Kural: `material-symbols-outlined` taşıyan bir elemanı JS'ten
+gizleyeceksen düz `hidden` değil, `!hidden` kullan (katmanlı olsa bile
+`!important` taşıdığı için katmansız kuralı yener) — bu, yukarıdaki
+`inline-flex` tuzağıyla aynı çözümü paylaşır ama kaynağı farklıdır (üçüncü
+parti CSS, kendi sıralamanla ilgisi yok).
+
 ### Select — Choices.js
 
 `<x-admin::form.select>` varsayılan olarak `data-choices` özniteliği taşır;

@@ -31,7 +31,7 @@ class MediaPreview {
 
                     <div class="bg-gray-50 dark:bg-[#15203c] rounded-md overflow-hidden flex items-center justify-center min-h-[240px] max-h-[55vh]">
                         <img data-preview-image class="max-w-full max-h-[55vh] object-contain hidden" alt="">
-                        <i data-preview-icon class="material-symbols-outlined !text-[64px] text-gray-400 hidden">draft</i>
+                        <i data-preview-icon class="material-symbols-outlined !text-[64px] text-gray-400 !hidden">draft</i>
                         <div data-preview-player class="w-full hidden"></div>
                     </div>
 
@@ -100,7 +100,15 @@ class MediaPreview {
         const isFile = ! media.is_image && ! media.is_video;
 
         image.classList.toggle('hidden', ! media.is_image);
-        icon.classList.toggle('hidden', ! isFile);
+        // Google Fonts'un Material Symbols sayfası ".material-symbols-outlined
+        // { display: inline-block }" kuralını KATMANSIZ (unlayered) CSS olarak
+        // yükler — Tailwind v4'te @layer utilities içindeki ".hidden" kuralı
+        // katmanlı olduğu için, katmansız hiçbir kuralı hiçbir sırada YENEMEZ
+        // (CSS Cascade Layers kuralı). Bu ikon her zaman material-symbols-outlined
+        // TAŞIDIĞI için sıradan "hidden" onu asla gizleyemez; "!hidden" (Tailwind'in
+        // önemli varyantı) katmanlı olsa da !important taşıdığından katmansız
+        // normal kuralı yener. Bkz. CLAUDE.md "Tuzak: hidden + inline-flex".
+        icon.classList.toggle('!hidden', ! isFile);
         player.classList.toggle('hidden', ! media.is_video);
 
         if (isFile) {

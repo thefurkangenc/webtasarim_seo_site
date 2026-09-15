@@ -1340,6 +1340,9 @@
   .\!flex {
     display: flex !important;
   }
+  .\!hidden {
+    display: none !important;
+  }
   .\!inline-block {
     display: inline-block !important;
   }
@@ -5301,11 +5304,17 @@
     .sm\:w-\[320px\] {
       width: 320px;
     }
+    .sm\:w-auto {
+      width: auto;
+    }
     .sm\:max-w-\[250px\] {
       max-width: 250px;
     }
     .sm\:max-w-\[285px\] {
       max-width: 285px;
+    }
+    .sm\:max-w-\[360px\] {
+      max-width: 360px;
     }
     .sm\:max-w-\[400px\] {
       max-width: 400px;
