@@ -18,27 +18,12 @@
                     <div class="vl-footer-widget-black6 vl-footer1-logo-area mr-50 mb-50">
                         <div class="vl-footer-logo black-logo">
                             <a href="{{ route('anasayfa') }}"><img
-                                    src="{{ $footerLogo?->url('medium') ?? asset('assets/img/logo/black-logo.png') }}"
+                                    src="{{ $footerLogo?->url('medium')}}"
                                     alt="{{ $footerCompany['name'] ?? '' }}"></a>
                         </div>
                         @if (filled($footerCompany['short_description'] ?? null))
-                            <div class="vl-footer-text heading6 mt-20">
-                                <p class="mt-16">{{ $footerCompany['short_description'] }}</p>
-                            </div>
-                        @endif
-                        @if ($footerSocialLinks !== [])
-                            <div class="vl-footer-social6 text-start mt-20">
-                                @foreach ($footerSocialLinks as $link)
-                                    <a href="{{ $link['url'] }}" target="_blank" rel="noopener noreferrer"
-                                        title="{{ $link['name'] }}">
-                                        @if ($link['icon'])
-                                            <img src="{{ $link['icon']['url'] }}" alt="{{ $link['name'] }}"
-                                                style="width: 16px; height: 16px; object-fit: contain; vertical-align: middle;">
-                                        @else
-                                            {{ $link['name'] }}
-                                        @endif
-                                    </a>
-                                @endforeach
+                            <div class="vl-footer-text heading6 mt-20 body-font fs-13">
+                                <p class="mt-16 fs-13">{{ $footerCompany['short_description'] }}</p>
                             </div>
                         @endif
                         <div class="vl-footer-text heading6 mt-30">
@@ -69,7 +54,6 @@
                         </div>
                     </div>
                 @endif
-
                 @if ($footerSecondary !== [])
                     <div class="col-lg-3 col-md-4 col-6">
                         <div class="vl-footer-widget-black6 mb-50 ml-70 md:ml-0 sm:ml-0">
@@ -96,9 +80,7 @@
 
                         @if (filled($footerCompany['email'] ?? null))
                             <div class="single-contact-item">
-                                <div class="icon">
-                                    <img src="{{ asset('assets/img/icons/footer-contact-icon1.svg') }}" alt="">
-                                </div>
+
                                 <div class="text">
                                     <a href="mailto:{{ $footerCompany['email'] }}">{{ $footerCompany['email'] }}</a>
                                 </div>
@@ -107,20 +89,16 @@
 
                         @if (filled($footerCompany['address'] ?? null))
                             <div class="single-contact-item">
-                                <div class="icon">
-                                    <img src="{{ asset('assets/img/icons/footer-contact-icon2.svg') }}" alt="">
-                                </div>
-                                <div class="text">
-                                    <span>{{ $footerCompany['address'] }}</span>
+
+                                <div class="text pl-10">
+                                    {{ $footerCompany['address'] }}
+
                                 </div>
                             </div>
                         @endif
 
                         @if (filled($footerCompany['phone'] ?? null))
                             <div class="single-contact-item">
-                                <div class="icon">
-                                    <img src="{{ asset('assets/img/icons/footer-contact-icon3.svg') }}" alt="">
-                                </div>
                                 <div class="text">
                                     <a href="{{ \App\Support\Phone::href($footerCompany['phone']) }}">{{ $footerCompany['phone'] }}</a>
                                 </div>

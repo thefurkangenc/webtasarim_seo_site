@@ -284,13 +284,15 @@ html.has-site-bar .header-sticky {
     color: #98a2b3;
 }
 
-.site-subscribe__row button {
+.site-subscribe__row button,
+.site-subscribe__row .default-btn {
     flex: 0 0 auto;
     height: 42px;
     padding: 0 22px;
     border-radius: 100px;
     white-space: nowrap;
     font-size: 14px;
+    line-height: 1;
 }
 
 /* theme-btn3 tema dosyasında ok ikonu/animasyon taşıyor; burada sadeleşir. */
@@ -338,25 +340,45 @@ html.has-site-bar .header-sticky {
     overflow: hidden;
 }
 
-/* Koyu zeminli footer bölümünde form kendi rengine uyar. */
-.vl-footer-widget-black6 .site-subscribe__row {
+/* Açık zeminli footer (area14 vb.) — varsayılan açık form stilleri geçerli kalır. */
+.vl-footer-area14 .site-subscribe__privacy,
+.vl-footer-area12 .site-subscribe__privacy,
+.vl-footer-area13 .site-subscribe__privacy {
+    color: #5c5c66;
+}
+
+.vl-footer-area14 .site-subscribe__privacy a,
+.vl-footer-area12 .site-subscribe__privacy a,
+.vl-footer-area13 .site-subscribe__privacy a {
+    color: var(--vtc-text-title3, #05051C);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+/* Koyu zeminli footer alanları */
+.vl-footer-area6 .site-subscribe__row,
+.vl-footer-area11 .site-subscribe__row {
     background: rgba(255, 255, 255, 0.08);
     border-color: rgba(255, 255, 255, 0.2);
 }
 
-.vl-footer-widget-black6 .site-subscribe__row input[type="email"] {
+.vl-footer-area6 .site-subscribe__row input[type="email"],
+.vl-footer-area11 .site-subscribe__row input[type="email"] {
     color: #fff;
 }
 
-.vl-footer-widget-black6 .site-subscribe__row input[type="email"]::placeholder {
+.vl-footer-area6 .site-subscribe__row input[type="email"]::placeholder,
+.vl-footer-area11 .site-subscribe__row input[type="email"]::placeholder {
     color: rgba(255, 255, 255, 0.55);
 }
 
-.vl-footer-widget-black6 .site-subscribe__privacy {
+.vl-footer-area6 .site-subscribe__privacy,
+.vl-footer-area11 .site-subscribe__privacy {
     color: rgba(255, 255, 255, 0.7);
 }
 
-.vl-footer-widget-black6 .site-subscribe__privacy a {
+.vl-footer-area6 .site-subscribe__privacy a,
+.vl-footer-area11 .site-subscribe__privacy a {
     color: #fff;
 }
 
@@ -405,10 +427,19 @@ html.has-site-bar .header-sticky {
         border-radius: 100px;
         background: #fff;
         padding: 0 16px;
+        color: #0b1220;
     }
 
-    .site-subscribe__row button {
+    .site-subscribe__row button,
+    .site-subscribe__row .default-btn {
         width: 100%;
+    }
+
+    .vl-footer-area6 .site-subscribe__row input[type="email"],
+    .vl-footer-area11 .site-subscribe__row input[type="email"] {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: #fff;
     }
 }
 
