@@ -18,7 +18,9 @@
         <div class="min-w-0">
             <h6 class="!mb-[4px] text-black dark:text-white">{{ $lead->name }}</h6>
             <div class="flex flex-wrap items-center gap-x-[14px] gap-y-[4px] text-sm">
-                <a href="mailto:{{ $lead->email }}" class="text-primary-500 hover:underline break-all">{{ $lead->email }}</a>
+                @if (filled($lead->email))
+                    <a href="mailto:{{ $lead->email }}" class="text-primary-500 hover:underline break-all">{{ $lead->email }}</a>
+                @endif
                 @if (filled($lead->phone))
                     <a href="tel:{{ $lead->phone }}" class="text-primary-500 hover:underline">{{ $lead->phone }}</a>
                 @endif
@@ -100,6 +102,8 @@
     </form>
 
     {{-- Yanıt --}}
+    {{-- Teklif formu e-posta almaz; e-postası olmayan talebe yanıt formu basılmaz. --}}
+    @if (filled($lead->email))
     @can('lead.reply')
         <div class="mt-[22px] pt-[18px] border-t border-gray-100 dark:border-[#172036]">
             <div class="flex items-center justify-between gap-[10px] mb-[12px]">
@@ -136,4 +140,5 @@
             </form>
         </div>
     @endcan
+    @endif
 </div>

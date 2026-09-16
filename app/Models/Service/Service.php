@@ -15,10 +15,12 @@ use App\Models\Concerns\LogsActivity;
 use App\Models\ServiceRegion\ServiceRegion;
 use App\Models\User;
 use App\Support\Placeholder;
+use App\Support\Tree;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 /**
@@ -57,6 +59,45 @@ class Service extends Model implements LinksToPublicPage, RedirectsOnMove, Submi
     public function regions(): BelongsToMany
     {
         return $this->belongsToMany(ServiceRegion::class, 'service_region_service');
+    }
+
+    /**
+     * Hizmetin gerçekten sayfa ürettiği bölgeler. Formda yalnızca il seçilir
+     * (`regions` pivotu illeri tutar); seçili ilin altındaki her aktif bölge —
+     * ilçe, mahalle, daha derini — kendiliğinden kapsanır. İle sonradan
+     * eklenen ilçe hizmeti düzenlemeden sayfa olur.
+     *
+     * Pasif bölge altıyla birlikte düşer: pasif ilçenin aktif mahallesinin
+     * adresinde pasif ilçenin adı geçerdi. Sıra ağaç sırasıdır (il, ilçeleri,
+     * sonraki il...). Aynı nesnede bir kez sorgulanır.
+     *
+     * @return Collection<int, ServiceRegion>
+     */
+    public function coveredRegions(): Collection
+    {
+        return once(function () {
+            $roots = $this->regions->where('is_active', true)->pluck('slug_path')->filter();
+
+            if ($roots->isEmpty()) {
+                return collect();
+            }
+
+            $tree = ServiceRegion::query()
+                ->where(fn ($query) => $roots->each(fn (string $path) => $query
+                    ->orWhere('slug_path', $path)
+                    ->orWhere('slug_path', 'like', str_replace(['%', '_'], ['\\%', '\\_'], $path).'/%')))
+                ->orderBy('sort_order')->orderBy('name')
+                ->get();
+
+            $inactive = $tree->where('is_active', false)->pluck('slug_path');
+            $active = $tree->filter(fn (ServiceRegion $region) => $region->is_active
+                && ! $inactive->contains(fn (string $path) => str_starts_with($region->slug_path, "{$path}/")))
+                ->keyBy('id');
+
+            // Tree::options kökten aşağı gezer; pasif ebeveyni düşen kayıt
+            // zaten yukarıda elendiği için ağaçtan kopuk öğe kalmaz.
+            return collect(array_keys(Tree::options($active)))->map(fn (int $id) => $active[$id])->values();
+        });
     }
 
     public function statusLabel(): string
@@ -124,6 +165,8 @@ class Service extends Model implements LinksToPublicPage, RedirectsOnMove, Submi
             'status' => $this->status,
             'status_label' => $this->statusLabel(),
             'regions_count' => $this->regions_count ?? 0,
+            // Liste bölgeleri yüklüyse (admin datatable) üretilen sayfa sayısı da gelir.
+            'region_pages_count' => $this->relationLoaded('regions') ? $this->coveredRegions()->count() : null,
             'author' => $this->author?->name,
             'thumb' => $this->mediaUrl('cover', 'thumb'),
             'sort_order' => $this->sort_order,

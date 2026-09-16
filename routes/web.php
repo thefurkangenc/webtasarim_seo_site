@@ -8,6 +8,7 @@ use App\Http\Controllers\Legal\LegalController;
 use App\Http\Controllers\Maintenance\MaintenanceController;
 use App\Http\Controllers\Media\PlayerController;
 use App\Http\Controllers\Project\ProjectController;
+use App\Http\Controllers\Quote\QuoteController;
 use App\Http\Controllers\Service\ServiceController;
 use App\Http\Controllers\Sitemap\RobotsController;
 use App\Http\Controllers\Sitemap\SitemapController;
@@ -52,6 +53,10 @@ Route::get('/iletisim', [ContactController::class, 'index'])->name('iletisim');
 Route::post('/iletisim', [ContactController::class, 'store'])
     ->middleware('throttle:contact')
     ->name('iletisim.store');
+
+Route::post('/teklif', [QuoteController::class, 'store'])
+    ->middleware('throttle:quote')
+    ->name('teklif.store');
 
 Route::post('/bulten', [SubscriberController::class, 'store'])
     ->middleware('throttle:newsletter')

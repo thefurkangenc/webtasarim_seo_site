@@ -152,7 +152,7 @@ class LinkChecker
             return $result;
         }
 
-        return $service->regions()->where('slug_path', $regionPath)->where('is_active', true)->exists()
+        return $service->coveredRegions()->contains('slug_path', $regionPath)
             ? null
             : $this->broken('internal', 404, 'not_found', 'Bu hizmete bağlı böyle bir bölge yok.');
     }

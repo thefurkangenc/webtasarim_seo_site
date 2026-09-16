@@ -58,7 +58,7 @@ if (root) {
                         ${unread ? '<span class="w-[7px] h-[7px] rounded-full bg-primary-500 mt-[6px] shrink-0"></span>' : '<span class="w-[7px] shrink-0"></span>'}
                         <div class="min-w-0">
                             <span class="block truncate max-w-[190px] ${unread ? 'font-semibold' : ''}">${escapeHtml(item.name)}</span>
-                            <span class="block text-xs text-gray-500 dark:text-gray-400 truncate max-w-[190px]">${escapeHtml(item.email)}</span>
+                            ${item.email ? `<span class="block text-xs text-gray-500 dark:text-gray-400 truncate max-w-[190px]">${escapeHtml(item.email)}</span>` : ''}
                             ${item.phone ? `<span class="block text-xs text-gray-400 truncate">${escapeHtml(item.phone)}</span>` : ''}
                         </div>
                     </div>`)}

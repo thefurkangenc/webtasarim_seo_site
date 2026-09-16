@@ -20,12 +20,13 @@ class ServiceService
     {
         return Service::query()
             ->with(['author:id,name', 'media', 'seo'])
+            ->with('regions:id,slug_path,is_active')
             ->withCount('regions')
             ->when($filters['search'] ?? null, fn ($query, $term) => $query->where(
                 fn ($q) => $q->where('title', 'like', "%{$term}%")->orWhere('excerpt', 'like', "%{$term}%"),
             ))
             ->when($filters['status'] ?? null, fn ($query, $status) => $query->where('status', $status))
-            // Bölge filtresi pivot üzerinden: yalnızca o bölgeye bağlı hizmetler.
+            // Bölge filtresi pivot üzerinden: yalnızca o ile bağlı hizmetler (filtrede yalnızca iller var).
             ->when($filters['service_region_id'] ?? null,
                 fn ($query, $id) => $query->whereHas('regions', fn ($q) => $q->whereKey($id)))
             ->orderBy($filters['sort'] ?? 'sort_order', $filters['direction'] ?? 'asc')
@@ -110,38 +111,30 @@ class ServiceService
 
     /**
      * Adres yolundan bölgeyi çözer: "gaziantep/sahinbey" -> Şahinbey kaydı.
-     * Yalnızca hizmete gerçekten bağlı ve aktif bölgeler eşleşir; uydurma bir
-     * yol null döner. findBySlug() bölgeleri zaten yüklediği için sorgu atmaz.
+     * Yalnızca hizmetin kapsadığı aktif bölgeler eşleşir (seçili il + altı,
+     * bkz. Service::coveredRegions()); uydurma bir yol null döner.
      */
     public function findRegion(Service $service, string $path): ?ServiceRegion
     {
-        return $service->regions->firstWhere('slug_path', $path);
+        return $service->coveredRegions()->firstWhere('slug_path', $path);
     }
 
     /**
-     * Kenar çubuğundaki bölge listesi: her kayıt kök şehrinin altında toplanır,
-     * böylece ilçeler bağlı oldukları ilin altında görünür. Şehrin kendisi
-     * hizmete bağlı değilse (yalnızca ilçesi bağlıysa) başlık olarak görünür
-     * ama tıklanabilir olmaz — öyle bir sayfa yok.
-     *
-     * Kök kayıtlar tek sorguda çekilir: `slug_path`'in ilk parçası kökün
-     * slug'ıdır, bu yüzden ağacı yukarı doğru gezmeye gerek kalmaz.
+     * Kenar çubuğundaki bölge listesi: her il kendi altındaki bölgelerle bir
+     * grup olur. Formda yalnızca il seçildiği için grubun başı her zaman
+     * tıklanabilir bir sayfadır; alt bölgeler ağaç sırasıyla gelir.
      *
      * @return list<array{city: ServiceRegion, page: ServiceRegion|null, children: Collection<int, ServiceRegion>}>
      */
     public function regionGroups(Service $service): array
     {
-        $grouped = $service->regions->groupBy(fn (ServiceRegion $region) => Str::before($region->slug_path, '/'));
-
-        $roots = ServiceRegion::whereIn('slug', $grouped->keys())->get()->keyBy('slug');
-
-        return $grouped
-            ->map(fn (Collection $regions, string $rootSlug) => [
-                'city' => $roots[$rootSlug] ?? $regions->first(),
-                'page' => $regions->firstWhere('slug', $rootSlug),
-                'children' => $regions->where('depth', '>', 0)->sortBy('sort_order')->values(),
+        return $service->coveredRegions()
+            ->groupBy(fn (ServiceRegion $region) => Str::before($region->slug_path, '/'))
+            ->map(fn (Collection $regions) => [
+                'city' => $regions->first(),
+                'page' => $regions->first(),
+                'children' => $regions->where('depth', '>', 0)->values(),
             ])
-            ->sortBy(fn (array $group) => $group['city']->sort_order)
             ->values()
             ->all();
     }

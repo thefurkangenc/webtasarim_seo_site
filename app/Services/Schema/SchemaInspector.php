@@ -70,7 +70,7 @@ class SchemaInspector
 
         $services = Service::query()
             ->where('status', Service::STATUS_PUBLISHED)
-            ->with(['regions' => fn ($q) => $q->where('is_active', true)->limit(1)])
+            ->with('regions')
             ->orderBy('sort_order')
             ->limit(8)
             ->get();
@@ -83,7 +83,7 @@ class SchemaInspector
                 'url' => route('hizmetler.show', $service->slug),
             ];
 
-            if ($region = $service->regions->first()) {
+            if ($region = $service->coveredRegions()->first()) {
                 $serviceItems[] = [
                     'label' => $service->renderFor($region)['title'].' — '.$region->name.' (bölgeli)',
                     'url' => route('hizmetler.show-region', [$service->slug, $region->slug_path]),
@@ -176,14 +176,14 @@ class SchemaInspector
     private function serviceContext(?string $slug, ?string $regionPath): array
     {
         $service = Service::where('slug', $slug)
-            ->with(['seo.ogMedia', 'faqs', 'regions' => fn ($q) => $q->where('is_active', true)])
+            ->with(['seo.ogMedia', 'faqs', 'regions'])
             ->first();
 
         if (! $service) {
             return [SchemaContext::generic(null, url('hizmetler/'.$slug)), false];
         }
 
-        $region = $regionPath ? $service->regions->firstWhere('slug_path', $regionPath) : null;
+        $region = $regionPath ? $service->coveredRegions()->firstWhere('slug_path', $regionPath) : null;
 
         if ($regionPath && ! $region) {
             return [SchemaContext::service($service), true];

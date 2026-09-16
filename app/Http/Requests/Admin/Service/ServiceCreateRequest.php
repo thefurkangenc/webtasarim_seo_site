@@ -41,7 +41,8 @@ class ServiceCreateRequest extends FormRequest
             'status' => ['required', Rule::in(array_keys(Service::STATUSES))],
             'cover_media_id' => ['nullable', 'integer', 'exists:media,id'],
             'service_regions' => ['nullable', 'array'],
-            'service_regions.*' => ['integer', 'exists:service_regions,id'],
+            // Yalnızca il seçilir; alt bölgeler Service::coveredRegions() ile kapsanır.
+            'service_regions.*' => ['integer', Rule::exists('service_regions', 'id')->whereNull('parent_id')],
 
             'faqs' => ['nullable', 'array'],
             'faqs.*' => ['integer', 'exists:faqs,id'],
@@ -49,6 +50,14 @@ class ServiceCreateRequest extends FormRequest
             ...$this->tagRules(),
             ...$this->seoRules(),
             ...$this->schemaRules(),
+        ];
+    }
+
+    /** @return array<string, string> */
+    public function messages(): array
+    {
+        return [
+            'service_regions.*.exists' => 'Yalnızca il seçilebilir; ilçeler seçili ilin altında kendiliğinden kapsanır.',
         ];
     }
 }

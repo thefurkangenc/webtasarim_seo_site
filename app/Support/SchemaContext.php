@@ -102,7 +102,7 @@ final class SchemaContext
             // kendi adresi aradaki basamak olarak görünür. Hizmete bağlı
             // olmayan üst bölge atlanır — o adreste bir sayfa yok, kırılımdan
             // 404'e link verilmez.
-            $linkable = $service->regions->pluck('id');
+            $linkable = $service->coveredRegions()->pluck('id');
 
             foreach ($region->ancestorsAndSelf() as $step) {
                 if ($step->is($region) || $linkable->contains($step->id)) {

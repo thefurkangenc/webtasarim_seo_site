@@ -647,7 +647,8 @@ return [
         'service_regions' => [
             'title' => 'Hizmet bölgeleri',
             'body' => <<<'HTML'
-                <p>Bu hizmetin sunulacağı iller/ilçeler. Seçtiğiniz her bölge için ayrı bir sayfa oluşur (örn. <code>/gaziantep/web-tasarim</code>), yer tutucular o bölgenin adıyla dolar.</p>
+                <p>Bu hizmetin sunulacağı iller. Yalnızca il seçilir; ilin altındaki ilçe ve mahalleler (Hizmet Bölgeleri'nde aktif olanlar) kendiliğinden dahil olur. Her biri için ayrı bir sayfa oluşur (örn. <code>/hizmetler/web-tasarim/gaziantep</code>, <code>/hizmetler/web-tasarim/gaziantep/sahinbey</code>), yer tutucular o bölgenin adıyla dolar.</p>
+                <p>İle sonradan eklenen ilçe, hizmeti yeniden kaydetmeden sayfa olur. Pasif bir bölge altındakilerle birlikte sayfa üretmez.</p>
                 <p>“Tüm illeri seç” ile hızlıca hepsini ekleyebilirsiniz. Çok sayıda bölge = çok sayıda sayfa; her birinin özgün içeriği olmasına dikkat edin.</p>
                 HTML,
         ],

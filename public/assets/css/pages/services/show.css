@@ -1,24 +1,109 @@
-.sidebar-area ._sidebar-widget._contact.quote-widget {
+/*
+::::::::::::::::::::::::::
+ HIZLI TEKLİF (kenar çubuğu)
+ Koyu başlık bandı dikkat çeker ve güven maddelerini taşır; gövde,
+ sağdaki bölge kartıyla aynı beyaz kart dilindedir.
+::::::::::::::::::::::::::
+*/
+
+.quote-widget {
+  position: relative;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid rgba(9, 11, 14, 0.06);
+  box-shadow: 0 24px 50px -30px rgba(8, 17, 32, 0.55);
+  overflow: hidden;
+}
+
+.quote-head {
+  position: relative;
+  padding: 26px 24px 24px;
+  color: #fff;
+  background:
+    radial-gradient(120% 90% at 100% 0%, rgba(21, 95, 255, 0.55) 0%, rgba(21, 95, 255, 0) 60%),
+    linear-gradient(160deg, #0b1a36 0%, #081120 100%);
+  isolation: isolate;
+}
+
+.quote-head::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 14px 14px;
+  mask-image: linear-gradient(to bottom left, #000 0%, transparent 65%);
+  -webkit-mask-image: linear-gradient(to bottom left, #000 0%, transparent 65%);
+}
+
+.quote-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.quote-eyebrow-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
+  animation: quote-pulse 2s infinite;
+}
+
+.quote-head h3 {
+  margin: 14px 0 8px;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.quote-head > p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.quote-trust {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 16px 0 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  display: grid;
+  gap: 8px;
+}
+
+.quote-trust li {
   display: flex;
-  flex-direction: column;
-  overflow: visible;
-  height: auto !important;
-  min-height: 0 !important;
+  align-items: center;
+  gap: 9px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  font-weight: 500;
 }
 
-.sidebar-area ._sidebar-widget._contact.quote-widget h3 {
-  margin-bottom: 8px;
+.quote-trust i {
+  color: #5b8dff;
+  font-size: 14px;
 }
 
-.quote-widget > .text-muted {
-  line-height: 1.5;
+.quote-body {
+  padding: 22px 24px 20px;
 }
 
 .quote-step-form-wrap {
-  display: flex;
-  flex-direction: column;
   position: relative;
-  margin-top: 12px;
 }
 
 .quote-step-form {
@@ -26,17 +111,80 @@
   flex-direction: column;
 }
 
-.quote-progress-row {
+/* Adım göstergesi */
+.quote-stepper {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+}
+
+.quote-stepper-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.quote-stepper-dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #3d4c5e;
+  background: #f6f8fa;
+  border: 1px solid rgba(9, 11, 14, 0.1);
+  transition: all 0.3s ease;
+}
+
+.quote-stepper-dot i {
+  display: none;
+  font-size: 11px;
+}
+
+.quote-stepper-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #3d4c5e;
+  transition: color 0.3s ease;
+}
+
+.quote-widget[data-quote-step="1"] [data-stepper="1"] .quote-stepper-dot,
+.quote-widget[data-quote-step="2"] [data-stepper="2"] .quote-stepper-dot {
+  color: #fff;
+  background: #155fff;
+  border-color: #155fff;
+  box-shadow: 0 0 0 4px rgba(21, 95, 255, 0.14);
+}
+
+.quote-widget[data-quote-step="1"] [data-stepper="1"] .quote-stepper-label,
+.quote-widget[data-quote-step="2"] [data-stepper="2"] .quote-stepper-label {
+  color: #090b0e;
+}
+
+.quote-widget[data-quote-step="2"] [data-stepper="1"] .quote-stepper-dot {
+  color: #fff;
+  background: #16a34a;
+  border-color: #16a34a;
+}
+
+.quote-widget[data-quote-step="2"] [data-stepper="1"] .quote-stepper-dot span {
+  display: none;
+}
+
+.quote-widget[data-quote-step="2"] [data-stepper="1"] .quote-stepper-dot i {
+  display: inline;
 }
 
 .quote-progress {
   flex: 1;
-  height: 4px;
+  min-width: 16px;
+  height: 3px;
   border-radius: 999px;
-  background: rgba(21, 95, 255, 0.12);
+  background: rgba(9, 11, 14, 0.08);
   overflow: hidden;
 }
 
@@ -45,21 +193,13 @@
   height: 100%;
   width: 50%;
   border-radius: 999px;
-  background: var(--vtc-bg-main4);
+  background: linear-gradient(90deg, #16a34a, #155fff);
   transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.quote-step-meta {
-  margin: 0;
-  flex-shrink: 0;
-  color: var(--vtc-text-pera1);
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-}
-
+/* Adımlar */
 .quote-steps-viewport {
-  margin-top: 14px;
+  margin-top: 20px;
   overflow: hidden;
   height: auto;
   transition: height 0.35s cubic-bezier(0.22, 1, 0.36, 1);
@@ -78,57 +218,91 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  height: auto;
-  min-height: 0;
-  padding-right: 2px;
+  padding: 0 2px 4px;
 }
 
-.quote-field {
-  margin-bottom: 14px;
-}
-
-.quote-field:last-child {
-  margin-bottom: 0;
+.quote-field + .quote-field {
+  margin-top: 14px;
 }
 
 .quote-step label {
   display: block;
-  color: var(--vtc-text-title1);
-  font-size: 15px;
+  margin-bottom: 7px;
+  color: #090b0e;
+  font-size: 14px;
   font-weight: 600;
   line-height: 1.35;
-  margin-bottom: 8px;
 }
 
-.sidebar-area ._sidebar-widget._contact .quote-step-form input,
-.sidebar-area ._sidebar-widget._contact .quote-step-form textarea,
-.sidebar-area ._sidebar-widget._contact .quote-step-form select {
+.quote-optional {
+  color: #6b7280;
+  font-weight: 400;
+}
+
+.quote-input {
+  position: relative;
+}
+
+.quote-input > i {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  color: #6b7280;
+  font-size: 14px;
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+.quote-input:focus-within > i {
+  color: #155fff;
+}
+
+.quote-widget .quote-step-form input,
+.quote-widget .quote-step-form textarea,
+.quote-widget .quote-step-form select {
+  display: block;
   width: 100%;
-  margin-top: 0;
-  border: 1px solid rgba(52, 52, 52, 0.1);
-  background-color: var(--vtc-bg-white);
-  border-radius: 8px;
-  padding: 12px 16px;
-  color: var(--vtc-text-title1);
+  margin: 0;
+  border: 1px solid rgba(9, 11, 14, 0.1);
+  background-color: #f6f8fa;
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: #090b0e;
   font-size: 15px;
   font-weight: 500;
   line-height: 1.4;
-  transition: border-color 0.25s, box-shadow 0.25s;
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
 }
 
-.sidebar-area ._sidebar-widget._contact .quote-step-form textarea {
-  min-height: 84px;
-  height: 84px;
+.quote-widget .quote-input input,
+.quote-widget .quote-input select {
+  height: 48px;
+  padding-left: 40px;
+}
+
+.quote-widget .quote-step-form input::placeholder,
+.quote-widget .quote-step-form textarea::placeholder {
+  color: #6b7280;
+  font-weight: 400;
+  opacity: 1;
+}
+
+.quote-widget .quote-step-form textarea {
+  min-height: 92px;
+  height: 92px;
   resize: none;
 }
 
-.sidebar-area ._sidebar-widget._contact .quote-step-form select.quote-step-select {
+.quote-widget .quote-step-form select.quote-step-select {
   display: block !important;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23090B0E' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%233D4C5E' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 16px center;
-  padding-right: 40px;
+  background-position: right 14px center;
+  padding-right: 36px;
+  text-overflow: ellipsis;
   cursor: pointer;
 }
 
@@ -136,18 +310,20 @@
   display: none !important;
 }
 
-.sidebar-area ._sidebar-widget._contact .quote-step-form input:focus,
-.sidebar-area ._sidebar-widget._contact .quote-step-form textarea:focus,
-.sidebar-area ._sidebar-widget._contact .quote-step-form select:focus {
+.quote-widget .quote-step-form input:focus,
+.quote-widget .quote-step-form textarea:focus,
+.quote-widget .quote-step-form select:focus {
   outline: none;
-  border-color: var(--vtc-bg-main4);
-  box-shadow: 0 0 0 3px rgba(21, 95, 255, 0.12);
+  background-color: #fff;
+  border-color: #155fff;
+  box-shadow: 0 0 0 4px rgba(21, 95, 255, 0.12);
 }
 
-.sidebar-area ._sidebar-widget._contact .quote-step-form input.is-invalid,
-.sidebar-area ._sidebar-widget._contact .quote-step-form select.is-invalid {
+.quote-widget .quote-step-form input.is-invalid,
+.quote-widget .quote-step-form select.is-invalid {
   border-color: #e11d48;
-  box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.1);
+  background-color: #fff;
+  box-shadow: 0 0 0 4px rgba(225, 29, 72, 0.1);
   animation: quote-shake 0.32s ease;
 }
 
@@ -158,52 +334,149 @@
   font-weight: 500;
 }
 
-.quote-nav {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.quote-hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.quote-form-error {
   margin-top: 12px;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 2;
-}
-
-.quote-btn-back {
-  flex: 0 0 auto;
-  border: 1px solid rgba(52, 52, 52, 0.12);
-  background: var(--vtc-bg-white);
-  color: var(--vtc-text-title1);
-  border-radius: 5px;
-  padding: 14px 16px;
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1;
-  transition: all 0.3s;
-}
-
-.quote-btn-back:hover {
-  transform: translateY(-2px);
-  border-color: var(--vtc-bg-main4);
-  color: var(--vtc-bg-main4);
-}
-
-.quote-btn-next,
-.quote-btn-submit {
-  flex: 1 1 auto;
-  width: 100%;
   text-align: center;
 }
 
-.quote-widget .theme-btn3 {
-  padding: 14px 18px;
-  font-size: 16px;
-  line-height: 1;
+/* Butonlar */
+.quote-nav {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  margin-top: 18px;
 }
 
-.quote-widget .theme-btn3:hover {
+.quote-btn-primary {
+  flex: 1 1 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 52px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 10px;
+  background: #155fff;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  box-shadow: 0 12px 24px -12px rgba(21, 95, 255, 0.8);
+  transition: background-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.quote-btn-primary i {
+  font-size: 14px;
+  transition: transform 0.25s ease;
+}
+
+.quote-btn-primary:hover {
+  background: #0b4ae0;
+  color: #fff;
+  box-shadow: 0 16px 28px -12px rgba(21, 95, 255, 0.9);
+  transform: translateY(-1px);
+}
+
+.quote-btn-primary:hover i {
+  transform: translateX(3px);
+}
+
+.quote-btn-primary:disabled {
+  opacity: 0.7;
+  cursor: default;
   transform: none;
 }
 
+.quote-btn-back {
+  flex: 0 0 52px;
+  height: 52px;
+  border: 1px solid rgba(9, 11, 14, 0.12);
+  border-radius: 10px;
+  background: #fff;
+  color: #090b0e;
+  font-size: 15px;
+  transition: border-color 0.25s ease, color 0.25s ease;
+}
+
+.quote-btn-back:hover {
+  border-color: #155fff;
+  color: #155fff;
+}
+
+.quote-privacy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin: 14px 0 0;
+  color: #6b7280;
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.quote-privacy i {
+  font-size: 11px;
+}
+
+/* Telefon kısayolu */
+.quote-call {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid rgba(9, 11, 14, 0.06);
+  background: #f6f8fa;
+  transition: background-color 0.25s ease;
+}
+
+.quote-call:hover {
+  background: #e8efff;
+}
+
+.quote-call-icon {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  color: #155fff;
+  font-size: 16px;
+  box-shadow: 0 6px 14px -8px rgba(8, 17, 32, 0.4);
+}
+
+.quote-call-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.quote-call-text small {
+  color: #6b7280;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.quote-call-text strong {
+  color: #090b0e;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+/* Gönderildi */
 .quote-success {
   position: absolute;
   inset: 0;
@@ -213,8 +486,7 @@
   justify-content: center;
   text-align: center;
   padding: 8px;
-  background: #0106a01a;
-  border-radius: 8px;
+  background: #fff;
   animation: quote-fade-in 0.4s ease;
 }
 
@@ -225,30 +497,31 @@
 }
 
 .quote-success-icon {
-  width: 56px;
-  height: 56px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--vtc-bg-main4);
-  color: var(--vtc-text-white);
-  font-size: 22px;
   margin-bottom: 16px;
+  background: #16a34a;
+  color: #fff;
+  font-size: 24px;
+  box-shadow: 0 0 0 8px rgba(22, 163, 74, 0.12);
 }
 
 .quote-success h4 {
-  color: var(--vtc-text-title1);
-  font-size: 20px;
-  font-weight: 600;
   margin-bottom: 8px;
+  color: #090b0e;
+  font-size: 20px;
+  font-weight: 700;
 }
 
 .quote-success p {
-  color: var(--vtc-text-pera1);
+  margin: 0;
+  color: #3d4c5e;
   font-size: 15px;
   line-height: 1.5;
-  margin: 0;
 }
 
 .quote-widget.is-sent .quote-step-form {
@@ -279,10 +552,24 @@
   }
 }
 
+@keyframes quote-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
+  }
+  70% {
+    box-shadow: 0 0 0 7px rgba(34, 197, 94, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .quote-progress-fill,
   .quote-steps-track,
-  .quote-btn-back,
+  .quote-steps-viewport,
+  .quote-btn-primary,
+  .quote-eyebrow-dot,
   .quote-success {
     transition: none;
     animation: none;

@@ -168,6 +168,7 @@
     track.style.transform = "translateX(-" + (currentStep - 1) * 100 + "%)";
     progressFill.style.width = (currentStep / totalSteps) * 100 + "%";
     currentLabel.textContent = String(currentStep);
+    widget.dataset.quoteStep = String(currentStep);
 
     backButton.hidden = currentStep === 1;
     nextButton.hidden = currentStep === totalSteps;
@@ -240,8 +241,18 @@
     }
   });
 
-  form.addEventListener("submit", function (event) {
+  const formError = form.querySelector("[data-quote-form-error]");
+  const token = document.querySelector('meta[name="csrf-token"]');
+  const fieldStep = { company: 1, service_id: 1, phone: 2, notes: 2 };
+
+  function showFormError(message) {
+    formError.textContent = message || "";
+    formError.hidden = !message;
+  }
+
+  form.addEventListener("submit", async function (event) {
     event.preventDefault();
+    showFormError(null);
 
     if (!isStepValid(1)) {
       goToStep(1);
@@ -256,8 +267,71 @@
     }
 
     submitButton.disabled = true;
-    widget.classList.add("is-sent");
-    success.hidden = false;
+
+    try {
+      const response = await fetch(form.action, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+          "X-CSRF-TOKEN": token ? token.getAttribute("content") : "",
+        },
+        credentials: "same-origin",
+        body: new FormData(form),
+      });
+      const payload = await response.json().catch(function () {
+        return {};
+      });
+
+      // Sunucu doğrulaması: hatalı alanın adımına dönülür, mesaj alanın altına basılır.
+      if (response.status === 422 && payload.errors) {
+        const names = Object.keys(payload.errors);
+        const first = names.find(function (name) {
+          return fieldStep[name];
+        });
+
+        if (first) {
+          goToStep(fieldStep[first]);
+        }
+
+        names.forEach(function (name) {
+          const field = form.querySelector('[name="' + name + '"]');
+          const error = errorFor(name);
+
+          if (field) {
+            field.classList.add("is-invalid");
+          }
+
+          if (error) {
+            error.textContent = payload.errors[name][0];
+            error.hidden = false;
+          }
+        });
+
+        if (!first) {
+          showFormError(payload.message);
+        }
+
+        layoutQuoteWidget();
+        return;
+      }
+
+      if (!response.ok) {
+        showFormError(payload.message || "Talebiniz gönderilemedi. Lütfen tekrar deneyin.");
+        layoutQuoteWidget();
+        return;
+      }
+
+      widget.classList.add("is-sent");
+      success.hidden = false;
+    } catch (error) {
+      showFormError("Talebiniz gönderilemedi. Lütfen tekrar deneyin.");
+      layoutQuoteWidget();
+    } finally {
+      if (!widget.classList.contains("is-sent")) {
+        submitButton.disabled = false;
+      }
+    }
   });
 })();
 

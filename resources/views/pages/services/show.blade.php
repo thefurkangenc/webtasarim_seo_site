@@ -19,7 +19,7 @@
         $regionTrail = $region
             ? $region->ancestorsAndSelf()->map(fn ($step) => [
                 'name' => $step->name,
-                'url' => $step->is($region) || $service->regions->contains($step)
+                'url' => $step->is($region) || $service->coveredRegions()->contains($step)
                     ? route('hizmetler.show-region', [$service->slug, $step->slug_path])
                     : null,
             ])
@@ -75,94 +75,129 @@
                 <div class="col-lg-3">
                     <div class="sidebar-area">
 
-                        <div class="_sidebar-widget _contact quote-widget" data-quote-widget>
-                            <h3>Hızlı Teklif Alın</h3>
-                            <p class="text-muted" style="margin-bottom: 5px;font-size: 14px;">
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
-                            </p>
-                            <div class="_contact-form quote-step-form-wrap mt-1">
-                                <form class="quote-step-form" id="quote-step-form" action="#" novalidate>
-                                    <div class="quote-progress-row">
-                                        <p class="quote-step-meta"><span data-quote-current>1</span> / 2</p>
-                                        <div class="quote-progress" aria-hidden="true">
-                                            <span class="quote-progress-fill" data-quote-progress></span>
-                                        </div>
-                                    </div>
+                        @php($quoteCompany = \App\Support\Settings::group('company'))
 
-                                    <div class="quote-steps-viewport">
-                                        <div class="quote-steps-track" data-quote-track>
-                                            <div class="quote-step is-active" data-step="1">
-                                                <div class="quote-field">
-                                                    <label for="quote-company">Firma Adınız Nedir?</label>
-                                                    <input type="text" name="company" id="quote-company"
-                                                        placeholder="Örn. Umay Dijital" autocomplete="organization"
-                                                        required>
-                                                    <p class="quote-error" data-error-for="company" hidden>Firma adını
-                                                        yazın.</p>
-                                                </div>
-                                                <div class="quote-field">
-                                                    <label for="quote-service">Hangi Hizmetle İlgileniyorsunuz?</label>
-                                                    <select class="quote-step-select" name="service" id="quote-service"
-                                                        required>
-                                                        <option value="" disabled selected>Hizmet seçin</option>
-                                                        <option value="Kurumsal Web Tasarım">Kurumsal Web Tasarım</option>
-                                                        <option value="Özel Yazılım Geliştirme">Özel Yazılım Geliştirme
-                                                        </option>
-                                                        <option value="Arama Motoru (SEO) Optimizasyonu">Arama Motoru (SEO)
-                                                            Optimizasyonu</option>
-                                                        <option value="Dijital Pazarlama">Dijital Pazarlama</option>
-                                                        <option value="Hosting &amp; Barındırma">Hosting &amp; Barındırma
-                                                        </option>
-                                                        <option value="e-Ticaret Danışmanlığı &amp; Yönetimi">e-Ticaret
-                                                            Danışmanlığı &amp; Yönetimi</option>
-                                                    </select>
-                                                    <p class="quote-error" data-error-for="service" hidden>Bir hizmet seçin.
-                                                    </p>
-                                                </div>
+                        <div class="quote-widget" data-quote-widget data-quote-step="1">
+                            <div class="quote-head">
+                                <span class="quote-eyebrow"><span class="quote-eyebrow-dot"></span> Ücretsiz Teklif</span>
+                                <h3>Projenize özel fiyat alın</h3>
+                                <p>İki kısa adımı doldurun, uzman ekibimiz ihtiyacınıza uygun teklifi hazırlasın.</p>
+                                <ul class="quote-trust">
+                                    <li><i class="fa-solid fa-circle-check"></i> 24 saat içinde dönüş</li>
+                                    <li><i class="fa-solid fa-circle-check"></i> Ücretsiz ön analiz</li>
+                                    <li><i class="fa-solid fa-circle-check"></i> Bağlayıcı değildir</li>
+                                </ul>
+                            </div>
+
+                            <div class="quote-body">
+                                <div class="quote-step-form-wrap">
+                                    <form class="quote-step-form" id="quote-step-form" action="{{ route('teklif.store') }}" method="POST" novalidate>
+                                        @if ($region)
+                                            <input type="hidden" name="region_id" value="{{ $region->id }}">
+                                        @endif
+                                        {{-- Honeypot: ziyaretçi görmez, bot doldurursa kayıt açılmaz. --}}
+                                        <input type="text" name="website" class="quote-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+                                        <div class="quote-stepper" aria-hidden="true">
+                                            <div class="quote-stepper-item" data-stepper="1">
+                                                <span class="quote-stepper-dot"><span>1</span><i class="fa-solid fa-check"></i></span>
+                                                <span class="quote-stepper-label">Proje</span>
                                             </div>
-
-                                            <div class="quote-step" data-step="2">
-                                                <div class="quote-field">
-                                                    <label for="quote-phone">Telefon Numaranız Nedir?</label>
-                                                    <input type="tel" name="phone" id="quote-phone"
-                                                        inputmode="numeric" placeholder="0 (___) ___ __ __"
-                                                        autocomplete="tel" maxlength="19" required>
-                                                    <p class="quote-error" data-error-for="phone" hidden>Geçerli bir telefon
-                                                        numarası yazın.</p>
-                                                </div>
-                                                <div class="quote-field quote-field-notes">
-                                                    <label for="quote-notes">Dilerseniz Buraya Ekstra Notlarınızı
-                                                        Yazabilirsiniz.</label>
-                                                    <textarea name="notes" id="quote-notes" rows="3" placeholder="Projeniz hakkında kısaca yazabilirsiniz."></textarea>
-                                                </div>
+                                            <div class="quote-progress">
+                                                <span class="quote-progress-fill" data-quote-progress></span>
+                                            </div>
+                                            <div class="quote-stepper-item" data-stepper="2">
+                                                <span class="quote-stepper-dot"><span>2</span><i class="fa-solid fa-check"></i></span>
+                                                <span class="quote-stepper-label">İletişim</span>
                                             </div>
                                         </div>
-                                    </div>
+                                        <p class="visually-hidden">Adım <span data-quote-current>1</span> / 2</p>
 
-                                    <div class="quote-nav" data-quote-nav>
-                                        <button type="button" class="quote-btn-back" data-quote-back hidden>
-                                            <i class="fa-solid fa-arrow-left"></i> Geri
-                                        </button>
-                                        <button type="button" class="theme-btn3 quote-btn-next" data-quote-next>
-                                            İleri <span class="arrow1"><i class="fa-solid fa-arrow-right"></i></span><span
-                                                class="arrow2"><i class="fa-solid fa-arrow-right"></i></span>
-                                        </button>
-                                        <button type="submit" class="theme-btn3 quote-btn-submit" data-quote-submit hidden>
-                                            Talebimi Gönder <span class="arrow1"><i
-                                                    class="fa-solid fa-arrow-right"></i></span><span class="arrow2"><i
-                                                    class="fa-solid fa-arrow-right"></i></span>
-                                        </button>
-                                    </div>
-                                </form>
+                                        <div class="quote-steps-viewport">
+                                            <div class="quote-steps-track" data-quote-track>
+                                                <div class="quote-step is-active" data-step="1">
+                                                    <div class="quote-field">
+                                                        <label for="quote-company">Firma adınız</label>
+                                                        <div class="quote-input">
+                                                            <i class="fa-regular fa-building"></i>
+                                                            <input type="text" name="company" id="quote-company"
+                                                                placeholder="Örn. Umay Dijital" autocomplete="organization"
+                                                                required>
+                                                        </div>
+                                                        <p class="quote-error" data-error-for="company" hidden>Firma adını yazın.</p>
+                                                    </div>
+                                                    <div class="quote-field">
+                                                        <label for="quote-service">İlgilendiğiniz hizmet</label>
+                                                        <div class="quote-input">
+                                                            <i class="fa-solid fa-layer-group"></i>
+                                                            <select class="quote-step-select" name="service_id" id="quote-service"
+                                                                required>
+                                                                <option value="" disabled @selected(! isset($quoteServices[$service->id]))>Hizmet seçin</option>
+                                                                @foreach ($quoteServices as $quoteServiceId => $quoteServiceTitle)
+                                                                    <option value="{{ $quoteServiceId }}" @selected($quoteServiceId === $service->id)>{{ $quoteServiceTitle }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        <p class="quote-error" data-error-for="service_id" hidden>Bir hizmet seçin.</p>
+                                                    </div>
+                                                </div>
 
-                                <div class="quote-success" data-quote-success hidden role="status" aria-live="polite">
-                                    <div class="quote-success-icon">
-                                        <i class="fa-solid fa-check"></i>
+                                                <div class="quote-step" data-step="2">
+                                                    <div class="quote-field">
+                                                        <label for="quote-phone">Telefon numaranız</label>
+                                                        <div class="quote-input">
+                                                            <i class="fa-solid fa-phone"></i>
+                                                            <input type="tel" name="phone" id="quote-phone"
+                                                                inputmode="numeric" placeholder="0 (___) ___ __ __"
+                                                                autocomplete="tel" maxlength="19" required>
+                                                        </div>
+                                                        <p class="quote-error" data-error-for="phone" hidden>Geçerli bir telefon numarası yazın.</p>
+                                                    </div>
+                                                    <div class="quote-field">
+                                                        <label for="quote-notes">Projeniz hakkında <span class="quote-optional">(isteğe bağlı)</span></label>
+                                                        <textarea name="notes" id="quote-notes" rows="3" placeholder="Hedefiniz, bütçeniz, zamanlamanız…"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="quote-nav" data-quote-nav>
+                                            <button type="button" class="quote-btn-back" data-quote-back aria-label="Geri" hidden>
+                                                <i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <button type="button" class="quote-btn-primary" data-quote-next>
+                                                Devam Et <i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                            <button type="submit" class="quote-btn-primary" data-quote-submit hidden>
+                                                Ücretsiz Teklif Al <i class="fa-solid fa-paper-plane"></i>
+                                            </button>
+                                        </div>
+
+                                        <p class="quote-error quote-form-error" data-quote-form-error hidden></p>
+
+                                        <p class="quote-privacy">
+                                            <i class="fa-solid fa-lock"></i> Bilgileriniz gizli tutulur, üçüncü kişilerle paylaşılmaz.
+                                        </p>
+                                    </form>
+
+                                    <div class="quote-success" data-quote-success hidden role="status" aria-live="polite">
+                                        <div class="quote-success-icon">
+                                            <i class="fa-solid fa-check"></i>
+                                        </div>
+                                        <h4>Talebiniz alındı</h4>
+                                        <p>Uzmanımız en kısa sürede sizi arayacak.</p>
                                     </div>
-                                    <h4>Talebiniz alındı</h4>
-                                    <p>En kısa sürede sizinle iletişime geçeceğiz.</p>
                                 </div>
                             </div>
+
+                            @if (filled($quoteCompany['phone'] ?? null))
+                                <a class="quote-call" href="{{ \App\Support\Phone::href($quoteCompany['phone']) }}">
+                                    <span class="quote-call-icon"><i class="fa-solid fa-headset"></i></span>
+                                    <span class="quote-call-text">
+                                        <small>Beklemek istemiyor musunuz?</small>
+                                        <strong>{{ $quoteCompany['phone'] }}</strong>
+                                    </span>
+                                </a>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -238,7 +273,7 @@
                                     {{ $genericTitle }} hizmetimizi aşağıdaki bölgelerde veriyoruz.
                                 </p>
 
-                                @if ($service->regions->count() > 8)
+                                @if ($service->coveredRegions()->count() > 8)
                                     <div class="region-search">
                                         <i class="fa-solid fa-magnifying-glass"></i>
                                         <input type="search" placeholder="Bölge ara" aria-label="Bölge ara"

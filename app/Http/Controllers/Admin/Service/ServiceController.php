@@ -79,15 +79,15 @@ class ServiceController extends Controller
     }
 
     /**
-     * Bölgeler çoklu select'te ağaç (girintili) görünümde sunulur — bir ilin
-     * altındaki ilçe soldan boşluk + ikonla onun çocuğu gibi görünür.
+     * Yalnızca iller seçilebilir — alt bölgeler seçili ilin altında
+     * kendiliğinden kapsanır (Service::coveredRegions()).
      *
      * @return array<int, array{label: string, depth: int}>
      */
     private function regionOptions(): array
     {
         return Tree::options(
-            ServiceRegion::where('is_active', true)->orderBy('sort_order')->orderBy('name')->get(['id', 'parent_id', 'name']),
+            ServiceRegion::whereNull('parent_id')->where('is_active', true)->orderBy('sort_order')->orderBy('name')->get(['id', 'parent_id', 'name']),
         );
     }
 

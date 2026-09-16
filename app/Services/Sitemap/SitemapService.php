@@ -225,7 +225,7 @@ class SitemapService
         return $this->writeSource('services', $urls);
     }
 
-    /** Hizmet × bölge sayfaları — tek hizmet onlarca bölgeye bağlı olabilir. */
+    /** Hizmet × bölge sayfaları — seçili il ve altındaki her aktif bölge (Service::coveredRegions()). */
     private function writeRegions(): array
     {
         $urls = [];
@@ -238,7 +238,7 @@ class SitemapService
                         continue;
                     }
 
-                    foreach ($service->regions as $region) {
+                    foreach ($service->coveredRegions() as $region) {
                         $urls[] = [
                             'loc' => route('hizmetler.show-region', [$service->slug, $region->slug_path]),
                             'lastmod' => $service->updated_at?->greaterThan($region->updated_at) ? $service->updated_at : $region->updated_at,

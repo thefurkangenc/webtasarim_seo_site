@@ -94,6 +94,10 @@ class LeadService
     /** Panelden e-posta yanıtı. Gönderilemezse iş kuralı hatası fırlatır. */
     public function reply(Lead $lead, array $data): void
     {
+        if (blank($lead->email)) {
+            throw new DomainException('Bu talepte e-posta adresi yok; telefonla dönüş yapın.');
+        }
+
         try {
             Mail::to($lead->email)->send(new LeadReply($lead, $data['subject'], $data['body']));
         } catch (Throwable $e) {

@@ -56,7 +56,9 @@ const table = new DataTable({
             <span class="font-medium block truncate max-w-[320px]">${escapeHtml(item.title)}</span>
             <span class="text-xs text-gray-500 dark:text-gray-400">${escapeHtml(item.slug)}</span>
         </div>`)}
-        ${cell(item.regions_count)}
+        ${cell(item.regions_count
+            ? `${item.regions_count} il<span class="block text-xs text-gray-500 dark:text-gray-400">${item.region_pages_count} sayfa</span>`
+            : '—')}
         ${cell(`<span class="inline-block py-[3px] px-[10px] rounded-sm text-xs ${BADGES[item.status]}">${escapeHtml(item.status_label)}</span>`)}
         ${cell(scoreBadge(item.seo_score, item.seo_grade))}
         ${views.cell(item)}
