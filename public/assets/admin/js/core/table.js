@@ -195,6 +195,9 @@ export class DataTable {
             const { data } = await http.get(this.options.endpoint, { ...scope, per_page: 1000, sort: 'sort_order', direction: 'asc' });
 
             this.body.innerHTML = (data ?? []).map((item, index) => this.options.row(item, index)).join('');
+            // Yeni basılan satırların tutamaç hücresi şablondan gizli gelir;
+            // başlık setControlsDisabled()'da açıldı, satırlar burada açılır.
+            this.body.querySelectorAll('[data-reorder-column]').forEach((element) => element.classList.remove('hidden'));
             this.options.onLoaded?.(data ?? []);
         } catch (error) {
             toast.error(error instanceof HttpError ? error.message : 'Liste yüklenemedi.');

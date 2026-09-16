@@ -55,6 +55,8 @@
                                 <strong>@{{district}}</strong> yazabilirsiniz. Hizmetin her bölge sayfasında bunlar o
                                 bölgenin adıyla değişir — örneğin Gaziantep › Şahinbey için sırasıyla
                                 “Gaziantep Şahinbey”, “Gaziantep”, “Şahinbey”.
+                                İki <strong>{???}</strong> arasına yazılan metin yalnızca bölge sayfalarında görünür,
+                                bölgesiz genel hizmet sayfasında gizlenir.
                             </div>
                         </div>
 

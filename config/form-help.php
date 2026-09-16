@@ -640,6 +640,7 @@ return [
             'title' => 'İçerik',
             'body' => <<<'HTML'
                 <p>Hizmetin detaylı anlatımı. Metinde <code>@{{region}}</code>, <code>@{{city}}</code>, <code>@{{district}}</code> yer tutucuları her bölge sayfasında otomatik değişir — böylece aynı hizmetin farklı bölge sayfaları birbirinin kopyası olmaz.</p>
+                <p>İki <code>{???}</code> işareti arasındaki metin yalnızca bölge sayfalarında görünür; bölgesiz genel hizmet sayfasında işaretlerle birlikte gizlenir. Örn. “Özellikle <code>{???}</code> <code>@{{city}}</code> gibi <code>{???}</code> rekabetçi bölgelerde” genel sayfada “Özellikle rekabetçi bölgelerde” olur. Aralık birden çok paragrafı kapsayabilir.</p>
                 <p>Bölgeye özel ek metin, o bölge kaydının “Bölgeye Özel Metin” alanından eklenir.</p>
                 HTML,
         ],

@@ -19,7 +19,7 @@ class PageFilterRequest extends FormRequest
             'parent_id' => ['nullable', 'integer', 'min:0'],
             'sort' => ['nullable', Rule::in(['title', 'path', 'status', 'template', 'sort_order', 'created_at'])],
             'direction' => ['nullable', Rule::in(['asc', 'desc'])],
-            'per_page' => ['nullable', 'integer', 'between:1,100'],
+            'per_page' => ['nullable', 'integer', 'between:1,1000'], // sıralama modu tüm listeyi 1000 ile ister (core/table.js)
             'page' => ['nullable', 'integer', 'min:1'],
         ];
     }

@@ -39,13 +39,17 @@ class ServiceRegionSeeder extends Seeder
     public function run(): void
     {
         foreach (self::CITIES as $plate => $name) {
+            $slug = Str::slug($name, '-', 'tr');
+
             ServiceRegion::updateOrCreate(
                 ['id' => $plate],
                 [
                     'parent_id' => null,
                     'name' => $name,
-                    'slug' => Str::slug($name, '-', 'tr'),
+                    'slug' => $slug,
                     'path' => $name,
+                    // Ön yüz adresleri bununla çözülür; yazılmazsa bölge sayfaları 404 olur.
+                    'slug_path' => $slug,
                     'depth' => 0,
                     // Elle sıralanmışsa ezilmesin; ilk kurulumda plaka sırası.
                     'sort_order' => ServiceRegion::whereKey($plate)->value('sort_order') ?? $plate,

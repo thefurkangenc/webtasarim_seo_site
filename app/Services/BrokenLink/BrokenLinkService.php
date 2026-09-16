@@ -190,8 +190,10 @@ class BrokenLinkService
             foreach ($model::query()->select('id', 'title', $field)->cursor() as $record) {
                 // Hizmet içeriği yer tutucu taşır ({{city}} gibi); ön yüzde
                 // temizlenen hali taranır ki adresler gerçek çıktıyla eşleşsin.
+                // {???} arasındaki bölgeye özel metin bölge sayfalarında
+                // göründüğü için korunur: replace() yalnızca işaretleri atar.
                 $html = $model === Service::class
-                    ? Placeholder::strip($record->{$field})
+                    ? Placeholder::strip(Placeholder::replace($record->{$field}, []))
                     : $record->{$field};
 
                 foreach ($this->extractor->extract($html) as $link) {
