@@ -16,7 +16,7 @@
                         hedeflerinizi dinleyip yol haritasını birlikte çıkarır.
                     </p>
                     <div class="button mt-30">
-                        <a class="theme-btn3" href="{{ route('iletisim') }}">
+                        <a class="default-btn" href="{{ route('iletisim') }}">
                             Bize Ulaşın
                             <span class="arrow1"><i class="fa-solid fa-arrow-right"></i></span>
                             <span class="arrow2"><i class="fa-solid fa-arrow-right"></i></span>

@@ -12,7 +12,7 @@
     <div class="site-subscribe__alert" data-subscribe-alert hidden></div>
     <div class="site-subscribe__row">
         <input type="email" name="email" placeholder="E-posta adresiniz" required maxlength="150" autocomplete="email">
-        <button class="theme-btn3" type="submit">Abone ol</button>
+        <button class="default-btn" type="submit">Abone ol</button>
     </div>
     <span class="site-subscribe__error" data-error="email" hidden></span>
     <label class="site-subscribe__privacy">

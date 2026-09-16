@@ -33,7 +33,7 @@
         <a href="{{ $cardUrl }}" class="project-card-title">{{ $project->title }}</a>
 
         @if (filled($project->client_name))
-            <p class="project-card-client">{{ $project->client_name }}</p>
+            <p class="project-card-client">{{ Str::limit($project->excerpt, 135, '...') }}</p>
         @endif
 
         @if ($cardResult)

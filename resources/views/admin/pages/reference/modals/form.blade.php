@@ -2,7 +2,7 @@
 <form id="reference-form" data-id="{{ $reference?->id }}" enctype="multipart/form-data">
     {{-- preset verilmiyor: logolar kendi oranında yüklensin, kırpma modalı açılmasın. --}}
     <x-admin::form.image name="logo_media_id" help="reference.logo_media_id" label="Firma Logosu" required
-        :media="$reference?->getFirstMedia('logo')" />
+        :media="$reference?->getFirstMedia('logo')" preset="reference.logo" />
 
     <x-admin::form.input name="name" help="reference.name" label="Firma Adı" required :value="$reference?->name"
         placeholder="Örn. BrightEdge Media" />

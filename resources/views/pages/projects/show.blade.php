@@ -34,7 +34,7 @@
 
 @push('css')
     <link rel="stylesheet" href="{{ asset('assets/css/pages/project/card.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/pages/project/show.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/pages/project/show.css?v=2') }}">
 @endpush
 
 @section('content')
@@ -272,7 +272,7 @@
 
                                 @if ($technologies !== [])
                                     <div class="project-tech">
-                                        <h4>Kullanılan Teknolojiler</h4>
+                                        <h4>Kullanılan Teknolojiler ve Kapsam</h4>
                                         <ul class="project-tech-list">
                                             @foreach ($technologies as $technology)
                                                 <li>{{ $technology }}</li>
@@ -283,11 +283,9 @@
 
                                 @if (filled($project->project_url))
                                     <div class="button mt-20">
-                                        <a class="theme-btn3" href="{{ $project->project_url }}" target="_blank"
+                                        <a class="default-btn" href="{{ $project->project_url }}" target="_blank"
                                             rel="noopener noreferrer">
                                             Siteyi Görüntüle
-                                            <span class="arrow1"><i class="fa-solid fa-arrow-right"></i></span>
-                                            <span class="arrow2"><i class="fa-solid fa-arrow-right"></i></span>
                                         </a>
                                     </div>
                                 @endif
@@ -295,13 +293,13 @@
                         @endif
 
                         <div class="_sidebar-widget _contact mt-40">
-                            <h3>Benzer bir proje mi planlıyorsunuz?</h3>
+                            <h3>
+                                Birlikte Çalışalım!
+                            </h3>
                             <p class="mt-10">İhtiyacınızı anlatın, size uygun kurguyu birlikte çıkaralım.</p>
                             <div class="button mt-20">
-                                <a class="theme-btn3" href="{{ route('iletisim') }}">
+                                <a class="default-btn" href="{{ route('iletisim') }}">
                                     Teklif Alın
-                                    <span class="arrow1"><i class="fa-solid fa-arrow-right"></i></span>
-                                    <span class="arrow2"><i class="fa-solid fa-arrow-right"></i></span>
                                 </a>
                             </div>
                         </div>
@@ -338,7 +336,6 @@
         <!--===== RELATED PROJECTS END =====-->
     @endif
 
-    @include('pages.projects.partials.cta')
 @endsection
 
 @push('scripts')

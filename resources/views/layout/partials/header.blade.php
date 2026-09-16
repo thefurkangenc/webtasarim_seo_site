@@ -30,7 +30,7 @@
                 <div class="col-lg-3 col-md-6 col-6">
                     <div class="vl-header3-btns text-end d-none d-lg-block">
                         <div class="button">
-                            <a class="theme-btn27" href="{{ route('iletisim') }}">Bizimle İletişime Geç</a>
+                            <a class="default-btn" href="{{ route('iletisim') }}">Bizimle İletişime Geç</a>
                         </div>
                     </div>
                     <div class="vl-header-action-item d-block d-lg-none">

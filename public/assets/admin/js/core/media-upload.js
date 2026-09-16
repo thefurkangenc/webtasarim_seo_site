@@ -43,8 +43,33 @@ export function isAcceptedFile(root, file) {
     return true;
 }
 
+/*
+ * Aynı formda birden fazla görsel alanı olabilir (ör. kapak + galeri); ikisi
+ * aynı anda yükleniyorsa submit butonu ilki bitince erken açılmamalı. Sayaç
+ * her setBusy(true) için +1, her setBusy(false) için -1 yapar, buton yalnızca
+ * sayaç sıfıra dönünce tekrar aktif olur.
+ */
+const formBusyCounts = new WeakMap();
+
+function toggleFormSubmit(root, busy) {
+    const form = root.closest('form');
+    const submit = form?.querySelector('button[type="submit"]');
+
+    if (! form || ! submit) {
+        return;
+    }
+
+    const count = Math.max(0, (formBusyCounts.get(form) ?? 0) + (busy ? 1 : -1));
+    formBusyCounts.set(form, count);
+
+    submit.disabled = count > 0;
+    submit.classList.toggle('opacity-50', count > 0);
+    submit.classList.toggle('cursor-not-allowed', count > 0);
+}
+
 export function setBusy(root, busy) {
     root.querySelector('[data-media-busy]')?.classList.toggle('hidden', ! busy);
+    toggleFormSubmit(root, busy);
 }
 
 /**

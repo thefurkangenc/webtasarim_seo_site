@@ -125,7 +125,7 @@
     margin-top: 1px;
     border-radius: 10px;
     font-size: 14px;
-    color: #155FFF;
+    color: #01163c;
     background: rgba(21, 95, 255, 0.1);
 }
 
@@ -148,7 +148,7 @@
 }
 
 .project-credits-value a {
-    color: #155FFF;
+    color: #01163c;
 }
 
 .project-credits-value a:hover {
@@ -183,7 +183,7 @@
     line-height: 1;
     padding: 9px 14px;
     border-radius: 999px;
-    color: #155FFF;
+    color: #020202;
     background: rgba(21, 95, 255, 0.08);
 }
 

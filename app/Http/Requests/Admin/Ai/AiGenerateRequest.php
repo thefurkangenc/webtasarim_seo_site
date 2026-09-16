@@ -27,7 +27,7 @@ class AiGenerateRequest extends FormRequest
             'ai_prompt_id' => ['required', 'integer', 'exists:ai_prompts,id'],
             // Şablondaki {{degisken}} yer tutucularını dolduran serbest alanlar.
             'input' => ['required', 'array'],
-            'input.*' => ['nullable', 'string', 'max:2000'],
+            'input.*' => ['nullable', 'string', 'max:4000'],
         ];
     }
 }
