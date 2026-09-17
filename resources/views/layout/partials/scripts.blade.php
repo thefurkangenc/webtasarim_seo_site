@@ -16,6 +16,7 @@
 <script src="{{ asset('assets/js/SmoothScroll.js') }}"></script>
 <script src="{{ asset('assets/js/jaquery-ripples.js') }}"></script>
 <script src="{{ asset('assets/js/jquery.lineProgressbar.js') }}"></script>
+<script src="{{ asset('assets/js/preloader.js') }}"></script>
 <script src="{{ asset('assets/js/animation.js') }}"></script>
 
 <script src="{{ asset('assets/js/main.js') }}"></script>

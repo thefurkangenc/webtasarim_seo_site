@@ -66,6 +66,18 @@ class BlogService
         });
     }
 
+    /** Ön yüz blog listesi — yalnızca yayındaki yazılar, sayfalı. */
+    public function listing(int $perPage = 9): array
+    {
+        return [
+            'blogs' => Blog::where('status', Blog::STATUS_PUBLISHED)
+                ->with(['media', 'author:id,name', 'category:id,name'])
+                ->orderByDesc('is_featured')
+                ->orderByDesc('published_at')
+                ->paginate($perPage),
+        ];
+    }
+
     /**
      * Ön yüzde yayındaki yazılar — ana sayfa teaser'ı bunu kullanır.
      *

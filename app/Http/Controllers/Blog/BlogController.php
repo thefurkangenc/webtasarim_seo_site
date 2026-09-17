@@ -22,4 +22,12 @@ class BlogController extends Controller
             'schemaContext' => SchemaContext::blogPosting($blog),
         ]);
     }
+
+    public function index(): View
+    {
+        return view('pages.blog.index', [
+            ...$this->service->listing(),
+            'schemaContext' => SchemaContext::collection('Blog', route('blog')),
+        ]);
+    }
 }

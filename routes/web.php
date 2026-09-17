@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\About\AboutController;
+use App\Http\Controllers\AutoBlog\AutoBlogController;
 use App\Http\Controllers\Blog\BlogController;
 use App\Http\Controllers\Contact\ContactController;
 use App\Http\Controllers\IndexNow\IndexNowController;
@@ -32,9 +33,7 @@ Route::get('/hizmetler/{slug}/{region}', [ServiceController::class, 'showForRegi
     ->where('region', '[a-z0-9\-]+(?:/[a-z0-9\-]+)*')
     ->name('hizmetler.show-region');
 
-Route::get('/blog', function () {
-    return view('pages.blog.index', ['schemaContext' => SchemaContext::collection('Blog', route('blog'))]);
-})->name('blog');
+Route::get('/blog', [BlogController::class, 'index'])->name('blog');
 
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
@@ -80,6 +79,15 @@ Route::get('/sitemap-{name}.xml', [SitemapController::class, 'file'])
     ->name('sitemap.file');
 
 Route::get('/robots.txt', [RobotsController::class, 'index'])->name('robots');
+
+/*
+| Otomatik blog üretimi. Cron (cron-job.org, cPanel) bu adresi çağırır;
+| gizli anahtar config/auto-blog.php'den okunur, anahtar tanımlı değilse uç
+| nokta 404 döner. Üretim varsayılan olarak TASLAK düşer, yayın insan kararıdır.
+*/
+Route::get('/otomatik-blog/{secret}', [AutoBlogController::class, 'generate'])
+    ->middleware('throttle:6,60')
+    ->name('otomatik-blog.generate');
 
 Route::get('/media/{media}/player', [PlayerController::class, 'show'])
     ->middleware('throttle:60,1')

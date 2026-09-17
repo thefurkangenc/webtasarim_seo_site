@@ -17,6 +17,7 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\Looping;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
@@ -35,6 +36,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Carbon::setLocale(config('app.locale'));
+
         // super-admin her izne sahiptir; izin listesi senkronlanmaz.
         Gate::before(fn ($user) => $user->hasRole('super-admin') ? true : null);
 

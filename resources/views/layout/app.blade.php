@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr" class="is-preloading">
 
 <head>
     <x-site.meta />
@@ -21,30 +21,28 @@
 
     </div>
 
-    <!--=====progress END=======-->
+    @php
+        $preloaderCompany = \App\Support\Settings::group('company')['name'] ?? config('app.name');
+    @endphp
 
-    <!--=====PRELOADER START=======-->
-    <div class="preloader9">
-        <!-- Preloader -->
-        <div id="preloader">
-            <!-- Progress Bar at Top -->
-            <div class="progress-bar"></div>
-            <!-- Title Logo in Center with Rotation -->
-            <div class="title-logo">
-                <img style="width: 70px; height: 70px;" src="{{ asset('assets/img/icons/icon.png') }}" alt="SEO Marketing Logo">
+    <div class="site-preloader" id="site-preloader" aria-live="polite" aria-busy="true">
+        <div class="site-preloader__bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+        <div class="site-preloader__inner">
+            <div class="site-preloader__mark" aria-hidden="true">
+                <svg class="site-preloader__ring" viewBox="0 0 120 120" focusable="false">
+                    <circle cx="60" cy="60" r="54" />
+                    <circle class="site-preloader__ring-progress" cx="60" cy="60" r="54" />
+                </svg>
+                <img class="site-preloader__logo" src="{{ asset('assets/img/icons/icon.png') }}"
+                    alt="{{ $preloaderCompany }}" width="56" height="56">
             </div>
+            <p class="site-preloader__label">{{ $preloaderCompany }}</p>
         </div>
     </div>
 
-
-    <!--=====PRELOADER END=======-->
-
     <x-site.notices />
 
-    <!--=====HEADER START=======-->
     @include('layout.partials.header')
-
-    <!--=====HEADER END =======-->
 
     <main>
 
@@ -58,7 +56,6 @@
 
     <x-site.cookie-banner />
 
-    <!--=== js === -->
     @include('layout.partials.scripts')
     <x-site.integrations />
 
