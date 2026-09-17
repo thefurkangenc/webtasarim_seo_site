@@ -83,7 +83,8 @@ Route::get('/robots.txt', [RobotsController::class, 'index'])->name('robots');
 /*
 | Otomatik blog üretimi. Cron (cron-job.org, cPanel) bu adresi çağırır;
 | gizli anahtar config/auto-blog.php'den okunur, anahtar tanımlı değilse uç
-| nokta 404 döner. Üretim varsayılan olarak TASLAK düşer, yayın insan kararıdır.
+| nokta 404 döner. Üretim kuyrukta çalışır (GenerateAutoBlogJob) ve varsayılan
+| olarak TASLAK düşer, yayın insan kararıdır.
 */
 Route::get('/otomatik-blog/{secret}', [AutoBlogController::class, 'generate'])
     ->middleware('throttle:6,60')

@@ -103,13 +103,9 @@ return Application::configure(basePath: dirname(__DIR__))
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
 
-        /*
-        | Servislerin fırlattığı iş kuralı hataları JSON sözleşmesine çevrilir.
-        | Cron uç noktası Accept başlığı göndermediği için ad ile muaf tutulur —
-        | yoksa hata mesajı HTML 500 sayfasının içinde kaybolur.
-        */
+        // Servislerin fırlattığı iş kuralı hataları JSON sözleşmesine çevrilir.
         $exceptions->render(function (DomainException $e, Request $request) {
-            if ($request->expectsJson() || $request->routeIs('otomatik-blog.*')) {
+            if ($request->expectsJson()) {
                 return response()->json(['success' => false, 'message' => $e->getMessage()], 422);
             }
         });

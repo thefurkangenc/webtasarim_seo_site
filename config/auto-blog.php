@@ -18,7 +18,7 @@ return [
     | Cron adresindeki gizli anahtar: /otomatik-blog/{secret}
     | Boş bırakılırsa uç nokta kapalıdır (404 döner).
     */
-    'secret' => env('AUTO_BLOG_SECRET'),
+    'secret' => env('AUTO_BLOG_SECRET', 'etkisoft'),
 
     /*
     | Kullanılacak sağlayıcı kaydının id'si. Boşsa ilk aktif ChatGPT

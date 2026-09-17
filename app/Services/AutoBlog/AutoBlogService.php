@@ -7,7 +7,6 @@ use App\Models\Blog\Blog;
 use App\Models\Service\Service;
 use App\Models\User;
 use App\Services\Media\MediaService;
-use App\Support\Settings;
 use App\Support\Slug;
 use DomainException;
 use Illuminate\Http\Client\ConnectionException;
@@ -130,7 +129,6 @@ class AutoBlogService
 
     private function systemPrompt(): string
     {
-        $company = Settings::group('company')['name'] ?: config('app.name');
         $words = config('auto-blog.text.words');
         $links = $this->links();
 
@@ -139,16 +137,29 @@ class AutoBlogService
             : collect($links)->map(fn (array $link) => "- {$link['anchor']} => {$link['path']}")->implode("\n");
 
         return <<<PROMPT
-        Sen {$company} adlı web tasarım ve dijital pazarlama ajansının içerik
-        editörüsün. Türkçe, akıcı ve satış odaklı ama abartısız yazarsın.
-        Okuyucu küçük ya da orta ölçekli bir işletmenin sahibidir; teknik
-        terimi açıklamadan kullanma.
+        Sen bir web tasarım ve dijital çözümler ajansının kıdemli içerik editörü
+        ve SEO içerik stratejistisin. Web tasarım, kurumsal web siteleri, özel
+        yazılım, SEO, Google Ads, e-ticaret ve Google İşletme konularında
+        uzmansın; ama yazılarını teknik bir okura değil, işini büyütmek isteyen
+        sıradan bir işletme sahibine yazarsın.
+
+        Amaç: İnsanların Google'a gerçekten yazdığı sorulara net cevap veren,
+        okuyanın işine yarayan ve onu ajansın ilgili hizmetine doğal biçimde
+        yönlendiren blog yazıları üretmek. Okuyucu küçük bir atölyenin sahibi
+        de olabilir, bir nakliye firmasının patronu da, bir holdingin pazarlama
+        müdürü de. Hepsi aynı yazıyı okuyup anlayabilmeli.
+
+        Ajansın hizmetleri (her yazı bunlardan TAM OLARAK BİRİNE bağlanır):
+        {$linkList}
 
         Yanıtını YALNIZCA geçerli bir JSON nesnesi olarak ver. JSON dışında
-        açıklama, selamlama ya da kod çiti yazma.
+        açıklama, selamlama ya da kod çiti yazma. Alanları bu sırayla doldur;
+        önce arama sorgusunu ve hizmeti belirle, yazıyı ona göre kur.
 
         Şema:
         {
+          "search_query": "insanların Google'a yazacağı haliyle arama sorgusu",
+          "service": "yukarıdaki listeden bu sorgunun bağlandığı hizmetin adı",
           "title": "yazının başlığı",
           "excerpt": "tek paragraf özet",
           "content": "HTML gövde",
@@ -157,50 +168,121 @@ class AutoBlogService
           "meta_title": "arama sonucu başlığı",
           "meta_description": "arama sonucu açıklaması",
           "meta_keywords": "virgülle ayrılmış ifadeler",
-          "image_prompt": "İngilizce fotoğraf sahnesi tarifi"
+          "image_title": "kapak görselinde yazacak başlık",
+          "image_subtitle": "kapakta başlığı destekleyen kısa açıklama ya da boş metin",
+          "image_prompt": "İngilizce kapak sahnesi tarifi"
         }
 
-        Konu seçimi:
-        - Konuyu sen seçeceksin. Kullanıcı mesajında sitedeki mevcut yazıların
-          başlıkları listelenir; o listedeki bir konuyu, eş anlamlısını ya da
-          aynı sorunun başka türlü sorulmuş halini TEKRAR YAZMA.
-        - Konu, yukarıdaki hizmetlerden en az biriyle ilişkili ve bir
-          işletme sahibinin gerçekten aradığı bir soru olsun: karar kriteri,
-          süreç, maliyet mantığı, karşılaştırma, hazırlık kontrol listesi.
-        - Şu tür konuları seçme: yıl içeren "trendler" yazıları, genel
-          "... nedir" tanım yazıları, her sitede bulunan ansiklopedik
-          anlatımlar, yapay zeka/teknoloji üzerine genel yorumlar.
-        - Konu ne kadar daralırsa o kadar iyi. "SEO nedir" değil, "hizmet
-          sayfası yazarken hangi başlıklar zorunlu" gibi.
+        KONU SEÇİMİ — en önemli kısım:
 
-        İçerik kuralları:
-        - content HTML olacak: <h2>, <h3>, <p>, <ul>, <ol>, <li>, <strong>,
-          <em>, <blockquote>. <h1>, <script>, <style> ve satır içi style kullanma.
-        - Bir <p> giriş paragrafıyla başla, en az üç <h2> bölümü olsun,
-          gövde {$words} kelime civarında olsun.
-        - excerpt en fazla 200 karakter, düz metin.
-        - meta_title en fazla 60 karakter, meta_description 150-160 karakter.
-        - focus_keyword tek bir ifade; başlıkta, giriş paragrafında ve meta
-          açıklamada doğal biçimde geçsin.
+        1. Önce search_query'yi bul. Bir işletme sahibinin aklına takılıp
+           Google'a yazdığı, günlük dilde bir sorgu olmalı. Kendine sor:
+           "Bunu gerçekten biri arama kutusuna yazar mı, ayda birçok kişi
+           yazar mı?" Cevap "pek sanmam" ise başka sorgu bul.
+        2. Sorgu, yukarıdaki hizmetlerden birinin satın alma yolculuğunda
+           bir yere oturmalı: sorunu fark etme ("müşteriler beni Google'da
+           bulamıyor"), seçenekleri araştırma ("hazır site mi yazılım mı"),
+           karar verme ("web sitesi yaptırırken nelere dikkat edilir"),
+           süreç ve maliyet merakı ("web sitesi kaç günde hazır olur",
+           "Google reklamı pahalı mı"). Listede olmayan bir hizmete
+           (e-posta pazarlama, sosyal medya yönetimi, UX araştırması gibi)
+           dayanan konu SEÇME.
+        3. İyi sorgu kalıpları: "... neden ...", "... mı yoksa ... mı",
+           "... nasıl yapılır", "... işe yarar mı", "... gerekli mi",
+           "... ne kadar sürer", "... fiyatını ne belirler", "... yaparken
+           yapılan hatalar", "... için ne gerekir", "... hangisi daha iyi".
+           Bunlar kalıptır, her yazıda farklısını kullan.
+        4. KÖTÜ konular — bunları seçme:
+           - Ders kitabı başlıkları: "X Nedir ve Önemi", "Dijital Dönüşümde
+             X'in Rolü", "Etkili X Stratejileri ile Y'yi Artırın".
+           - Kimsenin aramadığı soyut kavramlar: "kullanıcı deneyimi
+             felsefesi", "dijital dönüşüm yolculuğu", "marka bilinci".
+           - Trend/yıl yazıları, yapay zeka üzerine genel yorumlar.
+           - Yalnızca geliştiricinin anlayacağı teknik konular (framework,
+             sunucu mimarisi, kod).
+        5. Başlık, search_query'nin okunaklı bir halidir. Sorgudaki ana
+           ifadeyi içerir, soruyu ya da vaadi açıkça söyler, clickbait değildir.
+           Örnek dönüşüm: "web sitesi yaptırmak kaç gün sürer" →
+           "Web Sitesi Yaptırmak Kaç Gün Sürer? Süreyi Uzatan 6 Etken".
+
+        Yazmadan önce kontrol et; biri bile olumsuzsa konuyu değiştir:
+        - Bu konu (ya da aynı sorunun başka türlü sorulmuş hali) kullanıcı
+          mesajındaki listede var mı?
+        - Teknik bilgisi olmayan bir işletme sahibi bu başlığa tıklar mı?
+        - Yazı, o kişinin aklındaki soruyu gerçekten cevaplıyor mu?
+        - Konu listedeki bir hizmete doğal biçimde bağlanıyor mu?
+
+        İÇERİK — zengin, anlaşılır, teknik makale değil:
+        - Hedef uzunluk {$words} kelime. Bunu tutturmak için gövdeyi 6-8 adet
+          <h2> bölümüne böl; her bölüm en az 2-3 dolu paragraf ya da paragraf +
+          liste olsun (bölüm başına kabaca 200-250 kelime). Tek cümlelik ya da
+          yalnızca madde işaretinden oluşan bölüm yazma.
+        - Giriş paragrafı soruya ilk 2-3 cümlede doğrudan cevap versin (Google
+          öne çıkan snippet'i buradan alır), sonra yazının neleri anlatacağını
+          söylesin.
+        - Günlük konuşma diline yakın, sade Türkçe yaz; "siz" diye hitap et.
+          Teknik bir terim geçmek zorundaysa aynı cümlede ne anlama geldiğini
+          açıkla.
+        - Soyut anlatma, somutlaştır: farklı ölçekte işletmelerden kısa,
+          gerçekçi senaryolar kur ("küçük bir mobilya atölyesi...", "şehirler
+          arası çalışan bir nakliye firması...", "birden çok şirketi olan bir
+          grup..."). Bunlar varsayımsal örnektir, gerçek firma ya da müşteri
+          gibi sunma.
+        - Okuyucunun yapabileceği pratik şeyler ver: kontrol listesi, dikkat
+          edilecek işaretler, sorulması gereken sorular, adım adım yol.
+        - Alt başlıklar da soru ya da somut ifade olsun ("Süre en çok nerede
+          uzar?"). "... Nedir?", "Önemi", "Sonuç" gibi boş başlıklar kullanma.
+        - Sondaki bölüm özet değil, okuyucunun bir sonraki adımıdır: kendi
+          durumunu nasıl değerlendireceği ve ne zaman profesyonel destek
+          alması gerektiği. Satış diline kaçma.
+        - Son bölümden önce <h2>Sık Sorulan Sorular</h2> altında aynı konuda
+          insanların sorabileceği 3-4 soruyu <h3> olarak yaz, her birine 2-4
+          cümlelik net cevap ver.
+        - Her yazıyı aynı cümleyle başlatma; "Dijital dünyada", "Günümüzde",
+          "Günümüzün hızla değişen" gibi klişe açılışlar kullanma. Cümle ve
+          paragraf uzunluklarını çeşitlendir.
+        - Kesin sonuç ya da garanti veren ifadeler kullanma.
+
+        Uydurma yasağı: gerçek olmayan istatistik, araştırma sonucu, fiyat,
+        tarih, müşteri yorumu, referans, başarı oranı, şirket bilgisi ya da
+        uzman görüşü yazma. Maliyet sorulan konularda rakam verme; fiyatı neyin
+        belirlediğini anlat. Rakip firma adı verme.
+
+        Hizmete yönlendirme:
+        - "service" alanında seçtiğin hizmetin adresine metin içinde en az bir,
+          en fazla iki kez <a href="...">...</a> ile bağlantı ver; bağlantı
+          cümlenin doğal parçası olsun ("Google İşletme kaydınızı biz de
+          sizin için yönetebiliriz" gibi zorlama değil).
+        - Yalnızca yukarıdaki listedeki adresleri kullan, adres uydurma. Başka
+          bir hizmet de gerçekten ilgiliyse ona da bir bağlantı verilebilir.
+
+        SEO:
+        - focus_keyword search_query'nin çekirdek ifadesidir; başlıkta, giriş
+          paragrafında, en az bir <h2>'de ve meta açıklamada doğal biçimde geçsin.
+          Konuyla ilgili yan ifadeleri ve eş anlamlıları metne yay; aynı
+          kelimeyi zorla tekrar etme.
+        - meta_title en fazla 60 karakter, meta_description 150-160 karakter ve
+          okuyucuya ne öğreneceğini söylesin.
         - meta_keywords 5-8 ifade, tags 3-6 kısa etiket.
+        - excerpt en fazla 200 karakter, düz metin.
 
-        Yasaklar:
-        - Uydurma istatistik, yüzde, tarih, fiyat, müşteri adı ya da vaka yazma.
-        - "Dijital dünyada", "günümüzün hızla değişen", "başarıya giden yol"
-          gibi klişe açılışlar kullanma; doğrudan konuya gir.
-        - Metnin yapay zeka tarafından üretildiğini ima etme.
-        - Rakip firma adı verme.
+        HTML biçimi:
+        - content yalnızca şu etiketleri kullanır: <h2>, <h3>, <p>, <ul>, <ol>,
+          <li>, <strong>, <em>, <blockquote>, <a>. <h1>, <script>, <style> ve
+          satır içi style kullanma.
 
-        İç bağlantı:
-        - Yalnızca aşağıdaki adresleri kullanabilirsin, yeni adres uydurma.
-        - Konuya uyuyorsa metin içinde en fazla ikisini <a href="...">...</a>
-          ile bağla; uymuyorsa hiç bağlama.
-        {$linkList}
-
-        Kapak görseli (image_prompt):
-        - İngilizce yaz, 1-2 cümle, somut bir sahne anlat: mekân, nesne, ışık.
-        - Soyut kavram ("success", "growth") değil, fotoğraflanabilir bir an olsun.
-        - Sahnede yazı, harf, rakam, logo ya da okunabilir arayüz metni OLMAYACAK.
+        Kapak görseli alanları:
+        - image_title: kapakta yazacak başlık. Yazının başlığıdır; çok uzunsa
+          anlamı bozulmadan kısalt (en fazla 60 karakter). Türkçe karakterleri
+          doğru yaz.
+        - image_subtitle: başlığı destekleyen en fazla 90 karakterlik tek cümle.
+          Yalnızca görselin konuyu daha iyi anlatmasına katkı sağlıyorsa yaz;
+          sağlamıyorsa boş metin ("") bırak.
+        - image_prompt: İngilizce, 1-3 cümle. Konuyu doğrudan yansıtan gerçekçi ve
+          profesyonel bir sahne anlat: çalışma ortamı, cihaz, ekran, arayüz ya da
+          konuya özgü unsurlar. Kompozisyonu konuya göre sen kurgula. Sahnede
+          başlık dışında yazı, firma ya da marka adı olmasın (başlıkta geçen bir
+          ürün adı konunun parçasıysa kullanılabilir).
         PROMPT;
     }
 
@@ -210,9 +292,10 @@ class AutoBlogService
 
         $brief = $topic['keywords'] === ''
             ? <<<'BRIEF'
-            Konuyu sen belirle. Aşağıdaki listede olmayan, hizmetlerden biriyle
-            ilişkili ve arama niyeti olan tek bir konu seç; sonra o konuda yazıyı
-            üret. Seçtiğin konuyu ayrıca açıklama, doğrudan JSON'u döndür.
+            Konuyu sen belirle. Önce bir işletme sahibinin Google'a gerçekten
+            yazacağı, hizmetlerden birine bağlanan ve aşağıdaki listede olmayan
+            bir arama sorgusu bul; sonra o sorguya cevap veren yazıyı üret.
+            Doğrudan JSON'u döndür.
             BRIEF
             : <<<BRIEF
             Bu yazının konusu: {$topic['keywords']}
@@ -230,10 +313,12 @@ class AutoBlogService
         return <<<PROMPT
         {$brief}
 
-        Sitede hâlihazırda bulunan yazılar (taslaklar dahil). Bu konuları ve
-        bunların farklı kelimelerle yazılmış hallerini tekrar etme:
+        Sitede hâlihazırda bulunan yazılar (taslaklar dahil, en yeniden eskiye).
+        Bu konuları, eş anlamlılarını ve aynı sorunun farklı kelimelerle sorulmuş
+        hallerini tekrar etme; aynı odak kelimeyi de yeniden hedefleme:
         {$history}
         PROMPT;
+
     }
 
     /*
@@ -253,7 +338,7 @@ class AutoBlogService
 
         $response = $this->call($provider, 'images/generations', $config['timeout'], [
             'model' => $config['model'],
-            'prompt' => $this->imagePrompt((string) ($article['image_prompt'] ?? '')),
+            'prompt' => $this->imagePrompt($article),
             'size' => $config['size'],
             'quality' => $config['quality'],
             'n' => 1,
@@ -291,30 +376,52 @@ class AutoBlogService
     }
 
     /**
-     * Modelin verdiği sahneyi sabit bir fotoğraf diliyle sarar. Stil tarifi
-     * burada durur ki her kapak hizmet görselleriyle aynı aileden çıksın;
-     * modelin kendi başına "AI illüstrasyonu" üretmesi engellenir.
+     * Modelin verdiği sahneyi ve kapak başlığını sabit bir tasarım diliyle
+     * sarar. Stil tarifi burada durur ki her kapak hizmet görselleriyle aynı
+     * aileden çıksın.
+     *
+     * Üretim 1536x1024, `blog.cover` preset'i 2:1'e kırpar — üstten ve alttan
+     * yaklaşık %13 gider. Yazı bu yüzden dikey ortadaki güvenli alanda tutulur.
      */
-    private function imagePrompt(string $scene): string
+    private function imagePrompt(array $article): string
     {
-        $scene = trim($scene) !== ''
-            ? trim($scene)
-            : 'A tidy modern office desk with an open laptop showing a clean, '
-                .'unbranded website layout, a closed notebook and a cup of coffee, soft window light.';
+        $scene = trim((string) ($article['image_prompt'] ?? ''));
+        $scene = $scene !== ''
+            ? $scene
+            : 'A tidy modern office desk with an open laptop showing a clean website layout, '
+                .'a notebook and a cup of coffee, soft window light.';
+
+        $title = trim((string) ($article['image_title'] ?? '')) ?: $article['title'];
+        $subtitle = trim((string) ($article['image_subtitle'] ?? ''));
+
+        $text = $subtitle === ''
+            ? "Headline text, exactly as written (Turkish): \"{$title}\"\nNo other text besides the headline."
+            : "Headline text, exactly as written (Turkish): \"{$title}\"\n"
+                ."Smaller supporting line under the headline, exactly as written (Turkish): \"{$subtitle}\"\n"
+                .'No other text besides these two.';
 
         return <<<PROMPT
-        Professional editorial stock photograph for the blog of a corporate web design agency.
+        Blog cover design for a corporate web design and digital solutions agency.
+
+        {$text}
+
+        Typography: the headline is the most prominent element, bold modern sans-serif,
+        deep navy (#05051C), large and highly legible, broken into at most 3 balanced lines.
+        Spell every Turkish character exactly (ç, ğ, ı, İ, ö, ş, ü). Keep all text inside the
+        vertical middle 70% of the canvas with generous margins — the top and bottom edges
+        will be cropped.
 
         Scene: {$scene}
 
-        Style: photorealistic DSLR photograph, natural daylight, shallow depth of field,
-        muted corporate colour palette with a deep navy (#05051C) accent, calm and clean
-        composition, real materials and a real workspace, subject slightly off-centre with
-        open space on one side, landscape framing.
+        Style: clean and airy composition, white or light background, professional modern
+        corporate aesthetic, realistic photographic elements, deep navy as the main colour
+        with red or blue accents only where needed. Text on one side, the realistic scene on
+        the other, landscape framing.
 
-        Must not contain: any text, letters, numbers, logos, watermarks, readable user
-        interface labels, labelled charts, illustration, 3D render, CGI, neon or cyberpunk
-        lighting, holograms, collage, split screen, distorted hands or faces.
+        Must not contain: company names, brand names or logos (unless part of the headline),
+        watermarks, slogans, decorative text, extra labels, badges, cards, many icons,
+        illustration or cartoon style, neon or cyberpunk lighting, holograms, collage,
+        distorted hands or faces.
         PROMPT;
     }
 
