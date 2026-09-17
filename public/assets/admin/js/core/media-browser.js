@@ -81,6 +81,9 @@ export class MediaBrowser {
         this.root = root;
         this.options = options;
         this.selectable = root.dataset.selectable === '1';
+        // Çoklu seçim kipi: seçici modalı açan alan (galeri) istediğinde
+        // onSelect tek bir medya yerine bir dizi alır.
+        this.multiple = options.multiple === true;
         this.manageable = root.dataset.manageable === '1';
 
         // Tür kısıtı Blade'den gelir (görsel alanından açılan seçici 'image'
@@ -409,28 +412,50 @@ export class MediaBrowser {
 
         this.bulkbar.querySelector('[data-media-bulk-count]').textContent = `${count} öğe seçili`;
 
-        const onlyOneFile = count === 1 && [...this.selection][0].startsWith('media:');
+        // Tek seçim kipinde buton yalnızca tek bir DOSYA seçiliyken çıkar;
+        // çoklu kipte klasörler sayılmaz, seçili dosyaların hepsi alınır.
+        const files = this.selectedMedia();
+        const pickable = this.selectable && files.length > 0
+            && (this.multiple ? true : count === 1 && files.length === 1);
         const selectButton = this.bulkbar.querySelector('[data-media-action="bulk-select"]');
 
-        if (this.selectable && onlyOneFile) {
-            if (! selectButton) {
-                this.bulkbar.querySelector('[data-media-bulk-count]').insertAdjacentHTML('afterend', `
-                    <button type="button" data-media-action="bulk-select"
-                        class="inline-flex items-center gap-[5px] py-[7px] px-[14px] text-xs text-white transition-all rounded-md bg-primary-500 hover:bg-primary-400">
-                        <i class="material-symbols-outlined !text-[16px]">check</i> Bu Dosyayı Seç
-                    </button>`);
-            }
-        } else {
+        if (! pickable) {
             selectButton?.remove();
+
+            return;
         }
+
+        const label = files.length > 1 ? `${files.length} Dosyayı Seç` : 'Bu Dosyayı Seç';
+
+        if (selectButton) {
+            selectButton.querySelector('[data-media-select-text]').textContent = label;
+
+            return;
+        }
+
+        this.bulkbar.querySelector('[data-media-bulk-count]').insertAdjacentHTML('afterend', `
+            <button type="button" data-media-action="bulk-select"
+                class="inline-flex items-center gap-[5px] py-[7px] px-[14px] text-xs text-white transition-all rounded-md bg-primary-500 hover:bg-primary-400">
+                <i class="material-symbols-outlined !text-[16px]">check</i> <span data-media-select-text>${label}</span>
+            </button>`);
+    }
+
+    /** Seçimdeki dosyalar — klasörler atılır, sıra kullanıcının seçim sırasıdır. */
+    selectedMedia() {
+        return [...this.selection]
+            .filter((key) => key.startsWith('media:'))
+            .map((key) => this.items.get(Number(key.split(':')[1])))
+            .filter(Boolean);
     }
 
     pickSelection() {
-        const key = [...this.selection][0];
+        const files = this.selectedMedia();
 
-        if (key?.startsWith('media:')) {
-            this.options.onSelect?.(this.items.get(Number(key.split(':')[1])));
+        if (! files.length) {
+            return;
         }
+
+        this.options.onSelect?.(this.multiple ? files : files[0]);
     }
 
     openFolder(id) {
@@ -716,7 +741,7 @@ export class MediaBrowser {
         const action = await mediaPreview.open(media, { selectable: this.selectable, manageable: this.manageable });
 
         if (action === 'select') {
-            this.options.onSelect?.(media);
+            this.options.onSelect?.(this.multiple ? [media] : media);
         } else if (action === 'edit') {
             this.options.onOpen?.(media);
         } else if (action === 'recrop') {

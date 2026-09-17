@@ -3,6 +3,7 @@
  *
  *   const media = await mediaPicker.open();                    // her tür
  *   const media = await mediaPicker.open({ accept: 'image' }); // yalnızca görsel
+ *   const list  = await mediaPicker.open({ multiple: true });    // -> dizi ya da null
  *
  * İçerik /admin/media/picker'dan çekilir; davranışı MediaBrowser verir.
  * Form modalının (z-1400) üstünde açılır. Tüm modal katmanı TinyMCE'nin
@@ -67,12 +68,13 @@ class MediaPicker {
     }
 
     /**
-     * @param {{accept?: 'image'|'video'|'document'}} options
+     * @param {{accept?: 'image'|'video'|'document', multiple?: boolean}} options
      *        accept verilirse kütüphane yalnızca o türü listeler ve tür
      *        filtresi hiç basılmaz — kullanıcı kısıtı aşamaz.
-     * @returns {Promise<object|null>}
+     *        multiple verilirse birden fazla dosya seçilebilir ve sonuç dizi olur.
+     * @returns {Promise<object|object[]|null>}
      */
-    async open({ accept = null } = {}) {
+    async open({ accept = null, multiple = false } = {}) {
         this.root ??= this.build();
 
         const body = this.root.querySelector('[data-picker-body]');
@@ -89,6 +91,7 @@ class MediaPicker {
             body.dispatchEvent(new CustomEvent('admin:content-loaded', { bubbles: true }));
 
             new MediaBrowser(body.querySelector('[data-media-browser]'), {
+                multiple,
                 onSelect: (media) => this.settle(media),
             });
         } catch (error) {
