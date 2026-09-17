@@ -23,4 +23,5 @@
         </span>
     </label>
     <span class="site-subscribe__error" data-error="privacy" hidden></span>
+    <x-captcha form="newsletter" />
 </form>

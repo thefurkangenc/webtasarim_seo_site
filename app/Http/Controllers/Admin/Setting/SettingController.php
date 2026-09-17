@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Setting;
 use App\Http\Controllers\Concerns\RespondsWithJson;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Setting\SettingAnalyticsRequest;
+use App\Http\Requests\Admin\Setting\SettingCaptchaRequest;
 use App\Http\Requests\Admin\Setting\SettingCompanyRequest;
 use App\Http\Requests\Admin\Setting\SettingContactRequest;
 use App\Http\Requests\Admin\Setting\SettingContentsRequest;
@@ -108,5 +109,12 @@ class SettingController extends Controller
         $this->service->putGroup('maintenance', $request->validated());
 
         return $this->success('Bakım modu ayarları kaydedildi.');
+    }
+
+    public function updateCaptcha(SettingCaptchaRequest $request): JsonResponse
+    {
+        $this->service->putGroup('captcha', $request->validated());
+
+        return $this->success('Güvenlik doğrulaması ayarları kaydedildi.');
     }
 }

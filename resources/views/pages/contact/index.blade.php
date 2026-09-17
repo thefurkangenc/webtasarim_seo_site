@@ -124,6 +124,9 @@
                                             </div>
                                         @endif
                                         <div class="col-md-12">
+                                            <x-captcha form="contact" />
+                                        </div>
+                                        <div class="col-md-12">
                                             <div class="button mt-30">
                                                 <button class="theme-btn3" type="submit" data-contact-submit>Gönder
                                                     <span class="arrow1"><i class="fa-solid fa-arrow-right"></i></span>

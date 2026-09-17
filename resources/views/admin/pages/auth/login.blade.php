@@ -64,6 +64,10 @@
                             <span class="text-black dark:text-white">Beni hatırla</span>
                         </label>
 
+                        <div class="mt-[20px]">
+                            <x-captcha form="login" />
+                        </div>
+
                         <button type="submit"
                             class="md:text-md block w-full text-center transition-all rounded-md font-medium mt-[20px] md:mt-[25px] py-[12px] px-[25px] text-white bg-primary-500 hover:bg-primary-400">
                             <span class="flex items-center justify-center gap-[5px]">

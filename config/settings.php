@@ -87,6 +87,12 @@ return [
             'section' => 'visitor',
             'description' => 'WhatsApp, canlı destek, arama butonu gibi sitede görünen eklentiler.',
         ],
+        'captcha' => [
+            'title' => 'Güvenlik Doğrulaması',
+            'icon' => 'verified_user',
+            'section' => 'visitor',
+            'description' => 'Formlarda “Ben robot değilim” doğrulaması — dış bir servise bağlanmaz, kendi sunucunuzda çalışır.',
+        ],
         'maintenance' => [
             'title' => 'Bakım Modu',
             'icon' => 'construction',
@@ -135,6 +141,20 @@ return [
             'auto_reply_body' => "Merhaba {name},\n\nMesajınız için teşekkür ederiz. En kısa sürede sizinle iletişime geçeceğiz.\n\nSaygılarımızla",
             'privacy_required' => '1',
             'privacy_text' => 'Kişisel verilerimin {kvkk} kapsamında işlenmesini kabul ediyorum.',
+        ],
+        /*
+        | Captcha'nın kendi dosyası da var (app/Captcha/config.php). Buradaki
+        | değerler yalnızca formun ilk halini çizer; kaydedilince
+        | App\Captcha\Support\PanelSettings köprüsü o dosyayı ezer.
+        */
+        'captcha' => [
+            'enabled' => '1',
+            'driver' => 'puzzle',
+            'form_contact' => '1',
+            'form_quote' => '1',
+            'form_newsletter' => '1',
+            'form_login' => '1',
+            'tolerance' => '6',
         ],
         'maintenance' => [
             'enabled' => '0',

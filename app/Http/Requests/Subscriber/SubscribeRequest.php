@@ -2,14 +2,23 @@
 
 namespace App\Http\Requests\Subscriber;
 
+use App\Captcha\CaptchaManager;
+use App\Captcha\Concerns\VerifiesCaptcha;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class SubscribeRequest extends FormRequest
 {
+    use VerifiesCaptcha;
+
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function captchaForm(): ?string
+    {
+        return 'newsletter';
     }
 
     /** @return array<string, array<int, mixed>> */
@@ -21,6 +30,7 @@ class SubscribeRequest extends FormRequest
             'source' => ['nullable', Rule::in(array_keys(config('subscribers.sources')))],
             'website' => ['nullable', 'string', 'max:200'],
             'privacy' => ['accepted'],
+            CaptchaManager::FIELD => $this->captchaRules(),
         ];
     }
 

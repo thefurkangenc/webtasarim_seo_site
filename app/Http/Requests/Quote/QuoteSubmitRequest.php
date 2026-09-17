@@ -2,15 +2,24 @@
 
 namespace App\Http\Requests\Quote;
 
+use App\Captcha\CaptchaManager;
+use App\Captcha\Concerns\VerifiesCaptcha;
 use App\Models\Service\Service;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class QuoteSubmitRequest extends FormRequest
 {
+    use VerifiesCaptcha;
+
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function captchaForm(): ?string
+    {
+        return 'quote';
     }
 
     /** @return array<string, array<int, mixed>> */
@@ -27,6 +36,7 @@ class QuoteSubmitRequest extends FormRequest
             'phone' => ['required', 'string', 'regex:/^0 \(\d{3}\) \d{3} \d{2} \d{2}$/'],
             'notes' => ['nullable', 'string', 'max:2000'],
             'website' => ['nullable', 'string', 'max:200'],
+            CaptchaManager::FIELD => $this->captchaRules(),
         ];
     }
 

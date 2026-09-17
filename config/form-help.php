@@ -1281,6 +1281,46 @@ return [
     | Bakım modu — Ayarlar › Bakım
     |----------------------------------------------------------------------
     */
+    'captcha' => [
+        'enabled' => [
+            'title' => 'Güvenlik doğrulaması',
+            'body' => <<<'HTML'
+                <p>Formu gönderen kişinin gerçekten bir insan olduğunu anlamak için küçük bir <strong>“Ben robot değilim”</strong> kutusu gösterir. Kutuya tıklayınca açılan pencerede bir yapboz parçası yerine kaydırılır.</p>
+                <p>Kapatırsanız kutu hiç görünmez ve formlar eskisi gibi çalışır. Spam kayıtlar artıyorsa açık tutun.</p>
+                HTML,
+        ],
+        'driver' => [
+            'title' => 'Doğrulama türü',
+            'body' => '<p>Ziyaretçiye gösterilecek doğrulama biçimi. Şu an tek seçenek kaydırmalı yapbozdur; yeni türler eklendikçe bu listede görünür.</p>',
+        ],
+        'form_contact' => [
+            'title' => 'İletişim formu',
+            'body' => '<p>İletişim sayfasındaki mesaj formunda doğrulama istenir.</p>',
+        ],
+        'form_quote' => [
+            'title' => 'Teklif formu',
+            'body' => '<p>Hizmet detay sayfasındaki iki adımlı teklif formunda doğrulama istenir. Kutu ikinci adımda görünür.</p>',
+        ],
+        'form_newsletter' => [
+            'title' => 'Bülten formu',
+            'body' => '<p>Footer’daki ve açılır penceredeki e-bülten kayıt formunda doğrulama istenir.</p>',
+        ],
+        'form_login' => [
+            'title' => 'Panel giriş ekranı',
+            'body' => <<<'HTML'
+                <p>Yönetim paneline giriş ekranında doğrulama istenir; parola deneme saldırılarını yavaşlatır.</p>
+                <p>Doğrulama bakım modu açıkken de çalışır, giriş yapmanızı engellemez.</p>
+                HTML,
+        ],
+        'tolerance' => [
+            'title' => 'Sapma payı',
+            'body' => <<<'HTML'
+                <p>Yapboz parçasının “yerine oturdu” sayılması için tanınan kayma payı — piksel cinsinden. Küçük değer daha zor, büyük değer daha kolay demektir.</p>
+                <p>Önerilen 6’dır. Ziyaretçiler doğrulamayı geçemediğinden yakınıyorsa 8-10 arasını deneyin.</p>
+                HTML,
+        ],
+    ],
+
     'maintenance' => [
         'enabled' => [
             'title' => 'Bakım modunu aç',

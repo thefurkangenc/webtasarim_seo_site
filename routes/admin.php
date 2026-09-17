@@ -112,6 +112,7 @@ Route::middleware(['auth', 'user.active', 'permission_middleware'])->group(funct
         Route::put('contact', 'updateContact')->name('contact.update');
         Route::put('cookie', 'updateCookie')->name('cookie.update');
         Route::put('maintenance', 'updateMaintenance')->name('maintenance.update');
+        Route::put('captcha', 'updateCaptcha')->name('captcha.update');
         Route::get('{group}', 'edit')->name('edit')
             ->whereIn('group', array_keys(config('settings.groups', [])));
     });

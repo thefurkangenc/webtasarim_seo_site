@@ -136,6 +136,7 @@ return [
         ['name' => 'setting.contact.update', 'label' => 'İletişim - Güncelle', 'category' => 'setting', 'guard_name' => 'web'],
         ['name' => 'setting.cookie.update', 'label' => 'Çerez - Güncelle', 'category' => 'setting', 'guard_name' => 'web'],
         ['name' => 'setting.maintenance.update', 'label' => 'Bakım - Güncelle', 'category' => 'setting', 'guard_name' => 'web'],
+        ['name' => 'setting.captcha.update', 'label' => 'Güvenlik Doğrulaması - Güncelle', 'category' => 'setting', 'guard_name' => 'web'],
 
         ['name' => 'social-link.index', 'label' => 'Sosyal Medya - Listele', 'category' => 'setting', 'guard_name' => 'web'],
         ['name' => 'social-link.form', 'label' => 'Sosyal Medya - Form', 'category' => 'setting', 'guard_name' => 'web'],

@@ -112,7 +112,12 @@
   }
 
   function errorFor(name) {
-    return form.querySelector('[data-error-for="' + name + '"]');
+    // Captcha bileşeni kendi hata kutusunu data-error ile basar; teklif
+    // formunun kendi alanları data-error-for kullanıyor.
+    return (
+      form.querySelector('[data-error-for="' + name + '"]') ||
+      form.querySelector('[data-error="' + name + '"]')
+    );
   }
 
   function setInvalid(field, invalid) {
@@ -243,7 +248,7 @@
 
   const formError = form.querySelector("[data-quote-form-error]");
   const token = document.querySelector('meta[name="csrf-token"]');
-  const fieldStep = { company: 1, service_id: 1, phone: 2, notes: 2 };
+  const fieldStep = { company: 1, service_id: 1, phone: 2, notes: 2, captcha: 2 };
 
   function showFormError(message) {
     formError.textContent = message || "";

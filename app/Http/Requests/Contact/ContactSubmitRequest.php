@@ -2,15 +2,24 @@
 
 namespace App\Http\Requests\Contact;
 
+use App\Captcha\CaptchaManager;
+use App\Captcha\Concerns\VerifiesCaptcha;
 use App\Support\Settings;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class ContactSubmitRequest extends FormRequest
 {
+    use VerifiesCaptcha;
+
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function captchaForm(): ?string
+    {
+        return 'contact';
     }
 
     /** @return array<string, array<int, mixed>> */
@@ -26,6 +35,7 @@ class ContactSubmitRequest extends FormRequest
                 Rule::requiredIf(fn () => Settings::bool('contact.privacy_required', true)),
                 'accepted',
             ],
+            CaptchaManager::FIELD => $this->captchaRules(),
         ];
     }
 

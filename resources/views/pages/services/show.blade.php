@@ -156,6 +156,9 @@
                                                         <label for="quote-notes">Projeniz hakkında <span class="quote-optional">(isteğe bağlı)</span></label>
                                                         <textarea name="notes" id="quote-notes" rows="3" placeholder="Hedefiniz, bütçeniz, zamanlamanız…"></textarea>
                                                     </div>
+                                                    <div class="quote-field">
+                                                        <x-captcha form="quote" />
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

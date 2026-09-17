@@ -31,6 +31,13 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
         then: function () {
+            /*
+            | Captcha uçları (app/Captcha klasörü kendi kendine yeter).
+            | pages.php'deki catch-all bu adresleri yutmasın diye ondan
+            | ÖNCE kaydedilir.
+            */
+            Route::middleware('web')->group(base_path('app/Captcha/routes.php'));
+
             Route::middleware('web')
                 ->prefix(AdminPrefix::get())
                 ->name('admin.')

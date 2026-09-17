@@ -2,13 +2,22 @@
 
 namespace App\Http\Requests\Admin\Auth;
 
+use App\Captcha\CaptchaManager;
+use App\Captcha\Concerns\VerifiesCaptcha;
 use Illuminate\Foundation\Http\FormRequest;
 
 class LoginRequest extends FormRequest
 {
+    use VerifiesCaptcha;
+
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function captchaForm(): ?string
+    {
+        return 'login';
     }
 
     /** @return array<string, mixed> */
@@ -17,6 +26,7 @@ class LoginRequest extends FormRequest
         return [
             'email' => ['required', 'email', 'max:255'],
             'password' => ['required', 'string'],
+            CaptchaManager::FIELD => $this->captchaRules(),
         ];
     }
 
