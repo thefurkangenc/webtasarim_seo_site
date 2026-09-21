@@ -2,6 +2,8 @@
 
 namespace App\Models\BlogCategory;
 
+use App\Contracts\LinksToPublicPage;
+use App\Contracts\RedirectsOnMove;
 use App\Models\Blog\Blog;
 use App\Models\Concerns\HasSeo;
 use App\Models\Concerns\HasSortOrder;
@@ -11,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable(['name', 'slug', 'description', 'sort_order', 'is_active'])]
-class BlogCategory extends Model
+class BlogCategory extends Model implements LinksToPublicPage, RedirectsOnMove
 {
     use HasSeo, HasSortOrder, LogsActivity;
 
@@ -27,6 +29,35 @@ class BlogCategory extends Model
     public function blogs(): HasMany
     {
         return $this->hasMany(Blog::class);
+    }
+
+    /** Pasif kategorinin ön yüzde adresi yoktur — menü öğesi kendiliğinden düşer. */
+    public function publicUrl(): ?string
+    {
+        return $this->is_active ? route('blog.kategori', $this->slug) : null;
+    }
+
+    public function publicLinkLabel(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * Kategori sayfaları (/blog/kategori/{slug}) indekslenebilir olduğu için
+     * slug değişimi ölü URL bırakmamalı.
+     *
+     * @return array{from: string, to: string}|null
+     */
+    public function redirectableMove(): ?array
+    {
+        if (! $this->wasChanged('slug')) {
+            return null;
+        }
+
+        return [
+            'from' => 'blog/kategori/'.$this->getOriginal('slug'),
+            'to' => 'blog/kategori/'.$this->slug,
+        ];
     }
 
     /** @return array<string, mixed> */

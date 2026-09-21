@@ -4,6 +4,7 @@ namespace App\Services\AutoBlog;
 
 use App\Models\Ai\AiProvider;
 use App\Models\Blog\Blog;
+use App\Models\BlogCategory\BlogCategory;
 use App\Models\Service\Service;
 use App\Models\User;
 use App\Services\Media\MediaService;
@@ -100,225 +101,382 @@ class AutoBlogService
     private function write(AiProvider $provider, array $topic): array
     {
         $config = config('auto-blog.text');
+        $system = $this->systemPrompt();
+        $user = $this->userPrompt($topic);
 
-        $response = $this->call($provider, 'chat/completions', $config['timeout'], [
-            'model' => $config['model'],
-            'temperature' => $config['temperature'],
-            'max_completion_tokens' => $config['max_tokens'],
-            'response_format' => ['type' => 'json_object'],
-            'messages' => [
-                ['role' => 'system', 'content' => $this->systemPrompt()],
-                ['role' => 'user', 'content' => $this->userPrompt($topic)],
-            ],
+        $article = $this->ask($provider, $config, [
+            ['role' => 'system', 'content' => $system],
+            ['role' => 'user', 'content' => $user],
         ]);
-
-        $content = $response['choices'][0]['message']['content'] ?? null;
-
-        if (! is_string($content) || trim($content) === '') {
-            throw new DomainException('Model boş yanıt döndürdü.');
-        }
-
-        $article = $this->decode($content);
 
         if (blank($article['title'] ?? null) || blank($article['content'] ?? null)) {
             throw new DomainException('Model başlık ya da içerik döndürmedi.');
         }
 
-        return $article;
+        $words = $this->wordCount((string) $article['content']);
+        $floor = (int) $config['min_words'];
+
+        if ($words >= $floor) {
+            return $article;
+        }
+
+        /*
+         * Hedef uzunluğu promptta istemek tek başına yetmiyor; model düzenli
+         * olarak altında kalıyor. Yazıyı baştan üretmek yerine kendi metnini
+         * derinleştirmesini istiyoruz — konu, başlık ve bölüm sırası korunur,
+         * yalnızca içi dolar. Tek tur: ikinci bir turun getirisi masrafını
+         * karşılamıyor ve sonuç dolgu cümleye kaçıyor. Turdan sonra hâlâ
+         * kısaysa kaydetmiyoruz — 500 kelimelik taslak yayınlanacak bir yazı
+         * değildir.
+         */
+        $expanded = $this->ask($provider, $config, [
+            ['role' => 'system', 'content' => $system],
+            ['role' => 'user', 'content' => $user],
+            ['role' => 'assistant', 'content' => json_encode($article, JSON_UNESCAPED_UNICODE)],
+            ['role' => 'user', 'content' => "Bu gövde yalnızca {$words} kelime; hedef {$config['words']} kelime, "
+                ."alt sınır {$floor}. Başlığı, konuyu ve bölüm sırasını AYNEN koru. Bölümleri örnek "
+                .'senaryolar, adım adım anlatım, karşılaştırmalar ve uygulanabilir ayrıntılarla '
+                .'derinleştir; gerekiyorsa yeni bölüm ekle. Var olan cümleleri tekrar etme, dolgu '
+                .'cümle yazma. Tüm JSON alanlarını eksiksiz ve yeniden döndür.'],
+        ]);
+
+        $expandedWords = $this->wordCount((string) ($expanded['content'] ?? ''));
+
+        if ($expandedWords < $floor) {
+            throw new DomainException(
+                "Gövde çok kısa kaldı ({$expandedWords} kelime, hedef {$config['words']}).",
+            );
+        }
+
+        return $expanded;
+    }
+
+    /**
+     * Tek bir sohbet isteği ve JSON çözümü. İki yerden çağrıldığı için ayrı
+     * durur: ilk üretim ve genişletme turu aynı parametreleri kullanmalı.
+     *
+     * @param  array<string, mixed>  $config
+     * @param  array<int, array{role: string, content: string}>  $messages
+     * @return array<string, mixed>
+     */
+    private function ask(AiProvider $provider, array $config, array $messages): array
+    {
+        $response = $this->call($provider, 'chat/completions', $config['timeout'], [
+            'model' => $config['model'],
+            'max_completion_tokens' => $config['max_tokens'],
+            'reasoning_effort' => $config['reasoning_effort'],
+            'response_format' => ['type' => 'json_object'],
+            'messages' => $messages,
+        ]);
+
+        $content = $response['choices'][0]['message']['content'] ?? null;
+
+        if (! is_string($content) || trim($content) === '') {
+            // Bütçe muhakemeye gittiyse finish_reason 'length' döner; boş
+            // yanıtın nedenini bilmek ayar hatasını tahminden çıkarır.
+            $reason = $response['choices'][0]['finish_reason'] ?? 'bilinmiyor';
+
+            throw new DomainException("Model boş yanıt döndürdü (bitiş nedeni: {$reason}).");
+        }
+
+        return $this->decode($content);
+    }
+
+    /** Uzunluk denetimi gövde metnine bakar; HTML etiketleri kelime değildir. */
+    private function wordCount(string $html): int
+    {
+        $text = trim((string) preg_replace('/\s+/u', ' ', strip_tags($html)));
+
+        return $text === '' ? 0 : count(explode(' ', $text));
     }
 
     private function systemPrompt(): string
     {
         $words = config('auto-blog.text.words');
+        $floor = (int) config('auto-blog.text.min_words');
+        $high = (int) $words;
+        if (preg_match('/^(\d+)\s*-\s*(\d+)$/', (string) $words, $match)) {
+            $high = (int) $match[2];
+        }
+        $sections = 7;
+        $perSection = (int) ceil(($high - 150) / $sections);
         $links = $this->links();
 
         $linkList = $links === []
             ? '(Şu an bağlanabilecek bir hizmet sayfası yok; hiç iç bağlantı verme.)'
             : collect($links)->map(fn (array $link) => "- {$link['anchor']} => {$link['path']}")->implode("\n");
 
+        $categories = $this->categories();
+        $categoryList = $categories === []
+            ? '(Aktif kategori yok; blog_category_id alanını null bırak.)'
+            : collect($categories)->map(fn (array $category) => "- {$category['id']}: {$category['name']}")->implode("\n");
+
+        $tags = $this->allowedTags();
+        $tagList = $tags === []
+            ? '(Etiket listesi boş; tags alanını boş dizi bırak.)'
+            : collect($tags)->map(fn (string $tag) => "- {$tag}")->implode("\n");
+
         return <<<PROMPT
-        Sen bir web tasarım ve dijital çözümler ajansının kıdemli içerik editörü
-        ve SEO içerik stratejistisin. Web tasarım, kurumsal web siteleri, özel
-        yazılım, SEO, Google Ads, e-ticaret ve Google İşletme konularında
-        uzmansın; ama yazılarını teknik bir okura değil, işini büyütmek isteyen
-        sıradan bir işletme sahibine yazarsın.
+        Sen bir web tasarım ve dijital çözümler ajansının kıdemli içerik editörü ve SEO içerik stratejistisin.
+        Web tasarım, kurumsal web siteleri, özel yazılım, SEO, Google Ads, e-ticaret ve Google Maps İşletme Kaydı gibi konularda uzmansın.
+        Yazılarını teknik bir okura değil, işini geliştirmek isteyen işletme sahiplerine ve yöneticilere yazarsın.
 
-        Amaç: İnsanların Google'a gerçekten yazdığı sorulara net cevap veren,
-        okuyanın işine yarayan ve onu ajansın ilgili hizmetine doğal biçimde
-        yönlendiren blog yazıları üretmek. Okuyucu küçük bir atölyenin sahibi
-        de olabilir, bir nakliye firmasının patronu da, bir holdingin pazarlama
-        müdürü de. Hepsi aynı yazıyı okuyup anlayabilmeli.
+        Amacın; insanların gerçekten merak edebileceği konuları kendin belirleyerek, bu konular hakkında faydalı, anlaşılır, özgün ve SEO açısından güçlü blog içerikleri üretmektir.
+        Blog yazıları doğrudan reklam metni gibi değil, okuyucunun sorusuna gerçekten cevap veren profesyonel içerikler gibi hazırlanmalıdır.
 
-        Ajansın hizmetleri (her yazı bunlardan TAM OLARAK BİRİNE bağlanır):
-        {$linkList}
-
-        Yanıtını YALNIZCA geçerli bir JSON nesnesi olarak ver. JSON dışında
-        açıklama, selamlama ya da kod çiti yazma. Alanları bu sırayla doldur;
-        önce arama sorgusunu ve hizmeti belirle, yazıyı ona göre kur.
-
+        Çoğu çalıştırmada sana konu, başlık veya anahtar kelime VERİLMEZ; böyle bir durumda konuyu tamamen kendin belirlemelisin. Konu seçerken web sitesinin hizmet alanlarını, hedef kitlesini ve daha önce yayınlanmış içerikleri dikkate almalısın.
+        Kullanıcı mesajında bir konu, başlık ya da anahtar kelime verilmişse ona uy; o durumda kendi konunu seçme.
         Şema:
         {
-          "search_query": "insanların Google'a yazacağı haliyle arama sorgusu",
-          "service": "yukarıdaki listeden bu sorgunun bağlandığı hizmetin adı",
-          "title": "yazının başlığı",
-          "excerpt": "tek paragraf özet",
+          "search_query": "insanların Google'da arayabileceği doğal arama sorgusu",
+          "service": "seçilen hizmetin adı",
+          "blog_category_id": 3,
+          "title": "blog başlığı",
+          "excerpt": "kısa özet",
           "content": "HTML gövde",
-          "tags": ["etiket", "etiket"],
-          "focus_keyword": "tek odak ifadesi",
+          "tags": [],
+          "focus_keyword": "tek odak ifade",
           "meta_title": "arama sonucu başlığı",
           "meta_description": "arama sonucu açıklaması",
           "meta_keywords": "virgülle ayrılmış ifadeler",
-          "image_title": "kapak görselinde yazacak başlık",
-          "image_subtitle": "kapakta başlığı destekleyen kısa açıklama ya da boş metin",
-          "image_prompt": "İngilizce kapak sahnesi tarifi"
+          "image_title": "görsel üzerinde kullanılacak blog başlığı",
+          "image_subtitle": "gerekirse kısa açıklama",
+          "image_prompt": "İngilizce görsel üretim talimatı"
         }
+        Her çalıştırmada yeni ve yayınlanmaya değer bir blog konusu seç.
+        Konuyu belirlerken kendine şu soruyu sor:
+        Bir işletme sahibi veya işletmesinin dijital işlerini yaptırmak isteyen birisibu konuyu  Google'da arar mı?"
+        Cevabının olumlu ise devam et.
+        Gerçek bir ihtiyaca cevap vermeyen, yalnızca SEO için oluşturulmuş yapay konular seçme.
+        Konular; işletmelerin karşılaştığı problemler, merak ettiği sorular, hizmet satın almadan önce araştırdığı konular,
+        karar verirken yaptığı karşılaştırmalar, maliyet ve süreç merakları, sık yapılan hatalar ve uygulanabilir çözüm önerileri üzerinden oluşturulabilir.
 
-        KONU SEÇİMİ — en önemli kısım:
+        Web tasarım, web yazılım, özel yazılım, SEO, Google Ads, e-ticaret ve Google Maps İşletme Kaydı alanları arasında çeşitlilik oluştur.
+        Kullanıcı mesajındaki geçmiş yazı listesine bak: son yazılar hangi hizmetin
+        etrafında toplanmışsa bu çalışmada o hizmeti SEÇME, arşivde en az yer alan
+        hizmete geç. Aynı hizmetin üst üste iki yazıda işlenmesi kabul edilemez.
 
-        1. Önce search_query'yi bul. Bir işletme sahibinin aklına takılıp
-           Google'a yazdığı, günlük dilde bir sorgu olmalı. Kendine sor:
-           "Bunu gerçekten biri arama kutusuna yazar mı, ayda birçok kişi
-           yazar mı?" Cevap "pek sanmam" ise başka sorgu bul.
-        2. Sorgu, yukarıdaki hizmetlerden birinin satın alma yolculuğunda
-           bir yere oturmalı: sorunu fark etme ("müşteriler beni Google'da
-           bulamıyor"), seçenekleri araştırma ("hazır site mi yazılım mı"),
-           karar verme ("web sitesi yaptırırken nelere dikkat edilir"),
-           süreç ve maliyet merakı ("web sitesi kaç günde hazır olur",
-           "Google reklamı pahalı mı"). Listede olmayan bir hizmete
-           (e-posta pazarlama, sosyal medya yönetimi, UX araştırması gibi)
-           dayanan konu SEÇME.
-        3. İyi sorgu kalıpları: "... neden ...", "... mı yoksa ... mı",
-           "... nasıl yapılır", "... işe yarar mı", "... gerekli mi",
-           "... ne kadar sürer", "... fiyatını ne belirler", "... yaparken
-           yapılan hatalar", "... için ne gerekir", "... hangisi daha iyi".
-           Bunlar kalıptır, her yazıda farklısını kullan.
-        4. KÖTÜ konular — bunları seçme:
-           - Ders kitabı başlıkları: "X Nedir ve Önemi", "Dijital Dönüşümde
-             X'in Rolü", "Etkili X Stratejileri ile Y'yi Artırın".
-           - Kimsenin aramadığı soyut kavramlar: "kullanıcı deneyimi
-             felsefesi", "dijital dönüşüm yolculuğu", "marka bilinci".
-           - Trend/yıl yazıları, yapay zeka üzerine genel yorumlar.
-           - Yalnızca geliştiricinin anlayacağı teknik konular (framework,
-             sunucu mimarisi, kod).
-        5. Başlık, search_query'nin okunaklı bir halidir. Sorgudaki ana
-           ifadeyi içerir, soruyu ya da vaadi açıkça söyler, clickbait değildir.
-           Örnek dönüşüm: "web sitesi yaptırmak kaç gün sürer" →
-           "Web Sitesi Yaptırmak Kaç Gün Sürer? Süreyi Uzatan 6 Etken".
+        Her konu doğrudan bir hizmet satmak zorunda değildir.
+        Ancak seçilen konu, verilen hizmetlerden en fazla biriyle doğal ve anlamlı şekilde ilişkilendirilebilmelidir.
+        Daha önce yayınlanmış başlıkları ve konuları mutlaka dikkate al.
 
-        Yazmadan önce kontrol et; biri bile olumsuzsa konuyu değiştir:
-        - Bu konu (ya da aynı sorunun başka türlü sorulmuş hali) kullanıcı
-          mesajındaki listede var mı?
-        - Teknik bilgisi olmayan bir işletme sahibi bu başlığa tıklar mı?
-        - Yazı, o kişinin aklındaki soruyu gerçekten cevaplıyor mu?
-        - Konu listedeki bir hizmete doğal biçimde bağlanıyor mu?
+        Aynı konuyu yalnızca farklı bir başlıkla tekrar etme.
+        Örneğin daha önce “Web Sitesi Yaptırmak Ne Kadar Sürer?” konusu işlendi ise “Kurumsal Web Sitesi Kaç Günde Hazırlanır?”
+        gibi aynı arama niyetini tekrar ele alma.
 
-        İÇERİK — zengin, anlaşılır, teknik makale değil:
-        - Hedef uzunluk {$words} kelime. Bunu tutturmak için gövdeyi 6-8 adet
-          <h2> bölümüne böl; her bölüm en az 2-3 dolu paragraf ya da paragraf +
-          liste olsun (bölüm başına kabaca 200-250 kelime). Tek cümlelik ya da
-          yalnızca madde işaretinden oluşan bölüm yazma.
-        - Giriş paragrafı soruya ilk 2-3 cümlede doğrudan cevap versin (Google
-          öne çıkan snippet'i buradan alır), sonra yazının neleri anlatacağını
-          söylesin.
-        - Günlük konuşma diline yakın, sade Türkçe yaz; "siz" diye hitap et.
-          Teknik bir terim geçmek zorundaysa aynı cümlede ne anlama geldiğini
-          açıkla.
-        - Soyut anlatma, somutlaştır: farklı ölçekte işletmelerden kısa,
-          gerçekçi senaryolar kur ("küçük bir mobilya atölyesi...", "şehirler
-          arası çalışan bir nakliye firması...", "birden çok şirketi olan bir
-          grup..."). Bunlar varsayımsal örnektir, gerçek firma ya da müşteri
-          gibi sunma.
-        - Okuyucunun yapabileceği pratik şeyler ver: kontrol listesi, dikkat
-          edilecek işaretler, sorulması gereken sorular, adım adım yol.
-        - Alt başlıklar da soru ya da somut ifade olsun ("Süre en çok nerede
-          uzar?"). "... Nedir?", "Önemi", "Sonuç" gibi boş başlıklar kullanma.
-        - Sondaki bölüm özet değil, okuyucunun bir sonraki adımıdır: kendi
-          durumunu nasıl değerlendireceği ve ne zaman profesyonel destek
-          alması gerektiği. Satış diline kaçma.
-        - Son bölümden önce <h2>Sık Sorulan Sorular</h2> altında aynı konuda
-          insanların sorabileceği 3-4 soruyu <h3> olarak yaz, her birine 2-4
-          cümlelik net cevap ver.
-        - Her yazıyı aynı cümleyle başlatma; "Dijital dünyada", "Günümüzde",
-          "Günümüzün hızla değişen" gibi klişe açılışlar kullanma. Cümle ve
-          paragraf uzunluklarını çeşitlendir.
-        - Kesin sonuç ya da garanti veren ifadeler kullanma.
+        Yeni içerik blog arşivine gerçekten yeni bir konu veya yeni bir bakış açısı kazandırmalıdır.
+        KÖTÜ KONU KALIPLARI. Hangi hizmetle ilgili olursa olsun bu kalıpları seçme:
+        - "... nedir" tipi ansiklopedik tanım yazıları,
+        - yıl içeren trend derlemeleri ("2026 ... trendleri"),
+        - "...'in önemi", "...'in faydaları" gibi genel öneme dair yazılar,
+        - kullanılan teknoloji, araç, framework veya yöntem listeleri,
+        - hedef kitlesi işletme sahibi değil yazılımcı olan teknik anlatımlar,
+        - hizmetin kendisini tanıtan, aslında bir hizmet sayfası olması gereken yazılar.
 
-        Uydurma yasağı: gerçek olmayan istatistik, araştırma sonucu, fiyat,
-        tarih, müşteri yorumu, referans, başarı oranı, şirket bilgisi ya da
-        uzman görüşü yazma. Maliyet sorulan konularda rakam verme; fiyatı neyin
-        belirlediğini anlat. Rakip firma adı verme.
+        Bunlar yerine gerçek bir ihtiyaca veya soruya odaklan. Aşağıda her hizmetten
+        birer örnek var; listedeki hizmetlerin HEPSİ eşit derecede uygundur, biri
+        diğerinden daha değerli değildir:
+        - Web Tasarım: "Web Sitesi Yenilemeye Başlamadan Önce Elinizde Ne Hazır Olmalı?"
+        - Özel Yazılım Geliştirme: "Hazır Panel mi Size Özel Yazılım mı? Hangisi Ne Zaman Mantıklı?"
+        - SEO Danışmanlığı: "Sitem Google'da Neden İkinci Sayfada Kalıyor?"
+        - e-Ticaret Yönetim Hizmeti: "Ürün Sayfasında Satışı Düşüren En Sık Hatalar"
+        - Google İşletme Kaydı: "Bir İşletmenin Google Haritalar'daki Konumu Neden Yanlış Çıkar?"
+        - Google Ads Reklam Yönetimi: "Google Reklamlarında Tıklama Başına Ücreti Ne Belirler?"
 
-        Hizmete yönlendirme:
-        - "service" alanında seçtiğin hizmetin adresine metin içinde en az bir,
-          en fazla iki kez <a href="...">...</a> ile bağlantı ver; bağlantı
-          cümlenin doğal parçası olsun ("Google İşletme kaydınızı biz de
-          sizin için yönetebiliriz" gibi zorlama değil).
-        - Yalnızca yukarıdaki listedeki adresleri kullan, adres uydurma. Başka
-          bir hizmet de gerçekten ilgiliyse ona da bir bağlantı verilebilir.
+        Başlıklar bunlarla sınırlı değildir. Sadece daha iyi anlaman için veriyorum. Her çalışmada konuya en uygun başlığı kendin oluştur.
+
+        İÇERİK:
+        Gövde {$words} kelime OLMAK ZORUNDADIR (HTML etiketleri sayılmaz). {$floor} kelimenin
+        altı reddedilir. Uzunluğu dolgu cümleyle, aynı şeyi farklı kelimelerle tekrar ederek
+        veya girişi şişirerek değil, gerçek bilgiyle karşıla: örnek senaryolar, adım adım
+        anlatım, karşılaştırmalar, dikkat edilecek noktalar, sık yapılan hatalar ve
+        uygulanabilir öneriler.
+
+        Bu uzunluğa matematik olarak şöyle ulaş: giriş yaklaşık 150 kelime, ardından en az
+        {$sections} H2 bölümü ve her H2 altında en az {$perSection} kelime. Bölümü tek
+        paragrafla geçiştirme. Alt başlıkları konuya göre kendin oluştur; her yazıda aynı
+        başlık sırasını kullanma. On dört ince bölüm açma — {$sections} dolu bölüm, on dört
+        boş bölümden iyidir.
+
+        İçerikte gerektiğinde örnekler, karşılaştırmalar, kontrol listeleri, adımlar, dikkat edilmesi gereken noktalar ve sık yapılan hatalar kullan.
+        İçerikte fiyat bilgisi verme.
+        Ancak bunları sırf içerik uzunluğu oluşturmak için ekleme.
+        Her içerik okuyucuya somut bir bilgi veya bakış açısı kazandırmalı.
+        Teknik bir terim kullanılması gerekiyorsa anlaşılır şekilde açıkla.
+        İçeriği geliştirici veya yazılımcı seviyesinde teknik bir makaleye dönüştürme.
+
+        SATIŞ DİLİ:
+        Blogun temel amacı bilgi vermektir.
+        İlgili hizmete doğal bir geçiş yapılabilir ancak içerik reklam metnine dönüştürülmemelidir.
+        Seçilen konu ile hizmet arasında gerçek bir bağlantı varsa hizmet sayfasına doğal bir iç bağlantı ver.
+
+        Seçilen service yalnızca aşağıdaki listeden biri olabilir:
+        Hizmetler: {$linkList}
+        Seçilen hizmetin bağlantısını içerikte doğal bir cümle içerisinde kullan.
+        En az bir, en fazla iki iç bağlantı kullan.
+        Yalnızca seçilen hizmetin adresini kullan. Adres uydurma.
+
+        KATEGORİ:
+        blog_category_id, konuya EN UYGUN kategorinin id'si olmalıdır.
+        Yalnızca aşağıdaki listeden birini seç. Yeni kategori uydurma.
+        Kategoriler:
+        {$categoryList}
+
+        ETİKET:
+        tags dizisi YALNIZCA aşağıdaki listeden seçilir. Yeni etiket uydurma,
+        yazımı değiştirme, birleşik veya kısaltılmış versiyon üretme.
+        Sayı serbesttir: gerçekten uyanları seç. Biri uyuyorsa 1, birkaçı uyuyorsa
+        3-4, hiçbiri uymuyorsa boş dizi. Uydurmak için etiket ekleme.
+        Etiketler:
+        {$tagList}
 
         SEO:
-        - focus_keyword search_query'nin çekirdek ifadesidir; başlıkta, giriş
-          paragrafında, en az bir <h2>'de ve meta açıklamada doğal biçimde geçsin.
-          Konuyla ilgili yan ifadeleri ve eş anlamlıları metne yay; aynı
-          kelimeyi zorla tekrar etme.
-        - meta_title en fazla 60 karakter, meta_description 150-160 karakter ve
-          okuyucuya ne öğreneceğini söylesin.
-        - meta_keywords 5-8 ifade, tags 3-6 kısa etiket.
-        - excerpt en fazla 200 karakter, düz metin.
+        search_query alanında gerçek bir kullanıcının Google'a yazabileceği doğal bir sorgu oluştur.
+        focus_keyword, search_query'nin ana ifadesi olmalı.
+        Focus keyword başlıkta, giriş bölümünde, en az bir alt başlıkta ve meta description içerisinde doğal şekilde kullanılmalıdır.
+        Anahtar kelimeyi gereksiz şekilde tekrar etme.
+        Anahtar kelimenin farklı biçimlerini, yakın anlamlı ifadeleri ve konuya ilişkin semantik terimleri doğal şekilde kullan.
+        SEO uğruna cümlelerin doğallığını bozma.
+        meta_title en fazla 60 karakter olmalıdır.
+        meta_description en fazla 150-160 karakter olmalı ve yazı içeriğinden bahsetmelidir.
+        meta_keywordsyalnızca kısa SEO anahtar kelimelerinden oluşmalıdır. Toplam 4-6 adet keyword üret ve her keyword en fazla 2 kelime içersin. Keywordler cümle, soru veya uzun arama sorgusu şeklinde olmamalıdır. Keywordleriçeriğin konusunu, anahtar kelimeleri, kısa arama terimlerini veya hizmetini ifade etmelidir. 2 kelimeden uzun olan ifadeleri kesinlikle kullanma.
+        excerpt en fazla 200 karakter olmalıdır.
 
-        HTML biçimi:
-        - content yalnızca şu etiketleri kullanır: <h2>, <h3>, <p>, <ul>, <ol>,
-          <li>, <strong>, <em>, <blockquote>, <a>. <h1>, <script>, <style> ve
-          satır içi style kullanma.
+        GERÇEKLİK VE UYDURMA YASAĞI:
+        Gerçek olmayan istatistik, araştırma sonucu, fiyat, tarih, müşteri yorumu, referans, başarı oranı, şirket bilgisi veya uzman görüşü uydurma.
+        Maliyet konusu işleniyorsa doğrulanmamış rakamlar verme. Bunun yerine maliyeti etkileyen faktörleri açıkla.
+        Kesin sonuç veya garanti verme.
+        Rakip firma isimleri verme.
 
-        Kapak görseli alanları:
-        - image_title: kapakta yazacak başlık. Yazının başlığıdır; çok uzunsa
-          anlamı bozulmadan kısalt (en fazla 60 karakter). Türkçe karakterleri
-          doğru yaz.
-        - image_subtitle: başlığı destekleyen en fazla 90 karakterlik tek cümle.
-          Yalnızca görselin konuyu daha iyi anlatmasına katkı sağlıyorsa yaz;
-          sağlamıyorsa boş metin ("") bırak.
-        - image_prompt: İngilizce, 1-3 cümle. Konuyu doğrudan yansıtan gerçekçi ve
-          profesyonel bir sahne anlat: çalışma ortamı, cihaz, ekran, arayüz ya da
-          konuya özgü unsurlar. Kompozisyonu konuya göre sen kurgula. Sahnede
-          başlık dışında yazı, firma ya da marka adı olmasın (başlıkta geçen bir
-          ürün adı konunun parçasıysa kullanılabilir).
+        GÖRSEL ÜRETİMİ:
+        Her blog yazısı için ayrıca bir kapak görseli üretilecek.
+        Görsel, blog yazısının konusunu doğrudan anlatan profesyonel bir kapak görseli olmalıdır.
+        Görsel üretiminde aşağıdaki referans görsel anlayışını temel al:
+        Modern ve kurumsal bir tasarım.
+        Çoğunlukla Açık ağırlıklı arka plan.
+        Güçlü bir ana görsel. Kontrollü tipografi.
+        image_title alanındaki başlık görsel üzerinde mutlaka yer almalıdır.
+        Blog başlığını değiştirme veya farklı bir sloganla değiştirme.
+        Başlık çok uzunsa anlamını koruyarak daha kısa ve tasarıma uygun bir versiyon oluşturabilirsin.
+        Başlığın görseldeki en önemli ve en belirgin metin olmasını sağla.
+        image_subtitle yalnızca gerçekten gerekiyorsa kullanılmalıdır.
+        Görseli açıklama metinleriyle doldurma; zenginlik ikonlardan, rozetlerden,
+        kartlardan ve dekoratif arayüz parçalarından gelir.
+
+        GÖRSELİN TASARIMI:
+        Görselin ana fikri tek bakışta anlaşılmalıdır.
+        Gerçek fotoğrafik sahne olmayacak.
+        Kapağın düzeni, renkleri ve tipografisi sistem tarafında sabittir; senin işin o
+        iskeleti KONUYA özgü doğru nesne ve doğru ikonlarla doldurmaktır.
+
+        Görselde firma adı, ajans adı veya marka adı kullanma.
+        Görsel üzerinde blog başlığı ve gerekiyorsa kısa subtitle dışında rastgele metinler oluşturma.
+        Görselde sahte istatistikler, sahte müşteri yorumları, sahte fiyatlar veya gerçekmiş gibi görünen sayısal sonuçlar gösterme.
+        image_prompt İNGİLİZCE yazılmalıdır.
+        Kapağın DÜZENİ, renkleri, tipografisi ve dekoratif parçaları (yüzen kartlar, kırmızı ok, el yazısı not)
+        sistem tarafında zaten sabitlenmiştir. Bunları image_prompt içinde tekrar tarif etme, aksi halde
+        çelişki çıkar. image_prompt YALNIZCA konuya özel içeriği anlatır:
+
+        - ANA GÖRSEL: konuyu en iyi anlatan TEK nesne. Her konuda dizüstü bilgisayar kullanma;
+          konuya göre havada duran bir tarayıcı penceresi, bir telefon, konum işaretli bir harita,
+          bir mağaza arayüzü, bir belge/fatura sayfası, birkaç kargo kolisi ya da bir cihaz artı
+          bir-iki gerçek nesne olabilir. Örnek: Google İşletme Kaydı konusunda harita, e-ticaret
+          konusunda telefon ve koliler, SEO konusunda arama sonuçları penceresi.
+        - O nesnenin üzerinde/ekranında ne görünüyor (hangi tür arayüz, hangi tür grafik, hangi tür liste),
+        - yüzen kartların üzerinde hangi kısa ifadeler ve ne tür ikonlar var. İkonlar konunun
+          kendi sözlüğünden gelsin (kargo konusunda koli ve kamyon, harita konusunda konum
+          iğnesi ve yıldız gibi); her kapakta grafik-insan-ok üçlüsünü tekrar etme,
+        - el yazısı notun ne söylediği.
+
+        İki-üç cümle yeter. Arayüz metinlerinin okunabilir olmasını isteme.
+        image_prompt, görselde kullanılacak Türkçe metni kendisi üretmemelidir. Görselde kullanılacak ana başlık image_title alanından alınacaktır.
+        image_title en fazla 6 kelime olmalıdır; uzun başlıklar görselde bozuk basılır.
+
+        Görsel, bir blog kapağı olduğu ilk bakışta anlaşılabilecek kadar düzenli ve profesyonel, Kurumsal ve estetik olmalıdır.
+
+        SON KONTROL:
+        - JSON'u oluşturmadan önce aşağıdakileri kontrol et:
+        - Konu daha önce işlenmiş mi?
+        - Konu gerçek bir kullanıcı ihtiyacına dayanıyor mu?
+        - Başlık konuyu doğru anlatıyor mu?
+        - Gövdedeki kelimeleri say (HTML etiketleri hariç). {$floor} kelimenin altındaysa
+          JSON'u DÖNDÜRME; bölümleri genişlet, gerekiyorsa yeni bölüm ekle ve yeniden say.
+        - İçerik başlığın vaat ettiği bilgiyi gerçekten veriyor mu?
+        - Aynı cümle veya anlatım kalıpları tekrar edilmiş mi?
+        - Anahtar kelimeler doğal mı?
+        - Seçilen hizmet gerçekten konuyla ilgili mi?
+        - blog_category_id listedeki kategorilerden biri mi ve konuya en uygun olanı mı?
+        - tags yalnızca verilen etiket listesinden mi? Uymayanı eklemek için uydurma yok mu? Hiç uymuyorsa boş dizi mi?
+        - İç bağlantı yalnızca seçilen hizmete mi gidiyor?
+        - Görsel gerçekten blogun konusunu anlatıyor mu?
+        - image_title blog başlığıyla uyumlu mu?
+        - image_prompt görseli estetik, profesyonel, kurumsal ve konuya özgü üretmeye yeterince açık mı?
+        - Herhangi bir gerçek dışı bilgi veya iddia var mı?
+        Düzenlenmesi gereken alanlar varsa düzenle ve tekrar kontrol et.
+        Tüm kontrollerden sonra yalnızca geçerli JSON çıktısını döndür.
         PROMPT;
     }
 
     private function userPrompt(array $topic): string
     {
         $history = $this->history();
+        $words = config('auto-blog.text.words');
+        $floor = (int) config('auto-blog.text.min_words');
 
-        $brief = $topic['keywords'] === ''
-            ? <<<'BRIEF'
-            Konuyu sen belirle. Önce bir işletme sahibinin Google'a gerçekten
-            yazacağı, hizmetlerden birine bağlanan ve aşağıdaki listede olmayan
-            bir arama sorgusu bul; sonra o sorguya cevap veren yazıyı üret.
-            Doğrudan JSON'u döndür.
-            BRIEF
-            : <<<BRIEF
-            Bu yazının konusu: {$topic['keywords']}
-            Bu anahtar kelimeleri metin içinde doğal biçimde geçir.
-            BRIEF;
+        $lines = [];
+
+        if ($topic['keywords'] !== '') {
+            $lines[] = "Bu yazının konusu: {$topic['keywords']}";
+            $lines[] = 'Bu anahtar kelimeleri metin içinde doğal biçimde geçir.';
+        }
 
         if ($topic['title'] !== '') {
-            $brief .= "\nBaşlık verildi, aynen kullan: {$topic['title']}";
+            $lines[] = "Başlık verildi, aynen kullan: {$topic['title']}";
         }
 
         if ($topic['notes'] !== '') {
-            $brief .= "\nEk notlar: {$topic['notes']}";
+            $lines[] = "Ek notlar: {$topic['notes']}";
         }
+
+        if ($lines === []) {
+            $lines[] = <<<'BRIEF'
+            Konuyu sen belirle. Önce bir işletme sahibinin Google'a gerçekten
+            yazacağı, hizmetlerden birine bağlanan ve aşağıdaki listede olmayan
+            bir arama sorgusu bul; sonra o sorguya cevap veren yazıyı üret.
+            BRIEF;
+        }
+
+        $brief = implode("\n", $lines);
+
+        $categories = $this->categories();
+        $categoryList = $categories === []
+            ? '(Aktif kategori yok; blog_category_id alanını null bırak.)'
+            : collect($categories)->map(fn (array $category) => "- {$category['id']}: {$category['name']}")->implode("\n");
+
+        $tags = $this->allowedTags();
+        $tagList = $tags === []
+            ? '(Etiket listesi boş; tags alanını boş dizi bırak.)'
+            : collect($tags)->map(fn (string $tag) => "- {$tag}")->implode("\n");
 
         return <<<PROMPT
         {$brief}
+
+        Kategoriler. Konu için en uygun olanın id'sini blog_category_id olarak yaz;
+        listede olmayan bir kategori uydurma:
+        {$categoryList}
+
+        Etiketler. Zorunlu değil. Yalnızca gerçekten uyanları, listedeki haliyle yaz;
+        uymuyorsa tags'i boş dizi bırak, listede olmayan etiket yazma:
+        {$tagList}
+
+        Gövde {$words} kelime olacak (HTML etiketleri sayılmaz). {$floor} kelimenin altı kabul edilmez.
+        Doğrudan JSON'u döndür.
 
         Sitede hâlihazırda bulunan yazılar (taslaklar dahil, en yeniden eskiye).
         Bu konuları, eş anlamlılarını ve aynı sorunun farklı kelimelerle sorulmuş
         hallerini tekrar etme; aynı odak kelimeyi de yeniden hedefleme:
         {$history}
         PROMPT;
-
     }
 
     /*
@@ -376,52 +534,139 @@ class AutoBlogService
     }
 
     /**
-     * Modelin verdiği sahneyi ve kapak başlığını sabit bir tasarım diliyle
-     * sarar. Stil tarifi burada durur ki her kapak hizmet görselleriyle aynı
-     * aileden çıksın.
+     * Kapağın TASARIMI burada tanımlıdır: düzen, renk, tipografi ve
+     * "mobilya" (yüzen kartlar, kırmızı ok, el yazısı not). Böylece her kapak
+     * aynı aileden çıkar. Modelden gelen `image_prompt` yalnızca konuya özel
+     * içeriği söyler — ekranda ne göründüğü ve kartların ne yazdığı.
      *
-     * Üretim 1536x1024, `blog.cover` preset'i 2:1'e kırpar — üstten ve alttan
-     * yaklaşık %13 gider. Yazı bu yüzden dikey ortadaki güvenli alanda tutulur.
+     *
+     * Kompozisyonun birkaç ekseni her çağrıda rastgele değişir. Modele
+     * "çeşitlilik kur" demek yetmiyor: sabit prompt aynı favori düzeni
+     * üretiyor ve kapaklar birbirinin kopyası çıkıyor. Marka iskeleti
+     * (solda metin, sağda tek nesne) sabit kalır; değişen şey açı, zemin
+     * deseni ve dekor bileşimidir.
      */
     private function imagePrompt(array $article): string
     {
         $scene = trim((string) ($article['image_prompt'] ?? ''));
         $scene = $scene !== ''
             ? $scene
-            : 'A tidy modern office desk with an open laptop showing a clean website layout, '
-                .'a notebook and a cup of coffee, soft window light.';
+            : 'Main visual: a floating browser window showing a neutral business dashboard with '
+            .'a sidebar, three KPI cards and a rising line chart. The floating cards carry a '
+            .'generic icon each.';
 
         $title = trim((string) ($article['image_title'] ?? '')) ?: $article['title'];
-        $subtitle = trim((string) ($article['image_subtitle'] ?? ''));
+        $subtitle = trim(strip_tags((string) ($article['excerpt'] ?? '')));
+        if ($subtitle === '') {
+            $subtitle = trim((string) ($article['image_subtitle'] ?? ''));
+        }
 
-        $text = $subtitle === ''
-            ? "Headline text, exactly as written (Turkish): \"{$title}\"\nNo other text besides the headline."
-            : "Headline text, exactly as written (Turkish): \"{$title}\"\n"
-                ."Smaller supporting line under the headline, exactly as written (Turkish): \"{$subtitle}\"\n"
-                .'No other text besides these two.';
+        // Referanslardaki üst etiket hizmet adıdır; model onu `service` alanında
+        // zaten veriyor, buraya kadar hiç kullanılmıyordu.
+        $eyebrow = mb_strtoupper(trim((string) ($article['service'] ?? '')) ?: 'DİJİTAL ÇÖZÜMLER', 'UTF-8');
+
+        $subtitleLine = $subtitle === ''
+            ? 'No subtitle line under the headline.'
+            : "A single-line subtitle under the headline, medium grey, regular weight,\n"
+            ."   exactly as written (Turkish): \"{$subtitle}\"";
+
+        $angle = Arr::random([
+            'seen straight from the front, parallel to the canvas',
+            'turned slightly to the left in a three-quarter view',
+            'turned slightly to the right in a three-quarter view',
+            'seen from a slightly raised angle and tilted back a little',
+            'floating face-on with a slight perspective tilt',
+            'seen from slightly below, so it feels tall and close',
+        ]);
+
+        $backdrop = Arr::random([
+            'two large soft blurred blobs in pale pink and pale blue behind the hero object',
+            'one wide pale blue circle behind the hero object and a small pale pink one near the headline',
+            'a faint dotted grid behind the hero object, fading out towards the edges',
+            'a soft diagonal band of very light grey crossing behind the hero object',
+            'concentric very light grey rings radiating out from behind the hero object',
+            'a plain clean background with no pattern at all, only a soft shadow under the hero object',
+        ]);
+
+        // 3:1 şeritte dekor sayısı azdır; kalabalık kompozisyon bu yükseklikte
+        // okunmuyor. İkon satırı seçeneği bu yüzden havuzda yok.
+        $decor = Arr::random([
+            'two floating cards no arrow',
+            'one floating card, two small badge pills and one curved red arrow',
+            'two floating cards and one handwritten note, no arrow',
+            'two floating cards stacked on one side only, no arrow',
+            'one large floating card, one badge pill and one handwritten note',
+            'three small badge pills and one curved red arrow, no cards',
+        ]);
 
         return <<<PROMPT
-        Blog cover design for a corporate web design and digital solutions agency.
+        A polished blog cover graphic for a corporate web design and digital solutions
+        agency. Flat vector interface design combined with ONE realistic hero object —
+        an editorial marketing graphic, NOT a photograph of a room or a desk.
 
-        {$text}
+        CANVAS
+        An ultra-wide banner, 3:1 — three times wider than it is tall. This is a short strip,
+        so the composition is built sideways, not stacked: everything sits in one horizontal
+        band and must fit without crowding. Background white to very light grey (#FFFFFF to
+        #F7F8FA), with {$backdrop}. Generous whitespace, calm and uncluttered. Keep a
+        comfortable margin on all four edges — nothing touches the frame or bleeds off it.
 
-        Typography: the headline is the most prominent element, bold modern sans-serif,
-        deep navy (#05051C), large and highly legible, broken into at most 3 balanced lines.
-        Spell every Turkish character exactly (ç, ğ, ı, İ, ö, ş, ü). Keep all text inside the
-        vertical middle 70% of the canvas with generous margins — the top and bottom edges
-        will be cropped.
+        LEFT SIDE, about 40% of the width, a compact block centred vertically in the strip:
+        1. An eyebrow label in small uppercase letters with wide letter spacing, muted grey,
+           followed by a short horizontal red dash, exactly as written: "{$eyebrow}"
+        2. The headline, exactly as written (Turkish): "{$title}"
+           Extra-bold geometric sans-serif of the Outfit or Poppins family, deep navy
+           #0A1B3D, large, AT MOST TWO lines, with ONE key word or phrase coloured
+           red #E8232A. The canvas is short, so keep the headline to two tight lines and
+           still make it the biggest thing on the strip.
+        3. {$subtitleLine}
+        4. A solid red #E8232A rounded rectangle button with the short white label
+           "Teklif Alın" and a white right-pointing arrow icon. Keep it small; it sits
+           directly under the text, not far below it.
 
-        Scene: {$scene}
+        RIGHT SIDE, about 60% of the width:
+        ONE clean hero object that belongs to this specific topic — it is named at the bottom
+        under MAIN VISUAL, use exactly that object. Do NOT fall back to a laptop: a laptop is
+        only right when the subject really is building or running a website or a web app.
+        Otherwise it can be a floating browser window, a smartphone, a map view with a
+        location pin, a storefront interface, a document or an invoice sheet, a small group
+        of parcels, a search field, a form, or one device with one or two real supporting
+        objects. Render it as a crisp product-shot mockup {$angle}, with a soft shadow.
+        Any interface text inside it stays tiny and reduced to soft grey placeholder bars,
+        never readable words.
 
-        Style: clean and airy composition, white or light background, professional modern
-        corporate aesthetic, realistic photographic elements, deep navy as the main colour
-        with red or blue accents only where needed. Text on one side, the realistic scene on
-        the other, landscape framing.
+        ENRICHMENT — this is what makes the cover look designed, do not leave it out.
+        For this particular cover use exactly: {$decor}.
+        - Floating cards are white, rounded, with soft drop shadows, overlapping the edges of
+          the hero object; each holds one small coloured rounded-square icon and one or two
+          very short lines of text.
+        - The curved red arrow is hand-drawn and points towards the hero object.
+        - The handwritten note is a short script line in dark navy near a corner.
+        - Badge pills are small rounded capsules with an icon and one or two words.
+        Every icon must come from THIS topic's own vocabulary — pick symbols that only make
+        sense for this subject. Do not reuse a generic set of chart, people and arrow icons
+        on every cover. Vary where the cards sit rather than always stacking them the same way.
 
-        Must not contain: company names, brand names or logos (unless part of the headline),
-        watermarks, slogans, decorative text, extra labels, badges, cards, many icons,
-        illustration or cartoon style, neon or cyberpunk lighting, holograms, collage,
-        distorted hands or faces.
+        COLOUR
+        Deep navy #0A1B3D for text and dark surfaces, red #E8232A as the single accent,
+        white cards, light grey #F1F3F7 surfaces, a touch of blue #2E6BE6 and one warm
+        accent inside the charts. Muted and controlled, no neon, no full-canvas gradient.
+
+        TEXT RULES
+        Spell every Turkish character exactly: ç ğ ı İ ö ş ü. The headline is the largest
+        and most prominent text on the canvas. Apart from the eyebrow label, the headline,
+        the subtitle, the button label, the short card lines and the handwritten note there
+        is NO other text. No paragraphs, no fake statistics, no fake testimonials, no
+        prices, no company or brand names, no logos, no watermarks.
+
+        AVOID
+        Photographic office or desk scenes, stock-photo people, cartoon or sketchy
+        illustration style, heavy 3D render look, isometric rooms, neon or cyberpunk
+        lighting, holograms, collage, split screen, visual clutter, distorted hands or
+        faces, garbled or misspelled text.
+
+        MAIN VISUAL AND CARD CONTENT FOR THIS TOPIC
+        {$scene}
         PROMPT;
     }
 
@@ -440,7 +685,7 @@ class AutoBlogService
 
         return DB::transaction(function () use ($article, $topic, $coverId, $defaults, $status) {
             $blog = Blog::create([
-                'blog_category_id' => $defaults['blog_category_id'] ?: null,
+                'blog_category_id' => $this->resolveCategoryId($article) ?? ($defaults['blog_category_id'] ?: null),
                 'user_id' => $defaults['author_id'] ?: User::orderBy('id')->value('id'),
                 'title' => $article['title'],
                 'slug' => Slug::unique($article['title'], 'blogs'),
@@ -451,12 +696,12 @@ class AutoBlogService
             ]);
 
             $blog->syncMedia($coverId, 'cover');
-            $blog->syncTags(Arr::wrap($article['tags'] ?? []));
+            $blog->syncTags($this->resolveTags($article));
             $blog->syncSeo([
                 'meta_title' => $article['meta_title'] ?? null,
                 'meta_description' => $article['meta_description'] ?? null,
                 'meta_keywords' => $article['meta_keywords'] ?? null,
-                'focus_keyword' => ($article['focus_keyword'] ?? null) ?: $topic['keywords'],
+                'focus_keyword' => ($article['focus_keyword'] ?? null) ?: ($topic['keywords'] !== '' ? $topic['keywords'] : null),
                 'og_media_id' => $coverId,
             ]);
 
@@ -510,6 +755,83 @@ class AutoBlogService
         }
 
         return $decoded;
+    }
+
+    /**
+     * Aktif blog kategorileri. Model yalnızca bu listeden seçer; uydurma
+     * id kayda yazılmaz.
+     *
+     * @return array<int, array{id: int, name: string}>
+     */
+    private function categories(): array
+    {
+        return BlogCategory::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->get(['id', 'name'])
+            ->map(fn (BlogCategory $category) => [
+                'id' => $category->id,
+                'name' => $category->name,
+            ])
+            ->all();
+    }
+
+    /** Modelin verdiği id veya ad listede yoksa null — uydurma kategori kayda girmez. */
+    private function resolveCategoryId(array $article): ?int
+    {
+        $categories = collect($this->categories());
+        $raw = $article['blog_category_id'] ?? $article['category'] ?? null;
+
+        if (is_numeric($raw)) {
+            $match = $categories->firstWhere('id', (int) $raw);
+            if ($match) {
+                return (int) $match['id'];
+            }
+        }
+
+        $name = mb_strtolower(trim((string) $raw), 'UTF-8');
+        if ($name === '') {
+            return null;
+        }
+
+        $match = $categories->first(
+            fn (array $category) => mb_strtolower($category['name'], 'UTF-8') === $name,
+        );
+
+        return $match['id'] ?? null;
+    }
+
+    /** @return list<string> */
+    private function allowedTags(): array
+    {
+        return array_values(array_filter(array_map(
+            fn ($tag) => trim((string) $tag),
+            Arr::wrap(config('auto-blog.tags', [])),
+        )));
+    }
+
+    /**
+     * Model uydurursa kayda girmez. Eşleşme büyük/küçük harf duyarsız,
+     * yazım config'teki kanonik ada çekilir.
+     *
+     * @return list<string>
+     */
+    private function resolveTags(array $article): array
+    {
+        $lookup = [];
+        foreach ($this->allowedTags() as $tag) {
+            $lookup[mb_strtolower($tag, 'UTF-8')] = $tag;
+        }
+
+        $chosen = [];
+        foreach (Arr::wrap($article['tags'] ?? []) as $tag) {
+            $key = mb_strtolower(trim((string) $tag), 'UTF-8');
+            if ($key !== '' && isset($lookup[$key])) {
+                $chosen[$key] = $lookup[$key];
+            }
+        }
+
+        return array_values($chosen);
     }
 
     /**

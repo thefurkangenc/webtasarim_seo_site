@@ -1846,6 +1846,171 @@ a:focus {
  COMMON AREA CSS
 ::::::::::::::::::::::::::
 */
+/*
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+ BUTONLAR — projedeki TEK buton sistemi.
+
+ Kullanım: .ui-btn + bir varyant. Başka buton class'ı YAZILMAZ,
+ temannın .theme-btn* / .default-btn class'ları kullanılmaz.
+
+   <a class="ui-btn ui-btn--solid" href="...">Teklif Alın</a>
+   <button class="ui-btn ui-btn--outline" type="submit">Gönder</button>
+
+ Varyant:  --solid (birincil, koyu)  |  --outline (ikincil, çerçeveli)
+ Zemin:    --light  → koyu/fotoğraf arka plan üzerinde
+ Boyut:    --sm / --lg  |  Genişlik: --block
+ İkon:     içindeki <i> hover'da sağa kayar, ayrı span gerekmez.
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+*/
+.ui-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 26px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-family: var(--f-ff-font-1);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.01em;
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease,
+        transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.ui-btn i {
+    font-size: 0.9em;
+    transition: transform 0.25s ease;
+}
+
+.ui-btn:hover i {
+    transform: translateX(3px);
+}
+
+.ui-btn:focus-visible {
+    outline: 2px solid rgba(5, 5, 28, 0.45);
+    outline-offset: 3px;
+}
+
+.ui-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 10px rgba(5, 5, 28, 0.2);
+}
+
+.ui-btn:disabled,
+.ui-btn[disabled],
+.ui-btn.is-loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* --- Birincil: koyu dolgu --- */
+.ui-btn--solid {
+    background-color: #05051C;
+    color: #fff;
+}
+
+.ui-btn--solid:hover {
+    background-color: #001644;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(5, 5, 28, 0.28);
+}
+
+/* --- İkincil: çerçeveli, hover'da dolar --- */
+.ui-btn--outline {
+    background-color: transparent;
+    border-color: rgba(5, 5, 28, 0.18);
+    color: #05051C;
+}
+
+.ui-btn--outline:hover {
+    background-color: #05051C;
+    border-color: #05051C;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(5, 5, 28, 0.2);
+}
+
+/* --- Koyu/fotoğraf zemin üzerinde: beyaz dolgu, beyaz çerçeve --- */
+.ui-btn--light.ui-btn--solid {
+    background-color: #fff;
+    color: #05051C;
+}
+
+.ui-btn--light.ui-btn--solid:hover {
+    background-color: #fff;
+    color: #001644;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.3);
+}
+
+.ui-btn--light.ui-btn--outline {
+    border-color: rgba(255, 255, 255, 0.55);
+    color: #fff;
+}
+
+.ui-btn--light.ui-btn--outline:hover {
+    background-color: #fff;
+    border-color: #fff;
+    color: #05051C;
+}
+
+.ui-btn--light:focus-visible {
+    outline-color: rgba(255, 255, 255, 0.8);
+}
+
+/* --- Yalnızca ikon (geri/kapat gibi): kare, ok kayması yok --- */
+.ui-btn--icon {
+    gap: 0;
+    padding: 0;
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+}
+
+.ui-btn--icon:hover i {
+    transform: none;
+}
+
+.ui-btn--icon.ui-btn--sm {
+    width: 38px;
+    height: 38px;
+}
+
+/* --- Boyut ve genişlik --- */
+.ui-btn--sm {
+    padding: 10px 18px;
+    font-size: 14px;
+    border-radius: 6px;
+}
+
+.ui-btn--lg {
+    padding: 17px 34px;
+    font-size: 17px;
+}
+
+.ui-btn--block {
+    display: flex;
+    width: 100%;
+}
+
+@media (max-width: 575px) {
+    .ui-btn {
+        padding: 13px 22px;
+        font-size: 15px;
+    }
+
+    .ui-btn--lg {
+        padding: 15px 26px;
+        font-size: 16px;
+    }
+}
+
 .default-btn {
     display: inline-block;
     padding: 10px 18px;
@@ -1897,6 +2062,16 @@ a:focus {
     content: "";
     position: absolute;
     top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #4285F4 0%, #EA4335 33%, #FBBC05 66%, #34A853 100%);
+}
+
+.home-reviews::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
     left: 0;
     right: 0;
     height: 4px;
@@ -2284,7 +2459,7 @@ a:focus {
 .blog-card__media {
     position: relative;
     display: block;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: auto;
     overflow: hidden;
     background: rgba(5, 5, 28, 0.04);
 }
@@ -2440,7 +2615,7 @@ a:focus {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    height: 400px;
+    height: auto;
 }
 
 .blog-detail__meta {
@@ -18145,6 +18320,9 @@ html.is-preloading {
 
 .blog-details-content .image img {
     width: 100%;
+    box-shadow: 1px 1px 1px 1px #8989891f;
+    /* padding: 1em; */
+    margin: 5px;
 }
 
 .blog-details-content .details-content-text-box {
@@ -18201,6 +18379,13 @@ html.is-preloading {
 
 .blog-details-content .heading2 h3 {
     font-weight: var(--f-fw-medium);
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+.blog-details-content .heading2 h2 {
+    font-weight: var(--f-fw-medium);
+    margin-top: 15px;
+    margin-bottom: 5px;
 }
 
 .blog-details-content .content-details-area {

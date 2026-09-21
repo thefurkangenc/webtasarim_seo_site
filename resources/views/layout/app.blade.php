@@ -54,6 +54,8 @@
 
     @include('layout.partials.footer')
 
+    <x-site.floating-cta />
+
     <x-site.cookie-banner />
 
     @include('layout.partials.scripts')

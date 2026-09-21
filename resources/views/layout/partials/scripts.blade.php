@@ -32,3 +32,5 @@
 
 @stack('scripts')
 
+{{-- Teklif formu: sayfadaki her kopyayi ayri ayri baslatir + acilir pencereyi yonetir. --}}
+<script src="{{ asset('assets/js/quote-form.js') }}" defer></script>

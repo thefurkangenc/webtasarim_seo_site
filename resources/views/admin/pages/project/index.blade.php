@@ -1,6 +1,7 @@
 @extends('admin.layout.app')
 @section('admin.title', 'Neler Yaptık')
 
+
 @section('content')
     <div class="mb-[25px] md:flex items-center justify-between">
         <h5 class="!mb-0">Neler Yaptık</h5>

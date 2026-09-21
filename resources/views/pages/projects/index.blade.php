@@ -1,16 +1,25 @@
 @extends('layout.app')
+@section('title', 'Neler Yaptık')
+@section('description', 'Gaziantep Web Tasarım Ajansı Projeler, Neler Yaptık sayfası')
+@section('keywords', 'gaziantep web tasarım ajansı, neler yaptık, projeler')
+@section('canonical', route('projeler'))
+@section('robots', 'noindex, nofollow')
 
 @php
     // Kategori sayfasında başlık ve meta kategoriden gelir; ana listede
     // site geneli SEO ayarlarına düşülür (/hizmetler ve /blog ile aynı).
-    $listingTitle = $category?->name ?? 'Neler Yaptık';
+    $listingTitle = $category?->name ?? 'Çalışmalarımız';
     $listingSeo = $category?->seoMeta();
 @endphp
+@section('meta_description', 'Gaziantep Web Tasarım Ajansı ' . $listingTitle . ' sayfası')
+@section('meta_keywords', 'gaziantep web tasarım ajansı, ' . $listingTitle . ' sayfası')
+@if (! empty($listingSeo['canonical']))
+    @section('canonical', (string) $listingSeo['canonical'])
+@endif
+@if (! empty($listingSeo['robots']))
+    @section('robots', (string) $listingSeo['robots'])
+@endif
 
-@section('title', $listingSeo['title'] ?? $listingTitle)
-@section('meta_description', (string) ($listingSeo['description'] ?? ''))
-@section('meta_keywords', (string) ($listingSeo['keywords'] ?? ''))
-@section('meta_image', (string) ($listingSeo['image'] ?? ''))
 
 @section('content')
     <!--===== HERO AREA START =====-->
@@ -45,6 +54,16 @@
     <!--===== PORTFOLIO AREA START =====-->
 
     <div class="blog1 sp bg1 _relative">
+        <div class="home-refs__head text-center">
+
+            <span class="sub-title">
+                <img style="width: 20px; height: 20px; margin-right: 5px;"
+                    src="{{ asset('assets/img/icons/icon.png') }}" alt="">
+                Projeler
+            </span>
+
+            <h2 id="home-refs-title" class="text-anime-style-3">Neler Yaptık ?</h2>
+        </div>
         <div class="container">
             @if ($category && filled($category->description))
                 <div class="row">
@@ -52,12 +71,20 @@
                         <p>{{ $category->description }}</p>
                     </div>
                 </div>
+                @else
+                <div class="row">
+                    <div class="col-lg-8 m-auto text-center">
+                        <p class="mt-30">
+                            Çalışmalarımızı inceleyin ve seçtiğiniz hizmetlerimizle ilgili detaylı bilgi alın.
+                        </p>
+                    </div>
+                </div>
             @endif
 
             @if ($categories->isNotEmpty())
                 {{-- Filtre: gerçek linklerle — her kategori indekslenebilir bir adres. --}}
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-lg-12 mt-4">
                         <div class="project-filter-bar">
                             <a href="{{ route('projeler') }}" class="project-filter {{ $category ? '' : 'active' }}">Tümü</a>
                             @foreach ($categories as $item)
@@ -104,5 +131,5 @@
 
 @push('css')
     <link rel="stylesheet" href="{{ asset('assets/css/pages/project/card.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/pages/project/index.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/pages/project/index.css?v=1') }}">
 @endpush

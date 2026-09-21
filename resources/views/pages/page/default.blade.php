@@ -1,6 +1,7 @@
 {{-- Varsayılan şablon: ortalanmış, okumaya uygun genişlikte tek metin sütunu. --}}
 @extends('pages.page.layout')
-
+@section('meta_description', 'Gaziantep Web Tasarım Ajansı ' . $page->title . ' sayfası')
+@section('meta_keywords', 'gaziantep web tasarım ajansı, web site, gaziantep web kurumsal web sitesi')
 @section('page.body')
     <div class="sp">
         <div class="container">

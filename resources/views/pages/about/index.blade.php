@@ -1,5 +1,8 @@
 @extends('layout.app')
 @section('title', 'Hakkımızda')
+@section('meta_description', 'Gaziantep Web Tasarım Ajansı kimdir?, Gaziantep Web Tasarım Ajansı hakkında bilgi, Gaziantep Web Tasarım Ajansı hakkında detaylı bilgi.')
+@section('meta_keywords', 'gaziantep web tasarım ajansı')
+@section('meta_image', asset('assets/img/about.jpg'))
 
 
 @section('content')
@@ -48,8 +51,7 @@
                             <div class="mt-16 body-font fs-16">{!! $aboutContent !!}</div>
                         @endif
                         <div class="button mt-30" data-aos="fade-left" data-aos-duration="1000">
-                            <a class="default-btn" href="{{ route('iletisim') }}">İletişime Geç <i
-                                    class="fa-solid fa-arrow-right"></i></a>
+                            <a class="ui-btn ui-btn--solid" href="{{ route('iletisim') }}">İletişime Geç <i class="fa-solid fa-arrow-right"></i></a>
                         </div>
                     </div>
                 </div>

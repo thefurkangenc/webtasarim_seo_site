@@ -31,6 +31,8 @@
 @section('meta_description', (string) $seo['description'])
 @section('meta_keywords', (string) $seo['keywords'])
 @section('meta_image', (string) $seo['image'])
+@section('canonical', (string) $seo['canonical'])
+@section('robots', 'noindex, nofollow')
 
 @push('css')
     <link rel="stylesheet" href="{{ asset('assets/css/pages/project/card.css') }}">
@@ -71,7 +73,7 @@
 
     <!--===== PORTFOLIO DETAILS AREA START =====-->
 
-    <div class="portfolio-details-area sp">
+    <div class="portfolio-details-area sp body-font">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8">
@@ -211,34 +213,11 @@
                                         <ul>
                                             <li class="text">Etiketler:</li>
                                             @foreach ($project->tags as $tag)
-                                                <li class="tag"><a href="{{ route('projeler') }}">#{{ $tag->name }}</a></li>
+                                                <li class="tag">{{ $tag->name }}</li>
                                             @endforeach
                                         </ul>
                                     </div>
                                 @endif
-                                <div class="social-icons">
-                                    <ul>
-                                        <li class="text">Paylaş:</li>
-                                        <li class="icon">
-                                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ $shareUrl }}"
-                                                target="_blank" rel="noopener noreferrer" aria-label="Facebook'ta paylaş">
-                                                <i class="fa-brands fa-facebook-f"></i>
-                                            </a>
-                                        </li>
-                                        <li class="icon">
-                                            <a href="https://twitter.com/intent/tweet?url={{ $shareUrl }}&text={{ urlencode($project->title) }}"
-                                                target="_blank" rel="noopener noreferrer" aria-label="X'te paylaş">
-                                                <i class="fa-brands fa-x-twitter"></i>
-                                            </a>
-                                        </li>
-                                        <li class="icon">
-                                            <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ $shareUrl }}"
-                                                target="_blank" rel="noopener noreferrer" aria-label="LinkedIn'de paylaş">
-                                                <i class="fa-brands fa-linkedin-in"></i>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -283,9 +262,9 @@
 
                                 @if (filled($project->project_url))
                                     <div class="button mt-20">
-                                        <a class="default-btn" href="{{ $project->project_url }}" target="_blank"
+                                        <a class="ui-btn ui-btn--outline" href="{{ $project->project_url }}" target="_blank"
                                             rel="noopener noreferrer">
-                                            Siteyi Görüntüle
+                                            Siteyi Görüntüle <i class="fa-solid fa-arrow-up-right-from-square"></i>
                                         </a>
                                     </div>
                                 @endif
@@ -298,8 +277,8 @@
                             </h3>
                             <p class="mt-10">İhtiyacınızı anlatın, size uygun kurguyu birlikte çıkaralım.</p>
                             <div class="button mt-20">
-                                <a class="default-btn" href="{{ route('iletisim') }}">
-                                    Teklif Alın
+                                <a class="ui-btn ui-btn--solid" href="{{ route('iletisim') }}">
+                                    Teklif Alın <i class="fa-solid fa-arrow-right"></i>
                                 </a>
                             </div>
                         </div>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Blog\Blog;
+use App\Models\BlogCategory\BlogCategory;
 use App\Models\Page\Page;
 use App\Models\Project\Project;
 use App\Models\Service\Service;
@@ -60,6 +61,12 @@ return [
             'query' => fn () => Blog::query()->where('status', Blog::STATUS_PUBLISHED)->orderByDesc('published_at'),
             'option_label' => fn (Blog $blog) => $blog->title,
         ],
+        'blog-category' => [
+            'label' => 'Blog Kategorisi',
+            'model' => BlogCategory::class,
+            'query' => fn () => BlogCategory::query()->where('is_active', true)->orderBy('sort_order'),
+            'option_label' => fn (BlogCategory $category) => $category->name,
+        ],
         'project' => [
             'label' => 'Proje',
             'model' => Project::class,
@@ -78,6 +85,7 @@ return [
         'hizmetler' => 'Hizmetler (liste)',
         'blog' => 'Blog (liste)',
         'projeler' => 'Neler Yaptık (liste)',
+        'referanslar' => 'Referanslar (liste)',
         'iletisim' => 'İletişim',
         'kvkk' => 'KVKK Aydınlatma Metni',
         'cerez-politikasi' => 'Çerez Politikası',

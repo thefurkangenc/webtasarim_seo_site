@@ -1,6 +1,7 @@
 @extends('layout.app')
 @section('title', $title)
-
+@section('meta_description', 'Gaziantep Web Tasarım Ajansı ' . $title . ' sayfası')
+@section('meta_keywords', 'gaziantep web tasarım ajansı, ' . $title . ' sayfası')
 @section('content')
     <div class="inner-hero" style="background-image: url({{ asset('assets/img/bg/hero12-bg1.png') }});">
         <div class="container">

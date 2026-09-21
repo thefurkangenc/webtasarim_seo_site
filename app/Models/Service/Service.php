@@ -239,7 +239,7 @@ class Service extends Model implements LinksToPublicPage, RedirectsOnMove, Submi
         }
 
         if (filled($seo['description']) && ! $mentions($seo['description'])) {
-            $seo['description'] = rtrim($seo['description'], ' .').". {$regionName} bölgesinde hizmet veriyoruz.";
+            $seo['description'] = rtrim($seo['description'], ' .')."";
         }
 
         return $seo;
@@ -263,4 +263,5 @@ class Service extends Model implements LinksToPublicPage, RedirectsOnMove, Submi
             'seo' => Placeholder::stripAll($this->seoMeta()),
         ];
     }
+
 }

@@ -14,6 +14,9 @@
 @section('meta_description', (string) $seo['description'])
 @section('meta_keywords', (string) $seo['keywords'])
 @section('meta_image', (string) $seo['image'])
+@section('canonical', (string) $seo['canonical'])
+@section('robots', (string) $seo['robots'])
+
 
 @section('content')
     <div class="inner-hero" style="background-image: url({{ asset('assets/img/bg/hero12-bg1.png') }});">
@@ -22,7 +25,12 @@
                 <div class="col-lg-8 m-auto text-center">
                     <div class="inner-main-heading">
                         @if ($blog->category)
-                            <span class="blog-detail-hero__category">{{ $blog->category->name }}</span>
+                            @php($heroCategoryUrl = $blog->category->publicUrl())
+                            @if ($heroCategoryUrl)
+                                <a href="{{ $heroCategoryUrl }}" class="blog-detail-hero__category">{{ $blog->category->name }}</a>
+                            @else
+                                <span class="blog-detail-hero__category">{{ $blog->category->name }}</span>
+                            @endif
                         @endif
                         <h1>{{ $blog->title }}</h1>
                         <div class="breadcrumbs-pages">
@@ -31,6 +39,10 @@
                                 <li class="angle"><i class="fa-solid fa-angle-right"></i></li>
                                 <li><a href="{{ route('blog') }}">Blog</a></li>
                                 <li class="angle"><i class="fa-solid fa-angle-right"></i></li>
+                                @if ($blog->category && $blog->category->publicUrl())
+                                    <li><a href="{{ $blog->category->publicUrl() }}">{{ $blog->category->name }}</a></li>
+                                    <li class="angle"><i class="fa-solid fa-angle-right"></i></li>
+                                @endif
                                 <li>{{ Str::limit($blog->title, 48) }}</li>
                             </ul>
                         </div>
@@ -40,7 +52,7 @@
         </div>
     </div>
 
-    <section class="blog-detail sp" aria-label="Blog yazısı">
+    <section class="blog-detail sp body-font" aria-label="Blog yazısı">
         <div class="container">
             <div class="row g-4">
                 <div class="col-lg-8">
@@ -114,7 +126,7 @@
                                     <span class="blog-detail__tags-label">Etiketler</span>
                                     <ul>
                                         @foreach ($blog->tags as $tag)
-                                            <li><a href="{{ route('blog') }}">#{{ $tag->name }}</a></li>
+                                            <li><a href="{{ route('blog.etiket', $tag->slug) }}">#{{ $tag->name }}</a></li>
                                         @endforeach
                                     </ul>
                                 </div>
@@ -159,3 +171,7 @@
 
     @include('pages.blog.partials.cta')
 @endsection
+
+@push('css')
+    <link rel="stylesheet" href="{{ asset('assets/css/pages/blog/taxonomy.css') }}">
+@endpush

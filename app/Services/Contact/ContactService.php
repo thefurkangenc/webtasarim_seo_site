@@ -54,6 +54,7 @@ class ContactService
             throw new DomainException('İletişim formu şu anda kapalıdır.');
         }
 
+
         if (filled($data['website'] ?? null)) {
             return $this->successMessage();
         }

@@ -4,10 +4,13 @@ namespace App\Services\Sitemap;
 
 use App\Jobs\GenerateSitemapJob;
 use App\Models\Blog\Blog;
+use App\Models\BlogCategory\BlogCategory;
 use App\Models\Page\Page;
 use App\Models\Project\Project;
 use App\Models\ProjectCategory\ProjectCategory;
+use App\Models\Reference\Reference;
 use App\Models\Service\Service;
+use App\Models\Tag\Tag;
 use App\Services\Setting\SettingService;
 use App\Support\AdminPrefix;
 use App\Support\ModuleRegistry;
@@ -125,6 +128,7 @@ class SitemapService
             'services' => $enabled['services'] ? $this->writeServices() : $this->disable('services'),
             'regions' => $enabled['regions'] ? $this->writeRegions() : $this->disable('regions'),
             'projects' => $enabled['projects'] ? $this->writeProjects() : $this->disable('projects'),
+            'references' => $enabled['references'] ? $this->writeReferences() : $this->disable('references'),
             'extra' => $this->writeExtra(),
         ];
 
@@ -187,7 +191,13 @@ class SitemapService
         return $this->writeSource('pages', $urls);
     }
 
-    /** @return array{files: array<int, string>, count: int} */
+    /**
+     * Blog: yazı + kategori + etiket adresleri tek kaynakta. Taksonomi için
+     * ayrı bir kaynak açılmadı — enabledSources() kaydedilmiş listeye baktığı
+     * için yeni bir anahtar mevcut kurulumlarda sessizce KAPALI başlardı.
+     *
+     * @return array{files: array<int, string>, count: int}
+     */
     private function writeBlog(): array
     {
         $urls = [];
@@ -202,6 +212,33 @@ class SitemapService
                     $urls[] = ['loc' => $post->publicUrl(), 'lastmod' => $post->updated_at, 'image' => $this->coverImage($post)];
                 }
             });
+
+        $published = fn ($query) => $query->where('status', Blog::STATUS_PUBLISHED);
+
+        // Yayında yazısı olmayan kategori/etiket boş sayfa demek — site haritasına
+        // konmaz, aksi halde Google'a bilerek ince içerik sunmuş oluruz.
+        $categories = BlogCategory::query()
+            ->where('is_active', true)
+            ->whereHas('blogs', $published)
+            ->with('seo')
+            ->get();
+
+        foreach ($categories as $category) {
+            if ($this->isNoindex($category)) {
+                continue;
+            }
+
+            $urls[] = ['loc' => $category->publicUrl(), 'lastmod' => $category->updated_at, 'image' => null];
+        }
+
+        $tags = Tag::query()
+            ->where('is_active', true)
+            ->whereHas('blogs', $published)
+            ->get();
+
+        foreach ($tags as $tag) {
+            $urls[] = ['loc' => route('blog.etiket', $tag->slug), 'lastmod' => $tag->updated_at, 'image' => null];
+        }
 
         return $this->writeSource('blog', $urls);
     }
@@ -301,6 +338,27 @@ class SitemapService
             });
 
         return $this->writeSource('projects', $urls);
+    }
+
+    /**
+     * Referanslar yalnızca liste adresidir — kayıtların kendi ön yüz
+     * sayfası yok. Modül kapalıyken 404 döndüğü için kaynak da düşer.
+     *
+     * @return array{files: array<int, string>, count: int}
+     */
+    private function writeReferences(): array
+    {
+        if (! app(ModuleRegistry::class)->isActive('reference')) {
+            return $this->disable('references');
+        }
+
+        $latest = Reference::query()->max('updated_at');
+
+        return $this->writeSource('references', [[
+            'loc' => route('referanslar'),
+            'lastmod' => $latest ? Carbon::parse($latest) : null,
+            'image' => null,
+        ]]);
     }
 
     /** Panelde elle eklenen ek adresler — kaynak anahtarı yok, her zaman denenir. */

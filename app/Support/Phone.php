@@ -76,6 +76,31 @@ class Phone
     }
 
     /**
+     * WhatsApp bağlantısı (`wa.me`). Numara uluslararası biçimde ve YALNIZCA
+     * rakam olmak zorunda — `+`, boşluk veya parantez kalirsa WhatsApp
+     * bağlantıyı açmaz, sessizce boş bir sohbet ekranı gelir.
+     *
+     * Başındaki 0 Türkiye koduyla değiştirilir (`tel:` ile aynı kural);
+     * numara zaten 90 ile başlıyorsa dokunulmaz.
+     */
+    public static function whatsapp(?string $phone, ?string $message = null): ?string
+    {
+        $digits = self::digits($phone);
+
+        if ($digits === '') {
+            return null;
+        }
+
+        if (str_starts_with($digits, '0')) {
+            $digits = '90'.substr($digits, 1);
+        }
+
+        $url = 'https://wa.me/'.$digits;
+
+        return filled($message) ? $url.'?text='.rawurlencode($message) : $url;
+    }
+
+    /**
      * Serbest formatlı bir telefon numarasını `tel:` bağlantısına çevirir.
      * Ülke verilmişse E.164 üretir. Verilmemişse eski kural: başındaki 0
      * Türkiye kodu (90) ile değiştirilir.

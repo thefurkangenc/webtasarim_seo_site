@@ -32,6 +32,11 @@ class ServiceRegion extends Model
         ];
     }
 
+    public function isMain(): bool
+    {
+        return $this->parent_id === null;
+    }
+
     public function parent(): BelongsTo
     {
         return $this->belongsTo(self::class, 'parent_id');

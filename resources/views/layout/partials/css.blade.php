@@ -23,16 +23,21 @@
 <link rel="stylesheet" href="{{ asset('assets/css/slick-slider.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/owl.carousel.min.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/aos.css') }}">
-<link rel="stylesheet" href="{{ asset('assets/css/swiper%4014.2.0/swiper-bundle.min.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/mobile-menu.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/utility.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/main.css?v='.time()) }}">
+<link rel="stylesheet" href="{{ asset('assets/css/custom.css?v='.time()) }}">
+<link rel="stylesheet" href="{{ asset('assets/css/layout/header.css?v='.time()) }}">
 <link rel="stylesheet" href="{{ asset('assets/css/integrations.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/references.css') }}">
 @if (\App\Support\Settings::bool('cookie.enabled'))
     <link rel="stylesheet" href="{{ asset('assets/css/cookie-banner.css') }}">
 @endif
 <link rel="stylesheet" href="{{ asset('assets/css/notices.css') }}">
+{{-- Teklif formu + yuzen CTA her sayfada var (acilir pencere layout'ta basiliyor).
+     Bilesenden @push ile gonderilemez: layout <head>'i, bilesen govdenin sonunda. --}}
+<link rel="stylesheet" href="{{ asset('assets/css/sections/quote-form.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/sections/floating-cta.css') }}">
 
 @stack('css')
 

@@ -3,10 +3,12 @@
 namespace App\Services\BrokenLink;
 
 use App\Models\Blog\Blog;
+use App\Models\BlogCategory\BlogCategory;
 use App\Models\Page\Page;
 use App\Models\Project\Project;
 use App\Models\ProjectCategory\ProjectCategory;
 use App\Models\Service\Service;
+use App\Models\Tag\Tag;
 use App\Services\Redirect\RedirectResolver;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Request;
@@ -124,6 +126,8 @@ class LinkChecker
             'hizmetler.show-region' => $this->checkRegion($route->parameter('slug'), $route->parameter('region')),
             'projeler.show' => $this->checkRecord(Project::where('slug', $route->parameter('slug'))->first(), 'Proje'),
             'projeler.kategori' => $this->checkCategory($route->parameter('slug')),
+            'blog.kategori' => $this->checkBlogCategory($route->parameter('slug')),
+            'blog.etiket' => $this->checkTag($route->parameter('slug')),
             default => null,
         };
     }
@@ -167,6 +171,20 @@ class LinkChecker
         return ProjectCategory::where('slug', $slug)->where('is_active', true)->exists()
             ? null
             : $this->broken('internal', 404, 'not_found', 'Böyle bir proje kategorisi yok ya da pasif.');
+    }
+
+    private function checkBlogCategory(?string $slug): ?array
+    {
+        return BlogCategory::where('slug', $slug)->where('is_active', true)->exists()
+            ? null
+            : $this->broken('internal', 404, 'not_found', 'Böyle bir blog kategorisi yok ya da pasif.');
+    }
+
+    private function checkTag(?string $slug): ?array
+    {
+        return Tag::where('slug', $slug)->where('is_active', true)->exists()
+            ? null
+            : $this->broken('internal', 404, 'not_found', 'Böyle bir etiket yok ya da pasif.');
     }
 
     /**

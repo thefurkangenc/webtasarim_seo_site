@@ -27,17 +27,32 @@ return [
     'provider_id' => env('AUTO_BLOG_PROVIDER_ID'),
 
     'text' => [
-        'model' => env('AUTO_BLOG_TEXT_MODEL', 'gpt-4o-mini'),
-        'temperature' => 0.7,
+        'model' => env('AUTO_BLOG_TEXT_MODEL', 'gpt-5.6-luna'),
         /*
-        | Yanıt kesilirse JSON bozulur ve üretim hata verir. Türkçe HTML'de
-        | kabaca kelime başına 2 token gider; `words` büyütülürse bu da
-        | büyütülmelidir (gpt-4o-mini sınırı 16384).
+        | gpt-6-astra bir muhakeme modelidir ve `temperature` KABUL ETMEZ —
+        | resmî geçiş kılavuzu parametrenin kaldırılmasını söyler. Onun yerine
+        | muhakeme derinliği ayarlanır: low | medium | high | xhigh | max
+        | ('none' desteklenmez). Blog metni yazmak muhakeme isteyen bir iş
+        | değil; düşük tutmak bütçeyi gövdeye bırakır.
         */
-        'max_tokens' => 8000,
-        'timeout' => 180,
+        'reasoning_effort' => 'low',
+        /*
+        | DİKKAT: bu bütçe muhakeme token'ları + JSON çıktısının TOPLAMIDIR.
+        | Dar tutulunca model gövdeyi bütçeye sığdırmak için kısaltıyor —
+        | 8000 token'da 2000 kelimelik Türkçe HTML çıkmıyordu. Türkçe'de
+        | kelime başına ~2,5 token gider, HTML etiketleri de üstüne biner.
+        | Model sınırı 128.000.
+        */
+        'max_tokens' => 32000,
+        // Genişletme turu da bu süreyi kullanır; GenerateAutoBlogJob hesaba katar.
+        'timeout' => 240,
         // Modelden istenecek gövde uzunluğu.
         'words' => '1500-2000',
+        /*
+        | Gövde bu sayının altında kalırsa TEK bir genişletme turu yapılır.
+        | `words` değişirse burası da güncellenmeli.
+        */
+        'min_words' => 1200,
         /*
         | Konuyu model kendisi seçtiği için, tekrar etmemesi adına mevcut
         | yazıların başlıkları prompta eklenir. Bu sayı kaç başlık
@@ -48,10 +63,15 @@ return [
 
     'image' => [
         'enabled' => true,
-        'model' => env('AUTO_BLOG_IMAGE_MODEL', 'gpt-image-1-mini'),
-        // Yatay üretilir; MediaService blog.cover presetiyle 1200x630'a kırpar.
-        'size' => '1536x1024',
-        // low | medium | high — medium yaklaşık 0,015 USD/görsel.
+        'model' => env('AUTO_BLOG_IMAGE_MODEL', 'gpt-image-2.5-sunburst'),
+        /*
+        | config/media.php > presets.blog.cover ile AYNI olmalı (1536x512 = 3:1).
+        | gpt-image-2.5 en az 655.360 piksel ister: 1200x400 = 480.000 ve
+        | reddedilir, 1536x512 = 786.432 geçer. İki kenar da 16'nın katı,
+        | oran tam 3:1 (izin verilen üst sınır).
+        */
+        'size' => '1536x512',
+        // low | medium | high | xhigh | max — metin ağırlıklı kapakta medium alt sınır.
         'quality' => env('AUTO_BLOG_IMAGE_QUALITY', 'medium'),
         'timeout' => 180,
     ],
@@ -66,5 +86,24 @@ return [
         // Yazar. Boşsa en eski kullanıcı atanır; cron'da oturum yoktur.
         'author_id' => null,
     ],
+
+    'tags' => [
+        'Kurumsal Web Sitesi',
+        'Web Sitesi Fiyatları',
+        'Google Ads',
+        'Sosyal Medya Reklamları',
+        'Organik Trafik',
+        'Google Sıralaması',
+        'Özel Yazılım & Otomasyon',
+        'Dijital Dönüşüm',
+        'ERP - CRM',
+        'İş Yönetimi',
+        'Pazaryeri',
+        'Mobil Uygulama',
+        'Yapay Zeka',
+        'Trendyol',
+        'Online Satış',
+        'Google Hizmetleri',
+    ]
 
 ];

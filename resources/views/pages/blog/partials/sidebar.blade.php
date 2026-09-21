@@ -23,7 +23,11 @@
                     <span class="blog-detail-sidebar__icon" aria-hidden="true"><i class="fa-regular fa-folder"></i></span>
                     <span class="blog-detail-sidebar__text">
                         <span class="blog-detail-sidebar__label">Kategori</span>
-                        <span>{{ $blog->category->name }}</span>
+                        @if ($blog->category->publicUrl())
+                            <a href="{{ $blog->category->publicUrl() }}">{{ $blog->category->name }}</a>
+                        @else
+                            <span>{{ $blog->category->name }}</span>
+                        @endif
                     </span>
                 </li>
             @endif
@@ -38,6 +42,17 @@
             @endif
         </ul>
     </div>
+
+    @if ($blog->tags->isNotEmpty())
+        <div class="blog-detail-sidebar__card">
+            <h2 class="blog-detail-sidebar__title">Etiketler</h2>
+            <div class="blog-taxonomy-cloud">
+                @foreach ($blog->tags as $sidebarTag)
+                    <a href="{{ route('blog.etiket', $sidebarTag->slug) }}">#{{ $sidebarTag->name }}</a>
+                @endforeach
+            </div>
+        </div>
+    @endif
 
     <div class="blog-detail-sidebar__card blog-detail-sidebar__share">
         <h2 class="blog-detail-sidebar__title">Paylaş</h2>
@@ -60,10 +75,8 @@
     <div class="blog-detail-sidebar__cta">
         <h2 class="blog-detail-sidebar__cta-title">Projeniz için destek</h2>
         <p>Web tasarım, SEO veya dijital pazarlama konusunda yardıma mı ihtiyacınız var? Ekibimiz size özel çözüm önerir.</p>
-        <a class="default-btn" href="{{ route('iletisim') }}">
-            Teklif Alın
-            <span class="arrow1"><i class="fa-solid fa-arrow-right"></i></span>
-            <span class="arrow2"><i class="fa-solid fa-arrow-right"></i></span>
+        <a class="ui-btn ui-btn--solid ui-btn--light" href="{{ route('iletisim') }}">
+            Teklif Alın <i class="fa-solid fa-arrow-right"></i>
         </a>
     </div>
 

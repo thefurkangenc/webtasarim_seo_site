@@ -179,6 +179,7 @@ final class SchemaContext
             'hizmetler' => self::collection('Hizmetler', route('hizmetler')),
             'blog' => self::collection('Blog', route('blog')),
             'projeler' => self::collection('Neler Yaptık', route('projeler')),
+            'referanslar' => self::collection('Referanslar', route('referanslar')),
             'kvkk' => self::legal('KVKK Aydınlatma Metni', route('kvkk')),
             'cerez-politikasi' => self::legal('Çerez Politikası', route('cerez-politikasi')),
             default => self::generic(),

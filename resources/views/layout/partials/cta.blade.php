@@ -13,7 +13,7 @@
                         scalable IT</p>
                     <div class="space32"></div>
                     <div class="btn-area1" data-aos="fade-left" data-aos-duration="1000">
-                        <a href="contact.html" class="theme-btn28">Schedule a Free Consultation</a>
+                        <a href="{{ route('iletisim') }}" class="ui-btn ui-btn--solid ui-btn--light">Ücretsiz Görüşme Planlayın</a>
                     </div>
                 </div>
             </div>

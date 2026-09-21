@@ -14,13 +14,13 @@
                         <p class="cookie-banner__text">{!! $banner['description'] !!}</p>
                     </div>
                     <div class="cookie-banner__actions">
-                        <button type="button" class="cookie-btn cookie-btn--ghost" data-cookie-reject>
+                        <button type="button" class="ui-btn ui-btn--outline ui-btn--light ui-btn--sm" data-cookie-reject>
                             {{ $banner['reject_label'] }}
                         </button>
-                        <button type="button" class="cookie-btn cookie-btn--ghost" data-cookie-customize>
+                        <button type="button" class="ui-btn ui-btn--outline ui-btn--light ui-btn--sm" data-cookie-customize>
                             {{ $banner['customize_label'] }}
                         </button>
-                        <button type="button" class="cookie-btn cookie-btn--solid" data-cookie-accept>
+                        <button type="button" class="ui-btn ui-btn--solid ui-btn--light ui-btn--sm" data-cookie-accept>
                             {{ $banner['accept_label'] }}
                         </button>
                     </div>
@@ -60,7 +60,7 @@
                         <input type="checkbox" data-cookie-cat="marketing" @checked($consent['marketing'])>
                     </label>
                     <div class="cookie-banner__panel-actions">
-                        <button type="button" class="cookie-btn cookie-btn--solid" data-cookie-save>
+                        <button type="button" class="ui-btn ui-btn--solid ui-btn--light ui-btn--sm" data-cookie-save>
                             {{ $banner['save_label'] }}
                         </button>
                     </div>

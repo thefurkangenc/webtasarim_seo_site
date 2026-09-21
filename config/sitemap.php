@@ -1,9 +1,11 @@
 <?php
 
 use App\Models\Blog\Blog;
+use App\Models\BlogCategory\BlogCategory;
 use App\Models\Page\Page;
 use App\Models\Project\Project;
 use App\Models\ProjectCategory\ProjectCategory;
+use App\Models\Reference\Reference;
 use App\Models\Service\Service;
 use App\Models\ServiceRegion\ServiceRegion;
 
@@ -31,13 +33,15 @@ return [
     'sources' => [
         'static' => 'Statik sayfalar',
         'pages' => 'Sayfalar',
-        'blog' => 'Blog yazıları',
+        // Yazı + kategori + etiket adresleri birlikte — bkz. SitemapService::writeBlog().
+        'blog' => 'Blog yazıları, kategori ve etiketler',
         'services' => 'Hizmetler',
         'regions' => 'Hizmet × bölge sayfaları',
         // Liste + kategori + proje adresleri tek kaynakta. Liste adresi
         // bilinçli olarak `static_routes`'ta DEĞİL: modül kapatıldığında
         // hepsinin tek yerden düşmesi gerekiyor.
         'projects' => 'Projeler (Neler Yaptık)',
+        'references' => 'Referanslar',
     ],
 
     // Sabit ön yüz route'ları — isme göre route() ile çözülür.
@@ -61,9 +65,11 @@ return [
     'observed_models' => [
         Page::class,
         Blog::class,
+        BlogCategory::class,
         Service::class,
         ServiceRegion::class,
         Project::class,
         ProjectCategory::class,
+        Reference::class,
     ],
 ];

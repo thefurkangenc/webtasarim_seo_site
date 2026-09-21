@@ -1,8 +1,12 @@
 @extends('layout.app')
 
+@section('meta_description', 'Gaziantep Web Tasarım Ajansı, Gaziantep web tasarım hizmetleri, Gaziantep web tasarım fiyatları, Gaziantep web site fiyatları')
+@section('meta_keywords', 'gaziantep web tasarım ajansı, web tasarım fiyatları, web tasarım hizmetleri, web site fiyatları')
 @push('css')
     <link rel="stylesheet" href="{{ asset('assets/css/pages/home/index.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/pages/references/index.css') }}">
 @endpush
+
 
 @section('content')
     <!--===== HERO AREA START =====-->
@@ -29,14 +33,8 @@
                         </p>
                         {{-- <div class="buttons">
                             @if (filled($hero->button_text))
-                                <a href="{{ $hero->button_url ?: route('iletisim') }}" class="theme-btn11">
-                                    <span class="theme-btn11__shape"></span>
-                                    <span class="theme-btn11__shape"></span>
-                                    <span class="theme-btn11__shape"></span>
-                                    <span class="theme-btn11__shape"></span>
-                                    <span class="theme-btn11__text">{{ $hero->button_text }}</span>
-                                    <span class="arrow1"><i class="fa-solid fa-arrow-right"></i></span><span
-                                        class="arrow2"><i class="fa-solid fa-arrow-right"></i></span>
+                                <a href="{{ $hero->button_url ?: route('iletisim') }}" class="ui-btn ui-btn--solid ui-btn--light ui-btn--lg">
+                                    {{ $hero->button_text }} <i class="fa-solid fa-arrow-right"></i>
                                 </a>
                             @endif
                             <div class="video-buttton6 play-btn" href="https://www.youtube.com/watch?v=Y8XpQpW5OVY">
@@ -107,8 +105,8 @@
                 </div>
                 <div class="col-lg-8 text-end sm:text-start md:text-start md:mt-30 sm:mt-30">
                     <div class="button"     >
-                        <a href="{{route('hakkimizda')}}" class="default-btn ">
-                            <i style="font-size:15px;" class="fa-solid fa-phone-volume"></i> &nbsp; Detayları Konuşalım!
+                        <a href="{{ route('hakkimizda') }}" class="ui-btn ui-btn--solid">
+                            <i class="fa-solid fa-phone-volume"></i> Detayları Konuşalım!
                         </a>
                     </div>
                 </div>
@@ -168,17 +166,13 @@
     <!--===== ABOUT AREA END =====-->
 
     <!--===== SERVICE AREA START =====-->
-    @php
-        $homeServices = app(\App\Services\Service\ServiceService::class)->active(6);
-    @endphp
-
 
     <div class="service6 sp sec-bg5">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6">
                     <div class="heading6 _mt-50">
-                        <span class="sub-title">Hizmetlerimiz</span>
+                        <span class="sub-title">Hizmetler</span>
                         <h2 class="text-anime-style-3">İşinizi Büyütecek Hizmetler</h2>
                         <p class="mt-16">Web tasarım, SEO ve dijital pazarlama ile markanızı arama sonuçlarında öne çıkarıyoruz. İhtiyacınıza uygun çözümlerle daha fazla görünürlük, trafik ve müşteri hedefliyoruz.</p>
                     </div>
@@ -186,20 +180,14 @@
                 <div class="col-lg-6">
                     <div class="buttons text-end sm:text-start md:text-start sm:mt-20 md:mt-20" data-aos="fade-left"
                         data-aos-duration="1100">
-                        <a href="{{ route('hizmetler') }}" class="theme-btn11">
-                            <span class="theme-btn11__shape"></span>
-                            <span class="theme-btn11__shape"></span>
-                            <span class="theme-btn11__shape"></span>
-                            <span class="theme-btn11__shape"></span>
-                            <span class="theme-btn11__text">Tüm Hizmetler</span>
-                            <span class="arrow1"><i class="fa-solid fa-arrow-right"></i></span><span class="arrow2"><i
-                                    class="fa-solid fa-arrow-right"></i></span>
+                        <a href="{{ route('hizmetler') }}" class="ui-btn ui-btn--solid">
+                            Tüm Hizmetler <i class="fa-solid fa-arrow-right"></i>
                         </a>
                     </div>
                 </div>
             </div>
 
-            @if ($homeServices->isEmpty())
+            @if ($services->isEmpty())
                 <div class="row mt-30">
                     <div class="col-lg-8 m-auto text-center">
                         <p>Henüz yayınlanmış bir hizmet bulunmuyor.</p>
@@ -207,29 +195,29 @@
                 </div>
             @else
                 <div class="row mt-30">
-                    @foreach ($homeServices as $homeService)
+                    @foreach ($services as $service)
                         @php
-                            $homeServiceGeneric = $homeService->renderGeneric();
-                            $homeServiceCover = $homeService->getFirstMedia('cover');
+                            $serviceGeneric = $service->renderGeneric();
+                            $serviceCover = $service->getFirstMedia('cover');
                         @endphp
-                        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-duration="900">
+                        <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-duration="900">
                             <div class="service6-box mt-30">
-                                @if ($homeServiceCover)
+                                @if ($serviceCover)
                                     <div class="thumb">
-                                        <a href="{{ route('hizmetler.show', $homeService->slug) }}">
-                                            <img src="{{ $homeServiceCover->url() }}"
-                                                alt="{{ $homeServiceGeneric['title'] }}">
+                                        <a href="{{ route('hizmetler.show', $service->slug) }}">
+                                            <img src="{{ $serviceCover->url() }}"
+                                                alt="{{ $serviceGeneric['title'] }}">
                                         </a>
                                     </div>
                                 @endif
                                 <div class="content heading6">
                                     <h4><a
-                                            href="{{ route('hizmetler.show', $homeService->slug) }}">{{ $homeServiceGeneric['title'] }}</a>
+                                            href="{{ route('hizmetler.show', $service->slug) }}">{{ $serviceGeneric['title'] }}</a>
                                     </h4>
                                     <p class="mt-16">
-                                        {{ $homeServiceGeneric['excerpt'] ?: \Illuminate\Support\Str::limit(strip_tags((string) $homeServiceGeneric['content']), 120) }}
+                                        {{ $serviceGeneric['excerpt'] ?: \Illuminate\Support\Str::limit(strip_tags((string) $serviceGeneric['content']), 120) }}
                                     </p>
-                                    <a href="{{ route('hizmetler.show', $homeService->slug) }}" class="learn">Detaylı
+                                    <a href="{{ route('hizmetler.show', $service->slug) }}" class="learn">Detaylı
                                         Bilgi <span class="arrow1"><i class="fa-solid fa-arrow-right"></i></span><span
                                             class="arrow2"><i class="fa-solid fa-arrow-right"></i></span></a>
                                 </div>
@@ -245,107 +233,12 @@
     <!--===== SERVICE AREA END =====-->
 
     <!--===== CHOOSE AREA START =====-->
-    @php
-        $homeWhyChooseUs = app(\App\Services\WhyChooseUs\WhyChooseUsService::class)->active();
-        $homeWhyHeading = \App\Support\Settings::group('why_choose_us');
-    @endphp
-    <section class="home-why sp" aria-labelledby="home-why-title">
-        <div class="container">
-            <div class="row align-items-center g-4 g-lg-5">
-                <div class="col-lg-6">
-                    <div class="home-why__visual" data-aos="fade-right" data-aos-duration="900">
-                        <img src="{{ asset('assets/img/neden-biz.jpg') }}"
-                            alt="Web tasarım, yazılım ve dijital pazarlama çözümleri"
-                            width="640" height="520" loading="lazy">
-                    </div>
-                </div>
-
-                <div class="col-lg-6">
-                    <div class="home-why__content heading14">
-                        <span class="sub-title">
-                            <img style="width: 20px; height: 20px; margin-right: 5px;"
-                                src="{{ asset('assets/img/icons/icon.png') }}" alt="">
-                            Neden Biz?
-                        </span>
-
-                        <h2 id="home-why-title" class="text-anime-style-3">
-                            {{ $homeWhyHeading['title'] }}
-                        </h2>
-
-                        <p class="home-why__lead">
-                            {{ $homeWhyHeading['description'] }}
-                        </p>
-
-                        @if ($homeWhyChooseUs->isNotEmpty())
-                            <ul class="home-why__points">
-                                @foreach ($homeWhyChooseUs as $reason)
-                                    <li>
-                                        <i class="fa-solid fa-check" aria-hidden="true"></i>
-                                        <span>
-                                            <strong>{{ $reason->title }}</strong>
-                                            @if (filled($reason->description))
-                                                — {{ $reason->description }}
-                                            @endif
-                                        </span>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        @endif
-
-                        <div class="home-why__actions">
-                            <a href="{{ route('iletisim') }}" class="theme-btn27">Ücretsiz Görüşme Planlayın</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!--===== CHOOSE AREA END =====-->
+    <!--===== NEDEN BIZ =====-->
+    @include('pages.why-choose-us.partials.section')
+    <!--===== NEDEN BIZ END =====-->
     @php $homeReferences = app(\App\Services\Reference\ReferenceService::class)->active(); @endphp
     @if ($homeReferences->isNotEmpty())
-        <section class="home-refs sp sec-bg5" aria-labelledby="home-refs-title">
-            <div class="container">
-                <div class="home-refs__head text-center">
-                    <span class="sub-title">
-                        <img style="width: 20px; height: 20px; margin-right: 5px;"
-                            src="{{ asset('assets/img/icons/icon.png') }}" alt="">
-                        Referanslar
-                    </span>
-                    <h2 id="home-refs-title" class="text-anime-style-3">Bizimle Çalışan Şirketler</h2>
-                    <p class="home-refs__lead">
-                        Farklı sektörlerden yüzlerce işletme dijital dönüşümünde bizi tercih etti.
-                    </p>
-                </div>
-
-                <div class="home-refs__grid">
-                    @foreach ($homeReferences as $reference)
-                        @php $referenceLogo = $reference->getFirstMedia('logo'); @endphp
-                        @if ($referenceLogo)
-                            <div class="home-refs__item">
-                                @if (filled($reference->url))
-                                    <a href="{{ $reference->url }}" target="_blank" rel="noopener noreferrer"
-                                        title="{{ $reference->name }}">
-                                        <img src="{{ $referenceLogo->url('reference.logo') }}"
-                                            alt="{{ $reference->name }}" loading="lazy">
-                                    </a>
-                                @else
-                                    <img src="{{ $referenceLogo->url('reference.logo') }}"
-                                        alt="{{ $reference->name }}" loading="lazy">
-                                @endif
-                            </div>
-                        @endif
-                    @endforeach
-                </div>
-
-                <div class="home-refs__bar">
-                    <div class="home-refs__bar-text">
-                        <p class="home-refs__bar-title">Sıradaki başarı hikayesi sizinki olabilir!</p>
-                        <p class="home-refs__bar-note">Ücretsiz ön görüşme · Size özel teklif · Çözüm Odaklı Yaklaşım</p>
-                    </div>
-                    <a href="{{ route('iletisim') }}" class="default-btn">Detayları Konuşalım</a>
-                </div>
-            </div>
-        </section>
+        @include('pages.references.partials.section', ['references' => $homeReferences])
     @endif
     <!--===== GOOGLE YORUMLARI =====-->
     <x-googlecomment />
@@ -358,15 +251,18 @@
     @if ($homeBlogs->isNotEmpty())
         <div class="blog8 sp bg-cover bg-cover" style="background-image: url(assets/img/bg/sec-bg10.jpg);">
             <div class="container">
-                <div class="row">
-                    <div class="col-lg-8 m-auto text-center">
-                        <div class="heading10">
-                            <span class="sub-title" data-aos="zoom-in-left" data-aos-duration="900"><img
-                                    src="assets/img/icons/span10.svg" alt=""> Blog</span>
-                            <h2 class="text-anime-style-3">Güncel Yazılar ve İçgörüler</h2>
-                            <p class="mt-16">Web tasarım, SEO ve dijital pazarlama üzerine pratik rehberler paylaşıyoruz. Sitenizi arama sonuçlarında güçlendirecek güncel öneriler burada.</p>
-                        </div>
-                    </div>
+                <div class="home-refs__head text-center">
+
+                    <span class="sub-title">
+                        <img style="width: 20px; height: 20px; margin-right: 5px;"
+                            src="{{ asset('assets/img/icons/icon.png') }}" alt="">
+                        Blog
+                    </span>
+
+                    <h2 id="home-refs-title" class="text-anime-style-3">Blog Yazılarımız</h2>
+                    <p class="home-refs__lead">
+                        Gaziantep Web Tasarım Ajansı olarak: web siteler, dijital pazarlama ve SEO hizmetleri ile ilgili en güncel bilgileri ve en iyi çözümleri sunuyoruz.
+                    </p>
                 </div>
                 <div class="row mt-30">
                     @foreach ($homeBlogs as $homeBlog)

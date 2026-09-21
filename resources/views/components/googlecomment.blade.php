@@ -128,7 +128,7 @@ $homeGoogleReviewUrl = $homeGoogleReviewLink['url'] ?? null;
                     Google'da Yorumları Gör
                 </a>
             @else
-                <a href="{{ route('iletisim') }}" class="default-btn">Ücretsiz Teklif Alın</a>
+                <a href="{{ route('iletisim') }}" class="ui-btn ui-btn--solid">Ücretsiz Teklif Alın</a>
             @endif
         </div>
     </div>

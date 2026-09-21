@@ -5,10 +5,10 @@
     <x-admin::form.image name="logo_media_id" help="company.logo_media_id" label="Firma logosu" :media="$media['logo_media_id'] ?? null"
         hint="Üst menü ve Google arama önizlemesinde kullanılır." />
 
-    <x-admin::form.input name="name" help="company.name" label="Firma adı" required :value="$values['name'] ?? null" placeholder="Örn. Umay Dijital" />
+    <x-admin::form.input name="name" help="company.name" label="Firma adı" required :value="$values['name'] ?? null"  />
 
     <x-admin::form.input name="legal_name" help="company.legal_name" label="Yasal unvan" :value="$values['legal_name'] ?? null"
-        placeholder="Örn. Umay Dijital Yazılım A.Ş." />
+        placeholder="Örn. Etkisoft Yazılım" />
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-[20px] md:gap-[25px] mb-[20px] md:mb-[25px]">
         <x-admin::form.input name="phone" help="company.phone" label="Telefon" :value="$values['phone'] ?? null" placeholder="Örn. 0212 000 00 00"
@@ -17,6 +17,10 @@
         <x-admin::form.input name="fax" help="company.fax" label="Fax" :value="$values['fax'] ?? null" placeholder="Örn. 0212 000 00 01"
             wrapper="" />
     </div>
+
+    <x-admin::form.input name="whatsapp" help="company.whatsapp" label="WhatsApp numarası" :value="$values['whatsapp'] ?? null"
+        placeholder="Örn. 0532 000 00 00"
+        hint="Sitenin sağ alt köşesindeki WhatsApp butonu bu numarayı kullanır. Boş bırakılırsa telefon numarası kullanılır; ikisi de boşsa buton hiç görünmez." />
 
     <x-admin::form.input name="email" help="company.email" label="E-posta" type="email" :value="$values['email'] ?? null"
         placeholder="Örn. info@ornek.com" />

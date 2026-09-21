@@ -1,5 +1,8 @@
 @extends('layout.app')
 @section('title', 'İletişim')
+@section('meta_description', 'Gaziantep Web Tasarım Ajansı telefon numarası, Gaziantep web tasarım ajansı adresi')
+@section('meta_keywords', 'gaziantep web tasarım ajansı, telefon numarası, adres')
+
 @section('content')
     <!--===== HERO AREA START =====-->
 
@@ -73,13 +76,21 @@
                 <div class="col-lg-6 mt-60">
                     <div class="heading2">
                         <div class="contact2-form">
-                            <span class="sub-title" data-aos="zoom-in-left" data-aos-duration="900"><img
-                                    src="{{ asset('assets/img/icons/span3.svg') }}" alt="">İLETİŞİM</span>
-                            <h2 class="text-anime-style-3">{{ $heading }}</h2>
-                            @if (filled($intro))
-                                <p class="mt-16" data-aos="fade-right" data-aos-duration="900">{{ $intro }}</p>
-                            @endif
+                            <div class="container">
+                                <div class="home-refs__head">
 
+                                    <span class="sub-title">
+                                        <img style="width: 20px; height: 20px; margin-right: 5px;"
+                                            src="{{ asset('assets/img/icons/icon.png') }}" alt="">
+                                        İletişim
+                                    </span>
+
+                                <h2 id="home-refs-title" class="text-anime-style-3">{{ $heading }}</h2>
+                                <p class="home-refs__lead">
+                                    {{ $intro }}
+                                </p>
+                            </div>
+                        </div>
                             @if ($enabled)
                                 <form action="{{ route('iletisim.store') }}" method="POST" data-contact-form
                                     data-aos="fade-right" data-aos-duration="1000">
@@ -128,9 +139,8 @@
                                         </div>
                                         <div class="col-md-12">
                                             <div class="button mt-30">
-                                                <button class="theme-btn3" type="submit" data-contact-submit>Gönder
-                                                    <span class="arrow1"><i class="fa-solid fa-arrow-right"></i></span>
-                                                    <span class="arrow2"><i class="fa-solid fa-arrow-right"></i></span>
+                                                <button class="ui-btn ui-btn--solid" type="submit" data-contact-submit>
+                                                    Gönder <i class="fa-solid fa-arrow-right"></i>
                                                 </button>
                                             </div>
                                         </div>
@@ -144,7 +154,7 @@
                 </div>
                 <div class="col-lg-6">
                     <div class="contact2-image mt-60 image-anime reveal ml-40 md:ml-0 sm:ml-0 md:mt-30 sm:mt-30">
-                        <img class="w-full" src="assets/img/others/contact2-image.png" alt="">
+                        <img style="border-radius: 5px;" class="w-full" src="{{asset('assets/img/contact.jpg')}}" alt="">
                     </div>
                 </div>
             </div>
@@ -153,115 +163,9 @@
 
     <!--===== CONTACT AREA END =====-->
 
-    <!--===== CHOOSE AREA START =====-->
-
-    <div class="choose2 sp sec-bg2">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="choose2-images mr-40 sm:mr-0 md:mr-0">
-                        <div class="image1 image-anime reveal">
-                            <img src="assets/img/others/choose2-image1.png" alt="">
-                        </div>
-                        <div class="image2 image-anime reveal">
-                            <img src="assets/img/others/choose2-image2.png" alt="">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-6 sm:mt-30 md:mt-30">
-                    <div class="heading2">
-                        <span class="sub-title" data-aos="zoom-in-left" data-aos-duration="900"><img
-                                src="assets/img/icons/span3.svg" alt="">WHY CHOOSE US </span>
-                        <h2 class="text-anime-style-3">Your Success, Our Priority</h2>
-                        <p class="mt-16" data-aos="fade-right" data-aos-duration="800">Proven track record of boosting
-                            engagement and sales. Expert team fluent in the latest trends and technologies. Dedicated
-                            account managers ensuring personalized service.</p>
-
-                        <div class="choose2-apps">
-                            <div class="row">
-                                <div class="col-lg-6" data-aos="fade-up" data-aos-duration="900" data-aos-delay="200">
-                                    <div class="choose2-single-apps">
-                                        <div class="apps-image">
-                                            <img src="assets/img/apps/choose-app1.png" alt="">
-                                        </div>
-                                        <div class="apps-info">
-                                            <h4>12,570+</h4>
-                                            <p>Account Boosted</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-6" data-aos="fade-up" data-aos-duration="900" data-aos-delay="300">
-                                    <div class="choose2-single-apps">
-                                        <div class="apps-image">
-                                            <img src="assets/img/apps/choose-app2.png" alt="">
-                                        </div>
-                                        <div class="apps-info">
-                                            <h4>350+</h4>
-                                            <p>Account Managed</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-6" data-aos="fade-up" data-aos-duration="900" data-aos-delay="350">
-                                    <div class="choose2-single-apps">
-                                        <div class="apps-image">
-                                            <img src="assets/img/apps/choose-app3.png" alt="">
-                                        </div>
-                                        <div class="apps-info">
-                                            <h4>5,482+</h4>
-                                            <p>Account Optimized</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-6" data-aos="fade-up" data-aos-duration="900" data-aos-delay="400">
-                                    <div class="choose2-single-apps">
-                                        <div class="apps-image">
-                                            <img src="assets/img/apps/choose-app4.png" alt="">
-                                        </div>
-                                        <div class="apps-info">
-                                            <h4>5,558+</h4>
-                                            <p>Account Grow</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-6" data-aos="fade-up" data-aos-duration="900" data-aos-delay="450">
-                                    <div class="choose2-single-apps">
-                                        <div class="apps-image">
-                                            <img src="assets/img/apps/choose-app5.png" alt="">
-                                        </div>
-                                        <div class="apps-info">
-                                            <h4>4,568+</h4>
-                                            <p>User Hired</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-6" data-aos="fade-up" data-aos-duration="900" data-aos-delay="500">
-                                    <div class="choose2-single-apps">
-                                        <div class="apps-image">
-                                            <img src="assets/img/apps/choose-app6.png" alt="">
-                                        </div>
-                                        <div class="apps-info">
-                                            <h4>9,587+</h4>
-                                            <p>Account Promoted</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!--===== CHOOSE AREA END =====-->
+    <!--===== NEDEN BIZ =====-->
+    @include('pages.why-choose-us.partials.section', ['bg' => 'sec-bg2'])
+    <!--===== NEDEN BIZ END =====-->
 
     @if ($map_embed)
         <div class="contact-map-page">

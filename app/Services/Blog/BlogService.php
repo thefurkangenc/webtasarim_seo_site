@@ -3,6 +3,8 @@
 namespace App\Services\Blog;
 
 use App\Models\Blog\Blog;
+use App\Models\BlogCategory\BlogCategory;
+use App\Models\Tag\Tag;
 use App\Support\Slug;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -66,16 +68,62 @@ class BlogService
         });
     }
 
-    /** Ön yüz blog listesi — yalnızca yayındaki yazılar, sayfalı. */
-    public function listing(int $perPage = 9): array
+    /**
+     * Ön yüz blog listesi — yalnızca yayındaki yazılar, sayfalı. Kategori ve
+     * etiket sayfaları da burayı kullanır; view ikisini de ayırt edebilsin diye
+     * seçili taksonomi dönüşte geri verilir.
+     */
+    public function listing(?BlogCategory $category = null, ?Tag $tag = null, int $perPage = 9): array
     {
         return [
             'blogs' => Blog::where('status', Blog::STATUS_PUBLISHED)
-                ->with(['media', 'author:id,name', 'category:id,name'])
+                ->with(['media', 'author:id,name', 'category:id,name,slug'])
+                ->when($category, fn ($query, BlogCategory $selected) => $query->where('blog_category_id', $selected->id))
+                ->when($tag, fn ($query, Tag $selected) => $query->whereHas('tags', fn ($q) => $q->whereKey($selected->id)))
                 ->orderByDesc('is_featured')
                 ->orderByDesc('published_at')
                 ->paginate($perPage),
+            'categories' => $this->categories(),
+            'category' => $category,
+            'tag' => $tag,
         ];
+    }
+
+    /**
+     * Liste sayfasının filtre çubuğu: yayında yazısı olan kategoriler, yazı
+     * sayılarıyla. Boş kategori çubuğa girmez — tıklandığında boş sayfa açan
+     * bir link SEO'da da kullanıcıda da bedava zarar.
+     *
+     * @return Collection<int, BlogCategory>
+     */
+    public function categories(): Collection
+    {
+        $published = fn ($query) => $query->where('status', Blog::STATUS_PUBLISHED);
+
+        return BlogCategory::where('is_active', true)
+            ->whereHas('blogs', $published)
+            ->withCount(['blogs' => $published])
+            ->orderBy('sort_order')
+            ->get();
+    }
+
+    /** Ön yüzde slug ile kategori. Pasif kategori 404'e düşer. */
+    public function findCategoryBySlug(string $slug): ?BlogCategory
+    {
+        return BlogCategory::where('slug', $slug)
+            ->where('is_active', true)
+            ->with('seo.ogMedia')
+            ->first();
+    }
+
+    /**
+     * Ön yüzde slug ile etiket. Etiketler modüller arası paylaşıldığı için
+     * yayında blog yazısı olmayan bir etiket de eşleşebilir; o durumda sayfa
+     * boş durumla açılır — etiket gerçekten var, 404 doğru cevap değil.
+     */
+    public function findTagBySlug(string $slug): ?Tag
+    {
+        return Tag::where('slug', $slug)->where('is_active', true)->first();
     }
 
     /**

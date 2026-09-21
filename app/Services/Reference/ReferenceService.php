@@ -66,6 +66,12 @@ class ReferenceService
             ->get();
     }
 
+    /** @return array{references: Collection<int, Reference>} */
+    public function listing(): array
+    {
+        return ['references' => $this->active()];
+    }
+
     /** @return array<string, mixed> */
     private function attributes(array $data): array
     {

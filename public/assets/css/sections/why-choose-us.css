@@ -1,0 +1,72 @@
+/*
+ * "Neden Biz" bölümü — anasayfa ve iletişim sayfası ortak kullanır.
+ * Markup: resources/views/pages/why-choose-us/partials/section.blade.php
+ *
+ * Bu dosyayı partial kendisi yükler (@once + @push('css')); sayfaya elle
+ * eklenmez. Eskiden kurallar pages/home/index.css içinde .home-why* adıyla
+ * duruyordu — tek sayfaya ait olmadığı için buraya taşındı ve adı
+ * sayfadan bağımsız hale getirildi.
+ */
+
+.why-us__visual img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    box-shadow: 0 16px 40px rgba(12, 7, 35, 0.1);
+}
+
+.why-us__content .sub-title {
+    margin-bottom: 12px;
+}
+
+.why-us__content h2 {
+    margin-bottom: 14px;
+}
+
+.why-us__lead {
+    margin: 0 0 24px;
+    color: #4e4e55;
+    font-size: 16px;
+    line-height: 1.65;
+    text-transform: none;
+}
+
+.why-us__points {
+    margin: 0 0 28px;
+    padding: 0;
+    list-style: none;
+}
+
+.why-us__points li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 0;
+    border-top: 1px solid rgba(5, 5, 28, 0.08);
+    color: #4e4e55;
+    font-size: 15px;
+    line-height: 1.55;
+}
+
+.why-us__points li:last-child {
+    border-bottom: 1px solid rgba(5, 5, 28, 0.08);
+}
+
+.why-us__points i {
+    flex: none;
+    margin-top: 4px;
+    color: var(--vtc-bg-main17, #6F00FF);
+    font-size: 13px;
+}
+
+.why-us__points strong {
+    color: var(--vtc-text-title3, #05051C);
+    font-weight: 600;
+}
+
+@media (max-width: 991px) {
+    .why-us__visual {
+        margin-bottom: 10px;
+    }
+}

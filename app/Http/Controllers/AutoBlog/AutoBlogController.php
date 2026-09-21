@@ -23,7 +23,10 @@ class AutoBlogController extends Controller
     {
         abort_if(blank(config('auto-blog.secret')) || ! hash_equals((string) config('auto-blog.secret'), $secret), 404);
 
-        GenerateAutoBlogJob::dispatch($request->only(['keywords', 'title', 'notes']));
+        GenerateAutoBlogJob::dispatch(array_filter(
+            $request->only(['keywords', 'title', 'notes']),
+            fn ($value) => is_string($value) && trim($value) !== '',
+        ));
 
         return $this->success('Yazı üretimi kuyruğa alındı.');
     }

@@ -1,0 +1,134 @@
+/*
+ * Blog kategori / etiket gezinmesi.
+ * Renk ve yuvarlaklık değerleri main.css'teki .blog-detail-sidebar ve
+ * .blog-detail__tags bloklarıyla aynı — oradan kopyalandı, yeni token icat
+ * edilmedi ki tema tek elden değişsin.
+ */
+
+/* --- Kart üzerindeki kategori rozeti artık link --- */
+a.blog-card__category,
+a.blog-detail-hero__category {
+    text-decoration: none;
+    transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+a.blog-card__category:hover {
+    color: #05051C;
+}
+
+a.blog-detail-hero__category:hover {
+    opacity: 0.8;
+}
+
+/* --- Liste sayfası: kategori filtre çubuğu ---
+ * Ölçüler pages/project/index.css'teki .project-filter ile aynı; blog
+ * sayfaları o dosyayı yüklemediği için kopyalandı, ortak bir isme
+ * taşınmadı (iki modülün filtresi ayrı evrilebilsin).
+ */
+.blog-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 40px;
+}
+
+.blog-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #3D4C5E;
+    border: 1px solid rgba(9, 11, 14, 0.12);
+    background: #fff;
+    text-decoration: none;
+    transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+a.blog-filter:hover {
+    border-color: #001644;
+    color: #001644;
+}
+
+.blog-filter.active {
+    border-color: #001644;
+    color: #fff;
+    background: #000B22;
+}
+
+.blog-filter__count {
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: rgba(5, 5, 28, 0.06);
+    color: #6b6b6b;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.6;
+}
+
+.blog-filter.active .blog-filter__count {
+    background: rgba(255, 255, 255, 0.18);
+    color: #fff;
+}
+
+@media (max-width: 575px) {
+    .blog-filter-bar {
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        margin-left: -15px;
+        margin-right: -15px;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .blog-filter {
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+}
+
+/* --- Kenar çubuğu: etiket bulutu --- */
+.blog-taxonomy-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.blog-taxonomy-cloud a {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(5, 5, 28, 0.05);
+    color: #05051C;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.blog-taxonomy-cloud a:hover {
+    background: rgba(5, 5, 28, 0.1);
+}
+
+.blog-taxonomy-cloud a.is-active {
+    background: #000B22;
+    color: #fff;
+}
+
+/* Yazı Bilgileri kartındaki kategori satırı artık link. */
+.blog-detail-sidebar__text a {
+    color: #05051C;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.blog-detail-sidebar__text a:hover {
+    color: #001644;
+    text-decoration: underline;
+}

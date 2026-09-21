@@ -72,7 +72,7 @@ return [
     | kalıp <modül>.<alan>. İleride bu liste panelden yönetilecek.
     */
     'presets' => [
-        'blog.cover' => ['width' => 1600, 'height' => 800, 'label' => 'Blog Kapak Görseli'],
+        'blog.cover' => ['width' => 1536, 'height' => 512, 'label' => 'Blog Kapak Görseli'],
         'page.cover' => ['width' => 1920, 'height' => 600, 'label' => 'Sayfa Üst Görseli'],
         'service.icon' => ['width' => 256, 'height' => 256, 'label' => 'Hizmet İkonu'],
         'service.cover' => ['width' => 800, 'height' => 500, 'label' => 'Hizmet Kapak Görseli'],

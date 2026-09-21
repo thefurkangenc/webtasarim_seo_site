@@ -13,6 +13,8 @@
 @section('meta_description', (string) $seo['description'])
 @section('meta_keywords', (string) $seo['keywords'])
 @section('meta_image', (string) $seo['image'])
+@section('canonical', (string) $seo['canonical'])
+@section('robots', (string) $seo['robots'])
 
 @section('content')
     @include('pages.page.partials.hero')

@@ -24,14 +24,14 @@
 }
 
 .project-filter:hover {
-    border-color: #155FFF;
-    color: #155FFF;
+    border-color: #001644;
+    color: #001644;
 }
 
 .project-filter.active {
-    border-color: #155FFF;
+    border-color: #001644;
     color: #fff;
-    background: #155FFF;
+    background: #000B22;
 }
 
 @media (max-width: 575px) {

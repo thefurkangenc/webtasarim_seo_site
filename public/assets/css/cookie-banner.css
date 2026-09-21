@@ -54,33 +54,9 @@
     flex-shrink: 0;
 }
 
-.cookie-btn {
-    appearance: none;
-    border-radius: 6px;
-    padding: 12px 16px;
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 1.2;
-    cursor: pointer;
-    min-height: 44px;
+/* Butonlar main.css'teki .ui-btn sistemidir (koyu zemin → .ui-btn--light). */
+.cookie-banner__actions .ui-btn {
     min-width: 140px;
-    transition: transform 0.15s ease, background 0.15s ease;
-}
-
-.cookie-btn--ghost {
-    background: transparent;
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.45);
-}
-
-.cookie-btn--solid {
-    background: var(--vtc-bg-main4, #155fff);
-    color: #fff;
-    border: 1px solid var(--vtc-bg-main4, #155fff);
-}
-
-.cookie-btn:hover {
-    transform: translateY(-1px);
 }
 
 .cookie-banner__panel {
@@ -168,7 +144,7 @@
         width: 100%;
     }
 
-    .cookie-btn {
+    .cookie-banner__actions .ui-btn {
         flex: 1 1 calc(50% - 10px);
         min-width: 0;
     }

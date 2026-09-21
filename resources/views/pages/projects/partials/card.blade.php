@@ -53,7 +53,7 @@
         @endif
 
         <a href="{{ $cardUrl }}" class="project-card-link">
-            Vaka çalışmasını incele
+            Çalışmayı incele
             <i class="fa-solid fa-arrow-right"></i>
         </a>
     </div>

@@ -1,9 +1,10 @@
 /*
  * Duyuru şeridi, açılır pencere (popup) ve bülten formu.
  *
- * Şerit sayfanın en üstünde SABİT durur; header (hem saydam-absolute hem
- * sticky-fixed hali) onunla çakışmasın diye `--site-bar-h` kadar aşağı
- * itilir. Yüksekliği JS ölçer — metin iki satıra taştığında da doğru kalır.
+ * Şerit sayfanın en üstünde SABİT durur. Sayfa `padding-top: --site-bar-h`
+ * ile kayar (absolute header bu boşluğun içinde kalır). Sticky header
+ * `position: fixed` olduğu için aynı değişkeni `top` olarak kullanır.
+ * Yüksekliği JS ölçer — metin iki satıra taştığında da doğru kalır.
  */
 
 :root {
@@ -101,14 +102,11 @@
     background: rgba(255, 255, 255, 0.18);
 }
 
-/* Şerit açıkken sayfa ve header aşağı kayar — böylece çakışma olmaz. */
+/* Şerit açıkken sayfa aşağı kayar. Absolute header zaten bu padding'in
+   içinde durur; sabit (sticky) header viewport'a yapıştığı için top
+   kaymasını header.css `--site-bar-h` ile alır. İkisini birden kaydırma. */
 html.has-site-bar body {
     padding-top: var(--site-bar-h);
-}
-
-html.has-site-bar .header-tranperent,
-html.has-site-bar .header-sticky {
-    top: var(--site-bar-h);
 }
 
 /* ========================================================= AÇILIR PENCERE */

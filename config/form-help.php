@@ -992,13 +992,13 @@ return [
         'name' => [
             'title' => 'Firma adı',
             'body' => <<<'HTML'
-                <p>Markanızın günlük kullanılan adı (örn. <code>Umay Dijital</code>). Menü, altbilgi, e-postalar ve arama motoru işaretlemesi bu adı kullanır.</p>
+                <p>Markanızın günlük kullanılan adı (örn. <code>Etkisoft</code>). Menü, altbilgi, e-postalar ve arama motoru işaretlemesi bu adı kullanır.</p>
                 HTML,
         ],
         'legal_name' => [
             'title' => 'Yasal unvan',
             'body' => <<<'HTML'
-                <p>Ticaret sicilindeki tam resmi unvan (örn. <code>Umay Dijital Yazılım A.Ş.</code>). Sözleşme/fatura künyesi ve yapılandırılmış veride resmi ad olarak kullanılır. Marka adıyla aynıysa boş bırakabilirsiniz.</p>
+                <p>Ticaret sicilindeki tam resmi unvan (örn. <code>Etkisoft Yazılım</code>). Sözleşme/fatura künyesi ve yapılandırılmış veride resmi ad olarak kullanılır. Marka adıyla aynıysa boş bırakabilirsiniz.</p>
                 HTML,
         ],
         'phone' => [
@@ -1006,6 +1006,14 @@ return [
             'body' => <<<'HTML'
                 <p>Ana iletişim numarası. Altbilgide, iletişim sayfasında ve mobil cihazlarda “ara” bağlantısı olarak görünür.</p>
                 <p>Ülke koduyla yazmak (örn. <code>+90 212 000 00 00</code>) uluslararası uyumluluk açısından iyidir.</p>
+                HTML,
+        ],
+        'whatsapp' => [
+            'title' => 'WhatsApp numarası',
+            'body' => <<<'HTML'
+                <p>Sitenin sağ alt köşesindeki <strong>WhatsApp</strong> butonu bu numaraya yazar.</p>
+                <p><strong>Cep telefonu olmalıdır</strong> — sabit hatta WhatsApp çalışmaz ve buton boş bir sohbet açar.</p>
+                <p>Boş bırakırsanız Telefon alanındaki numara denenir; ikisi de boşsa buton hiç görünmez.</p>
                 HTML,
         ],
         'fax' => [
@@ -1172,7 +1180,7 @@ return [
         'from_name' => [
             'title' => 'Gönderen adı',
             'body' => <<<'HTML'
-                <p>Gönderdiğiniz e-postalarda alıcının gelen kutusunda görünen isim — örn. <code>Umay Dijital</code>. Boşsa firma adı kullanılır.</p>
+                <p>Gönderdiğiniz e-postalarda alıcının gelen kutusunda görünen isim — örn. <code>Etkisoft</code>. Boşsa firma adı kullanılır.</p>
                 HTML,
         ],
         'from_address' => [

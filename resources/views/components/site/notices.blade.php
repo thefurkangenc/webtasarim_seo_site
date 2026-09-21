@@ -41,7 +41,7 @@
                 @endif
 
                 @if (filled($popup['button_url']) && filled($popup['button_label']))
-                    <a class="theme-btn3 site-popup__cta" href="{{ $popup['button_url'] }}">{{ $popup['button_label'] }}</a>
+                    <a class="ui-btn ui-btn--solid site-popup__cta" href="{{ $popup['button_url'] }}">{{ $popup['button_label'] }}</a>
                 @endif
 
                 @if ($popup['collect_email'])

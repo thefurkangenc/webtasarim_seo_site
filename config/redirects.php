@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\BlogCategory\BlogCategory;
 use App\Models\Page\Page;
 use App\Models\Project\Project;
 use App\Models\ProjectCategory\ProjectCategory;
@@ -55,6 +56,7 @@ return [
         Service::class,
         Project::class,
         ProjectCategory::class,
+        BlogCategory::class,
     ],
 
 ];

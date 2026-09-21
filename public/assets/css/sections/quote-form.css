@@ -1,0 +1,552 @@
+/*
+ * Teklif formu (.quote-widget) — iki yerde birden kullanılır:
+ * hizmet detayının kenar çubuğu ve site genelindeki açılır pencere.
+ * Markup: resources/views/components/site/quote-form.blade.php
+ *
+ * Bu dosyayı bileşen kendisi yükler (@once + @push('css')); sayfaya elle
+ * eklenmez. Eskiden kurallar pages/services/show.css içindeydi — form tek
+ * sayfaya ait olmaktan çıkınca buraya taşındı.
+ */
+.quote-widget {
+  --quote-navy: #152033;
+  --quote-accent: #4A7A9E;
+  --quote-accent-deep: #3D6A8C;
+  --quote-sage: #5F9B7C;
+  --quote-ink: #152033;
+  --quote-muted: #667085;
+  --quote-line: rgba(21, 32, 51, 0.1);
+  --quote-wash: #F3F0EA;
+  position: relative;
+  border-radius: 16px;
+  background: #FAF8F4;
+  border: 1px solid var(--quote-line);
+  box-shadow: 0 22px 44px -28px rgba(21, 32, 51, 0.5);
+  overflow: hidden;
+}
+
+.quote-head {
+  position: relative;
+  padding: 26px 24px 24px;
+  color: #fff;
+  background:
+    radial-gradient(120% 90% at 100% 0%, rgba(95, 155, 124, 0.28) 0%, transparent 58%),
+    linear-gradient(165deg, #1C2C40 0%, var(--quote-navy) 100%);
+  isolation: isolate;
+}
+
+.quote-head::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 14px 14px;
+  mask-image: linear-gradient(to bottom left, #000 0%, transparent 65%);
+  -webkit-mask-image: linear-gradient(to bottom left, #000 0%, transparent 65%);
+}
+
+.quote-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.quote-eyebrow-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--quote-sage);
+  box-shadow: 0 0 0 0 rgba(95, 155, 124, 0.55);
+  animation: quote-pulse 2s infinite;
+}
+
+.quote-head h3 {
+  margin: 14px 0 8px;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.quote-head > p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.quote-trust {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 16px 0 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  display: grid;
+  gap: 8px;
+}
+
+.quote-trust li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.quote-trust i {
+  color: var(--quote-sage);
+  font-size: 14px;
+}
+
+.quote-body {
+  padding: 22px 24px 20px;
+}
+
+.quote-step-form-wrap {
+  position: relative;
+}
+
+.quote-step-form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Adım göstergesi */
+.quote-stepper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.quote-stepper-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.quote-stepper-dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #3d4c5e;
+  background: #f6f8fa;
+  border: 1px solid rgba(9, 11, 14, 0.1);
+  transition: all 0.3s ease;
+}
+
+.quote-stepper-dot i {
+  display: none;
+  font-size: 11px;
+}
+
+.quote-stepper-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #3d4c5e;
+  transition: color 0.3s ease;
+}
+
+.quote-widget[data-quote-step="1"] [data-stepper="1"] .quote-stepper-dot,
+.quote-widget[data-quote-step="2"] [data-stepper="2"] .quote-stepper-dot {
+  color: #fff;
+  background: var(--quote-accent);
+  border-color: var(--quote-accent);
+  box-shadow: 0 0 0 4px rgba(74, 122, 158, 0.2);
+}
+
+.quote-widget[data-quote-step="1"] [data-stepper="1"] .quote-stepper-label,
+.quote-widget[data-quote-step="2"] [data-stepper="2"] .quote-stepper-label {
+  color: #090b0e;
+}
+
+.quote-widget[data-quote-step="2"] [data-stepper="1"] .quote-stepper-dot {
+  color: #fff;
+  background: var(--quote-accent);
+  border-color: var(--quote-accent);
+}
+
+.quote-widget[data-quote-step="2"] [data-stepper="1"] .quote-stepper-dot span {
+  display: none;
+}
+
+.quote-widget[data-quote-step="2"] [data-stepper="1"] .quote-stepper-dot i {
+  display: inline;
+}
+
+.quote-progress {
+  flex: 1;
+  min-width: 16px;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(9, 11, 14, 0.08);
+  overflow: hidden;
+}
+
+.quote-progress-fill {
+  display: block;
+  height: 100%;
+  width: 50%;
+  border-radius: 999px;
+  background: var(--quote-accent);
+  transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Adımlar */
+.quote-steps-viewport {
+  margin-top: 20px;
+  overflow: hidden;
+  height: auto;
+  transition: height 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.quote-steps-track {
+  display: flex;
+  align-items: flex-start;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.quote-step {
+  flex: 0 0 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 0 2px 4px;
+}
+
+.quote-field + .quote-field {
+  margin-top: 14px;
+}
+
+.quote-step label {
+  display: block;
+  margin-bottom: 7px;
+  color: #090b0e;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.quote-optional {
+  color: #6b7280;
+  font-weight: 400;
+}
+
+.quote-input {
+  position: relative;
+}
+
+.quote-input > i {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  color: #6b7280;
+  font-size: 14px;
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+.quote-input:focus-within > i {
+  color: var(--quote-accent);
+}
+
+.quote-widget .quote-step-form input,
+.quote-widget .quote-step-form textarea,
+.quote-widget .quote-step-form select {
+  display: block;
+  width: 100%;
+  margin: 0;
+  border: 1px solid rgba(9, 11, 14, 0.1);
+  background-color: var(--quote-wash);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: #090b0e;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.4;
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+
+.quote-widget .quote-input input,
+.quote-widget .quote-input select {
+  height: 48px;
+  padding-left: 40px;
+}
+
+.quote-widget .quote-step-form input::placeholder,
+.quote-widget .quote-step-form textarea::placeholder {
+  color: #6b7280;
+  font-weight: 400;
+  opacity: 1;
+}
+
+.quote-widget .quote-step-form textarea {
+  min-height: 92px;
+  height: 92px;
+  resize: none;
+}
+
+.quote-widget .quote-step-form select.quote-step-select {
+  display: block !important;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%233D4C5E' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.quote-widget .nice-select {
+  display: none !important;
+}
+
+.quote-widget .quote-step-form input:focus,
+.quote-widget .quote-step-form textarea:focus,
+.quote-widget .quote-step-form select:focus {
+  outline: none;
+  background-color: #fff;
+  border-color: var(--quote-accent);
+  box-shadow: 0 0 0 4px rgba(74, 122, 158, 0.2);
+}
+
+.quote-widget .quote-step-form input.is-invalid,
+.quote-widget .quote-step-form select.is-invalid {
+  border-color: #e11d48;
+  background-color: #fff;
+  box-shadow: 0 0 0 4px rgba(225, 29, 72, 0.1);
+  animation: quote-shake 0.32s ease;
+}
+
+.quote-error {
+  margin: 6px 0 0;
+  color: #e11d48;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.quote-hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.quote-form-error {
+  margin-top: 12px;
+  text-align: center;
+}
+
+/* Butonlar */
+.quote-nav {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+/* Butonlar main.css'teki .ui-btn sistemidir; burada yalnızca satır düzeni
+   ayarlanır — ileri/gönder butonu kalan genişliği doldurur, geri butonu sabit. */
+.quote-nav .ui-btn {
+  flex: 1 1 auto;
+  height: 52px;
+}
+
+.quote-nav .ui-btn--icon {
+  flex: 0 0 52px;
+  width: 52px;
+}
+
+.quote-privacy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin: 14px 0 0;
+  color: #6b7280;
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.quote-privacy i {
+  font-size: 11px;
+}
+
+/* Telefon kısayolu */
+.quote-call {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--quote-line);
+  background: var(--quote-wash);
+  transition: background-color 0.25s ease;
+}
+
+.quote-call:hover {
+  background: #E8E2D6;
+}
+
+.quote-call-icon {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  color: var(--quote-ink);
+  font-size: 16px;
+  box-shadow: 0 6px 14px -8px rgba(26, 29, 38, 0.28);
+}
+
+.quote-call-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.quote-call-text small {
+  color: #6b7280;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.quote-call-text strong {
+  color: #090b0e;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+/* Gönderildi */
+.quote-success {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 8px;
+  background: #FAF8F4;
+  animation: quote-fade-in 0.4s ease;
+}
+
+.quote-success[hidden],
+.quote-nav [hidden],
+.quote-error[hidden] {
+  display: none !important;
+}
+
+.quote-success-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  background: var(--quote-navy);
+  color: #fff;
+  font-size: 24px;
+  box-shadow: 0 0 0 8px rgba(21, 32, 51, 0.08);
+}
+
+.quote-success h4 {
+  margin-bottom: 8px;
+  color: #090b0e;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.quote-success p {
+  margin: 0;
+  color: #3d4c5e;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.quote-widget.is-sent .quote-step-form {
+  visibility: hidden;
+}
+
+@keyframes quote-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
+  }
+}
+
+@keyframes quote-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes quote-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(95, 155, 124, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 7px rgba(95, 155, 124, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(95, 155, 124, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quote-progress-fill,
+  .quote-steps-track,
+  .quote-steps-viewport,
+  .quote-nav .ui-btn,
+  .quote-eyebrow-dot,
+  .quote-success {
+    transition: none;
+    animation: none;
+  }
+}
+
+
+/* --- Açılır penceredeki kopya: kenar çubuğu gölgesi/çerçevesi gereksiz,
+       pencerenin kendi kabuğu zaten var. --- */
+.quote-widget--compact {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}

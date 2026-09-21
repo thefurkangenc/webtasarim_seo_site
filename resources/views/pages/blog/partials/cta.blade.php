@@ -8,10 +8,8 @@
                 {{ $ctaCompany['name'] ?: config('app.name') }} olarak hedeflerinize uygun web ve dijital çözümler
                 sunuyoruz. Ücretsiz ön görüşme için bize ulaşın.
             </p>
-            <a class="default-btn" href="{{ route('iletisim') }}">
-                Bize Ulaşın
-                <span class="arrow1"><i class="fa-solid fa-arrow-right"></i></span>
-                <span class="arrow2"><i class="fa-solid fa-arrow-right"></i></span>
+            <a class="ui-btn ui-btn--solid" href="{{ route('iletisim') }}">
+                Bize Ulaşın <i class="fa-solid fa-arrow-right"></i>
             </a>
         </div>
     </div>

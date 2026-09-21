@@ -111,5 +111,12 @@ class AppServiceProvider extends ServiceProvider
                 ], 429);
             });
         });
+
+        $company = \App\Support\Settings::merged('company');
+        $references = app(\App\Services\Reference\ReferenceService::class)->active();
+        $services = app(\App\Services\Service\ServiceService::class)->active();
+        view()->share('company', $company);
+        view()->share('references', $references);
+        view()->share('services', $services);
     }
 }

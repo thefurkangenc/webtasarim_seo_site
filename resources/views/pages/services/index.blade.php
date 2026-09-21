@@ -1,5 +1,7 @@
 @extends('layout.app')
 @section('title', 'Hizmetler')
+@section('meta_description', 'Gaziantep Web Tasarım Ajansı hizmetleri, Gaziantep web tasarım hizmet fiyatları')
+@section('meta_keywords', 'gaziantep web tasarım ajansı, gaziantep web tasarım hizmetleri, web tasarım hizmet fiyatları')
 
 @push('css')
     <link rel="stylesheet" href="{{ asset('assets/css/pages/services/index.css') }}">
@@ -33,6 +35,21 @@
 
     <div class="service6 sp sec-bg5">
         <div class="container">
+           <div class="col-lg-6 m-auto text-center">
+            <div class="home-refs__head text-center">
+
+                <span class="sub-title">
+                    <img style="width: 20px; height: 20px; margin-right: 5px;"
+                        src="{{ asset('assets/img/icons/icon.png') }}" alt="">
+                    Hizmetler
+                </span>
+
+                <h2 id="home-refs-title" class="text-anime-style-3">Hizmetlerimiz</h2>
+                <p class="home-refs__lead">
+                    Web tasarım, SEO ve dijital pazarlama ile markanızın dijital dönüşümünü hızlandırıyoruz. İhtiyacınıza uygun çözümlerle daha fazla görünürlük, trafik ve müşteri hedefliyoruz.
+                </p>
+            </div>
+           </div>
             @if ($services->isEmpty())
                 <div class="row">
                     <div class="col-lg-8 m-auto text-center">
@@ -46,7 +63,7 @@
                             $generic = $service->renderGeneric();
                             $cover = $service->getFirstMedia('cover');
                         @endphp
-                        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-duration="900">
+                        <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-duration="900">
                             <div class="service6-box mt-30">
                                 @if ($cover)
                                     <div class="thumb">
@@ -57,7 +74,7 @@
                                 @endif
                                 <div class="content heading6">
                                     <h4><a href="{{ route('hizmetler.show', $service->slug) }}">{{ $generic['title'] }}</a></h4>
-                                    <p class="mt-16">{{ $generic['excerpt'] ?: \Illuminate\Support\Str::limit(strip_tags((string) $generic['content']), 120) }}</p>
+                                    <p class="mt-16">{{ Str::limit(strip_tags((string) $generic['excerpt']), 160) }}</p>
                                     <a href="{{ route('hizmetler.show', $service->slug) }}" class="learn">Detaylı Bilgi <span class="arrow1"><i
                                                 class="fa-solid fa-arrow-right"></i></span><span class="arrow2"><i
                                                 class="fa-solid fa-arrow-right"></i></span></a>
@@ -178,9 +195,7 @@
                                             <textarea rows="5" placeholder="How can we help you?"></textarea>
                                         </div>
                                         <div class="button mt-30">
-                                            <button class="theme-btn3" type="submit">Send <span class="arrow1"><i
-                                                        class="fa-solid fa-arrow-right"></i></span><span class="arrow2"><i
-                                                        class="fa-solid fa-arrow-right"></i></span></button>
+                                            <button class="ui-btn ui-btn--solid" type="submit">Gönder <i class="fa-solid fa-arrow-right"></i></button>
                                         </div>
                                     </div>
                                 </div>

@@ -10,11 +10,13 @@ use App\Http\Controllers\Maintenance\MaintenanceController;
 use App\Http\Controllers\Media\PlayerController;
 use App\Http\Controllers\Project\ProjectController;
 use App\Http\Controllers\Quote\QuoteController;
+use App\Http\Controllers\Reference\ReferenceController;
 use App\Http\Controllers\Service\ServiceController;
 use App\Http\Controllers\Sitemap\RobotsController;
 use App\Http\Controllers\Sitemap\SitemapController;
 use App\Http\Controllers\Subscriber\SubscriberController;
 use App\Support\SchemaContext;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -35,6 +37,11 @@ Route::get('/hizmetler/{slug}/{region}', [ServiceController::class, 'showForRegi
 
 Route::get('/blog', [BlogController::class, 'index'])->name('blog');
 
+// Taksonomi adresleri {slug}'dan ÖNCE: /blog/{slug} tek segment eşlediği
+// için zaten çakışmazlar, sıra okunabilirlik için kapsamı izliyor.
+Route::get('/blog/kategori/{slug}', [BlogController::class, 'category'])->name('blog.kategori');
+Route::get('/blog/etiket/{slug}', [BlogController::class, 'tag'])->name('blog.etiket');
+
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
 /*
@@ -46,6 +53,10 @@ Route::middleware('module.active:project,404')->group(function () {
     Route::get('/projeler', [ProjectController::class, 'index'])->name('projeler');
     Route::get('/projeler/kategori/{slug}', [ProjectController::class, 'category'])->name('projeler.kategori');
     Route::get('/projeler/{slug}', [ProjectController::class, 'show'])->name('projeler.show');
+});
+
+Route::middleware('module.active:reference,404')->group(function () {
+    Route::get('/referanslar', [ReferenceController::class, 'index'])->name('referanslar');
 });
 
 Route::get('/iletisim', [ContactController::class, 'index'])->name('iletisim');
@@ -80,6 +91,9 @@ Route::get('/sitemap-{name}.xml', [SitemapController::class, 'file'])
 
 Route::get('/robots.txt', [RobotsController::class, 'index'])->name('robots');
 
+Route::get('queuework', function () {
+    Artisan::call('queue:work');
+});
 /*
 | Otomatik blog üretimi. Cron (cron-job.org, cPanel) bu adresi çağırır;
 | gizli anahtar config/auto-blog.php'den okunur, anahtar tanımlı değilse uç

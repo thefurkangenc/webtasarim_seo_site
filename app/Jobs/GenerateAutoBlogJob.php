@@ -32,8 +32,11 @@ class GenerateAutoBlogJob implements ShouldBeUnique, ShouldQueue
     public function __construct(public array $input = [])
     {
         // Metin ve görsel sırayla çalışır; ikisinin HTTP süresi + kayıt payı.
-        // config/queue.php > retry_after (900) bunun üzerinde kalmalı.
-        $this->timeout = (int) config('auto-blog.text.timeout') + (int) config('auto-blog.image.timeout') + 60;
+        // Metin İKİ kez istenebiliyor: gövde kısa kalırsa bir genişletme turu
+        // daha atılıyor. config/queue.php > retry_after bunun üzerinde kalmalı.
+        $this->timeout = ((int) config('auto-blog.text.timeout') * 2)
+            + (int) config('auto-blog.image.timeout')
+            + 60;
         $this->uniqueFor = $this->timeout + 60;
     }
 

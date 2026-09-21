@@ -17,7 +17,7 @@
             <div class="row">
                 <div class="col-lg-8 m-auto text-center">
                     <p>{{ $email }} adresinin bülten aboneliği durduruldu. İsterseniz sitedeki formdan yeniden kaydolabilirsiniz.</p>
-                    <a class="theme-btn3 mt-20" href="{{ route('anasayfa') }}">Ana sayfaya dön</a>
+                    <a class="ui-btn ui-btn--solid mt-20" href="{{ route('anasayfa') }}">Ana sayfaya dön</a>
                 </div>
             </div>
         </div>

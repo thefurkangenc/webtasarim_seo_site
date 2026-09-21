@@ -48,7 +48,7 @@
         <div>
             <x-admin::form.input name="from_name" help="mail.from_name" label="Gönderen adı"
                 :value="$values['from_name'] ?? null"
-                placeholder="Örn. Umay Dijital" />
+                placeholder="Örn. Etkisoft" />
 
             <x-admin::form.input name="from_address" help="mail.from_address" label="Gönderen e-posta" required
                 type="email"
