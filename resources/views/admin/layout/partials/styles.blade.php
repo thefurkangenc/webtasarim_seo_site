@@ -14,7 +14,7 @@
 @stack('admin.css')
 
 <!-- Favicon -->
-<link rel="icon" type="image/png" href="{{ asset('assets/admin/images/favicon.ico') }}">
+<link rel="icon" type="image/png" href="{{ asset('assets/img/favicon.png') }}">
 
 
 {{-- Gövde fontu (Poppins) self-host: @font-face tanımları style.css içinde,
