@@ -22,9 +22,9 @@
 <link rel="stylesheet" href="{{ asset('assets/css/aos.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/mobile-menu.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/utility.css') }}">
-<link rel="stylesheet" href="{{ asset('assets/css/main.css?v='.time()) }}">
-<link rel="stylesheet" href="{{ asset('assets/css/custom.css?v='.time()) }}">
-<link rel="stylesheet" href="{{ asset('assets/css/layout/header.css?v='.time()) }}">
+<link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/layout/header.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/integrations.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/references.css') }}">
 @if (\App\Support\Settings::bool('cookie.enabled'))

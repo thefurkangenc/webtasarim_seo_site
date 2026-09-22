@@ -44,7 +44,7 @@
                     @endif
 
                     <a class="site-header__cta d-none d-md-inline-flex" href="{{ route('iletisim') }}">
-                        İletişime Geç
+                        İletişim
                     </a>
 
                     <button type="button" class="site-header__burger vl-offcanvas-toggle d-lg-none"

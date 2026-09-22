@@ -7,6 +7,21 @@
     <x-site.tracking placement="head" />
 
     @include('layout.partials.css')
+
+    {{-- Yükleyiciyi kaldıran tek yer preloader.js. O dosya hiç çalışmazsa
+    (ağ hatası, reklam engelleyici, JS kapalı) tam ekran katman ve
+    html.is-preloading'in kilitlediği kaydırma süresiz kalırdı. --}}
+    <noscript>
+        <style>
+            .site-preloader {
+                display: none !important;
+            }
+
+            html.is-preloading {
+                overflow: visible !important;
+            }
+        </style>
+    </noscript>
 </head>
 
 <body class="body1">

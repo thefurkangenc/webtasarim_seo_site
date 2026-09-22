@@ -28,6 +28,7 @@
 
         done = true;
         window.clearInterval(interval);
+        window.clearTimeout(failsafe);
 
         if (bar) {
             bar.style.width = '100%';
@@ -40,6 +41,11 @@
             document.documentElement.classList.remove('is-preloading');
         }, 650);
     };
+
+    // Yavaş/asılı kalan bir üçüncü taraf isteği (analytics, font, reklam)
+    // "load" olayını çok geciktirebilir; ekran süresiz beyaz kalmasın diye
+    // ne olursa olsun 4 saniye sonra kapatılır.
+    const failsafe = window.setTimeout(finish, 4000);
 
     if (document.readyState === 'complete') {
         finish();

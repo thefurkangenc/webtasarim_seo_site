@@ -3822,7 +3822,7 @@ a {
 
 .heading6 h4 a:hover {
     transition: all 0.4s;
-    color: var(--vtc-bg-main8);
+    color: #1d2651;
 }
 
 .heading6 p {
@@ -59093,22 +59093,3 @@ only screen and (min-width: 768px) and (max-width: 991px),
     font-weight: 400;
     line-height: 150%;
 }
-
-/*
-::::::::::::::::::::::::::
- FEATURES AREA CSS
-::::::::::::::::::::::::::
-
-*/
-/*# sourceMappingURL=main.css.map */
-/* @media (min-width: 1600px) {
-
-    .container,
-    .container-lg,
-    .container-md,
-    .container-sm,
-    .container-xl,
-    .container-xxl {
-        max-width: 1620px !important;
-    }
-} */
