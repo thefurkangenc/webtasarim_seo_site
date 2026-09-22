@@ -12,19 +12,8 @@
 
                 <div
                     class="xl:ltr:pl-[90px] xl:rtl:pr-[90px] 2xl:ltr:pl-[120px] 2xl:rtl:pr-[120px] order-1 lg:order-2">
-                    <img src="{{ asset('assets/admin/images/logo-big.svg') }}" alt="Logo"
-                        class="inline-block dark:hidden">
-                    <img src="{{ asset('assets/admin/images/white-logo-big.svg') }}" alt="Logo"
-                        class="hidden dark:inline-block">
-
-                    <div class="my-[17px] md:my-[25px]">
-                        <h1 class="!font-semibold !text-[22px] md:!text-xl lg:!text-2xl !mb-[5px] md:!mb-[7px]">
-                            Yönetim Paneli
-                        </h1>
-                        <p class="font-medium lg:text-md text-[#445164] dark:text-gray-400">
-                            Devam etmek için hesabınıza giriş yapın
-                        </p>
-                    </div>
+                    <img style="height: 100px; margin-bottom: 20px;" src="{{ asset('assets/img/logo.png') }}" alt="Logo"
+                        class="inline-block">
 
                     @if ($errors->any())
                         <div

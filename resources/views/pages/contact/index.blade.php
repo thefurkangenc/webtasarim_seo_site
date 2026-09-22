@@ -167,12 +167,7 @@
     @include('pages.why-choose-us.partials.section', ['bg' => 'sec-bg2'])
     <!--===== NEDEN BIZ END =====-->
 
-    @if ($map_embed)
-        <div class="contact-map-page">
-            <iframe src="{{ $map_embed }}" width="600" height="450" style="border:0;" allowfullscreen=""
-                loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Harita"></iframe>
-        </div>
-    @endif
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3183.5645613344795!2d37.369014176279094!3d37.06785855256528!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1531e17a1ec59fe9%3A0x6be44d52e235f7bb!2zRXRraSBTb2Z0IOKAkyBHYXppYW50ZXAgV2ViIFRhc2FyxLFtIHZlIFlhesSxbMSxbSBBamFuc8Sx!5e0!3m2!1str!2str!4v1790069965001!5m2!1str!2str" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
 
 @endsection
 
