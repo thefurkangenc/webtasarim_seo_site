@@ -5,9 +5,8 @@ Service::renderFor), böylece her bölge adresi kendi başlığını alır. --}}
 @section('title', $rendered['seo']['title'] ?: $rendered['title'])
 @section('meta_description', (string) $rendered['seo']['description'])
 @section('meta_keywords', (string) $rendered['seo']['keywords'])
-@if (!$region)
-@section('canonical', (string) $rendered['seo']['canonical'])
-@endif
+{{-- @section @if içine alınmaz: derleyici bölümü kapatmaz, @endforeach eşleşmez. --}}
+@section('canonical', $region ? '' : (string) $rendered['seo']['canonical'])
 @section('robots', (string) $rendered['seo']['robots'])
 @section('meta_image', (string) $rendered['seo']['image'])
 @section('content')
@@ -80,8 +79,10 @@ Service::renderFor), böylece her bölge adresi kendi başlığını alır. --}}
             görür — form üstteyken sayfa "önce bilgi ver" diye açılıyordu. --}}
             <!-- Sidebar -->
             <div class="col-lg-3 order-2 order-lg-1">
-                <div class="sidebar-area">
-                    <x-site.quote-form :service="$service" :region="$region" :heading="$genericTitle . ' için ücretsiz teklif alın!'" />
+                <div class="sidebar-area service-quote-sidebar">
+                    <x-site.quote-form :service="$service" :region="$region"
+                        heading="Ücretsiz teklif alın"
+                        intro="İki kısa adım — uzmanımız sizi arasın." />
                 </div>
             </div>
 
@@ -96,7 +97,9 @@ Service::renderFor), böylece her bölge adresi kendi başlığını alır. --}}
                         @endif
                     </div>
 
-                    @php($cover = $service->getFirstMedia('cover')?->originalUrl())
+                    @php
+                        $cover = $service->getFirstMedia('cover')?->originalUrl();
+                    @endphp
                     @if ($cover)
                         <article>
                             <div class="details-content">
@@ -216,7 +219,9 @@ Service::renderFor), böylece her bölge adresi kendi başlığını alır. --}}
 
 
 @if ($region && $region->isMain())
-@php($faqs = $service->renderedFaqs($region))
+@php
+    $faqs = $service->renderedFaqs($region);
+@endphp
 
 @if ($faqs->isNotEmpty())
 <!--===== SERVICE FAQ START =====-->
@@ -241,7 +246,9 @@ Service::renderFor), böylece her bölge adresi kendi başlığını alır. --}}
 
                 <div class="service-faq__list" id="service-faq-{{ $service->id }}">
                     @foreach ($faqs as $index => $faq)
-                    @php($target = "service-{$service->id}-faq-{$faq['id']}")
+                    @php
+                        $target = "service-{$service->id}-faq-{$faq['id']}";
+                    @endphp
 
                     <div class="faq-card">
                         <h3 class="faq-card__head">
@@ -275,6 +282,10 @@ Service::renderFor), böylece her bölge adresi kendi başlığını alır. --}}
 @endif
 
 
+@if ($otherServices->isNotEmpty())
+    @include('pages.services.partials.section', ['services' => $otherServices])
+@endif
+
 <x-googlecomment />
 
 @if($region && !$region->isMain())
@@ -293,6 +304,7 @@ Service::renderFor), böylece her bölge adresi kendi başlığını alır. --}}
 
 @push('css')
     <link rel="stylesheet" href="{{ asset('assets/css/pages/project/card.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/pages/home/index.css') }}">
     <link rel="stylesheet"
         href="{{ asset('assets/css/pages/services/show.css?v=' . filemtime(public_path('assets/css/pages/services/show.css'))) }}">
 @endpush

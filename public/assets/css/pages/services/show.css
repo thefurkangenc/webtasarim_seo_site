@@ -363,6 +363,104 @@
     color: #3d4c5e;
   }
 
+  /*
+  ::::::::::::::::::::::::::
+   TEKLİF FORMU (kenar çubuğu)
+   Tema .sidebar-area'yı sticky + top:120px yapıyor. Form o yükseklikten
+   uzun olduğu için altı (telefon, gönder) viewport dışına taşıyor —
+   sticky öğe sayfayla kaymadığı için ziyaretçi forma ulaşamıyordu.
+   Çözüm: başlığı kısalt, güven listesini gizle, form viewport'a sığsın;
+   yine de taşarsa kendi içinde kaysın.
+  ::::::::::::::::::::::::::
+  */
+
+  @media (min-width: 992px) {
+    .blog-details-area .sidebar-area.service-quote-sidebar {
+      top: calc(var(--site-bar-h, 0px) + 80px);
+      max-height: calc(100dvh - var(--site-bar-h, 0px) - 96px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+    }
+  }
+
+  @media (max-width: 991px) {
+    .blog-details-area .sidebar-area.service-quote-sidebar {
+      position: static;
+      top: auto;
+      max-height: none;
+    }
+  }
+
+  .service-quote-sidebar .quote-head {
+    padding: 16px 18px 14px;
+  }
+
+  .service-quote-sidebar .quote-head h3 {
+    margin: 10px 0 6px;
+    font-size: 18px;
+    line-height: 1.3;
+  }
+
+  .service-quote-sidebar .quote-head > p {
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .service-quote-sidebar .quote-trust {
+    margin: 12px 0 0;
+    padding: 12px 0 0;
+    gap: 6px;
+  }
+
+  .service-quote-sidebar .quote-trust li {
+    font-size: 12px;
+    line-height: 1.3;
+  }
+
+  .service-quote-sidebar .quote-body {
+    padding: 14px 18px 12px;
+  }
+
+  .service-quote-sidebar .quote-steps-viewport {
+    margin-top: 14px;
+  }
+
+  .service-quote-sidebar .quote-field + .quote-field {
+    margin-top: 10px;
+  }
+
+  .service-quote-sidebar .quote-widget .quote-input input,
+  .service-quote-sidebar .quote-widget .quote-input select {
+    height: 42px;
+  }
+
+  .service-quote-sidebar .quote-widget .quote-step-form textarea {
+    min-height: 64px;
+    height: 64px;
+  }
+
+  .service-quote-sidebar .quote-nav {
+    margin-top: 12px;
+  }
+
+  .service-quote-sidebar .quote-nav .ui-btn {
+    height: 44px;
+  }
+
+  .service-quote-sidebar .quote-nav .ui-btn--icon {
+    flex-basis: 44px;
+    width: 44px;
+  }
+
+  .service-quote-sidebar .quote-privacy {
+    margin-top: 10px;
+  }
+
+  .service-quote-sidebar .quote-call {
+    padding: 12px 18px;
+  }
+
   @media (max-width: 575px) {
     .service-faq__title {
       font-size: 26px;

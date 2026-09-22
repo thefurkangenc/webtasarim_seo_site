@@ -37,6 +37,7 @@ class ServiceController extends Controller
             'rendered' => $service->renderGeneric(),
             'regionGroups' => $this->service->regionGroups($service),
             'projects' => $this->projects->active(6, null, $service->id),
+            'otherServices' => $this->service->active()->where('id', '!=', $service->id)->values(),
             'quoteServices' => $this->quotes->serviceOptions(),
             'schemaContext' => SchemaContext::service($service),
         ]);
@@ -60,6 +61,7 @@ class ServiceController extends Controller
             'rendered' => $service->renderFor($serviceRegion),
             'regionGroups' => $this->service->regionGroups($service),
             'projects' => $this->projects->active(6, null, $service->id),
+            'otherServices' => $this->service->active()->where('id', '!=', $service->id)->values(),
             'quoteServices' => $this->quotes->serviceOptions(),
             'schemaContext' => SchemaContext::service($service, $serviceRegion),
         ]);
