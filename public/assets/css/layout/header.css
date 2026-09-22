@@ -93,7 +93,8 @@
 .site-header__nav .vl-mobile-menu-active > ul > li > a:hover,
 .site-header__nav .vl-mobile-menu-active > ul > li > a.active,
 .site-header__nav .vl-mobile-menu-active > ul > li.current-menu-item > a {
-    color: #f92f2f;
+    color: #ffffff !important;
+    background: #f4f5f824;
 }
 
 .site-header__nav .sub-menu {
