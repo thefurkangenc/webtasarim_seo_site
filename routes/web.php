@@ -101,7 +101,7 @@ Route::get('queuework', function () {
 | olarak TASLAK düşer, yayın insan kararıdır.
 */
 Route::get('/otomatik-blog/{secret}', [AutoBlogController::class, 'generate'])
-    ->middleware('throttle:20,60')
+    ->middleware('throttle:25,5')
     ->name('otomatik-blog.generate');
 
 Route::get('/media/{media}/player', [PlayerController::class, 'show'])
