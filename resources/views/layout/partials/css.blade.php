@@ -1,10 +1,7 @@
-@php
-    $faviconLogoId = \App\Support\Settings::get('company.logo_media_id');
-    $faviconUrl = $faviconLogoId ? \App\Models\Media\Media::query()->find($faviconLogoId)?->url('medium') : null;
- @endphp
+
 
 <!--=====FAB ICON=======-->
-<link rel="shortcut icon" href="{{ $faviconUrl ?? asset('assets/img/favicon.png') }}" type="image/x-icon">
+<link rel="shortcut icon" href="{{ asset('assets/img/favicon.png') }}" type="image/x-icon">
 
 
 <!--=====FONTS=======-->
