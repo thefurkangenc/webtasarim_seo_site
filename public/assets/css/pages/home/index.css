@@ -91,7 +91,7 @@
 
 .blog8 .vl-blog-10-item .vl-blog-10-thumb .image img {
     width: 100%;
-    aspect-ratio: 16 / 10;
+    /* aspect-ratio: 16 / 10; */
     object-fit: cover;
 }
 

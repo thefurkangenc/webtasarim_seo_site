@@ -93,7 +93,7 @@
 .site-header__nav .vl-mobile-menu-active > ul > li > a:hover,
 .site-header__nav .vl-mobile-menu-active > ul > li > a.active,
 .site-header__nav .vl-mobile-menu-active > ul > li.current-menu-item > a {
-    color: var(--vtc-bg-main8, #F8CE69);
+    color: #f92f2f;
 }
 
 .site-header__nav .sub-menu {
@@ -212,7 +212,7 @@
 }
 
 .site-header__cta:hover {
-    color: var(--vtc-text-title3, #05051C);
+    color: #d9d9d9;
     transform: translateY(-1px);
     box-shadow: 0 8px 20px rgba(248, 206, 105, 0.35);
 }
