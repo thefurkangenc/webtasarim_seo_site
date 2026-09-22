@@ -30,7 +30,7 @@
 @if (\App\Support\Settings::bool('cookie.enabled'))
     <link rel="stylesheet" href="{{ asset('assets/css/cookie-banner.css') }}">
 @endif
-<link rel="stylesheet" href="{{ asset('assets/css/notices.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/notices.css?v=' . filemtime(public_path('assets/css/notices.css'))) }}">
 {{-- Teklif formu + yuzen CTA her sayfada var (acilir pencere layout'ta basiliyor).
      Bilesenden @push ile gonderilemez: layout <head>'i, bilesen govdenin sonunda. --}}
 <link rel="stylesheet" href="{{ asset('assets/css/sections/quote-form.css') }}">

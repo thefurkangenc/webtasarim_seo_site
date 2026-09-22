@@ -21,8 +21,8 @@
 
         <div class="mx-auto max-w-[920px]">
             <div class="text-center mb-[28px]">
-                <img src="{{ asset('assets/admin/images/etkisoft-logo.svg') }}" alt="" class="inline-block dark:hidden h-[36px]">
-                <img src="{{ asset('assets/admin/images/etkisoft-logo.svg') }}" alt="" class="hidden dark:inline-block h-[36px]">
+                <img src="{{ asset('assets/admin/images/etkisoft-logo.svg') }}" alt="Gaziantep Web Tasarım Ajansı Logo" class="inline-block dark:hidden h-[36px]">
+                <img src="{{ asset('assets/admin/images/etkisoft-logo.svg') }}" alt="Gaziantep Web Tasarım Ajansı Logo" class="hidden dark:inline-block h-[36px]">
                 <h1 class="!font-semibold !text-[22px] md:!text-xl !mt-[18px] !mb-[6px] text-black dark:text-white">Site kurulumu</h1>
                 <p class="text-sm text-gray-500 dark:text-gray-400">Birkaç adımda paneli bu kuruma göre ayarlayın.</p>
             </div>
@@ -76,7 +76,7 @@
                             <label class="mb-[10px] text-black dark:text-white font-medium block">Logo</label>
                             <div class="flex items-center gap-[14px]">
                                 <span data-logo-preview class="{{ $logoPreview ? '' : 'hidden' }} w-[56px] h-[56px] rounded-md border border-gray-200 dark:border-[#172036] overflow-hidden bg-gray-50 dark:bg-[#15203c]">
-                                    <img alt="" class="w-full h-full object-contain" @if ($logoPreview) src="{{ $logoPreview }}" @endif>
+                                    <img alt="Gaziantep Web Tasarım Ajansı Logo" class="w-full h-full object-contain" @if ($logoPreview) src="{{ $logoPreview }}" @endif>
                                 </span>
                                 <label class="inline-flex items-center gap-[6px] py-[9px] px-[14px] text-sm rounded-md border border-gray-200 dark:border-[#172036] text-black dark:text-white cursor-pointer hover:border-primary-500">
                                     <i class="material-symbols-outlined !text-[18px]">upload</i>

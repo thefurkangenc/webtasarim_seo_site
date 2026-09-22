@@ -128,7 +128,7 @@ a:focus {
 
 @media (max-width: 768px) {
     .sp {
-        padding: 50px 0px;
+        padding: 35px 0px;
     }
 
     .sp2 {
@@ -12602,7 +12602,7 @@ a {
 
 @media (max-width: 767px) {
     .main-heading6 {
-        padding-top: 180px;
+        padding-top: 5px;
     }
 }
 
@@ -39242,6 +39242,17 @@ only screen and (min-width: 768px) and (max-width: 991px),
     padding-top: 300px;
     text-align: end;
 }
+@media (max-width: 767px) {
+    .about1-box.box1 .bottom-heading {
+        padding-top:100px;
+    }
+    .about1-box.box2 .bottom-heading {
+        padding-top:100px;
+    }
+    .about1-box.box3 .bottom-heading {
+        padding-top: 100px;
+    }
+}
 
 .about1-box:hover {
     transform: translateY(-10px);
@@ -39753,7 +39764,7 @@ only screen and (min-width: 768px) and (max-width: 991px),
     }
 
     blockquote {
-        padding: 140px 20px 20px 20px !important;
+        padding: 5px!important;
     }
 
     blockquote:after {

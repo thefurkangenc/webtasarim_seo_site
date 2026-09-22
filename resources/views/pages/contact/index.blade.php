@@ -36,7 +36,7 @@
                     <div class="col-lg-4 col-md-6">
                         <div class="contact-page-box">
                             <div class="icon">
-                                <img src="{{ asset('assets/img/icons/contact-page-icon1.svg') }}" alt="">
+                                <img src="{{ asset('assets/img/icons/contact-page-icon1.svg') }}" alt="Gaziantep Web Tasarım Ajansı E-posta">
                             </div>
                             <div class="content">
                                 <h3>E-posta</h3>
@@ -49,7 +49,7 @@
                     <div class="col-lg-4 col-md-6">
                         <div class="contact-page-box">
                             <div class="icon">
-                                <img src="{{ asset('assets/img/icons/contact-page-icon2.svg') }}" alt="">
+                                <img src="{{ asset('assets/img/icons/contact-page-icon2.svg') }}" alt="Gaziantep Web Tasarım Ajansı Telefon">
                             </div>
                             <div class="content">
                                 <h3>Telefon</h3>
@@ -62,7 +62,7 @@
                     <div class="col-lg-4 col-md-6">
                         <div class="contact-page-box">
                             <div class="icon">
-                                <img src="{{ asset('assets/img/icons/contact-page-icon3.svg') }}" alt="">
+                                <img src="{{ asset('assets/img/icons/contact-page-icon3.svg') }}" alt="Gaziantep Web Tasarım Ajansı Adres">
                             </div>
                             <div class="content">
                                 <h3>Adres</h3>
@@ -81,7 +81,7 @@
 
                                     <span class="sub-title">
                                         <img style="width: 20px; height: 20px; margin-right: 5px;"
-                                            src="{{ asset('assets/img/icons/icon.png') }}" alt="">
+                                            src="{{ asset('assets/img/icons/icon.png') }}" alt="Gaziantep Web Tasarım Ajansı İletişim">
                                         İletişim
                                     </span>
 
@@ -154,7 +154,7 @@
                 </div>
                 <div class="col-lg-6">
                     <div class="contact2-image mt-60 image-anime reveal ml-40 md:ml-0 sm:ml-0 md:mt-30 sm:mt-30">
-                        <img style="border-radius: 5px;" class="w-full" src="{{asset('assets/img/contact.jpg')}}" alt="">
+                        <img style="border-radius: 5px;" class="w-full" src="{{asset('assets/img/contact.jpg')}}" alt="Gaziantep Web Tasarım Ajansı İletişim">
                     </div>
                 </div>
             </div>

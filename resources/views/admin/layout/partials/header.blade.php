@@ -111,7 +111,7 @@
                         <span data-user-avatar
                             class="rounded-full w-[34px] h-[34px] ltr:mr-[9px] rtl:ml-[9px] border-2 border-primary-200 flex items-center justify-center shrink-0 bg-primary-50 dark:bg-[#15203c] text-primary-500 text-xs font-bold overflow-hidden">
                             @if ($avatar)
-                                <img src="{{ $avatar }}" alt="" class="w-full h-full rounded-full object-cover">
+                                <img src="{{ $avatar }}" alt="Gaziantep Web Tasarım Ajansı Avatar" class="w-full h-full rounded-full object-cover">
                             @else
                                 {{ $user?->initials() }}
                             @endif

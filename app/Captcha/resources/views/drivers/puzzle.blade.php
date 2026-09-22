@@ -4,8 +4,8 @@
     başka bir sürücü eklenirse aynı çerçeveyi paylaşır.
 --}}
 <div class="cap-stage" data-captcha-stage>
-    <img class="cap-bg" data-captcha-bg alt="" draggable="false">
-    <img class="cap-piece" data-captcha-piece alt="" draggable="false">
+    <img class="cap-bg" data-captcha-bg alt="Gaziantep Web Tasarım Ajansı Bulmaca Arka Planı" draggable="false">
+    <img class="cap-piece" data-captcha-piece alt="Gaziantep Web Tasarım Ajansı Bulmaca Parçası" draggable="false">
 
     <div class="cap-veil" data-captcha-veil>
         <span class="cap-spinner" aria-hidden="true"></span>

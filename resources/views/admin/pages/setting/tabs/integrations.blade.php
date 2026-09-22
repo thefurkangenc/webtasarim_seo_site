@@ -36,7 +36,7 @@
 
             <div class="flex items-start gap-[12px] mb-[12px]">
                 <span class="w-[46px] h-[46px] rounded-[12px] shrink-0 flex items-center justify-center bg-gray-50 dark:bg-[#15203c]">
-                    <img src="{{ asset('assets/admin/images/icons/integrations/'.$item['icon']) }}" alt=""
+                    <img src="{{ asset('assets/admin/images/icons/integrations/'.$item['icon']) }}" alt="Gaziantep Web Tasarım Ajansı Eklenti Icon"
                         class="w-[24px] h-[24px] object-contain">
                 </span>
 

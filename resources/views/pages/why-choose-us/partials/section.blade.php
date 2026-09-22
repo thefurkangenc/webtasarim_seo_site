@@ -35,7 +35,7 @@
                 <div class="why-us__content heading14">
                     <span class="sub-title">
                         <img style="width: 20px; height: 20px; margin-right: 5px;"
-                            src="{{ asset('assets/img/icons/icon.png') }}" alt="">
+                            src="{{ asset('assets/img/icons/icon.png') }}" alt="Gaziantep Web Tasarım Ajansı Neden Biz?">
                         Neden Biz?
                     </span>
 

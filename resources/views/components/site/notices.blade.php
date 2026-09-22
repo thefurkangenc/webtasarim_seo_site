@@ -30,7 +30,7 @@
             <button type="button" class="site-popup__close" data-notice-close aria-label="Kapat">&times;</button>
 
             @if ($popup['image'])
-                <img class="site-popup__image" src="{{ $popup['image'] }}" alt="">
+                <img class="site-popup__image" src="{{ $popup['image'] }}" alt="Gaziantep Web Tasarım Ajansı Popup Görseli">
             @endif
 
             <div class="site-popup__content">

@@ -71,7 +71,7 @@ Service::renderFor), böylece her bölge adresi kendi başlığını alır. --}}
 </div>
 
 
-<div class="blog-details-area sp body-font">
+<div class="blog-details-area sp ">
     <div class="container">
         <div class="row">
             {{-- Kenar çubuğu masaüstünde solda kalır; mobilde içerikten SONRA
@@ -114,7 +114,7 @@ Service::renderFor), böylece her bölge adresi kendi başlığını alır. --}}
                     @endif
 
                     <article>
-                        <div class="details-content">
+                        <div class="details-content body-font">
 
                             @if (filled($rendered['content']))
                                 <div class="heading2 mt-24">
@@ -150,9 +150,6 @@ Service::renderFor), böylece her bölge adresi kendi başlığını alır. --}}
                         </div>
                     </article>
 
-                    {{-- Bölgeye özel metin: aynı hizmetin bütün bölge sayfaları ortak
-                    içeriği paylaşır, özgün olan tek parça budur. Panelde
-                    doldurulmadıysa blok hiç basılmaz. --}}
                     @if ($region && filled($region->description))
                         <div class="region-note">
                             <h2>
@@ -185,7 +182,7 @@ Service::renderFor), böylece her bölge adresi kendi başlığını alır. --}}
 
                         <span class="sub-title">
                             <img style="width: 20px; height: 20px; margin-right: 5px;"
-                                src="{{ asset('assets/img/icons/icon.png') }}" alt="">
+                                src="{{ asset('assets/img/icons/icon.png') }}" alt="Gaziantep Web Tasarım Ajansı Projeler">
                             Projeler
                         </span>
 
@@ -233,7 +230,7 @@ Service::renderFor), böylece her bölge adresi kendi başlığını alır. --}}
 
                     <span class="sub-title">
                         <img style="width: 20px; height: 20px; margin-right: 5px;"
-                            src="{{ asset('assets/img/icons/icon.png') }}" alt="">
+                            src="{{ asset('assets/img/icons/icon.png') }}" alt="Gaziantep Web Tasarım Ajansı Sıkça Sorulan Sorular">
                         {{ $company['name'] }}
                     </span>
 

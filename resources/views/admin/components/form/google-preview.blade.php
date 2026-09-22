@@ -29,7 +29,7 @@
         <div class="flex items-start justify-between gap-[12px] mb-[6px]">
             <div class="flex items-center gap-[12px] min-w-0">
                 <span class="w-[26px] h-[26px] rounded-full overflow-hidden bg-gray-50 dark:bg-[#15203c] border border-gray-200 dark:border-[#172036] flex items-center justify-center shrink-0">
-                    <img data-seo-preview-favicon @if ($favicon) src="{{ $favicon }}" @endif alt=""
+                    <img data-seo-preview-favicon @if ($favicon) src="{{ $favicon }}" @endif alt="Gaziantep Web Tasarım Ajansı Favicon"
                         class="{{ $favicon ? '' : 'hidden' }} w-full h-full object-contain">
                     <span data-seo-preview-favicon-fallback
                         class="{{ $favicon ? 'hidden' : '' }} text-[11px] font-medium text-gray-500 dark:text-gray-400">{{ $letter }}</span>

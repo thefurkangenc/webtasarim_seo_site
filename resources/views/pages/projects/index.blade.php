@@ -58,7 +58,7 @@
 
             <span class="sub-title">
                 <img style="width: 20px; height: 20px; margin-right: 5px;"
-                    src="{{ asset('assets/img/icons/icon.png') }}" alt="">
+                    src="{{ asset('assets/img/icons/icon.png') }}" alt="Gaziantep Web Tasarım Ajansı Projeler">
                 Projeler
             </span>
 

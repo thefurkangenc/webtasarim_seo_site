@@ -26,7 +26,7 @@
                         <span class="sub-title" data-aos="zoom-in-left" data-aos-duration="900">
                             <img style="width: 20px; height: 20px; margin-right: 5px;"
                                 src="{{ asset('assets/img/icons/icon.png') }}"
-                                alt=""> {{ $hero->badge }}</span>
+                                alt="Gaziantep Web Tasarım Ajansı"> {{ $hero->badge }}</span>
                         <h1>{{ $hero->title}}</h1>
                         <p class="mt-16">
                             {{ $hero->description }}
@@ -93,7 +93,7 @@
                         <span class="sub-title" data-aos="zoom-in-left" data-aos-duration="900">
                             <img style="width: 20px; height: 20px; margin-right: 5px;"
                                 src="{{ asset('assets/img/icons/icon.png') }}"
-                                alt=""> Hakkımızda </span>
+                                alt="Gaziantep Web Tasarım Ajansı Hakkımızda"> Hakkımızda </span>
                         <h2 class="text-anime-style-3">İnternette Yoksanız
                             Müşteriniz Sizi Nasıl
                             Bulacak?
@@ -192,7 +192,7 @@
 
                     <span class="sub-title">
                         <img style="width: 20px; height: 20px; margin-right: 5px;"
-                            src="{{ asset('assets/img/icons/icon.png') }}" alt="">
+                            src="{{ asset('assets/img/icons/icon.png') }}" alt="Gaziantep Web Tasarım Ajansı Blog">
                         Blog
                     </span>
 
@@ -222,7 +222,7 @@
                                     @if ($homeBlogDate)
                                         <div class="vl-blog10-meta">
                                             <a href="{{ $homeBlog->publicUrl() }}" class="date"><img
-                                                    src="assets/img/icons/date10.svg" alt="">
+                                                    src="assets/img/icons/date10.svg" alt="Gaziantep Web Tasarım Ajansı Blog Tarihi">
                                                 {{ $homeBlogDate->translatedFormat('d M') }}</a>
                                         </div>
                                     @endif
@@ -231,7 +231,7 @@
                                     @if ($homeBlog->author)
                                         <div class="vl-blog10-meta">
                                             <a href="{{ $homeBlog->publicUrl() }}" class="user"><img
-                                                    src="assets/img/icons/user10.svg" alt="">
+                                                    src="assets/img/icons/user10.svg" alt="Gaziantep Web Tasarım Ajansı Blog Yazarı">
                                                 {{ $homeBlog->author->name }}</a>
                                         </div>
                                     @endif

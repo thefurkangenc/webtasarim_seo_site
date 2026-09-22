@@ -129,4 +129,40 @@
         width: 100%;
         text-align: center;
     }
+    .inner-hero {
+        min-height: 300px;
+    }
+    .inner-hero .inner-main-heading {
+        padding-top:38px;
+    }
+    .inner-hero .inner-main-heading .breadcrumbs-pages ul li {
+        font-size: 14px;
+    }
+    .inner-hero .inner-main-heading .breadcrumbs-pages ul li a {
+        font-size: 14px;
+    }
+    .inner-hero .inner-main-heading h1 {
+        font-size: 30px;
+    }
 }
+
+.details-content h1{
+    font-family: 'Outfit', sans-serif!important;
+}
+.details-content h2{
+    font-family: 'Outfit', sans-serif!important;
+}
+.details-content h3{
+    font-family: 'Outfit', sans-serif!important;
+}
+.details-content h4{
+    font-family: 'Outfit', sans-serif!important;
+}
+.details-content h5{
+    font-family: 'Outfit', sans-serif!important;
+}
+.details-content h6{
+    font-family: 'Outfit', sans-serif!important;
+}
+
+

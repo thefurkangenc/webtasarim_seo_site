@@ -36,14 +36,14 @@
             <div class="row align-items-center">
                 <div class="col-lg-6">
                     <div class="about2-images">
-                        <img src="{{ asset('assets/img/about.jpg') }}" alt="">
+                        <img src="{{ asset('assets/img/about.jpg') }}" alt="Gaziantep Web Tasarım Ajansı Hakkımızda Görseli">
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="heading2 ml-30 md:ml-0 sm:ml-0 md:mt-30 sm:mt-30">
                         <span class="sub-title ">
                             <img style="width: 20px; height: 20px; margin-right: 5px;"
-                                src="{{ asset('assets/img/icons/icon.png') }}" alt="">
+                                src="{{ asset('assets/img/icons/icon.png') }}" alt="Neden Gaziantep Web Tasarım Ajansı?">
                             Neden Biz?
                         </span>
                         <h2>{{ $aboutTitle}}</h2>
