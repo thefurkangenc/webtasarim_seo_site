@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\Services\AutoBlog\AutoBlogService;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
@@ -15,18 +14,17 @@ use Illuminate\Foundation\Queue\Queueable;
  * Yeniden denenmez: istekler ücretlidir ve aynı hata genelde tekrar eder.
  * Hata `failed_jobs`'a düşer, Sistem Sağlığı ekranından görülür.
  *
- * `ShouldBeUnique`: cron üst üste tetiklenirse bekleyen/çalışan üretim
- * varken ikincisi kuyruğa girmez.
+ * Tekilleştirme YOK: adrese kaç istek gelirse o kadar job kuyruğa girer,
+ * `queue:work` tek işçiyle çalıştığı sürece sırayla işlenir. Bilinçli
+ * tercih — art arda birden çok yazı üretmek isteniyor.
  */
-class GenerateAutoBlogJob implements ShouldBeUnique, ShouldQueue
+class GenerateAutoBlogJob implements ShouldQueue
 {
     use Queueable;
 
     public int $tries = 1;
 
     public int $timeout;
-
-    public int $uniqueFor;
 
     /** @param  array<string, mixed>  $input  keywords / title / notes */
     public function __construct(public array $input = [])
@@ -37,7 +35,6 @@ class GenerateAutoBlogJob implements ShouldBeUnique, ShouldQueue
         $this->timeout = ((int) config('auto-blog.text.timeout') * 2)
             + (int) config('auto-blog.image.timeout')
             + 60;
-        $this->uniqueFor = $this->timeout + 60;
     }
 
     public function handle(AutoBlogService $service): void

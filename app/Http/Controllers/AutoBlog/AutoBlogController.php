@@ -17,7 +17,9 @@ class AutoBlogController extends Controller
      * config'te tanımlı değilse uç nokta hiç yokmuş gibi davranır.
      *
      * Üretim kuyrukta çalışır (`queue:work` şart); adres beklemeden döner.
-     * Bekleyen bir üretim varken yenisi kuyruğa eklenmez.
+     * Tekilleştirme yok: adrese kaç istek gelirse o kadar job kuyruğa girer
+     * ve sırayla işlenir — art arda birden çok yazı üretmek bilinçli olarak
+     * mümkündür.
      */
     public function generate(Request $request, string $secret): JsonResponse
     {
