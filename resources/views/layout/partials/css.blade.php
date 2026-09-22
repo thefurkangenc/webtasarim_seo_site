@@ -4,7 +4,7 @@
  @endphp
 
 <!--=====FAB ICON=======-->
-<link rel="shortcut icon" href="{{ $faviconUrl ?? asset('assets/img/logo/title3.svg') }}" type="image/x-icon">
+<link rel="shortcut icon" href="{{ $faviconUrl ?? asset('assets/img/favicon.png') }}" type="image/x-icon">
 
 
 <!--=====FONTS=======-->
