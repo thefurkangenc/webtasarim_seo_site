@@ -245,15 +245,15 @@ class AutoBlogService
         }
         Her çalıştırmada yeni ve yayınlanmaya değer bir blog konusu seç.
         Konuyu belirlerken kendine şu soruyu sor:
-        Bir işletme sahibi veya işletmesinin dijital işlerini yaptırmak isteyen birisibu konuyu  Google'da arar mı?"
+        Bir işletme sahibi veya işletmesinin dijital işlerini yaptırmak isteyen birisi bu konuyu  Google'da arar mı?"
         Cevabının olumlu ise devam et.
         Gerçek bir ihtiyaca cevap vermeyen, yalnızca SEO için oluşturulmuş yapay konular seçme.
         Konular; işletmelerin karşılaştığı problemler, merak ettiği sorular, hizmet satın almadan önce araştırdığı konular,
         karar verirken yaptığı karşılaştırmalar, maliyet ve süreç merakları, sık yapılan hatalar ve uygulanabilir çözüm önerileri üzerinden oluşturulabilir.
 
-        Web tasarım, web yazılım, kurumsal websitesi, özel yazılım, SEO, Google Ads, e-ticaret ve Google Maps İşletme Kaydı alanları arasında çeşitlilik oluştur.
-        Kullanıcı mesajındaki geçmiş yazı listesine bak: son yazılar hangi hizmetin
-        etrafında toplanmışsa bu çalışmada o hizmeti SEÇME, arşivde en az yer alan
+        Web tasarım, Web yazılım, Kurumsal Web Sitesi, özel yazılım, SEO, Google Ads, e-ticaret ve Google Maps İşletme Kaydı alanları arasında çeşitlilik oluştur.
+        Kullanıcı mesajındaki geçmiş yazı listesine bak: son yazılar hangi hizmetin ve kategorinin
+        etrafında toplanmışsa bu çalışmada o hizmeti ve o kategoriyi SEÇME, arşivde en az yer alan
         hizmete geç. Aynı hizmetin üst üste iki yazıda işlenmesi kabul edilemez.
 
         Her konu doğrudan bir hizmet satmak zorunda değildir.
