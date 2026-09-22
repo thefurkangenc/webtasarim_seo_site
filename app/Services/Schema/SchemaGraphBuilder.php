@@ -393,7 +393,12 @@ class SchemaGraphBuilder
             return null;
         }
 
-        $faqs = $model->relationLoaded('faqs') ? $model->faqs : $model->faqs()->get();
+        // Hizmet SSS'i bölge yer tutucusu taşıyabilir ({{region}}); işaretlemeye
+        // ham metin değil, sayfanın gösterdiği hali girer.
+        $faqs = $model instanceof Service
+            ? $model->renderedFaqs($ctx->region)
+            : ($model->relationLoaded('faqs') ? $model->faqs : $model->faqs()->get())
+                ->map(fn ($faq) => ['question' => (string) $faq->question, 'answer' => (string) $faq->answer]);
 
         if ($faqs->isEmpty()) {
             return null;
@@ -403,12 +408,12 @@ class SchemaGraphBuilder
             '@type' => 'FAQPage',
             '@id' => $this->pageUrl($ctx).'#faq',
             'isPartOf' => ['@id' => $this->pageUrl($ctx).'#webpage'],
-            'mainEntity' => $faqs->map(fn ($faq) => [
+            'mainEntity' => $faqs->map(fn (array $faq) => [
                 '@type' => 'Question',
-                'name' => $faq->question,
+                'name' => $faq['question'],
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => trim(strip_tags((string) $faq->answer)),
+                    'text' => trim(strip_tags($faq['answer'])),
                 ],
             ])->all(),
         ];

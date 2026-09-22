@@ -8,7 +8,7 @@
 	$(".search-open-btn").on("click", function () {
 		$(".search__popup").addClass("search-opened");
 	});
-		
+
 	$(".search-close-btn").on("click", function () {
 		$(".search__popup").removeClass("search-opened");
 	});
@@ -24,7 +24,7 @@
      $("#vl-header-sticky").addClass("header-sticky");
    }
  });
- 
+
 //========== HEADER ACTIVE ENDS ============= //
 
 //========== PRICING AREA ============= //
@@ -75,7 +75,7 @@ $(".vl-offcanvas-close-toggle,.vl-offcanvas-overlay").on('click', function(){
 });
 
 //========== MOBILE MENU ENDS ============= //
-  
+
 
 {
   function animateElements() {
@@ -137,38 +137,7 @@ $(".vl-offcanvas-close-toggle,.vl-offcanvas-overlay").on('click', function(){
     });
   };
 
-// page-progress
-var progressPath = document.querySelector(".progress-wrap path");
-var pathLength = progressPath.getTotalLength();
-progressPath.style.transition = progressPath.style.WebkitTransition =
-  "none";
-progressPath.style.strokeDasharray = pathLength + " " + pathLength;
-progressPath.style.strokeDashoffset = pathLength;
-progressPath.getBoundingClientRect();
-progressPath.style.transition = progressPath.style.WebkitTransition =
-  "stroke-dashoffset 10ms linear";
-var updateProgress = function () {
-  var scroll = $(window).scrollTop();
-  var height = $(document).height() - $(window).height();
-  var progress = pathLength - (scroll * pathLength) / height;
-  progressPath.style.strokeDashoffset = progress;
-};
-updateProgress();
-$(window).scroll(updateProgress);
-var offset = 50;
-var duration = 550;
-jQuery(window).on("scroll", function () {
-  if (jQuery(this).scrollTop() > offset) {
-    jQuery(".progress-wrap").addClass("active-progress");
-  } else {
-    jQuery(".progress-wrap").removeClass("active-progress");
-  }
-});
-jQuery(".progress-wrap").on("click", function (event) {
-  event.preventDefault();
-  jQuery("html, body").animate({ scrollTop: 0 }, duration);
-  return false;
-});
+
 
 //product colors
 const colors = $(".accordion1 .accordion-item");
@@ -1423,8 +1392,8 @@ $(".hero22-slider-area").slick({
   fade:true,
   draggable:true,
   prevArrow: $(".testimonial-prev22-arrow"),
-  nextArrow: $(".testimonial-next22-arrow"), 
-}); 
+  nextArrow: $(".testimonial-next22-arrow"),
+});
 // SLIDER //
 var rev = $('.rev_slider');
 rev.on('init', function(event, slick, currentSlide) {
@@ -1482,7 +1451,7 @@ rev.slick({
   $('.cs_hover_active').hover(function () {
     $(this).addClass('active').siblings().removeClass('active');
   });
-          
+
   });
 
 
@@ -1493,7 +1462,7 @@ rev.slick({
 			translateXValue = 0,
 			delayValue 		= 0.5,
 		   animatedTextElements = document.querySelectorAll('.text-anime-style-1');
-		
+
 		animatedTextElements.forEach((element) => {
 			let animationSplitText = new SplitText(element, { type: "chars, words" });
 				gsap.from(animationSplitText.words, {
@@ -1504,16 +1473,16 @@ rev.slick({
 				stagger: staggerAmount,
 				scrollTrigger: { trigger: element, start: "top 85%" },
 				});
-		});		
+		});
 	}
-	
-	if ($('.text-anime-style-2').length) {				
+
+	if ($('.text-anime-style-2').length) {
 		let	 staggerAmount 		= 0.05,
 			 translateXValue	= 20,
 			 delayValue 		= 0.5,
 			 easeType 			= "power2.out",
 			 animatedTextElements = document.querySelectorAll('.text-anime-style-2');
-		
+
 		animatedTextElements.forEach((element) => {
 			let animationSplitText = new SplitText(element, { type: "chars, words" });
 				gsap.from(animationSplitText.chars, {
@@ -1525,12 +1494,12 @@ rev.slick({
 					ease: easeType,
 					scrollTrigger: { trigger: element, start: "top 85%"},
 				});
-		});		
+		});
 	}
-	
-	if ($('.text-anime-style-3').length) {		
+
+	if ($('.text-anime-style-3').length) {
 		let	animatedTextElements = document.querySelectorAll('.text-anime-style-3');
-		
+
 		 animatedTextElements.forEach((element) => {
 			//Reset if needed
 			if (element.animation) {
@@ -1559,7 +1528,7 @@ rev.slick({
 				ease: Back.easeOut,
 				stagger: 0.02,
 			});
-		});		
+		});
 	}
 
 
@@ -1737,8 +1706,8 @@ rev.slick({
 
   $('select').niceSelect();
 
-          
-  
+
+
   // Preview slider js //
   $(".track").slick({
     arrows: false,
@@ -1784,11 +1753,11 @@ rev.slick({
     pauseOnHover: true,
     slidesToShow:1,
     slidesToScroll:1,
-    
+
   });
 
 })(jQuery);
-    
+
 
 // SWIPER SLIDER //
 document.addEventListener("DOMContentLoaded", function () {

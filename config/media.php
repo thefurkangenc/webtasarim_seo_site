@@ -27,7 +27,7 @@ return [
     // Imagick daha iyi kalite verir; yoksa 'gd' kullan.
     'driver' => extension_loaded('imagick') ? 'imagick' : 'gd',
 
-    'quality' => 85,
+    'quality' => 95,
 
     /*
     | Depolama çubuğunun paydası (bayt). Sunucuda zorlanan bir sınır DEĞİLDİR

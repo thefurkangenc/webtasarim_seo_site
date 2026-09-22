@@ -239,7 +239,7 @@ class Service extends Model implements LinksToPublicPage, RedirectsOnMove, Submi
         }
 
         if (filled($seo['description']) && ! $mentions($seo['description'])) {
-            $seo['description'] = rtrim($seo['description'], ' .')."";
+            $seo['description'] = rtrim($seo['description'], ' .').'';
         }
 
         return $seo;
@@ -264,4 +264,42 @@ class Service extends Model implements LinksToPublicPage, RedirectsOnMove, Submi
         ];
     }
 
+    /**
+     * Bağlı SSS'ler, içerikle aynı kuralla çözülmüş halde: bölge verilirse
+     * "{{region}} web sitesi fiyatları ne kadar?" o bölgenin adını alır,
+     * verilmezse (şemsiye sayfa) yer tutucu tamamen kalkar ve cümle yine
+     * düzgün okunur. Soru havuzu ortak olduğu için çözüm burada yapılır —
+     * kayda dokunulmaz.
+     *
+     * @return Collection<int, array{id: int, question: string, answer: string}>
+     */
+    public function renderedFaqs(?ServiceRegion $region = null): Collection
+    {
+        $values = $region?->placeholders();
+
+        $resolve = function (?string $text) use ($values) {
+            if ($values) {
+                return (string) Placeholder::replace($text, $values);
+            }
+
+            // Yer tutucu cümlenin başındaysa geriye küçük harfle başlayan bir
+            // metin kalır ("{{region}} web sitesi..." -> "web sitesi...").
+            // İlk harf Türkçe kurala göre büyütülür (i -> İ, ı -> I).
+            $text = (string) Placeholder::strip($text);
+            $first = mb_substr($text, 0, 1);
+
+            return match ($first) {
+                '' => $text,
+                'i' => 'İ'.mb_substr($text, 1),
+                'ı' => 'I'.mb_substr($text, 1),
+                default => mb_strtoupper($first, 'UTF-8').mb_substr($text, 1),
+            };
+        };
+
+        return $this->faqs->map(fn ($faq) => [
+            'id' => $faq->id,
+            'question' => $resolve($faq->question),
+            'answer' => $resolve($faq->answer),
+        ]);
+    }
 }

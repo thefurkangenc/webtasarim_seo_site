@@ -96,13 +96,15 @@ Service::renderFor), böylece her bölge adresi kendi başlığını alır. --}}
                         @endif
                     </div>
 
-
-                    @php($cover = $service->getFirstMedia('cover'))
+                    @php($cover = $service->getFirstMedia('cover')?->originalUrl())
                     @if ($cover)
                         <article>
                             <div class="details-content">
                                 <div class="image">
-                                    <img class="w-full" src="{{ $cover->url('medium') }}" alt="{{ $rendered['title'] }}">
+                                    <a href="tel:{{ $company['phone'] }}">
+                                        <img class="w-full" src="{{ $cover }}"
+                                            alt="{{ $rendered['title'] }}">
+                                    </a>
                                 </div>
                             </div>
                         </article>
@@ -213,6 +215,64 @@ Service::renderFor), böylece her bölge adresi kendi başlığını alır. --}}
 
 
 
+@if ($region && $region->isMain())
+@php($faqs = $service->renderedFaqs($region))
+
+@if ($faqs->isNotEmpty())
+<!--===== SERVICE FAQ START =====-->
+<section class="sp service-faq">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9 m-auto">
+                <div class="home-refs__head text-center">
+
+                    <span class="sub-title">
+                        <img style="width: 20px; height: 20px; margin-right: 5px;"
+                            src="{{ asset('assets/img/icons/icon.png') }}" alt="">
+                        {{ $company['name'] }}
+                    </span>
+
+                    <h2 id="home-refs-title" class="text-anime-style-3">{{$service->title}} Sıkça Sorulan Sorular</h2>
+                    <p class="home-refs__lead">
+                        {{  $service->title }} hizmetinde yaptığımız işleri inceleyin ve seçtiğiniz hizmetlerimizle
+                        ilgili detaylı bilgi alın. Sıkça sorulan soruları ve net yanıtlarını bir araya getirdik.
+                    </p>
+                </div>
+
+                <div class="service-faq__list" id="service-faq-{{ $service->id }}">
+                    @foreach ($faqs as $index => $faq)
+                    @php($target = "service-{$service->id}-faq-{$faq['id']}")
+
+                    <div class="faq-card">
+                        <h3 class="faq-card__head">
+                            <button class="faq-card__btn {{ $index === 0 ? '' : 'collapsed' }}" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#{{ $target }}"
+                                aria-expanded="{{ $index === 0 ? 'true' : 'false' }}" aria-controls="{{ $target }}">
+                                <span class="faq-card__q">{{ $faq['question'] }}</span>
+                                <span class="faq-card__icon" aria-hidden="true"></span>
+                            </button>
+                        </h3>
+                        <div id="{{ $target }}" class="faq-card__panel collapse {{ $index === 0 ? 'show' : '' }}"
+                            data-bs-parent="#service-faq-{{ $service->id }}">
+                            <div class="faq-card__answer">{!! nl2br(e($faq['answer'])) !!}</div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+
+                <div class="service-faq__cta">
+                    <p>Aradığınız cevabı bulamadınız mı?</p>
+                    <a class="ui-btn ui-btn--solid ui-btn--sm" href="{{ route('iletisim') }}">
+                        Bize Sorun <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--===== SERVICE FAQ END =====-->
+@endif
+@endif
 
 
 <x-googlecomment />
