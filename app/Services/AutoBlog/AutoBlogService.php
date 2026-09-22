@@ -255,6 +255,7 @@ class AutoBlogService
         Kullanıcı mesajındaki geçmiş yazı listesine bak: son yazılar hangi hizmetin ve kategorinin
         etrafında toplanmışsa bu çalışmada o hizmeti ve o kategoriyi SEÇME, arşivde en az yer alan
         hizmete geç. Aynı hizmetin üst üste iki yazıda işlenmesi kabul edilemez.
+        Son 4 yazıdan birisinin kategorisi web tasarım değilse web tasarım kategorisi seç.
 
         Her konu doğrudan bir hizmet satmak zorunda değildir.
         Ancak seçilen konu, verilen hizmetlerden en fazla biriyle doğal ve anlamlı şekilde ilişkilendirilebilmelidir.
