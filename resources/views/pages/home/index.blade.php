@@ -183,7 +183,7 @@
 
     <!--===== BLOG AREA START =====-->
     @php
-        $homeBlogs = app(\App\Services\Blog\BlogService::class)->active(3);
+        $homeBlogs = app(\App\Services\Blog\BlogService::class)->active(6);
     @endphp
     @if ($homeBlogs->isNotEmpty())
         <div class="blog8 sp bg-cover bg-cover" style="background-image: url(assets/img/bg/sec-bg10.jpg);">
