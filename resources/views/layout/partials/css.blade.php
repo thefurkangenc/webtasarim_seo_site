@@ -22,7 +22,7 @@
 <link rel="stylesheet" href="{{ asset('assets/css/aos.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/mobile-menu.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/utility.css') }}">
-<link rel="stylesheet" href="{{ asset('assets/css/main.css?v=20') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/main.css?v=21') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/layout/header.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/integrations.css') }}">
