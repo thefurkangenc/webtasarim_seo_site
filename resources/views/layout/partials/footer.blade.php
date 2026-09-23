@@ -39,18 +39,19 @@
                     <div class="col-lg-2  col-md-6 col-6">
                         <div class="vl-footer-widget-black6 mb-50 ml-20 md:ml-30 sm:ml-0">
                             <h4>{{ $footerMenus->heading('footer_primary') }}</h4>
-                            <div class="vl-footer-list">
+                            <nav class="vl-footer-list" aria-label="{{ $footerMenus->heading('footer_primary') }}">
                                 <ul>
                                     @foreach ($footerPrimary as $item)
                                         <li>
                                             <a href="{{ $item['url'] }}"
+                                                aria-label="{{ $item['label'] }}{{ $item['target'] === '_blank' ? ' (yeni sekmede açılır)' : '' }}"
                                                 @if ($item['target'] === '_blank') target="_blank" rel="noopener noreferrer" @endif>
                                                 {{ $item['label'] }}
                                             </a>
                                         </li>
                                     @endforeach
                                 </ul>
-                            </div>
+                            </nav>
                         </div>
                     </div>
                 @endif
@@ -58,18 +59,19 @@
                     <div class="col-lg-3 col-md-4 col-6">
                         <div class="vl-footer-widget-black6 mb-50 ml-70 md:ml-0 sm:ml-0">
                             <h4>{{ $footerMenus->heading('footer_secondary') }}</h4>
-                            <div class="vl-footer-list">
+                            <nav class="vl-footer-list" aria-label="{{ $footerMenus->heading('footer_secondary') }}">
                                 <ul>
                                     @foreach ($footerSecondary as $item)
                                         <li>
                                             <a href="{{ $item['url'] }}"
+                                                aria-label="{{ $item['label'] }}{{ $item['target'] === '_blank' ? ' (yeni sekmede açılır)' : '' }}"
                                                 @if ($item['target'] === '_blank') target="_blank" rel="noopener noreferrer" @endif>
                                                 {{ $item['label'] }}
                                             </a>
                                         </li>
                                     @endforeach
                                 </ul>
-                            </div>
+                            </nav>
                         </div>
                     </div>
                 @endif

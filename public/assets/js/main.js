@@ -47,19 +47,22 @@ $("#ce-toggle").change(function () {
   var vlSideMenu = $('.vl-offcanvas-menu nav');
   vlSideMenu.append(vlMenuWrap);
   if ($(vlSideMenu).find('.sub-menu, .vl-mega-menu').length != 0) {
-    $(vlSideMenu).find('.sub-menu, .vl-mega-menu').parent().append('<button class="vl-menu-close"><i class="fas fa-chevron-right"></i></button>');
+    $(vlSideMenu).find('.sub-menu, .vl-mega-menu').parent().append('<button type="button" class="vl-menu-close" aria-label="Alt menüyü aç" aria-expanded="false"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>');
   }
 
   var sideMenuList = $('.vl-offcanvas-menu nav > ul > li button.vl-menu-close, .vl-offcanvas-menu nav > ul li.has-dropdown > a');
   $(sideMenuList).on('click', function (e) {
-    console.log(e);
     e.preventDefault();
-    if (!($(this).parent().hasClass('active'))) {
-      $(this).parent().addClass('active');
+    var $parent = $(this).parent();
+    var $toggle = $parent.children('button.vl-menu-close');
+    if (!($parent.hasClass('active'))) {
+      $parent.addClass('active');
       $(this).siblings('.sub-menu, .vl-mega-menu').slideDown();
+      $toggle.attr({'aria-expanded': 'true', 'aria-label': 'Alt menüyü kapat'});
     } else {
       $(this).siblings('.sub-menu, .vl-mega-menu').slideUp();
-      $(this).parent().removeClass('active');
+      $parent.removeClass('active');
+      $toggle.attr({'aria-expanded': 'false', 'aria-label': 'Alt menüyü aç'});
     }
   });
 
@@ -67,11 +70,13 @@ $("#ce-toggle").change(function () {
 $(".vl-offcanvas-toggle").on('click',function(){
   $(".vl-offcanvas").addClass("vl-offcanvas-open");
   $(".vl-offcanvas-overlay").addClass("vl-offcanvas-overlay-open");
+  $(".vl-offcanvas-toggle").attr({'aria-expanded': 'true', 'aria-label': 'Menüyü kapat'});
 });
 
 $(".vl-offcanvas-close-toggle,.vl-offcanvas-overlay").on('click', function(){
   $(".vl-offcanvas").removeClass("vl-offcanvas-open");
   $(".vl-offcanvas-overlay").removeClass("vl-offcanvas-overlay-open");
+  $(".vl-offcanvas-toggle").attr({'aria-expanded': 'false', 'aria-label': 'Menüyü aç'});
 });
 
 //========== MOBILE MENU ENDS ============= //
