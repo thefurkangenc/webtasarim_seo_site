@@ -39,13 +39,13 @@
                             href="{{ \App\Support\Phone::href($headerPhone) }}">
                             <span class="site-header__phone-icon" aria-hidden="true"><i
                                     class="fa-solid fa-phone"></i></span>
-                            <span>{{ $headerPhone }}</span>
+                            <span class="site-header__phone-text">
+                                <small class="fs">Tıkla, Hemen Ara</small>
+                                <span class="site-header__phone-number">{{ $headerPhone }}</span>
+                            </span>
                         </a>
                     @endif
 
-                    <a class="site-header__cta d-none d-md-inline-flex" href="{{ route('iletisim') }}">
-                        İletişim
-                    </a>
 
                     <button type="button" class="site-header__burger vl-offcanvas-toggle d-lg-none"
                         aria-label="Menüyü aç">

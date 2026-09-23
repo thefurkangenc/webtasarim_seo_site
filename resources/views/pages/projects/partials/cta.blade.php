@@ -8,18 +8,19 @@
 <div class="cta2 sp sec-bg1">
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 m-auto text-center">
-                <div class="heading2">
-                    <h2>Sıradaki proje sizin olsun</h2>
-                    <p class="mt-16">
-                        Benzer bir işe ihtiyacınız varsa {{ $ctaCompany['name'] ?: config('app.name') }} ekibi
-                        hedeflerinizi dinleyip yol haritasını birlikte çıkarır.
+            <div class="col-lg-10 m-auto text-center">
+                <div class="home-refs__head text-center">
+
+                    <span class="sub-title">
+                        <img style="width: 20px; height: 20px; margin-right: 5px;"
+                            src="{{ asset('assets/img/icons/icon.png') }}" alt="Gaziantep Web Tasarım Ajansı Blog">
+                        Sıradaki proje sizin olsun
+                    </span>
+
+                    <h2 id="home-refs-title" class="text-anime-style-3">Sıradaki proje sizin olsun</h2>
+                    <p class="home-refs__lead">
+                        {{ $ctaCompany['name'] ?: config('app.name') }} ekibi olarak ihtiyaçlarınızı dinliyor, hedeflerinizi birlikte değerlendirerek size uygun yol haritasını oluşturuyoruz. Projenizi konuşmak ve detayları birlikte değerlendirmek için hemen bizimle iletişime geçin.
                     </p>
-                    <div class="button mt-30">
-                        <a class="ui-btn ui-btn--solid" href="{{ route('iletisim') }}">
-                            Bize Ulaşın <i class="fa-solid fa-arrow-right"></i>
-                        </a>
-                    </div>
                 </div>
             </div>
         </div>

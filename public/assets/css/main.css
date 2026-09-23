@@ -3032,6 +3032,9 @@ a {
     text-decoration: none;
     transition: all 0.4s;
 }
+.fs-7 {
+    font-size:7px!important;
+}
 .fs-8{
     font-size:8px!important;
 }

@@ -126,7 +126,7 @@
                                     <span class="blog-detail__tags-label">Etiketler</span>
                                     <ul>
                                         @foreach ($blog->tags as $tag)
-                                            <li><a href="{{ route('blog.etiket', $tag->slug) }}">#{{ $tag->name }}</a></li>
+                                            <li><aç href="{{ route('blog.etiket', $tag->slug) }}">#{{ $tag->name }}</a></li>
                                         @endforeach
                                     </ul>
                                 </div>
