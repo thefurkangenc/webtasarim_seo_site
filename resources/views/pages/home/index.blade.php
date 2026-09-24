@@ -28,7 +28,7 @@
                                 src="{{ asset('assets/img/icons/icon.png') }}"
                                 alt="Gaziantep Web Tasarım Ajansı"> {{ $hero->badge }}</span>
                         <h1>{{ $hero->title}}</h1>
-                        <p class="mt-16">
+                        <p class="mt-12">
                             {{ $hero->description }}
                         </p>
                         {{-- <div class="buttons">

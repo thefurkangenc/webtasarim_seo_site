@@ -24,7 +24,7 @@
 <link rel="stylesheet" href="{{ asset('assets/css/mobile-menu.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/utility.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/main.css?v=21') }}">
-<link rel="stylesheet" href="{{ asset('assets/css/custom.css?v=1.0.1') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/custom.css?v=1.0.2') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/layout/header.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/integrations.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/references.css') }}">
