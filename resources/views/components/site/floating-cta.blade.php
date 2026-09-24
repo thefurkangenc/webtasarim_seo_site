@@ -15,7 +15,9 @@
 --}}
 @php
     $ctaCompany = \App\Support\Settings::group('company');
-    $ctaWhatsappNumber = ($ctaCompany['whatsapp'] ?? null) ?: ($ctaCompany['phone'] ?? null);
+    $ctaPhone = $ctaCompany['phone'] ?? null;
+    $ctaPhoneHref = \App\Support\Phone::href($ctaPhone);
+    $ctaWhatsappNumber = ($ctaCompany['whatsapp'] ?? null) ?: $ctaPhone;
     $ctaSiteName = ($ctaCompany['name'] ?? null) ?: config('app.name');
     $ctaWhatsapp = \App\Support\Phone::whatsapp(
         $ctaWhatsappNumber,
@@ -24,11 +26,26 @@
 @endphp
 
 <div class="floating-cta" data-floating-cta>
+    @if ($ctaPhoneHref)
+        <div class="floating-cta__call-wrap">
+            <a class="floating-cta__call" href="{{ $ctaPhoneHref }}"
+                aria-label="Tıkla, hemen ara: {{ $ctaPhone }}">
+                <span class="floating-cta__call-icon" aria-hidden="true">
+                    <i class="fa-solid fa-phone"></i>
+                </span>
+                <span class="floating-cta__call-text">
+                    <small>Tıkla, Hemen Ara</small>
+                    <strong>{{ $ctaPhone }}</strong>
+                </span>
+            </a>
+        </div>
+    @endif
+
     @if ($ctaWhatsapp)
         <a class="floating-cta__btn floating-cta__btn--whatsapp" href="{{ $ctaWhatsapp }}"
             target="_blank" rel="noopener noreferrer">
             <span class="floating-cta__icon" aria-hidden="true">
-                <i class="fa-brands fa-whatsapp"></i>
+                <img src="{{ asset('assets/img/whatsapp.png') }}" alt="WhatsApp'tan Yaz">
             </span>
             <span class="floating-cta__text">
                 <strong>WhatsApp'tan Yaz</strong>
@@ -40,7 +57,7 @@
     <button type="button" class="floating-cta__btn floating-cta__btn--quote" data-quote-open
         aria-haspopup="dialog">
         <span class="floating-cta__icon" aria-hidden="true">
-            <i class="fa-solid fa-file-invoice"></i>
+            <img src="{{ asset('assets/img/teklif.png') }}" alt="Ücretsiz Teklif Al">
         </span>
         <span class="floating-cta__text">
             <strong>Ücretsiz Teklif Al</strong>

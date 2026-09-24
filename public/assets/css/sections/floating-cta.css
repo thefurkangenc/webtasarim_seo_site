@@ -15,7 +15,7 @@
  *    artık orada ve overflow tamamen kaldırıldı.
  */
 
-.floating-cta {
+ .floating-cta {
     position: fixed;
     right: 20px;
     bottom: 20px;
@@ -39,6 +39,97 @@
     transform: translateY(0);
     visibility: visible;
     transition: opacity 0.32s ease, transform 0.32s ease, visibility 0s;
+}
+
+.floating-cta__call-wrap {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.floating-cta__call {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px 8px 10px;
+    border-radius: 999px;
+    background-color: #1d4ed8e6;
+    color: #fff;
+    font-family: var(--f-ff-font-1);
+    text-decoration: none;
+    box-shadow: 0 8px 18px rgba(29, 78, 216, 0.22);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.floating-cta__call:hover,
+.floating-cta__call:focus-visible {
+    background-color: #1e40af;
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px rgba(29, 78, 216, 0.28);
+}
+
+.floating-cta__call:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+.floating-cta__call-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.16);
+    font-size: 12px;
+}
+
+.floating-cta__call-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.floating-cta__call-text small {
+    font-size: 11px;
+    font-weight: 500;
+    opacity: 0.85;
+    white-space: nowrap;
+}
+
+.floating-cta__call-text strong {
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* Hafif ahize sallanması — yalnızca ikon, üç kez değil sürekli ama seyrek. */
+.floating-cta.is-visible .floating-cta__call-icon {
+    animation: floating-cta-call-wiggle 5s ease-in-out 1.4s infinite;
+}
+
+@keyframes floating-cta-call-wiggle {
+    0%,
+    86%,
+    100% {
+        transform: rotate(0);
+    }
+
+    89% {
+        transform: rotate(11deg);
+    }
+
+    92% {
+        transform: rotate(-9deg);
+    }
+
+    95% {
+        transform: rotate(6deg);
+    }
+
+    98% {
+        transform: rotate(-3deg);
+    }
 }
 
 .floating-cta__btn {
@@ -169,7 +260,12 @@
         width: auto;
         max-width: none;
         flex-direction: row;
+        flex-wrap: wrap;
         gap: 8px;
+    }
+
+    .floating-cta__call-wrap {
+        flex: 1 0 100%;
     }
 
     .floating-cta__btn {
@@ -191,9 +287,10 @@
     }
 
     .floating-cta__icon {
-        width: 32px;
-        height: 32px;
+        width: 38px;
+        height: 38px;
         font-size: 16px;
+        padding: 3px;
     }
 
     .floating-cta__btn--whatsapp .floating-cta__icon {
@@ -211,7 +308,7 @@
 
     /* Tema "yukarı çık" düğmesi çubuğun altında kalmasın. */
     .progress-wrap {
-        bottom: 82px;
+        bottom: 126px;
     }
 }
 
@@ -316,7 +413,8 @@ body.quote-modal-open {
         transition: none;
     }
 
-    .floating-cta.is-visible .floating-cta__btn--quote {
+    .floating-cta.is-visible .floating-cta__btn--quote,
+    .floating-cta.is-visible .floating-cta__call-icon {
         animation: none;
     }
 }
