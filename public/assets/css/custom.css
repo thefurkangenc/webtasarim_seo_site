@@ -1,4 +1,4 @@
-﻿/*
+/*
 | Referans logoları — ana sayfa bölümü ve /referanslar listesi.
 */
 
@@ -165,4 +165,8 @@
     font-family: 'Outfit', sans-serif!important;
 }
 
-
+@media (max-width: 767px) {
+    .hero-6{
+        min-height:600px;
+    }
+}
