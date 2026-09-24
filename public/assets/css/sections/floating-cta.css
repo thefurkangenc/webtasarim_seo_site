@@ -214,13 +214,13 @@
 
 /* --- Teklif: birincil eylem --- */
 .floating-cta__btn--quote {
-    background-color: #05051C;
+    background-color: #011b53;
     padding-top: 13px;
     padding-bottom: 13px;
 }
 
 .floating-cta__btn--quote:hover {
-    background-color: #001644;
+    background-color: #001a51;
 }
 
 .floating-cta__btn--quote .floating-cta__text strong {
