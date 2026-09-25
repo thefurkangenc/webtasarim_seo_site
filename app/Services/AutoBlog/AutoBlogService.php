@@ -113,6 +113,11 @@ class AutoBlogService
             throw new DomainException('Model başlık ya da içerik döndürmedi.');
         }
 
+        // Adreste title verildiyse modelin uydurduğu başlık kayda girmez.
+        if ($topic['title'] !== '') {
+            $article['title'] = $topic['title'];
+        }
+
         $words = $this->wordCount((string) $article['content']);
         $floor = (int) $config['min_words'];
 
@@ -434,12 +439,13 @@ class AutoBlogService
         $lines = [];
 
         if ($topic['keywords'] !== '') {
-            $lines[] = "Bu yazının konusu: {$topic['keywords']}";
-            $lines[] = 'Bu anahtar kelimeleri metin içinde doğal biçimde geçir.';
+            $lines[] = "ZORUNLU KONU: {$topic['keywords']}";
+            $lines[] = 'Yazının tamamı bu konu hakkında olacak. Başka hizmet veya sektöre (e-ticaret, reklam, genel SEO vb.) kayma.';
+            $lines[] = 'Bu ifadeleri metin içinde doğal biçimde geçir.';
         }
 
         if ($topic['title'] !== '') {
-            $lines[] = "Başlık verildi, aynen kullan: {$topic['title']}";
+            $lines[] = "ZORUNLU BAŞLIK — JSON title alanına aynen yaz, değiştirme: {$topic['title']}";
         }
 
         if ($topic['notes'] !== '') {
